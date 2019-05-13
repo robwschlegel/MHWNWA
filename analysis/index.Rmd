@@ -1,0 +1,13 @@
+---
+title: "Marine Heatwaves in the Northwest Atlantic"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: false
+editor_options:
+  chunk_output_type: console
+---
+
+This website contains the version controlled analyses used to determine the primary drivers of marine heatwaves (MHWs) in the Northwest Atlantic Ocean.
+  
+Please use the tabs above to navigate the site.

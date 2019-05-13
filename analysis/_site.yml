@@ -1,0 +1,15 @@
+name: "MHWNWA"
+output_dir: ../docs
+navbar:
+  title: "MHW Northwest Atlantic"
+  left:
+  - text: Overview
+    href: index.html
+  - text: License
+    href: license.html
+output:
+  workflowr::wflow_html:
+    toc: yes
+    toc_float: yes
+    theme: cosmo
+    highlight: textmate
