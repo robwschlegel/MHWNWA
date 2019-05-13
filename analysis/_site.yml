@@ -1,12 +1,16 @@
-name: "MHWNWA"
+name: MHWNWA
 output_dir: ../docs
 navbar:
-  title: "MHW Northwest Atlantic"
+  title: MHW Northwest Atlantic
   left:
   - text: Overview
     href: index.html
   - text: License
     href: license.html
+  right:
+  - icon: fa-github
+    text: Source code
+    href: https://github.com/robwschlegel/MHWNWA
 output:
   workflowr::wflow_html:
     toc: yes
