@@ -1,5 +1,5 @@
 # MHWNWA
 
-A [workflowr][] project.
+An analysis to determine the primary drivers of marine heatwaves (MHWs) in the Northwest Atlantic Ocean.
 
-[workflowr]: https://github.com/jdblischak/workflowr
+For a more user-friendly experience please visit the GitHub page at: https://robwschlegel.github.io/MHWNWA/
