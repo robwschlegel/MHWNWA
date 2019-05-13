@@ -10,4 +10,4 @@ editor_options:
 
 This website contains the version controlled analyses used to determine the primary drivers of marine heatwaves (MHWs) in the Northwest Atlantic Ocean.
   
-Please use the tabs above to navigate the site.
+Please use the tabs above to navigate the site. The "Analyses" tabs contain workflows for discrete portions of the overall analysis.

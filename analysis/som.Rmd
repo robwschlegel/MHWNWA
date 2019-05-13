@@ -1,0 +1,16 @@
+---
+title: "Self-organising map (SOM) analysis"
+author: "Robert Schlegel"
+date: "2019-05-13"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+
+```
+
+This markdown file will contain the code used to perform the self-organising map (SOM) analysis on the prepared data.
