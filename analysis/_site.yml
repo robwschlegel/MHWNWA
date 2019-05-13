@@ -1,10 +1,16 @@
-name: MHWNWA
+name: "MHWNWA"
 output_dir: ../docs
 navbar:
-  title: MHW Northwest Atlantic
+  title: "MHW Northwest Atlantic"
   left:
   - text: Overview
     href: index.html
+  - text: "Analyses"
+    menu:
+    - text: "Data preparation"
+      href: data-prep.html
+    - text: "SOM analysis"
+      href: som.html
   - text: License
     href: license.html
   right:
