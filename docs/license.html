@@ -279,15 +279,12 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">MHWNWA</a>
+      <a class="navbar-brand" href="index.html">MHW Northwest Atlantic</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">Home</a>
-</li>
-<li>
-  <a href="about.html">About</a>
+  <a href="index.html">Overview</a>
 </li>
 <li>
   <a href="license.html">License</a>
@@ -367,10 +364,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongNocommitsyet"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> No commits yet </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrobwschlegelMHWNWAtree6ca4940e8602785ebdedc56ef871a42dcadf3eectargetblank6ca4940a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/6ca4940e8602785ebdedc56ef871a42dcadf3eec" target="_blank">6ca4940</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongNocommitsyet" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrobwschlegelMHWNWAtree6ca4940e8602785ebdedc56ef871a42dcadf3eectargetblank6ca4940a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -379,16 +376,8 @@ Great! You are using Git for version control. Tracking code development and conn
 Ignored files:
     Ignored:    .Rproj.user/
 
-Untracked files:
-    Untracked:  .gitignore
-    Untracked:  MHWNWA.Rproj
-    Untracked:  README.md
-    Untracked:  _workflowr.yml
-    Untracked:  analysis/
-    Untracked:  code/
-    Untracked:  data/
-    Untracked:  docs/
-    Untracked:  output/
+Unstaged changes:
+    Deleted:    analysis/about.Rmd
 
 </code></pre>
 <p>
@@ -401,16 +390,86 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/robwschlegel/MHWNWA/blob/6ca4940e8602785ebdedc56ef871a42dcadf3eec/analysis/license.Rmd" target="_blank">6ca4940</a>
+</td>
+<td>
+Robert Schlegel
+</td>
+<td>
+2019-05-13
+</td>
+<td>
+First push
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/6ca4940e8602785ebdedc56ef871a42dcadf3eec/docs/license.html" target="_blank">6ca4940</a>
+</td>
+<td>
+Robert Schlegel
+</td>
+<td>
+2019-05-13
+</td>
+<td>
+First push
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
 </div>
-<p>What license are you using for your code? See <a href="http://choosealicense.com/">choosealicense.com</a> for help deciding. It’s a convention to save a file <code>LICENSE</code> in the root of your Git repo that contains the license text.</p>
-<p>What license are you using for the written content on your site? It is traditional to choose a <a href="https://creativecommons.org/choose/">Creative Commons</a> license for this type of content.</p>
-<p>How should others cite your work? It’s a convention to save a file <code>CITATION</code> in the root of your Git repo that contains the citation information.</p>
+<div id="mit-license" class="section level1">
+<h1>MIT License</h1>
+<p>Copyright (c) 2018 Robert William Schlegel</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+</div>
+<div id="citation" class="section level1">
+<h1>Citation</h1>
+<p>There is currently no <code>CITATION</code> available for this project</p>
+<!-- How should others cite your work? It's a convention to save a file `CITATION` -->
+<!-- in the root of your Git repo that contains the citation information. -->
+</div>
 
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
