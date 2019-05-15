@@ -7,10 +7,123 @@ editor_options:
   chunk_output_type: console
 ---
 
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
+                      echo = TRUE, warning = FALSE, message = FALSE, 
+                      eval = TRUE, tidy = FALSE)
+```
+
 ## Introduction
 
+This markdown file contains all of the code used to prepare the Northwest Atlantic data for the SOM analysis.
+
 ```{r}
+library(tidyverse)
+library(R.matlab)
+```
+
+## Coastal region polygons
+
+The first step in this analysis is to define the coastal regions based on previous research into thermally relevant boundaries. We have chosen to use a paper by Richaud et al 2016 to do this (https://www.sciencedirect.com/science/article/pii/S0278434316303181#f0010). Being the kind-hearted man that he is, Benjamin forwarded us the polygons (Figure 2) from this work as a MATLAB file so we must first open that up and convert it to an R format for further use.
+
+```{r mat-R, eval=FALSE}
+# Load the file
+NWA_polygons <- R.matlab::readMat("data/boundaries.mat")
+
+# Remove index list items and attributes
+NWA_polygons[grepl("[.]",names(NWA_polygons))] <- NULL
+# attributes(NWA_polygons) <- NULL
+
+# Function for neatly converting list items into a dataframe
+# vec <- NWA_polygons[1]
+mat_col <- function(vec){
+  df <- as.data.frame(vec)
+  df$region <- substr(colnames(df)[1], 2, nchar(colnames(df)[1]))
+  colnames(df)[1] <- strtrim(colnames(df)[1], 1)
+  df <- df[c(2,1)]
+  return(df)
+}
+
+# Create multiple smaller data.frames
+coords_1 <- cbind(mat_col(NWA_polygons[1]), mat_col(NWA_polygons[2])[2])
+coords_2 <- cbind(mat_col(NWA_polygons[3]), mat_col(NWA_polygons[4])[2])
+coords_3 <- cbind(mat_col(NWA_polygons[5]), mat_col(NWA_polygons[6])[2])
+coords_4 <- cbind(mat_col(NWA_polygons[7]), mat_col(NWA_polygons[8])[2])
+coords_5 <- cbind(mat_col(NWA_polygons[9]), mat_col(NWA_polygons[10])[2])
+coords_6 <- cbind(mat_col(NWA_polygons[11]), mat_col(NWA_polygons[12])[2])
+
+# Combine them into one full dataframe and save
+NWA_coords <- rbind(coords_1, coords_2, coords_3, coords_4, coords_5, coords_6)
+saveRDS(NWA_coords, "data/NWA_coords.Rda")
+```
+
+With our polygons now switched over from MATLAB to R we now want to visualise them to ensure that everything has gone smoothly.
+
+```{r poly-vis}
+# Load polygon coordinates
+NWA_coords <- readRDS("data/NWA_coords.Rda")
+
+# The base map
+map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE)) %>%
+  dplyr::rename(lon = long) %>%
+  mutate(group = ifelse(lon > 180, group+9999, group),
+         lon = ifelse(lon > 180, lon-360, lon)) %>% 
+  select(-region, -subregion)
+
+# Quick map
+NWA_coords_plot <- ggplot(data = NWA_coords, aes(x = x, y = y)) +
+  geom_polygon(data = map_base, aes(x = lon, y = lat, group = group), show.legend = F) +
+  geom_polygon(aes(colour = region, fill = region), size = 1.5, alpha = 0.2) +
+  coord_cartesian(xlim = c(min(NWA_coords$x)-1, max(NWA_coords$x)+1),
+                  ylim = c(min(NWA_coords$y)-1, max(NWA_coords$y)+1)) +
+  labs(x = NULL, y = NULL, colour = "Region", fill = "Region") +
+  theme(legend.position = "bottom")
+ggsave(NWA_coords_plot, filename = "output/NWA_coords_plot.pdf", height = 5, width = 6)
+
+# Visualise
+NWA_coords_plot
+```
+
+The region abbreviations are: "gm" for Gulf of Maine, "gls" for Gulf of St. Lawrence, "ls" for Labrador Shelf, "mab" for Mid-Atlantic Bight, "nfs" for Newfoundland Shelf and "ss" for Scotian Shelf
+
+
+### Cabot Strait
+
+It was decided that because we are interested in the geogrophy of the regions, and not just their temperature regimes, the Cabot Strait needed to be defined apart from the Gulf of St. Lawrence region.
+
+```{r cabot-strait}
+# Extract the gsl region only
+gsl_sub <- NWA_coords[NWA_coords$region == "gsl",]
+
+# Add a simple integer column for ease of plotting
+gsl_sub$row_count <- 1:nrow(gsl_sub)
+
+ggplot()
+```
+
+
+
+### Sub-regions
+
+These regions are an excellent start, but because the aim of this research project is to determine the primary drivers of MHWs we want to subset the regions not only byu their thermal characteristics, but also by their geophysical characteristics, which in this instance means depth. The rationale for this is that surface forcing as a driver of anaomolously warm seawater is likely going to be more prevalent in shallow waters than in shelf waters or deeper. To this end we will further sub-divide the regions into two sub-regions each: 0 -- 50 m depth, 51 -- 200 m depth.
+
+```{r poly-sub-region}
+# Load bathymetry data
+
+# Create depth polygons inside of region polygons
+
+# Save new sub-region polygons
 
 ```
 
-This markdown file will contain all of the code used to prepare the Northwest Atlantic data for the SOM analysis.
+With our new sub-regions created let's take a look at them.
+
+```{r poly-sub-plot}
+
+```
+
+
+## Sub-regional temperature time series
+
+Now that we have our sub-regions defined we may go about creating time series for each. 
+

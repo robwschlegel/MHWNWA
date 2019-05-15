@@ -441,7 +441,7 @@ div.section {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -450,7 +450,7 @@ div.section {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -459,10 +459,10 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-05-13
+<strong>Last updated:</strong> 2019-05-14
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>MHWNWA/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -478,12 +478,12 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -538,10 +538,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrobwschlegelMHWNWAtreeea61999b0861c73ac1913d950d561693050fcfe7targetblankea61999a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/ea61999b0861c73ac1913d950d561693050fcfe7" target="_blank">ea61999</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrobwschlegelMHWNWAtree1f1cd37c6a0b00637b87ade66d54b518bc8b8a02targetblank1f1cd37a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/1f1cd37c6a0b00637b87ade66d54b518bc8b8a02" target="_blank">1f1cd37</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrobwschlegelMHWNWAtreeea61999b0861c73ac1913d950d561693050fcfe7targetblankea61999a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrobwschlegelMHWNWAtree1f1cd37c6a0b00637b87ade66d54b518bc8b8a02targetblank1f1cd37a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -551,8 +551,13 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
+Untracked files:
+    Untracked:  code/mat_load.R
+    Untracked:  data/Polygons_regions.m
+    Untracked:  data/boundaries.mat
+
 Unstaged changes:
-    Modified:   analysis/_site.yml
+    Modified:   analysis/data-prep.Rmd
 
 </code></pre>
 <p>
@@ -596,6 +601,23 @@ Message
 html
 </td>
 <td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/a29be6b35b7afe6b2b62ebeb324fbc7a1ef52e8e/docs/data-prep.html" target="_blank">a29be6b</a>
+</td>
+<td>
+robwschlegel
+</td>
+<td>
+2019-05-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
 <a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/ea61999b0861c73ac1913d950d561693050fcfe7/docs/data-prep.html" target="_blank">ea61999</a>
 </td>
 <td>
@@ -634,7 +656,39 @@ Skeleton files
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>This markdown file will contain all of the code used to prepare the Northwest Atlantic data for the SOM analysis.</p>
+<p>This markdown file contains all of the code used to prepare the Northwest Atlantic data for the SOM analysis.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>Registered S3 methods overwritten by &#39;ggplot2&#39;:
+  method         from 
+  [.quosures     rlang
+  c.quosures     rlang
+  print.quosures rlang</code></pre>
+<pre><code>Registered S3 method overwritten by &#39;rvest&#39;:
+  method            from
+  read_xml.response xml2</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.1.1       ✔ purrr   0.3.2  
+✔ tibble  2.1.1       ✔ dplyr   0.8.0.1
+✔ tidyr   0.8.3       ✔ stringr 1.4.0  
+✔ readr   1.3.1       ✔ forcats 0.4.0  </code></pre>
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(R.matlab)</code></pre>
+<pre><code>Registered S3 method overwritten by &#39;R.oo&#39;:
+  method        from       
+  throw.default R.methodsS3</code></pre>
+<pre><code>R.matlab v3.6.2 (2018-09-26) successfully loaded. See ?R.matlab for help.</code></pre>
+<pre><code>
+Attaching package: &#39;R.matlab&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    getOption, isOpen</code></pre>
+</div>
+<div id="coastal-polygons" class="section level2">
+<h2>Coastal Polygons</h2>
+<p>The first step in this analysis is to define the coastal regions based on previous research into thermally relevant boundaries. We have chosen to use a paper by Richaud et al 2016 to do this (<a href="https://www.sciencedirect.com/science/article/pii/S0278434316303181#f0010" class="uri">https://www.sciencedirect.com/science/article/pii/S0278434316303181#f0010</a>). Being the kind-hearted man that he is, Benjamin forwarded us the polygons (Figure 2) from this work as a Matlab file so we must first open that up and convert it to an R format for further use.</p>
+<pre class="r"><code>NWA_polygons &lt;- R.matlab::readMat(&quot;data/boundaries.mat&quot;)</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -662,12 +716,30 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+ [1] R.matlab_3.6.2  forcats_0.4.0   stringr_1.4.0   dplyr_0.8.0.1  
+ [5] purrr_0.3.2     readr_1.3.1     tidyr_0.8.3     tibble_2.1.1   
+ [9] ggplot2_3.1.1   tidyverse_1.2.1
+
 loaded via a namespace (and not attached):
- [1] workflowr_1.3.0 Rcpp_1.0.1      digest_0.6.18   rprojroot_1.3-2
- [5] backports_1.1.4 git2r_0.25.2    magrittr_1.5    evaluate_0.13  
- [9] stringi_1.4.3   fs_1.3.1        whisker_0.3-2   rmarkdown_1.12 
-[13] tools_3.6.0     stringr_1.4.0   glue_1.3.1      xfun_0.6       
-[17] yaml_2.2.0      compiler_3.6.0  htmltools_0.3.6 knitr_1.22     </code></pre>
+ [1] tidyselect_0.2.5  xfun_0.6          haven_2.1.0      
+ [4] lattice_0.20-38   colorspace_1.4-1  generics_0.0.2   
+ [7] htmltools_0.3.6   yaml_2.2.0        rlang_0.3.4      
+[10] R.oo_1.22.0       pillar_1.3.1      glue_1.3.1       
+[13] withr_2.1.2       R.utils_2.8.0     modelr_0.1.4     
+[16] readxl_1.3.1      plyr_1.8.4        munsell_0.5.0    
+[19] gtable_0.3.0      workflowr_1.3.0   cellranger_1.1.0 
+[22] rvest_0.3.3       R.methodsS3_1.7.1 evaluate_0.13    
+[25] knitr_1.22        broom_0.5.2       Rcpp_1.0.1       
+[28] scales_1.0.0      backports_1.1.4   jsonlite_1.6     
+[31] fs_1.3.1          hms_0.4.2         digest_0.6.18    
+[34] stringi_1.4.3     grid_3.6.0        rprojroot_1.3-2  
+[37] cli_1.1.0         tools_3.6.0       magrittr_1.5     
+[40] lazyeval_0.2.2    crayon_1.3.4      whisker_0.3-2    
+[43] pkgconfig_2.0.2   xml2_1.2.0        lubridate_1.7.4  
+[46] assertthat_0.2.1  rmarkdown_1.12    httr_1.4.0       
+[49] rstudioapi_0.10   R6_2.4.0          nlme_3.1-139     
+[52] git2r_0.25.2      compiler_3.6.0   </code></pre>
 </div>
 </div>
 
