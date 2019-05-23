@@ -1,0 +1,18 @@
+---
+title: "SST preparation"
+author: "Robert Schlegel"
+date: "2019-05-23"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
+                      echo = TRUE, warning = FALSE, message = FALSE, 
+                      eval = TRUE, tidy = FALSE)
+```
+
+## Introduction
+
+Building on the work performed in the [Polygon preparation](https://robwschlegel.github.io/MHWNWA/polygon-prep.html) vignette, we will now create grouped SST time series for the regions in our study area based on the 50 and 200 m isobaths within each.
