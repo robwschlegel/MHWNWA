@@ -15,4 +15,40 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
 
 ## Introduction
 
-Building on the work performed in the [Polygon preparation](https://robwschlegel.github.io/MHWNWA/polygon-prep.html) vignette, we will now create grouped SST time series for the regions in our study area based on the 50 and 200 m isobaths within each.
+Building on the work performed in the [Polygon preparation](https://robwschlegel.github.io/MHWNWA/polygon-prep.html) vignette, we will now create grouped SST time series for the regions in our study area based on the 50 and 200 m isobaths within each. This will not be done by using shape files to define the area, as previously planned. Rather we will find the mean depth for each SST pixel and assign it to one of the three depth classes within each region. How this looks is shown below.
+
+```{r libraries}
+# Packages used in this vignette
+library(tidyverse) # Base suite of functions
+library(heatwaveR, lib.loc = "../R-packages/") # For detecting MHWs
+cat(paste0("heatwaveR version = ",packageDescription("heatwaveR")$Version))
+library(FNN) # For fastest nearest neighbour searches
+```
+
+## Loading data
+
+Before we access the SST data from the 3-Oceans model, let's load all of the polygons and bathymetry data we will need to create our grouped time series.
+
+```{r load-poly-bathy}
+# Corners of the study area
+NWA_corners <- readRDS("data/NWA_corners.Rda")
+
+# Individual regions
+NWA_coords <- readRDS("data/NWA_coords_cabot.Rda")
+
+# Lowres bathymetry
+NWA_bathy <- readRDS("data/NWA_bathy_lowres.Rda")
+
+# The 3-Oceans (NAPA) model lon/lat values
+model_coords <- lon_lat_NAPA_OISST %>% 
+  select(nav_lon, nav_lat) %>% 
+  dplyr::rename(lon = nav_lon, lat = nav_lat) %>% 
+  mutate(lon = round(lon, 2), lat = round (lat, 2))
+saveRDS(model_coords, "data/model_coords.Rda")
+load("data/lon_lat_NAPA_OISST.RData")
+```
+
+## Assign depths to pixels
+
+
+## Assign pixels to regions

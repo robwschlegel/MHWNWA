@@ -17,13 +17,12 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
 
 This markdown file contains all of the code used to prepare the polygons that are used to define the different regions in the Northwest Atlantic. These different regions will then have their SST pixels spatially averaged to create a single time series per region. This is done so that the MHW detection algorithm may then be run on these individual time series to represent a general representation of the SST in those regions, rather than running the algorithm on each pixel individually, which would introduce a host of problems.
 
-```{r}
+```{r libraries}
 # Packages used in this vignette
 library(tidyverse) # Base suite of functions
 library(R.matlab) # For dealing with MATLAB files
 library(marmap) # For bathymetry
 library(maptools) # Contour tools
-# library(raster) # For displaying Bathymetry as a raster
 library(rgeos) # For intersections
 ```
 
