@@ -25,6 +25,7 @@ cat(paste0("heatwaveR version = ",packageDescription("heatwaveR")$Version))
 library(FNN) # For fastest nearest neighbour searches
 ```
 
+
 ## Loading data
 
 Before we access the SST data from the 3-Oceans model, let's load all of the polygons and bathymetry data we will need to create our grouped time series.
@@ -40,15 +41,22 @@ NWA_coords <- readRDS("data/NWA_coords_cabot.Rda")
 NWA_bathy <- readRDS("data/NWA_bathy_lowres.Rda")
 
 # The 3-Oceans (NAPA) model lon/lat values
-model_coords <- lon_lat_NAPA_OISST %>% 
-  select(nav_lon, nav_lat) %>% 
-  dplyr::rename(lon = nav_lon, lat = nav_lat) %>% 
-  mutate(lon = round(lon, 2), lat = round (lat, 2))
-saveRDS(model_coords, "data/model_coords.Rda")
-load("data/lon_lat_NAPA_OISST.RData")
+model_coords <- readRDS("data/model_coords.Rda")
 ```
+
 
 ## Assign depths to pixels
 
+Now that we have our data loaded we can assign depth values to each of the model pixels.
+
+I need to look into the model structure to see if it doesn't already have its own bathymetry layer. It would make more sense to use that.
+
+```{r model-pixel-depth}
+# Fastest nearest neighbour search for model pixels against bathymetry data
+
+```
+
 
 ## Assign pixels to regions
+
+With the depths for the model pixels worked out we may now assign them within one of the seven regions.
