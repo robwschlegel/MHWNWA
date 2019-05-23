@@ -7,8 +7,8 @@ navbar:
     href: index.html
   - text: "Analyses"
     menu:
-    - text: "Data preparation"
-      href: data-prep.html
+    - text: "Polygon preparation"
+      href: polygon-prep.html
     - text: "SOM analysis"
       href: som.html
   - text: License

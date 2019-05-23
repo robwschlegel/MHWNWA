@@ -1,5 +1,5 @@
 ---
-title: "Marine Heatwaves in the Northwest Atlantic"
+title: "Primary Drivers of Marine Heatwaves in the Northwest Atlantic"
 site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
