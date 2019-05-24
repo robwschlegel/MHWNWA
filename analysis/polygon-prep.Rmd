@@ -59,7 +59,7 @@ coords_6 <- cbind(mat_col(NWA_polygons[11]), mat_col(NWA_polygons[12])[2])
 # Combine them into one full dataframe and save
 NWA_coords <- rbind(coords_1, coords_2, coords_3, coords_4, coords_5, coords_6)
 colnames(NWA_coords) <- c("region", "lon", "lat")
-saveRDS(NWA_coords, "data/NWA_coords.Rda")
+# saveRDS(NWA_coords, "data/NWA_coords.Rda")
 ```
 
 With our polygons now switched over from MATLAB to R we now want to visualise them to ensure that everything has gone smoothly.
@@ -102,7 +102,7 @@ lat_max <- round(max(NWA_coords$lat)+1, 2)
 
 # Combine and save
 NWA_corners <- c(lon_min, lon_max, lat_min, lat_max)
-saveRDS(NWA_corners, file = "data/NWA_corners.Rda")
+# saveRDS(NWA_corners, file = "data/NWA_corners.Rda")
 ```
 
 
@@ -138,7 +138,7 @@ cbs <- NWA_coords[NWA_coords$region == "gsl",] %>%
 NWA_coords_cabot <- NWA_coords %>% 
   filter(region != "gsl") %>% 
   rbind(., gsl_new, cbs)
-saveRDS(NWA_coords_cabot, "data/NWA_coords_cabot.Rda")
+# saveRDS(NWA_coords_cabot, "data/NWA_coords_cabot.Rda")
 
 # Plot the new areas to ensure everything worked
 NWA_coords_cabot_plot <- ggplot(data = NWA_coords_cabot, aes(x = lon, y = lat)) +
@@ -176,7 +176,7 @@ NWA_bathy_hires <- NWA_bathy_hires %>%
   filter(depth <= 0) %>% 
   mutate(lon = round(lon, 4),
          lat = round(lat, 4))
-saveRDS(NWA_bathy_hires, file = "data/NWA_bathy_hires.Rda")
+# saveRDS(NWA_bathy_hires, file = "data/NWA_bathy_hires.Rda")
 
 # Donwload NOAA bathy data at a courser resolution
 NWA_bathy_lowres <- as.xyz(getNOAA.bathy(lon1 = NWA_corners[1], lon2 = NWA_corners[2],
@@ -186,7 +186,7 @@ NWA_bathy_lowres <- NWA_bathy_lowres %>%
   filter(depth <= 0) %>% 
   mutate(lon = round(lon, 4),
          lat = round(lat, 4))
-saveRDS(NWA_bathy_lowres, file = "data/NWA_bathy_lowres.Rda")
+# saveRDS(NWA_bathy_lowres, file = "data/NWA_bathy_lowres.Rda")
 ```
 
 With our high res bathymetry data downloaded we will now go about finding the 50 and 200 metre isobaths. These lines will be used to define the edges of our sub-regions. The naming conventions we will use will be
@@ -283,7 +283,7 @@ plot(spatial_poly)
 lines(spatial_poly_lines)
 ```
 
-After going through all of this shape file nonsense it dawned on me that I could much more easily just have downloaded the bathymetry data and then done a nearest neighbour search within each region for the SST pixels and then clumped them based on which of the depth categories they fall within.
+After going through all of this shape file nonsense it dawned on me that I could much more easily just have used the bathymetry data already present in the NAPA model and then clumped the SST pixels based on which of the depth categories they fall within.
 
 We will now go about creating SST time series for each of the depth sub-regions. This work is continued in the [SST preparation](https://robwschlegel.github.io/MHWNWA/sst-prep.html) vignette.
 
