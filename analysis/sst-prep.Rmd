@@ -13,6 +13,7 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
                       eval = TRUE, tidy = FALSE)
 ```
 
+
 ## Introduction
 
 Building on the work performed in the [Polygon preparation](https://robwschlegel.github.io/MHWNWA/polygon-prep.html) vignette, we will now create grouped SST time series for the regions in our study area based on the 50 and 200 m isobaths within each. This will not be done by using shape files to define the area, as previously planned. Rather we will find the mean depth for each SST pixel and assign it to one of the three depth classes within each region. How this looks is shown below.
@@ -23,6 +24,8 @@ library(tidyverse) # Base suite of functions
 library(heatwaveR, lib.loc = "../R-packages/") # For detecting MHWs
 cat(paste0("heatwaveR version = ",packageDescription("heatwaveR")$Version))
 library(FNN) # For fastest nearest neighbour searches
+library(ncdf4) # For opening and working with NetCDF files
+library(SDMTools) # For finding points within polygons
 ```
 
 
@@ -40,23 +43,98 @@ NWA_coords <- readRDS("data/NWA_coords_cabot.Rda")
 # Lowres bathymetry
 NWA_bathy <- readRDS("data/NWA_bathy_lowres.Rda")
 
-# The 3-Oceans (NAPA) model lon/lat values
-model_coords <- readRDS("data/model_coords.Rda")
+# The NAPA model lon/lat values
+NAPA_coords <- readRDS("data/NAPA_coords.Rda")
 ```
 
 
-## Assign depths to pixels
+## NAPA bathymetry
 
-Now that we have our data loaded we can assign depth values to each of the model pixels.
+We will now extract the bathymetry data from the NAPA model to use as our guide for how to assign depth values to the different SST pixels.
 
-I need to look into the model structure to see if it doesn't already have its own bathymetry layer. It would make more sense to use that.
+```{r NAPA-bathy, eval=FALSE}
+# Open bathymetry NetCDF file
+nc_bathy <- nc_open("../../data/NAPA025/mesh_grid/bathy_creg025_extended_5m.nc")
 
-```{r model-pixel-depth}
-# Fastest nearest neighbour search for model pixels against bathymetry data
+# Extract and combine lon/lat/bathy
+lon <- as.data.frame(ncvar_get(nc_bathy, varid = "nav_lon")) %>% 
+  setNames(., as.numeric(nc_bathy$dim$y$vals)) %>%
+  mutate(lon = as.numeric(nc_bathy$dim$x$vals)) %>% 
+  gather(-lon, key = lat, value = nav_lon) %>% 
+  mutate(lat = as.numeric(lat))
+lat <- as.data.frame(ncvar_get(nc_bathy, varid = "nav_lat")) %>% 
+  setNames(., as.numeric(nc_bathy$dim$y$vals)) %>%
+  mutate(lon = as.numeric(nc_bathy$dim$x$vals)) %>% 
+  gather(-lon, key = lat, value = nav_lat) %>% 
+  mutate(lat = as.numeric(lat)) 
+bathy <- as.data.frame(ncvar_get(nc_bathy, varid = "Bathymetry")) %>% 
+  mutate(lon = as.numeric(nc$dim$x$vals)) %>% 
+  gather(-lon, key = lat, value = bathy) %>% 
+  mutate(lat = rep(as.numeric(nc_bathy$dim$y$vals), each = 528),
+         bathy = ifelse(bathy == 0, NA, bathy),
+         bathy = round(bathy, 2)) %>%
+  na.omit() %>% 
+  left_join(lon, by = c("lon", "lat")) %>% 
+  left_join(lat, by = c("lon", "lat")) %>% 
+  dplyr::rename(lon_index = lon, lat_index = lat,
+                lon = nav_lon, lat = nav_lat) %>% 
+  mutate(lon = round(lon, 4),
+         lat = round(lat, 4))
+nc_close(nc_bathy)
 
+# Save
+saveRDS(bathy, "data/NAPA_bathy.Rda")
+rm(nc_bathy, bathy, lon, lat)
 ```
 
 
 ## Assign pixels to regions
 
 With the depths for the model pixels worked out we may now assign them within one of the seven regions.
+
+```{r}
+# Load NAPA bathymetry
+NAPA_bathy <- readRDS("data/NAPA_bathy.Rda")# %>% 
+  # mutate(index = paste0(lon, lat))
+
+# Function for finding and cleaning up points within a given region polygon
+pnts_in_region <- function(region_in){
+  region_sub <- NWA_coords %>% 
+    filter(region == region_in)
+  coords_in <- pnt.in.poly(pnts = NAPA_bathy[4:5], poly.pnts = region_sub[2:3]) %>% 
+    filter(pip == 1) %>% 
+    # mutate(index = paste(lon, lat)) %>% 
+    left_join(NAPA_bathy, by = c("lon", "lat")) %>% 
+    dplyr::select(-pip) %>% 
+    mutate(region = region_in)
+  return(coords_in)
+}
+
+# Run the function
+NWA_NAPA_info <- plyr::ldply(unique(NWA_coords$region), pnts_in_region)
+
+# Use simple for loop to find pixels within the different regions
+NWA_NAPA_info <- data.frame()
+for(i in length(unique(NWA_coords$region))){
+  sub_by <- unique(NWA_coords$region)[i]
+  region_sub <- NWA_coords %>% 
+    filter(region == sub_by)
+  coords_in <- pnt.in.poly(pnts = NAPA_bathy[4:5], poly.pnts = region_sub[2:3]) %>% 
+    filter(pip == 1) %>% 
+    # mutate(index = paste(lon, lat)) %>% 
+    left_join(NAPA_bathy, by = c("lon", "lat")) %>% 
+    dplyr::select(-pip) %>% 
+    mutate(region = sub_by)
+  NWA_NAPA_info <- rbind(NWA_NAPA_info, coords_in)
+}
+rm(i, sub_by, region_sub, coords_in)
+
+
+# Visualise to ensure success
+ggplot(gsl_sub, aes(x = lon, y = lat)) +
+  geom_polygon(aes(fill = region), alpha = 0.2) +
+  geom_point(data = test, aes(colour = pip)) +
+    coord_cartesian(xlim = NWA_corners[1:2],
+                  ylim = NWA_corners[3:4]) 
+```
+
