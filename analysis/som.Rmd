@@ -7,10 +7,27 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Introduction
-
-```{r}
-
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
+                      echo = TRUE, warning = FALSE, message = FALSE, 
+                      eval = TRUE, tidy = FALSE)
 ```
 
-This markdown file will contain the code used to perform the self-organising map (SOM) analysis on the prepared data.
+
+## Introduction
+
+This markdown file will contain the code used to perform the self-organising map (SOM) analysis on the prepared variable data as seen in the [Variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette.
+
+```{r libraries}
+# Packages used in this vignette
+library(tidyverse) # Base suite of functions
+library(ncdf4) # For opening and working with NetCDF files
+library(lubridate) # For convenient date manipulation
+
+# Set number of cores
+doMC::registerDoMC(cores = 50)
+
+# Disable scientific notation for numeric values
+  # I just find it annoying
+options(scipen = 999)
+```

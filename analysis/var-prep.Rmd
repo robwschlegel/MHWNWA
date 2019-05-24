@@ -1,0 +1,55 @@
+---
+title: "Variable preparation"
+author: "Robert Schlegel"
+date: "2019-05-23"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
+                      echo = TRUE, warning = FALSE, message = FALSE, 
+                      eval = TRUE, tidy = FALSE)
+```
+
+
+## Introduction
+
+This vignette will walk through the steps needed to create mean 'whatever' states during all of the MHWs detected in the previous [SST preparation](https://robwschlegel.github.io/MHWNWA/sst-prep.html) vignette. These 'whatever' states are any of the abiotic variables present in the NAPA model that have been deemed relevant w.r.t. forcing of extreme ocean surface temperatures.
+
+```{r libraries}
+# Packages used in this vignette
+library(tidyverse) # Base suite of functions
+library(ncdf4) # For opening and working with NetCDF files
+library(lubridate) # For convenient date manipulation
+
+# Set number of cores
+doMC::registerDoMC(cores = 50)
+
+# Disable scientific notation for numeric values
+  # I just find it annoying
+options(scipen = 999)
+```
+
+
+## Chosen variables
+
+There are many variables present in the NAPA model, more than we would really need to use for this project. We have therefore chosen to narrow our investigation to include only the following:  
+
+* U
+* V
+* W
+* _more to follow_
+
+
+## Synoptic states
+
+With the variables chosen, the next step is to create mean synoptic states for each variable during each of the MHWs detected in all sub-regions.
+
+```{r synoptic-states}
+
+```
+
+With all of our synoptic snapshots for our chosen variables created it now time to feed them to the [Self-organising map (SOM) analysis](https://robwschlegel.github.io/MHWNWA/som.html).
+

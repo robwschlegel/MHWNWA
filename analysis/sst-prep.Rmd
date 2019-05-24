@@ -22,16 +22,21 @@ Building on the work performed in the [Polygon preparation](https://robwschlegel
 # Packages used in this vignette
 library(tidyverse) # Base suite of functions
 library(heatwaveR, lib.loc = "../R-packages/") # For detecting MHWs
-cat(paste0("heatwaveR version = ",packageDescription("heatwaveR")$Version))
+# cat(paste0("heatwaveR version = ", packageDescription("heatwaveR")$Version))
 library(FNN) # For fastest nearest neighbour searches
 library(ncdf4) # For opening and working with NetCDF files
 library(SDMTools) # For finding points within polygons
+library(lubridate) # For convenient date manipulation
+
+# Set number of cores
+doMC::registerDoMC(cores = 50)
+
+# Disable scientific notation for numeric values
+  # I just find it annoying
+options(scipen = 999)
 ```
 
-
-## Loading data
-
-Before we access the SST data from the 3-Oceans model, let's load all of the polygons and bathymetry data we will need to create our grouped time series.
+Before we access the SST data from the NAPA (3-Oceans) model, let's load all of the polygons and bathymetry data we will need to create our grouped time series.
 
 ```{r load-poly-bathy}
 # Corners of the study area
@@ -45,10 +50,18 @@ NWA_bathy <- readRDS("data/NWA_bathy_lowres.Rda")
 
 # The NAPA model lon/lat values
 NAPA_coords <- readRDS("data/NAPA_coords.Rda")
+
+# The base map
+map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE)) %>%
+  dplyr::rename(lon = long) %>%
+  mutate(group = ifelse(lon > 180, group+9999, group),
+         lon = ifelse(lon > 180, lon-360, lon)) %>% 
+  select(-region, -subregion)
 ```
 
+## Pixel prep
 
-## NAPA bathymetry
+### NAPA bathymetry
 
 We will now extract the bathymetry data from the NAPA model to use as our guide for how to assign depth values to the different SST pixels.
 
@@ -83,16 +96,16 @@ bathy <- as.data.frame(ncvar_get(nc_bathy, varid = "Bathymetry")) %>%
 nc_close(nc_bathy)
 
 # Save
-saveRDS(bathy, "data/NAPA_bathy.Rda")
+# saveRDS(bathy, "data/NAPA_bathy.Rda")
 rm(nc_bathy, bathy, lon, lat)
 ```
 
 
-## Assign pixels to regions
+### Assign pixels to regions
 
 With the depths for the model pixels worked out we may now assign them within one of the seven regions.
 
-```{r}
+```{r pixel-regions}
 # Load NAPA bathymetry
 NAPA_bathy <- readRDS("data/NAPA_bathy.Rda")# %>% 
   # mutate(index = paste0(lon, lat))
@@ -113,28 +126,136 @@ pnts_in_region <- function(region_in){
 # Run the function
 NWA_NAPA_info <- plyr::ldply(unique(NWA_coords$region), pnts_in_region)
 
-# Use simple for loop to find pixels within the different regions
-NWA_NAPA_info <- data.frame()
-for(i in length(unique(NWA_coords$region))){
-  sub_by <- unique(NWA_coords$region)[i]
-  region_sub <- NWA_coords %>% 
-    filter(region == sub_by)
-  coords_in <- pnt.in.poly(pnts = NAPA_bathy[4:5], poly.pnts = region_sub[2:3]) %>% 
-    filter(pip == 1) %>% 
-    # mutate(index = paste(lon, lat)) %>% 
-    left_join(NAPA_bathy, by = c("lon", "lat")) %>% 
-    dplyr::select(-pip) %>% 
-    mutate(region = sub_by)
-  NWA_NAPA_info <- rbind(NWA_NAPA_info, coords_in)
-}
-rm(i, sub_by, region_sub, coords_in)
-
-
 # Visualise to ensure success
-ggplot(gsl_sub, aes(x = lon, y = lat)) +
+ggplot(NWA_coords, aes(x = lon, y = lat)) +
+  geom_polygon(data = map_base, aes(group = group), show.legend = F) +
   geom_polygon(aes(fill = region), alpha = 0.2) +
-  geom_point(data = test, aes(colour = pip)) +
+  geom_point(data = NWA_NAPA_info, aes(colour = region)) +
     coord_cartesian(xlim = NWA_corners[1:2],
-                  ylim = NWA_corners[3:4]) 
+                  ylim = NWA_corners[3:4]) +
+  labs(x = NULL, y = NULL)
 ```
 
+### Assign pixels to sub-regions
+
+The `pnt.in.poly` function was remarkably convenient. Our points have now very easily been placed within their respective regions. The last step now before we move on to creating our clumped time series is to cut the regions up into three groups each based on depth: 0 -- 50 m, 51 -- 200 m, 201+ m.
+
+```{r depth-sub-regions}
+# Cut the depth strata into sub-regions as desired
+NWA_NAPA_info <- NWA_NAPA_info %>% 
+  mutate(sub_region = cut(bathy, breaks = c(0, 50, 200, ceiling(max(bathy))), dig.lab = 4))
+# saveRDS(NWA_NAPA_info, "data/NWA_NAPA_info.Rda")
+
+# Visualise to ensure success
+sub_region_map <- ggplot(NWA_coords, aes(x = lon, y = lat)) +
+  geom_polygon(data = map_base, aes(group = group), show.legend = F) +
+  # geom_polygon(aes(fill = region), alpha = 0.2) +
+  geom_point(data = NWA_NAPA_info, aes(colour = region, alpha = sub_region), 
+             shape = 15, size = 0.5) +
+  guides(colour = guide_legend(override.aes = list(size = 5))) +
+  scale_alpha_manual(values = c(0.4, 0.7, 1)) +
+  coord_cartesian(xlim = NWA_corners[1:2],
+                  ylim = NWA_corners[3:4]) +
+  labs(x = NULL, y = NULL, colour = "Region", alpha = "Sub region")
+# ggsave(plot = sub_region_map, filename = "output/sub_region_map.pdf", height = 5, width = 6)
+
+# Visualise
+sub_region_map
+```
+
+
+## SST prep
+
+With the NAPA pixels successfully assigned to regions based on their thermal properties, and sub-regions based on their depth, we now need to go about clumping these SST pixels into one average time series per sub/region.
+
+```{r sst-clump, eval=FALSE}
+# The NAPA data location
+NAPA_files <- dir("../../data/NAPA025/1d_grid_T_2D", full.names = T)
+
+# Function for loading the individual NAPA NetCDF files and subsetting SST accordingly 
+load_NAPA_sst_sub <- function(file_name, coords = NWA_NAPA_info){
+  
+  nc <- nc_open(as.character(file_name))
+  
+  date_start <- ymd(str_sub(basename(as.character(file_name)), start = 29, end = 36))
+  date_end <- ymd(str_sub(basename(as.character(file_name)), start = 38, end = 45))
+  date_seq <- seq(date_start, date_end, by = "day")
+  
+  sst <- as.data.frame(ncvar_get(nc, varid = "sst")) %>% 
+    mutate(lon = as.numeric(nc$dim$x$vals)) %>%
+    gather(-lon, key = lat, value = temp) %>%
+    mutate(t = rep(date_seq, each = 388080),
+           lat = rep(rep(as.numeric(nc$dim$y$vals), each = 528), times = 5),
+           temp = round(temp, 2)) %>%
+    select(lon, lat, t, temp) %>%
+    na.omit() %>% 
+    dplyr::rename(lon_index = lon, lat_index = lat) %>% 
+    right_join(coords, by = c("lon_index" , "lat_index")) %>% 
+    group_by(region, sub_region, t) %>% 
+    summarise(temp = mean(temp, na.rm = T))
+  
+  nc_close(nc)
+  return(sst)
+}
+
+# Clomp'em 
+system.time(
+  NAPA_sst_sub <- plyr::ldply(NAPA_files,
+                              .fun = load_NAPA_sst_sub, 
+                              .parallel = TRUE)
+) # 1.5 seconds for 1, 135 seconds for all
+
+# For some reason the rounding didn't stick in the function above so we wack it again here
+NAPA_sst_sub <- NAPA_sst_sub %>% 
+  mutate(temp = round(temp, 2))
+
+# Save
+# saveRDS(NAPA_sst_sub, "data/NAPA_sst_sub.Rda")
+```
+
+
+## MHW detection
+
+With our clumped SST time series ready the last step in this vignette is to detect the MHWs within each.
+
+```{r MHW-sub, eval=FALSE}
+# Load the time series data
+NAPA_sst_sub <- readRDS("data/NAPA_sst_sub.Rda")
+
+# Calculate base results
+NAPA_MHW_sub <- NAPA_sst_sub %>%
+  group_by(region, sub_region) %>%
+  nest() %>%
+  mutate(clims = map(data, ts2clm,
+                     climatologyPeriod = c(min(NAPA_sst_sub$t), max(NAPA_sst_sub$t))),
+         events = map(clims, detect_event),
+         cats = map(events, category)) %>%
+  select(-data)
+# saveRDS(NAPA_MHW_sub, "data/NAPA_MHW_sub.Rda")
+```
+
+With the MHWs detected, let's visualise the results to ensure everything worked as expected.
+
+```{r MHW-vis}
+# Load MHW results
+NAPA_MHW_sub <- readRDS("data/NAPA_MHW_sub.Rda")
+
+# Events
+NAPA_MHW_event <- NAPA_MHW_sub %>%
+  select(-clims, -cats) %>%
+  unnest(events) %>%
+  filter(row_number() %% 2 == 0) %>%
+  unnest(events)
+
+event_lolli_plot <- ggplot(data = NAPA_MHW_event , aes(x = date_peak, y = intensity_max)) + 
+        geom_lolli(colour = "salmon", colour_n = "red", n = 3) + 
+  labs(x = "Peak Date", y = "Max. Intensity (°C)") +
+  # scale_y_continuous(expand = c(0, 0))+
+  facet_grid(region~sub_region)
+# ggsave(plot = event_lolli_plot, filename = "output/event_lolli_plot.pdf", height = 7, width = 13)
+
+# Visualise
+event_lolli_plot
+```
+
+Everything appears to check out. Up next in the [Variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette we will go through the steps necessary to build the data that will be fed into our self-organising maps as seen in the [Self-organising map (SOM) analysis](https://robwschlegel.github.io/MHWNWA/som.html) vignette.

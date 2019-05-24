@@ -108,7 +108,7 @@ saveRDS(NWA_corners, file = "data/NWA_corners.Rda")
 
 ### Cabot Strait
 
-It was decided that because we are interested in the geogrophy of the regions, and not just their temperature regimes, the Cabot Strait needed to be defined apart from the Gulf of St. Lawrence region. To do this we will simply snip the "gsl" polygon into two pieces at its narrowest point.
+It was decided that because we are interested in the geography of the regions, and not just their temperature regimes, the Cabot Strait needed to be defined apart from the Gulf of St. Lawrence region. To do this we will simply snip the "gsl" polygon into two pieces at its narrowest point.
 
 ```{r cabot-strait-1}
 # Extract the gsl region only
@@ -154,18 +154,18 @@ NWA_coords_cabot_plot <- ggplot(data = NWA_coords_cabot, aes(x = lon, y = lat)) 
 NWA_coords_cabot_plot
 ```
 
-Everything is looking good, but we may want to divide the Gulf of Maine (gm) into two polygons as well. This would make the Bay of Fundy in it's own region. FOr now however we will move on to the next step, which is dividing the current polygons by bathymetry.
+Everything is looking good, but we may want to divide the Gulf of Maine (gm) into two polygons as well. This would make the Bay of Fundy in it's own region. For now however we will move on to the next step, which is dividing the current polygons by bathymetry.
 
 
 ## Bathymetry polygons
 
-These regions are an excellent start, but because the aim of this research project is to determine the primary drivers of MHWs in the Northwest Atlantic we want to subset the regions not only byu their thermal characteristics, but also by their geophysical characteristics, which in this instance is most immediately available as bathymetry. The rationale for this is that surface forcing as a driver of anaomolously warm seawater is likely to be more prevalent in shallow waters than in shelf waters or deeper. To this end we will divide the regions into three sub-regions each: 0 -- 50 m depth, 51 -- 200 m depth, 201+ m depth. 
+These regions are an excellent start, but because the aim of this research project is to determine the primary drivers of MHWs in the Northwest Atlantic we want to subset the regions not only by their thermal characteristics, but also by their geophysical characteristics, which in this instance is most immediately available as bathymetry. The rationale for this is that surface forcing as a driver of anomalously warm seawater is likely to be more prevalent in shallow waters than in shelf waters or deeper. To this end we will divide the regions into three sub-regions each: 0 -- 50 m depth, 51 -- 200 m depth, 201+ m depth. 
 <!-- Unless otherwise specified we will not be looking at waters further than the continental shelf. This is because the usefulness of this work will largely be constrained by it's applications to coastal ecosystems and fisheries. Therefore we are less interested in understanding the drivers of synoptic scale and greater open ocean events. -->
 
 
 ### Downloading data
 
-Before we can divide up our polygons by bathymetry, we must first download said bathymetry data. We will use here the NOAA data as it is (to my knowledge) the most conveient bathymetry data available directly through R.
+Before we can divide up our polygons by bathymetry, we must first download said bathymetry data. We will use here the NOAA data as it is (to my knowledge) the most convenient bathymetry data available directly through R.
 
 ```{r bathy-download, eval=FALSE}
 # Donwload NOAA bathy data at highest available resolution
@@ -212,7 +212,7 @@ bathy_hires_plot <- ggplot(NWA_coords_cabot, aes(x = lon, y = lat)) +
 bathy_hires_plot
 ```
 
-The resolution on the figure above is fantastic, but perhaps a bit more than what we need as the desire is to create functional polygons for dividing our regions. The level of detail present in the figure above will likely leed to issues later on. Let's look at the lowres bathymetry data and see if that works better.
+The resolution on the figure above is fantastic, but perhaps a bit more than what we need as the desire is to create functional polygons for dividing our regions. The level of detail present in the figure above will likely lead to issues later on. Let's look at the lowres bathymetry data and see if that works better.
 
 ```{r isobath-lowres-plot}
 # Load hires bathymetry data
