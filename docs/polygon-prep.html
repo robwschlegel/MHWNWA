@@ -371,7 +371,7 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/5dc8bd9ce2b868ebaefcc3ff83f0289672d22430" target="_blank">5dc8bd9</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/41440974e79889f54518197d4b96a57269551e13" target="_blank">4144097</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -417,6 +417,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/41440974e79889f54518197d4b96a57269551e13/analysis/polygon-prep.Rmd" target="_blank">4144097</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-24
+</td>
+<td style="text-align:left;">
+Minor edit to polygon prep vignette.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/c09b4f7548427da023cfaf19ba517cb49e9456df/docs/polygon-prep.html" target="_blank">c09b4f7</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-24
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -548,7 +582,7 @@ coords_6 &lt;- cbind(mat_col(NWA_polygons[11]), mat_col(NWA_polygons[12])[2])
 # Combine them into one full dataframe and save
 NWA_coords &lt;- rbind(coords_1, coords_2, coords_3, coords_4, coords_5, coords_6)
 colnames(NWA_coords) &lt;- c(&quot;region&quot;, &quot;lon&quot;, &quot;lat&quot;)
-saveRDS(NWA_coords, &quot;data/NWA_coords.Rda&quot;)</code></pre>
+# saveRDS(NWA_coords, &quot;data/NWA_coords.Rda&quot;)</code></pre>
 <p>With our polygons now switched over from MATLAB to R we now want to visualise them to ensure that everything has gone smoothly.</p>
 <pre class="r"><code># Load polygon coordinates
 NWA_coords &lt;- readRDS(&quot;data/NWA_coords.Rda&quot;)
@@ -592,6 +626,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/c09b4f7548427da023cfaf19ba517cb49e9456df/docs/figure/polygon-prep.Rmd/poly-vis-1.png" target="_blank">c09b4f7</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-24
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/robwschlegel/MHWNWA/blob/d544295f68d00b7b5691632221db5c0ad2e251e4/docs/figure/polygon-prep.Rmd/poly-vis-1.png" target="_blank">d544295</a>
 </td>
 <td style="text-align:left;">
@@ -614,7 +659,7 @@ lat_max &lt;- round(max(NWA_coords$lat)+1, 2)
 
 # Combine and save
 NWA_corners &lt;- c(lon_min, lon_max, lat_min, lat_max)
-saveRDS(NWA_corners, file = &quot;data/NWA_corners.Rda&quot;)</code></pre>
+# saveRDS(NWA_corners, file = &quot;data/NWA_corners.Rda&quot;)</code></pre>
 <div id="cabot-strait" class="section level3">
 <h3>Cabot Strait</h3>
 <p>It was decided that because we are interested in the geography of the regions, and not just their temperature regimes, the Cabot Strait needed to be defined apart from the Gulf of St. Lawrence region. To do this we will simply snip the “gsl” polygon into two pieces at its narrowest point.</p>
@@ -647,6 +692,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/c09b4f7548427da023cfaf19ba517cb49e9456df/docs/figure/polygon-prep.Rmd/cabot-strait-1-1.png" target="_blank">c09b4f7</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-24
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/robwschlegel/MHWNWA/blob/d544295f68d00b7b5691632221db5c0ad2e251e4/docs/figure/polygon-prep.Rmd/cabot-strait-1-1.png" target="_blank">d544295</a>
 </td>
 <td style="text-align:left;">
@@ -673,7 +729,7 @@ cbs &lt;- NWA_coords[NWA_coords$region == &quot;gsl&quot;,] %&gt;%
 NWA_coords_cabot &lt;- NWA_coords %&gt;% 
   filter(region != &quot;gsl&quot;) %&gt;% 
   rbind(., gsl_new, cbs)
-saveRDS(NWA_coords_cabot, &quot;data/NWA_coords_cabot.Rda&quot;)
+# saveRDS(NWA_coords_cabot, &quot;data/NWA_coords_cabot.Rda&quot;)
 
 # Plot the new areas to ensure everything worked
 NWA_coords_cabot_plot &lt;- ggplot(data = NWA_coords_cabot, aes(x = lon, y = lat)) +
@@ -707,6 +763,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/c09b4f7548427da023cfaf19ba517cb49e9456df/docs/figure/polygon-prep.Rmd/cabot-strait-2-1.png" target="_blank">c09b4f7</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-24
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/robwschlegel/MHWNWA/blob/d544295f68d00b7b5691632221db5c0ad2e251e4/docs/figure/polygon-prep.Rmd/cabot-strait-2-1.png" target="_blank">d544295</a>
 </td>
 <td style="text-align:left;">
@@ -736,7 +803,7 @@ NWA_bathy_hires &lt;- NWA_bathy_hires %&gt;%
   filter(depth &lt;= 0) %&gt;% 
   mutate(lon = round(lon, 4),
          lat = round(lat, 4))
-saveRDS(NWA_bathy_hires, file = &quot;data/NWA_bathy_hires.Rda&quot;)
+# saveRDS(NWA_bathy_hires, file = &quot;data/NWA_bathy_hires.Rda&quot;)
 
 # Donwload NOAA bathy data at a courser resolution
 NWA_bathy_lowres &lt;- as.xyz(getNOAA.bathy(lon1 = NWA_corners[1], lon2 = NWA_corners[2],
@@ -746,7 +813,7 @@ NWA_bathy_lowres &lt;- NWA_bathy_lowres %&gt;%
   filter(depth &lt;= 0) %&gt;% 
   mutate(lon = round(lon, 4),
          lat = round(lat, 4))
-saveRDS(NWA_bathy_lowres, file = &quot;data/NWA_bathy_lowres.Rda&quot;)</code></pre>
+# saveRDS(NWA_bathy_lowres, file = &quot;data/NWA_bathy_lowres.Rda&quot;)</code></pre>
 <p>With our high res bathymetry data downloaded we will now go about finding the 50 and 200 metre isobaths. These lines will be used to define the edges of our sub-regions. The naming conventions we will use will be</p>
 <pre class="r"><code># Load hires bathymetry data and NWA corners
 NWA_bathy_hires &lt;- readRDS(&quot;data/NWA_bathy_hires.Rda&quot;)
@@ -784,6 +851,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/c09b4f7548427da023cfaf19ba517cb49e9456df/docs/figure/polygon-prep.Rmd/isobath-hires-plot-1.png" target="_blank">c09b4f7</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-24
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/robwschlegel/MHWNWA/blob/d544295f68d00b7b5691632221db5c0ad2e251e4/docs/figure/polygon-prep.Rmd/isobath-hires-plot-1.png" target="_blank">d544295</a>
@@ -834,6 +912,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/c09b4f7548427da023cfaf19ba517cb49e9456df/docs/figure/polygon-prep.Rmd/isobath-lowres-plot-1.png" target="_blank">c09b4f7</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-24
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/robwschlegel/MHWNWA/blob/d544295f68d00b7b5691632221db5c0ad2e251e4/docs/figure/polygon-prep.Rmd/isobath-lowres-plot-1.png" target="_blank">d544295</a>
@@ -952,7 +1041,7 @@ robwschlegel
 </tbody>
 </table>
 </details>
-<p>After going through all of this shape file nonsense it dawned on me that I could much more easily just have downloaded the bathymetry data and then done a nearest neighbour search within each region for the SST pixels and then clumped them based on which of the depth categories they fall within.</p>
+<p>After going through all of this shape file nonsense it dawned on me that I could much more easily just have used the bathymetry data already present in the NAPA model and then clumped the SST pixels based on which of the depth categories they fall within.</p>
 <p>We will now go about creating SST time series for each of the depth sub-regions. This work is continued in the <a href="https://robwschlegel.github.io/MHWNWA/sst-prep.html">SST preparation</a> vignette.</p>
 </div>
 </div>
