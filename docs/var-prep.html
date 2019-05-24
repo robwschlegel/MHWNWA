@@ -11,9 +11,9 @@
 
 <meta name="author" content="Robert Schlegel" />
 
-<meta name="date" content="2019-05-13" />
+<meta name="date" content="2019-05-23" />
 
-<title>Self-organising map (SOM) analysis</title>
+<title>Variable preparation</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -335,9 +335,9 @@ div.section {
 
 
 
-<h1 class="title toc-ignore">Self-organising map (SOM) analysis</h1>
+<h1 class="title toc-ignore">Variable preparation</h1>
 <h4 class="author"><em>Robert Schlegel</em></h4>
-<h4 class="date"><em>2019-05-13</em></h4>
+<h4 class="date"><em>2019-05-23</em></h4>
 
 </div>
 
@@ -382,6 +382,7 @@ Untracked files:
     Untracked:  data/NAPA_MHW_sub.Rda
     Untracked:  data/NAPA_sst_sub.Rda
     Untracked:  data/NWA_NAPA_info.Rda
+    Untracked:  docs/figure/sst-prep.Rmd/
     Untracked:  output/event_lolli_plot.pdf
     Untracked:  output/sub_region_map.pdf
 
@@ -422,7 +423,7 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
-<a href="https://github.com/robwschlegel/MHWNWA/blob/5dc8bd9ce2b868ebaefcc3ff83f0289672d22430/analysis/som.Rmd" target="_blank">5dc8bd9</a>
+<a href="https://github.com/robwschlegel/MHWNWA/blob/5dc8bd9ce2b868ebaefcc3ff83f0289672d22430/analysis/var-prep.Rmd" target="_blank">5dc8bd9</a>
 </td>
 <td style="text-align:left;">
 robwschlegel
@@ -434,57 +435,6 @@ robwschlegel
 Finished initial creation of SST prep vignette.
 </td>
 </tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/a29be6b35b7afe6b2b62ebeb324fbc7a1ef52e8e/docs/som.html" target="_blank">a29be6b</a>
-</td>
-<td style="text-align:left;">
-robwschlegel
-</td>
-<td style="text-align:left;">
-2019-05-13
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/ea61999b0861c73ac1913d950d561693050fcfe7/docs/som.html" target="_blank">ea61999</a>
-</td>
-<td style="text-align:left;">
-robwschlegel
-</td>
-<td style="text-align:left;">
-2019-05-13
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Rmd
-</td>
-<td style="text-align:left;">
-<a href="https://github.com/robwschlegel/MHWNWA/blob/f8f28b14f13d1c46a50daad9d9ee55eb037fc07f/analysis/som.Rmd" target="_blank">f8f28b1</a>
-</td>
-<td style="text-align:left;">
-robwschlegel
-</td>
-<td style="text-align:left;">
-2019-05-13
-</td>
-<td style="text-align:left;">
-Skeleton files
-</td>
-</tr>
 </tbody>
 </table>
 </ul>
@@ -492,7 +442,7 @@ Skeleton files
 <hr />
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>This markdown file will contain the code used to perform the self-organising map (SOM) analysis on the prepared variable data as seen in the <a href="https://robwschlegel.github.io/MHWNWA/var-prep.html">Variable preparation</a> vignette.</p>
+<p>This vignette will walk through the steps needed to create mean ‘whatever’ states during all of the MHWs detected in the previous <a href="https://robwschlegel.github.io/MHWNWA/sst-prep.html">SST preparation</a> vignette. These ‘whatever’ states are any of the abiotic variables present in the NAPA model that have been deemed relevant w.r.t. forcing of extreme ocean surface temperatures.</p>
 <pre class="r"><code># Packages used in this vignette
 library(tidyverse) # Base suite of functions
 library(ncdf4) # For opening and working with NetCDF files
@@ -504,6 +454,21 @@ doMC::registerDoMC(cores = 50)
 # Disable scientific notation for numeric values
   # I just find it annoying
 options(scipen = 999)</code></pre>
+</div>
+<div id="chosen-variables" class="section level2">
+<h2>Chosen variables</h2>
+<p>There are many variables present in the NAPA model, more than we would really need to use for this project. We have therefore chosen to narrow our investigation to include only the following:</p>
+<ul>
+<li>U</li>
+<li>V</li>
+<li>W</li>
+<li><em>more to follow</em></li>
+</ul>
+</div>
+<div id="synoptic-states" class="section level2">
+<h2>Synoptic states</h2>
+<p>With the variables chosen, the next step is to create mean synoptic states for each variable during each of the MHWs detected in all sub-regions.</p>
+<p>With all of our synoptic snapshots for our chosen variables created it now time to feed them to the <a href="https://robwschlegel.github.io/MHWNWA/som.html">Self-organising map (SOM) analysis</a>.</p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>

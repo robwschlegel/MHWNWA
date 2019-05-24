@@ -27,8 +27,9 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -76,7 +77,9 @@ h6 {
 </style>
 
 
+</head>
 
+<body>
 
 <style type = "text/css">
 .main-container {
@@ -101,9 +104,6 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
-summary {
-  display: list-item;
-}
 </style>
 
 
@@ -118,6 +118,7 @@ body {
   padding-top: 56px;
   margin-top: -56px;
 }
+
 .section h2 {
   padding-top: 56px;
   margin-top: -56px;
@@ -137,43 +138,6 @@ body {
 .section h6 {
   padding-top: 56px;
   margin-top: -56px;
-}
-.dropdown-submenu {
-  position: relative;
-}
-.dropdown-submenu>.dropdown-menu {
-  top: 0;
-  left: 100%;
-  margin-top: -6px;
-  margin-left: -1px;
-  border-radius: 0 6px 6px 6px;
-}
-.dropdown-submenu:hover>.dropdown-menu {
-  display: block;
-}
-.dropdown-submenu>a:after {
-  display: block;
-  content: " ";
-  float: right;
-  width: 0;
-  height: 0;
-  border-color: transparent;
-  border-style: solid;
-  border-width: 5px 0 5px 5px;
-  border-left-color: #cccccc;
-  margin-top: 5px;
-  margin-right: -10px;
-}
-.dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
-}
-.dropdown-submenu.pull-left {
-  float: none;
-}
-.dropdown-submenu.pull-left>.dropdown-menu {
-  left: -100%;
-  margin-left: 10px;
-  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -195,75 +159,18 @@ $(document).ready(function () {
 });
 </script>
 
+
+<div class="container-fluid main-container">
+
 <!-- tabsets -->
-
-<style type="text/css">
-.tabset-dropdown > .nav-tabs {
-  display: inline-table;
-  max-height: 500px;
-  min-height: 44px;
-  overflow-y: auto;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
-  font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
-  font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
-}
-
-.tabset-dropdown > .nav-tabs > li.active {
-  display: block;
-}
-
-.tabset-dropdown > .nav-tabs > li > a,
-.tabset-dropdown > .nav-tabs > li > a:focus,
-.tabset-dropdown > .nav-tabs > li > a:hover {
-  border: none;
-  display: inline-block;
-  border-radius: 4px;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
-  display: block;
-  float: none;
-}
-
-.tabset-dropdown > .nav-tabs > li {
-  display: none;
-}
-</style>
-
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
 </script>
 
 <!-- code folding -->
+
 
 
 
@@ -352,16 +259,6 @@ div.tocify {
 
 </style>
 
-
-
-</head>
-
-<body>
-
-
-<div class="container-fluid main-container">
-
-
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
 <div class="col-xs-12 col-sm-4 col-md-3">
@@ -403,6 +300,9 @@ div.tocify {
       <a href="sst-prep.html">SST preparation</a>
     </li>
     <li>
+      <a href="var-prep.html">Variable preparation</a>
+    </li>
+    <li>
       <a href="som.html">SOM analysis</a>
     </li>
   </ul>
@@ -436,216 +336,424 @@ div.section {
 
 
 <h1 class="title toc-ignore">SST preparation</h1>
-<h4 class="author">Robert Schlegel</h4>
-<h4 class="date">2019-05-23</h4>
+<h4 class="author"><em>Robert Schlegel</em></h4>
+<h4 class="date"><em>2019-05-23</em></h4>
 
 </div>
 
 
-<p>
-<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</button>
-</p>
-<div id="workflowr-report" class="collapse">
-<ul class="nav nav-tabs">
-<li class="active">
-<a data-toggle="tab" href="#summary">Summary</a>
-</li>
+<p><strong>Last updated:</strong> 2019-05-24</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
-</li>
-<li>
-<a data-toggle="tab" href="#versions">Past versions</a>
-</li>
-</ul>
-<div class="tab-content">
-<div id="summary" class="tab-pane fade in active">
-<p>
-<strong>Last updated:</strong> 2019-05-23
-</p>
-<p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
-</p>
-<p>
-<strong>Knit directory:</strong> <code>MHWNWA/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
-</p>
-<p>
-This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
-  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.3.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
-</p>
-<hr>
-</div>
-<div id="checks" class="tab-pane fade">
-<div id="workflowr-checks" class="panel-group">
-<div class="panel panel-default">
-<div class="panel-heading">
-<p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
-</p>
-</div>
-<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
-<div class="panel-body">
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
 <p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
-</div>
-</div>
-</div>
-<div class="panel panel-default">
-<div class="panel-heading">
-<p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
-</p>
-</div>
-<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
-<div class="panel-body">
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
 <p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
-</div>
-</div>
-</div>
-<div class="panel panel-default">
-<div class="panel-heading">
-<p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20190513code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20190513)</code> </a>
-</p>
-</div>
-<div id="strongSeedstrongcodesetseed20190513code" class="panel-collapse collapse">
-<div class="panel-body">
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(20190513)</code> </summary></p>
 <p>The command <code>set.seed(20190513)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
-</div>
-</div>
-</div>
-<div class="panel panel-default">
-<div class="panel-heading">
-<p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
-</p>
-</div>
-<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
-<div class="panel-body">
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
 <p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
-</div>
-</div>
-</div>
-<div class="panel panel-default">
-<div class="panel-heading">
-<p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
-</p>
-</div>
-<div id="strongCachestrongnone" class="panel-collapse collapse">
-<div class="panel-body">
-<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
-</div>
-</div>
-</div>
-<div class="panel panel-default">
-<div class="panel-heading">
-<p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrobwschlegelMHWNWAtree9cb3efa2e7631b2e3c86593c3af6e832d8c6ee7dtargetblank9cb3efaa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/9cb3efa2e7631b2e3c86593c3af6e832d8c6ee7d" target="_blank">9cb3efa</a> </a>
-</p>
-</div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrobwschlegelMHWNWAtree9cb3efa2e7631b2e3c86593c3af6e832d8c6ee7dtargetblank9cb3efaa" class="panel-collapse collapse">
-<div class="panel-body">
-<p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/5dc8bd9ce2b868ebaefcc3ff83f0289672d22430" target="_blank">5dc8bd9</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
-</p>
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
 Untracked files:
-    Untracked:  data/NWA_bathy_hires.Rda
-    Untracked:  data/NWA_bathy_lowres.Rda
-    Untracked:  docs/figure/
+    Untracked:  data/NAPA_MHW_sub.Rda
+    Untracked:  data/NAPA_sst_sub.Rda
+    Untracked:  data/NWA_NAPA_info.Rda
+    Untracked:  output/event_lolli_plot.pdf
+    Untracked:  output/sub_region_map.pdf
 
 Unstaged changes:
     Modified:   analysis/_site.yml
-    Deleted:    data/NWA_bathy.Rda
-    Modified:   data/NWA_coords.Rda
-    Modified:   data/NWA_coords_cabot.Rda
-    Modified:   output/NWA_coords_cabot_plot.pdf
-    Modified:   output/NWA_coords_plot.pdf
 
 </code></pre>
-<p>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
-</p>
-</div>
-</div>
-</div>
-</div>
-<hr>
-</div>
-<div id="versions" class="tab-pane fade">
-
-<p>
-These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
-</p>
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
+</details>
+</li>
+</ul>
+<details>
+<summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
 <thead>
 <tr>
-<th>
+<th style="text-align:left;">
 File
 </th>
-<th>
+<th style="text-align:left;">
 Version
 </th>
-<th>
+<th style="text-align:left;">
 Author
 </th>
-<th>
+<th style="text-align:left;">
 Date
 </th>
-<th>
+<th style="text-align:left;">
 Message
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>
+<td style="text-align:left;">
 Rmd
 </td>
-<td>
-<a href="https://github.com/robwschlegel/MHWNWA/blob/9cb3efa2e7631b2e3c86593c3af6e832d8c6ee7d/analysis/sst-prep.Rmd" target="_blank">9cb3efa</a>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/5dc8bd9ce2b868ebaefcc3ff83f0289672d22430/analysis/sst-prep.Rmd" target="_blank">5dc8bd9</a>
 </td>
-<td>
+<td style="text-align:left;">
 robwschlegel
 </td>
-<td>
+<td style="text-align:left;">
+2019-05-24
+</td>
+<td style="text-align:left;">
+Finished initial creation of SST prep vignette.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/e008b23e5766e16801244af3dc74a819d1658d73/analysis/sst-prep.Rmd" target="_blank">e008b23</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-24
+</td>
+<td style="text-align:left;">
+Push before changing
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/5b6f2482dffead06ced0e7abdba38beb5df8f346/analysis/sst-prep.Rmd" target="_blank">5b6f248</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
 2019-05-23
 </td>
-<td>
+<td style="text-align:left;">
+More SST clomp work
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/5c2b40676c3e78154527e962a058b0e99745ed9c/analysis/sst-prep.Rmd" target="_blank">5c2b406</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-23
+</td>
+<td style="text-align:left;">
+Commit before changes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/d544295f68d00b7b5691632221db5c0ad2e251e4/docs/sst-prep.html" target="_blank">d544295</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-23
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/9cb3efa2e7631b2e3c86593c3af6e832d8c6ee7d/analysis/sst-prep.Rmd" target="_blank">9cb3efa</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-23
+</td>
+<td style="text-align:left;">
 Updating work done on the polygon prep vignette.
 </td>
 </tr>
 </tbody>
 </table>
-</div>
-<hr>
-</div>
-</div>
-</div>
+</ul>
+</details>
+<hr />
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>Building on the work performed in the <a href="https://robwschlegel.github.io/MHWNWA/polygon-prep.html">Polygon preparation</a> vignette, we will now create grouped SST time series for the regions in our study area based on the 50 and 200 m isobaths within each.</p>
-<br>
-<p>
-<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
-<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
-</button>
-</p>
-<div id="workflowr-sessioninfo" class="collapse">
+<p>Building on the work performed in the <a href="https://robwschlegel.github.io/MHWNWA/polygon-prep.html">Polygon preparation</a> vignette, we will now create grouped SST time series for the regions in our study area based on the 50 and 200 m isobaths within each. This will not be done by using shape files to define the area, as previously planned. Rather we will find the mean depth for each SST pixel and assign it to one of the three depth classes within each region. How this looks is shown below.</p>
+<pre class="r"><code># Packages used in this vignette
+library(tidyverse) # Base suite of functions
+library(heatwaveR, lib.loc = &quot;../R-packages/&quot;) # For detecting MHWs
+# cat(paste0(&quot;heatwaveR version = &quot;, packageDescription(&quot;heatwaveR&quot;)$Version))
+library(FNN) # For fastest nearest neighbour searches
+library(ncdf4) # For opening and working with NetCDF files
+library(SDMTools) # For finding points within polygons
+library(lubridate) # For convenient date manipulation
+
+# Set number of cores
+doMC::registerDoMC(cores = 50)
+
+# Disable scientific notation for numeric values
+  # I just find it annoying
+options(scipen = 999)</code></pre>
+<p>Before we access the SST data from the NAPA (3-Oceans) model, let’s load all of the polygons and bathymetry data we will need to create our grouped time series.</p>
+<pre class="r"><code># Corners of the study area
+NWA_corners &lt;- readRDS(&quot;data/NWA_corners.Rda&quot;)
+
+# Individual regions
+NWA_coords &lt;- readRDS(&quot;data/NWA_coords_cabot.Rda&quot;)
+
+# Lowres bathymetry
+NWA_bathy &lt;- readRDS(&quot;data/NWA_bathy_lowres.Rda&quot;)
+
+# The NAPA model lon/lat values
+NAPA_coords &lt;- readRDS(&quot;data/NAPA_coords.Rda&quot;)
+
+# The base map
+map_base &lt;- ggplot2::fortify(maps::map(fill = TRUE, col = &quot;grey80&quot;, plot = FALSE)) %&gt;%
+  dplyr::rename(lon = long) %&gt;%
+  mutate(group = ifelse(lon &gt; 180, group+9999, group),
+         lon = ifelse(lon &gt; 180, lon-360, lon)) %&gt;% 
+  select(-region, -subregion)</code></pre>
+</div>
+<div id="pixel-prep" class="section level2">
+<h2>Pixel prep</h2>
+<div id="napa-bathymetry" class="section level3">
+<h3>NAPA bathymetry</h3>
+<p>We will now extract the bathymetry data from the NAPA model to use as our guide for how to assign depth values to the different SST pixels.</p>
+<pre class="r"><code># Open bathymetry NetCDF file
+nc_bathy &lt;- nc_open(&quot;../../data/NAPA025/mesh_grid/bathy_creg025_extended_5m.nc&quot;)
+
+# Extract and combine lon/lat/bathy
+lon &lt;- as.data.frame(ncvar_get(nc_bathy, varid = &quot;nav_lon&quot;)) %&gt;% 
+  setNames(., as.numeric(nc_bathy$dim$y$vals)) %&gt;%
+  mutate(lon = as.numeric(nc_bathy$dim$x$vals)) %&gt;% 
+  gather(-lon, key = lat, value = nav_lon) %&gt;% 
+  mutate(lat = as.numeric(lat))
+lat &lt;- as.data.frame(ncvar_get(nc_bathy, varid = &quot;nav_lat&quot;)) %&gt;% 
+  setNames(., as.numeric(nc_bathy$dim$y$vals)) %&gt;%
+  mutate(lon = as.numeric(nc_bathy$dim$x$vals)) %&gt;% 
+  gather(-lon, key = lat, value = nav_lat) %&gt;% 
+  mutate(lat = as.numeric(lat)) 
+bathy &lt;- as.data.frame(ncvar_get(nc_bathy, varid = &quot;Bathymetry&quot;)) %&gt;% 
+  mutate(lon = as.numeric(nc$dim$x$vals)) %&gt;% 
+  gather(-lon, key = lat, value = bathy) %&gt;% 
+  mutate(lat = rep(as.numeric(nc_bathy$dim$y$vals), each = 528),
+         bathy = ifelse(bathy == 0, NA, bathy),
+         bathy = round(bathy, 2)) %&gt;%
+  na.omit() %&gt;% 
+  left_join(lon, by = c(&quot;lon&quot;, &quot;lat&quot;)) %&gt;% 
+  left_join(lat, by = c(&quot;lon&quot;, &quot;lat&quot;)) %&gt;% 
+  dplyr::rename(lon_index = lon, lat_index = lat,
+                lon = nav_lon, lat = nav_lat) %&gt;% 
+  mutate(lon = round(lon, 4),
+         lat = round(lat, 4))
+nc_close(nc_bathy)
+
+# Save
+# saveRDS(bathy, &quot;data/NAPA_bathy.Rda&quot;)
+rm(nc_bathy, bathy, lon, lat)</code></pre>
+</div>
+<div id="assign-pixels-to-regions" class="section level3">
+<h3>Assign pixels to regions</h3>
+<p>With the depths for the model pixels worked out we may now assign them within one of the seven regions.</p>
+<pre class="r"><code># Load NAPA bathymetry
+NAPA_bathy &lt;- readRDS(&quot;data/NAPA_bathy.Rda&quot;)# %&gt;% 
+  # mutate(index = paste0(lon, lat))
+
+# Function for finding and cleaning up points within a given region polygon
+pnts_in_region &lt;- function(region_in){
+  region_sub &lt;- NWA_coords %&gt;% 
+    filter(region == region_in)
+  coords_in &lt;- pnt.in.poly(pnts = NAPA_bathy[4:5], poly.pnts = region_sub[2:3]) %&gt;% 
+    filter(pip == 1) %&gt;% 
+    # mutate(index = paste(lon, lat)) %&gt;% 
+    left_join(NAPA_bathy, by = c(&quot;lon&quot;, &quot;lat&quot;)) %&gt;% 
+    dplyr::select(-pip) %&gt;% 
+    mutate(region = region_in)
+  return(coords_in)
+}
+
+# Run the function
+NWA_NAPA_info &lt;- plyr::ldply(unique(NWA_coords$region), pnts_in_region)
+
+# Visualise to ensure success
+ggplot(NWA_coords, aes(x = lon, y = lat)) +
+  geom_polygon(data = map_base, aes(group = group), show.legend = F) +
+  geom_polygon(aes(fill = region), alpha = 0.2) +
+  geom_point(data = NWA_NAPA_info, aes(colour = region)) +
+    coord_cartesian(xlim = NWA_corners[1:2],
+                  ylim = NWA_corners[3:4]) +
+  labs(x = NULL, y = NULL)</code></pre>
+<p><img src="figure/sst-prep.Rmd/pixel-regions-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="assign-pixels-to-sub-regions" class="section level3">
+<h3>Assign pixels to sub-regions</h3>
+<p>The <code>pnt.in.poly</code> function was remarkably convenient. Our points have now very easily been placed within their respective regions. The last step now before we move on to creating our clumped time series is to cut the regions up into three groups each based on depth: 0 – 50 m, 51 – 200 m, 201+ m.</p>
+<pre class="r"><code># Cut the depth strata into sub-regions as desired
+NWA_NAPA_info &lt;- NWA_NAPA_info %&gt;% 
+  mutate(sub_region = cut(bathy, breaks = c(0, 50, 200, ceiling(max(bathy))), dig.lab = 4))
+# saveRDS(NWA_NAPA_info, &quot;data/NWA_NAPA_info.Rda&quot;)
+
+# Visualise to ensure success
+sub_region_map &lt;- ggplot(NWA_coords, aes(x = lon, y = lat)) +
+  geom_polygon(data = map_base, aes(group = group), show.legend = F) +
+  # geom_polygon(aes(fill = region), alpha = 0.2) +
+  geom_point(data = NWA_NAPA_info, aes(colour = region, alpha = sub_region), 
+             shape = 15, size = 0.5) +
+  guides(colour = guide_legend(override.aes = list(size = 5))) +
+  scale_alpha_manual(values = c(0.4, 0.7, 1)) +
+  coord_cartesian(xlim = NWA_corners[1:2],
+                  ylim = NWA_corners[3:4]) +
+  labs(x = NULL, y = NULL, colour = &quot;Region&quot;, alpha = &quot;Sub region&quot;)
+# ggsave(plot = sub_region_map, filename = &quot;output/sub_region_map.pdf&quot;, height = 5, width = 6)
+
+# Visualise
+sub_region_map</code></pre>
+<p><img src="figure/sst-prep.Rmd/depth-sub-regions-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="sst-prep" class="section level2">
+<h2>SST prep</h2>
+<p>With the NAPA pixels successfully assigned to regions based on their thermal properties, and sub-regions based on their depth, we now need to go about clumping these SST pixels into one average time series per sub/region.</p>
+<pre class="r"><code># The NAPA data location
+NAPA_files &lt;- dir(&quot;../../data/NAPA025/1d_grid_T_2D&quot;, full.names = T)
+
+# Function for loading the individual NAPA NetCDF files and subsetting SST accordingly 
+load_NAPA_sst_sub &lt;- function(file_name, coords = NWA_NAPA_info){
+  
+  nc &lt;- nc_open(as.character(file_name))
+  
+  date_start &lt;- ymd(str_sub(basename(as.character(file_name)), start = 29, end = 36))
+  date_end &lt;- ymd(str_sub(basename(as.character(file_name)), start = 38, end = 45))
+  date_seq &lt;- seq(date_start, date_end, by = &quot;day&quot;)
+  
+  sst &lt;- as.data.frame(ncvar_get(nc, varid = &quot;sst&quot;)) %&gt;% 
+    mutate(lon = as.numeric(nc$dim$x$vals)) %&gt;%
+    gather(-lon, key = lat, value = temp) %&gt;%
+    mutate(t = rep(date_seq, each = 388080),
+           lat = rep(rep(as.numeric(nc$dim$y$vals), each = 528), times = 5),
+           temp = round(temp, 2)) %&gt;%
+    select(lon, lat, t, temp) %&gt;%
+    na.omit() %&gt;% 
+    dplyr::rename(lon_index = lon, lat_index = lat) %&gt;% 
+    right_join(coords, by = c(&quot;lon_index&quot; , &quot;lat_index&quot;)) %&gt;% 
+    group_by(region, sub_region, t) %&gt;% 
+    summarise(temp = mean(temp, na.rm = T))
+  
+  nc_close(nc)
+  return(sst)
+}
+
+# Clomp&#39;em 
+system.time(
+  NAPA_sst_sub &lt;- plyr::ldply(NAPA_files,
+                              .fun = load_NAPA_sst_sub, 
+                              .parallel = TRUE)
+) # 1.5 seconds for 1, 135 seconds for all
+
+# For some reason the rounding didn&#39;t stick in the function above so we wack it again here
+NAPA_sst_sub &lt;- NAPA_sst_sub %&gt;% 
+  mutate(temp = round(temp, 2))
+
+# Save
+# saveRDS(NAPA_sst_sub, &quot;data/NAPA_sst_sub.Rda&quot;)</code></pre>
+</div>
+<div id="mhw-detection" class="section level2">
+<h2>MHW detection</h2>
+<p>With our clumped SST time series ready the last step in this vignette is to detect the MHWs within each.</p>
+<pre class="r"><code># Load the time series data
+NAPA_sst_sub &lt;- readRDS(&quot;data/NAPA_sst_sub.Rda&quot;)
+
+# Calculate base results
+NAPA_MHW_sub &lt;- NAPA_sst_sub %&gt;%
+  group_by(region, sub_region) %&gt;%
+  nest() %&gt;%
+  mutate(clims = map(data, ts2clm,
+                     climatologyPeriod = c(min(NAPA_sst_sub$t), max(NAPA_sst_sub$t))),
+         events = map(clims, detect_event),
+         cats = map(events, category)) %&gt;%
+  select(-data)
+# saveRDS(NAPA_MHW_sub, &quot;data/NAPA_MHW_sub.Rda&quot;)</code></pre>
+<p>With the MHWs detected, let’s visualise the results to ensure everything worked as expected.</p>
+<pre class="r"><code># Load MHW results
+NAPA_MHW_sub &lt;- readRDS(&quot;data/NAPA_MHW_sub.Rda&quot;)
+
+# Events
+NAPA_MHW_event &lt;- NAPA_MHW_sub %&gt;%
+  select(-clims, -cats) %&gt;%
+  unnest(events) %&gt;%
+  filter(row_number() %% 2 == 0) %&gt;%
+  unnest(events)
+
+event_lolli_plot &lt;- ggplot(data = NAPA_MHW_event , aes(x = date_peak, y = intensity_max)) + 
+        geom_lolli(colour = &quot;salmon&quot;, colour_n = &quot;red&quot;, n = 3) + 
+  labs(x = &quot;Peak Date&quot;, y = &quot;Max. Intensity (°C)&quot;) +
+  # scale_y_continuous(expand = c(0, 0))+
+  facet_grid(region~sub_region)
+# ggsave(plot = event_lolli_plot, filename = &quot;output/event_lolli_plot.pdf&quot;, height = 7, width = 13)
+
+# Visualise
+event_lolli_plot</code></pre>
+<p><img src="figure/sst-prep.Rmd/MHW-vis-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>Everything appears to check out. Up next in the <a href="https://robwschlegel.github.io/MHWNWA/var-prep.html">Variable preparation</a> vignette we will go through the steps necessary to build the data that will be fed into our self-organising maps as seen in the <a href="https://robwschlegel.github.io/MHWNWA/som.html">Self-organising map (SOM) analysis</a> vignette.</p>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 18.10
+Running under: Ubuntu 16.04.5 LTS
 
 Matrix products: default
-BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.8.0
-LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.8.0
+BLAS:   /usr/lib/openblas-base/libblas.so.3
+LAPACK: /usr/lib/libopenblasp-r0.2.18.so
 
 locale:
  [1] LC_CTYPE=en_CA.UTF-8       LC_NUMERIC=C              
@@ -658,15 +766,37 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
-loaded via a namespace (and not attached):
- [1] workflowr_1.3.0 Rcpp_1.0.1      digest_0.6.18   rprojroot_1.3-2
- [5] backports_1.1.4 git2r_0.25.2    magrittr_1.5    evaluate_0.13  
- [9] stringi_1.4.3   fs_1.3.1        whisker_0.3-2   rmarkdown_1.12 
-[13] tools_3.6.0     stringr_1.4.0   glue_1.3.1      xfun_0.6       
-[17] yaml_2.2.0      compiler_3.6.0  htmltools_0.3.6 knitr_1.22     </code></pre>
-</div>
-</div>
+other attached packages:
+ [1] bindrcpp_0.2.2       lubridate_1.7.4      SDMTools_1.1-221    
+ [4] ncdf4_1.16           FNN_1.1.2.1          heatwaveR_0.3.6.9003
+ [7] data.table_1.11.6    forcats_0.3.0        stringr_1.3.1       
+[10] dplyr_0.7.6          purrr_0.2.5          readr_1.1.1         
+[13] tidyr_0.8.1          tibble_1.4.2         ggplot2_3.0.0       
+[16] tidyverse_1.2.1     
 
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.18      lattice_0.20-35   assertthat_0.2.0 
+ [4] rprojroot_1.3-2   digest_0.6.16     foreach_1.4.4    
+ [7] R6_2.2.2          cellranger_1.1.0  plyr_1.8.4       
+[10] backports_1.1.2   evaluate_0.11     httr_1.3.1       
+[13] pillar_1.3.0      rlang_0.2.2       lazyeval_0.2.1   
+[16] readxl_1.1.0      rstudioapi_0.7    whisker_0.3-2    
+[19] R.utils_2.7.0     R.oo_1.22.0       rmarkdown_1.10   
+[22] labeling_0.3      htmlwidgets_1.2   munsell_0.5.0    
+[25] broom_0.5.0       compiler_3.6.0    modelr_0.1.2     
+[28] pkgconfig_2.0.2   htmltools_0.3.6   tidyselect_0.2.4 
+[31] workflowr_1.1.1   codetools_0.2-15  doMC_1.3.5       
+[34] viridisLite_0.3.0 crayon_1.3.4      withr_2.1.2      
+[37] R.methodsS3_1.7.1 grid_3.6.0        nlme_3.1-137     
+[40] jsonlite_1.5      gtable_0.2.0      git2r_0.23.0     
+[43] magrittr_1.5      scales_1.0.0      cli_1.0.0        
+[46] stringi_1.2.4     reshape2_1.4.3    xml2_1.2.0       
+[49] iterators_1.0.10  tools_3.6.0       glue_1.3.0       
+[52] maps_3.3.0        hms_0.4.2         parallel_3.6.0   
+[55] yaml_2.2.0        colorspace_1.3-2  rvest_0.3.2      
+[58] plotly_4.8.0      knitr_1.20        bindr_0.1.1      
+[61] haven_1.1.2      </code></pre>
+</div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
@@ -679,6 +809,14 @@ footer is added to webpages before the MathJax javascript. -->
     "HTML-CSS": { availableFonts: ["TeX"] }
   });
 </script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
+</p>
+<hr>
 
 
 </div>
