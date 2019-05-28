@@ -79,8 +79,8 @@ map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE
 NWA_coords_plot <- ggplot(data = NWA_coords, aes(x = lon, y = lat)) +
   geom_polygon(data = map_base, aes(group = group), show.legend = F) +
   geom_polygon(aes(colour = region, fill = region), size = 1.5, alpha = 0.2) +
-  coord_cartesian(xlim = c(min(NWA_coords$lon)-1, max(NWA_coords$lon)+1),
-                  ylim = c(min(NWA_coords$lat)-1, max(NWA_coords$lat)+1)) +
+  coord_cartesian(xlim = c(min(NWA_coords$lon)-10, max(NWA_coords$lon)+10),
+                  ylim = c(min(NWA_coords$lat)-10, max(NWA_coords$lat)+10)) +
   labs(x = NULL, y = NULL, colour = "Region", fill = "Region") +
   theme(legend.position = "bottom")
 # ggsave(NWA_coords_plot, filename = "output/NWA_coords_plot.pdf", height = 5, width = 6)
@@ -91,14 +91,14 @@ NWA_coords_plot
 
 The region abbreviations are: "gm" for Gulf of Maine, "gls" for Gulf of St. Lawrence, "ls" for Labrador Shelf, "mab" for Mid-Atlantic Bight, "nfs" for Newfoundland Shelf and "ss" for Scotian Shelf.
 
-Before we move on, we'll do a bit of house keeping to establish a consistent study area for this project based on our polygons. We'll simply extend the study area by 1 degree of longitude and latitude from the furthest edges of the polygons, as seen in the figure above.
+Before we move on, we'll do a bit of house keeping to establish a consistent study area for this project based on our polygons. We'll simply extend the study area by 10 degrees of longitude and latitude from the furthest edges of the polygons, as seen in the figure above. This will encompass broad synoptic scale variables that may be driving MHWs in our study regions, but should not be so broad as to begin to account for teleconnections, which are currently beyond the scope of this project.
 
 ```{r study-area-coords, eval=FALSE}
 # Set the max/min lon/at values
-lon_min <- round(min(NWA_coords$lon)-1, 2)
-lon_max <- round(max(NWA_coords$lon)+1, 2)
-lat_min <- round(min(NWA_coords$lat)-1, 2)
-lat_max <- round(max(NWA_coords$lat)+1, 2)
+lon_min <- round(min(NWA_coords$lon)-10, 2)
+lon_max <- round(max(NWA_coords$lon)+10, 2)
+lat_min <- round(min(NWA_coords$lat)-10, 2)
+lat_max <- round(max(NWA_coords$lat)+10, 2)
 
 # Combine and save
 NWA_corners <- c(lon_min, lon_max, lat_min, lat_max)
@@ -119,12 +119,16 @@ gsl_sub$row_count <- 1:nrow(gsl_sub)
 
 ggplot(data = gsl_sub, aes(x = lon, y = lat)) +
   geom_polygon(aes(fill = region)) +
-  geom_label(aes(label = row_count))
+  geom_label(aes(label = row_count)) +
+  labs(x = NULL, y = NULL)
 ```
 
 It appears from the crude figure above that we should pinch the polygon off into two separate shapes at row 6 and 10.
 
 ```{r cabot-strait-2}
+# Load the corners of the study area
+NWA_corners <- readRDS("data/NWA_corners.Rda")
+
 # Create smaller gsl polygon
 gsl_new <- NWA_coords[NWA_coords$region == "gsl",] %>% 
   slice(-c(7:9))
@@ -144,8 +148,8 @@ NWA_coords_cabot <- NWA_coords %>%
 NWA_coords_cabot_plot <- ggplot(data = NWA_coords_cabot, aes(x = lon, y = lat)) +
   geom_polygon(data = map_base, aes(group = group), show.legend = F) +
   geom_polygon(aes(colour = region, fill = region), size = 1.5, alpha = 0.2) +
-  coord_cartesian(xlim = c(min(NWA_coords$lon)-1, max(NWA_coords$lon)+1),
-                  ylim = c(min(NWA_coords$lat)-1, max(NWA_coords$lat)+1)) +
+  coord_cartesian(xlim = NWA_corners[1:2],
+                  ylim = NWA_corners[3:4]) +
   labs(x = NULL, y = NULL, colour = "Region", fill = "Region") +
   theme(legend.position = "bottom")
 # ggsave(NWA_coords_cabot_plot, filename = "output/NWA_coords_cabot_plot.pdf", height = 5, width = 6)
@@ -169,8 +173,8 @@ Before we can divide up our polygons by bathymetry, we must first download said 
 
 ```{r bathy-download, eval=FALSE}
 # Donwload NOAA bathy data at highest available resolution
-NWA_bathy_hires <- as.xyz(getNOAA.bathy(lon1 = NWA_corners[1], lon2 = NWA_corners[2],
-                                        lat1 = NWA_corners[3], lat2 = NWA_corners[4], resolution = 1))
+NWA_bathy_hires <- as.xyz(getNOAA.bathy(lon1 = NWA_corners[1]+9, lon2 = NWA_corners[2]-9,
+                                        lat1 = NWA_corners[3]+9, lat2 = NWA_corners[4]-9, resolution = 1))
 colnames(NWA_bathy_hires) <- c("lon", "lat", "depth")
 NWA_bathy_hires <- NWA_bathy_hires %>% 
   filter(depth <= 0) %>% 
@@ -179,8 +183,8 @@ NWA_bathy_hires <- NWA_bathy_hires %>%
 # saveRDS(NWA_bathy_hires, file = "data/NWA_bathy_hires.Rda")
 
 # Donwload NOAA bathy data at a courser resolution
-NWA_bathy_lowres <- as.xyz(getNOAA.bathy(lon1 = NWA_corners[1], lon2 = NWA_corners[2],
-                                        lat1 = NWA_corners[3], lat2 = NWA_corners[4], resolution = 6))
+NWA_bathy_lowres <- as.xyz(getNOAA.bathy(lon1 = NWA_corners[1]+9, lon2 = NWA_corners[2]-9,
+                                         lat1 = NWA_corners[3]+9, lat2 = NWA_corners[4]-9, resolution = 6))
 colnames(NWA_bathy_lowres) <- c("lon", "lat", "depth")
 NWA_bathy_lowres <- NWA_bathy_lowres %>% 
   filter(depth <= 0) %>% 
@@ -192,9 +196,8 @@ NWA_bathy_lowres <- NWA_bathy_lowres %>%
 With our high res bathymetry data downloaded we will now go about finding the 50 and 200 metre isobaths. These lines will be used to define the edges of our sub-regions. The naming conventions we will use will be
 
 ```{r isobath-hires-plot}
-# Load hires bathymetry data and NWA corners
+# Load hires bathymetry data
 NWA_bathy_hires <- readRDS("data/NWA_bathy_hires.Rda")
-NWA_corners <- readRDS("data/NWA_corners.Rda")
 
 # Plot to see what we've got
 bathy_hires_plot <- ggplot(NWA_coords_cabot, aes(x = lon, y = lat)) +
