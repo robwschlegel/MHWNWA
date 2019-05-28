@@ -48,9 +48,6 @@ NWA_coords <- readRDS("data/NWA_coords_cabot.Rda")
 # Lowres bathymetry
 NWA_bathy <- readRDS("data/NWA_bathy_lowres.Rda")
 
-# The NAPA model lon/lat values
-NAPA_coords <- readRDS("data/NAPA_coords.Rda")
-
 # The base map
 map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE)) %>%
   dplyr::rename(lon = long) %>%
@@ -95,8 +92,18 @@ bathy <- as.data.frame(ncvar_get(nc_bathy, varid = "Bathymetry")) %>%
          lat = round(lat, 4))
 nc_close(nc_bathy)
 
-# Save
+# Save bathymetry
 # saveRDS(bathy, "data/NAPA_bathy.Rda")
+
+# Save base lon/lat values
+NAPA_coords <- left_join(lon, lat, by = c("lon", "lat")) %>% 
+    dplyr::rename(lon_index = lon, lat_index = lat,
+                lon = nav_lon, lat = nav_lat) %>% 
+  mutate(lon = round(lon, 4),
+         lat = round(lat, 4))
+saveRDS(NAPA_coords, "data/NAPA_coords.Rda")
+
+# Clean up
 rm(nc_bathy, bathy, lon, lat)
 ```
 
@@ -227,7 +234,10 @@ NAPA_MHW_sub <- NAPA_sst_sub %>%
   group_by(region, sub_region) %>%
   nest() %>%
   mutate(clims = map(data, ts2clm,
-                     climatologyPeriod = c(min(NAPA_sst_sub$t), max(NAPA_sst_sub$t))),
+                     # NB: I've chosen here to use as much of the 2015 data as exists,
+                     # rather than to use none of it as I think it will create a better climatology
+                     # even though the last two days of the year are missing
+                     climatologyPeriod = c("1994-01-01", "2015-12-29")),
          events = map(clims, detect_event),
          cats = map(events, category)) %>%
   select(-data)
