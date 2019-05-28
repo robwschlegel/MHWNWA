@@ -342,7 +342,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-05-24</p>
+<p><strong>Last updated:</strong> 2019-05-28</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -371,22 +371,22 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/41440974e79889f54518197d4b96a57269551e13" target="_blank">4144097</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/3cdb0aadca51d10dc5a5d834647c6709e2124848" target="_blank">3cdb0aa</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
 
 Untracked files:
-    Untracked:  data/NAPA_MHW_sub.Rda
-    Untracked:  data/NAPA_sst_sub.Rda
-    Untracked:  data/NWA_NAPA_info.Rda
-    Untracked:  output/event_lolli_plot.pdf
-    Untracked:  output/sub_region_map.pdf
+    Untracked:  data/NAPA_files_dates.Rda
 
 Unstaged changes:
-    Modified:   analysis/_site.yml
+    Modified:   analysis/var-prep.Rmd
+    Modified:   data/NWA_corners.Rda
+    Modified:   output/NWA_coords_cabot_plot.pdf
+    Modified:   output/NWA_coords_plot.pdf
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -417,6 +417,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/3cdb0aadca51d10dc5a5d834647c6709e2124848/analysis/polygon-prep.Rmd" target="_blank">3cdb0aa</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-28
+</td>
+<td style="text-align:left;">
+Extended the corners of the study region.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/def6979189cb6ffe5f0a276dc3fb73cc8ce59358/docs/polygon-prep.html" target="_blank">def6979</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-24
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -598,8 +632,8 @@ map_base &lt;- ggplot2::fortify(maps::map(fill = TRUE, col = &quot;grey80&quot;,
 NWA_coords_plot &lt;- ggplot(data = NWA_coords, aes(x = lon, y = lat)) +
   geom_polygon(data = map_base, aes(group = group), show.legend = F) +
   geom_polygon(aes(colour = region, fill = region), size = 1.5, alpha = 0.2) +
-  coord_cartesian(xlim = c(min(NWA_coords$lon)-1, max(NWA_coords$lon)+1),
-                  ylim = c(min(NWA_coords$lat)-1, max(NWA_coords$lat)+1)) +
+  coord_cartesian(xlim = c(min(NWA_coords$lon)-10, max(NWA_coords$lon)+10),
+                  ylim = c(min(NWA_coords$lat)-10, max(NWA_coords$lat)+10)) +
   labs(x = NULL, y = NULL, colour = &quot;Region&quot;, fill = &quot;Region&quot;) +
   theme(legend.position = &quot;bottom&quot;)
 # ggsave(NWA_coords_plot, filename = &quot;output/NWA_coords_plot.pdf&quot;, height = 5, width = 6)
@@ -650,12 +684,12 @@ robwschlegel
 </table>
 </details>
 <p>The region abbreviations are: “gm” for Gulf of Maine, “gls” for Gulf of St. Lawrence, “ls” for Labrador Shelf, “mab” for Mid-Atlantic Bight, “nfs” for Newfoundland Shelf and “ss” for Scotian Shelf.</p>
-<p>Before we move on, we’ll do a bit of house keeping to establish a consistent study area for this project based on our polygons. We’ll simply extend the study area by 1 degree of longitude and latitude from the furthest edges of the polygons, as seen in the figure above.</p>
+<p>Before we move on, we’ll do a bit of house keeping to establish a consistent study area for this project based on our polygons. We’ll simply extend the study area by 10 degrees of longitude and latitude from the furthest edges of the polygons, as seen in the figure above. This will encompass broad synoptic scale variables that may be driving MHWs in our study regions, but should not be so broad as to begin to account for teleconnections, which are currently beyond the scope of this project.</p>
 <pre class="r"><code># Set the max/min lon/at values
-lon_min &lt;- round(min(NWA_coords$lon)-1, 2)
-lon_max &lt;- round(max(NWA_coords$lon)+1, 2)
-lat_min &lt;- round(min(NWA_coords$lat)-1, 2)
-lat_max &lt;- round(max(NWA_coords$lat)+1, 2)
+lon_min &lt;- round(min(NWA_coords$lon)-10, 2)
+lon_max &lt;- round(max(NWA_coords$lon)+10, 2)
+lat_min &lt;- round(min(NWA_coords$lat)-10, 2)
+lat_max &lt;- round(max(NWA_coords$lat)+10, 2)
 
 # Combine and save
 NWA_corners &lt;- c(lon_min, lon_max, lat_min, lat_max)
@@ -671,7 +705,8 @@ gsl_sub$row_count &lt;- 1:nrow(gsl_sub)
 
 ggplot(data = gsl_sub, aes(x = lon, y = lat)) +
   geom_polygon(aes(fill = region)) +
-  geom_label(aes(label = row_count))</code></pre>
+  geom_label(aes(label = row_count)) +
+  labs(x = NULL, y = NULL)</code></pre>
 <p><img src="figure/polygon-prep.Rmd/cabot-strait-1-1.png" width="768" style="display: block; margin: auto;" /></p>
 <details>
 <summary><em>Expand here to see past versions of cabot-strait-1-1.png:</em></summary>
@@ -716,7 +751,10 @@ robwschlegel
 </table>
 </details>
 <p>It appears from the crude figure above that we should pinch the polygon off into two separate shapes at row 6 and 10.</p>
-<pre class="r"><code># Create smaller gsl polygon
+<pre class="r"><code># Load the corners of the study area
+NWA_corners &lt;- readRDS(&quot;data/NWA_corners.Rda&quot;)
+
+# Create smaller gsl polygon
 gsl_new &lt;- NWA_coords[NWA_coords$region == &quot;gsl&quot;,] %&gt;% 
   slice(-c(7:9))
 
@@ -735,8 +773,8 @@ NWA_coords_cabot &lt;- NWA_coords %&gt;%
 NWA_coords_cabot_plot &lt;- ggplot(data = NWA_coords_cabot, aes(x = lon, y = lat)) +
   geom_polygon(data = map_base, aes(group = group), show.legend = F) +
   geom_polygon(aes(colour = region, fill = region), size = 1.5, alpha = 0.2) +
-  coord_cartesian(xlim = c(min(NWA_coords$lon)-1, max(NWA_coords$lon)+1),
-                  ylim = c(min(NWA_coords$lat)-1, max(NWA_coords$lat)+1)) +
+  coord_cartesian(xlim = NWA_corners[1:2],
+                  ylim = NWA_corners[3:4]) +
   labs(x = NULL, y = NULL, colour = &quot;Region&quot;, fill = &quot;Region&quot;) +
   theme(legend.position = &quot;bottom&quot;)
 # ggsave(NWA_coords_cabot_plot, filename = &quot;output/NWA_coords_cabot_plot.pdf&quot;, height = 5, width = 6)
@@ -796,8 +834,8 @@ robwschlegel
 <h3>Downloading data</h3>
 <p>Before we can divide up our polygons by bathymetry, we must first download said bathymetry data. We will use here the NOAA data as it is (to my knowledge) the most convenient bathymetry data available directly through R.</p>
 <pre class="r"><code># Donwload NOAA bathy data at highest available resolution
-NWA_bathy_hires &lt;- as.xyz(getNOAA.bathy(lon1 = NWA_corners[1], lon2 = NWA_corners[2],
-                                        lat1 = NWA_corners[3], lat2 = NWA_corners[4], resolution = 1))
+NWA_bathy_hires &lt;- as.xyz(getNOAA.bathy(lon1 = NWA_corners[1]+9, lon2 = NWA_corners[2]-9,
+                                        lat1 = NWA_corners[3]+9, lat2 = NWA_corners[4]-9, resolution = 1))
 colnames(NWA_bathy_hires) &lt;- c(&quot;lon&quot;, &quot;lat&quot;, &quot;depth&quot;)
 NWA_bathy_hires &lt;- NWA_bathy_hires %&gt;% 
   filter(depth &lt;= 0) %&gt;% 
@@ -806,8 +844,8 @@ NWA_bathy_hires &lt;- NWA_bathy_hires %&gt;%
 # saveRDS(NWA_bathy_hires, file = &quot;data/NWA_bathy_hires.Rda&quot;)
 
 # Donwload NOAA bathy data at a courser resolution
-NWA_bathy_lowres &lt;- as.xyz(getNOAA.bathy(lon1 = NWA_corners[1], lon2 = NWA_corners[2],
-                                        lat1 = NWA_corners[3], lat2 = NWA_corners[4], resolution = 6))
+NWA_bathy_lowres &lt;- as.xyz(getNOAA.bathy(lon1 = NWA_corners[1]+9, lon2 = NWA_corners[2]-9,
+                                         lat1 = NWA_corners[3]+9, lat2 = NWA_corners[4]-9, resolution = 6))
 colnames(NWA_bathy_lowres) &lt;- c(&quot;lon&quot;, &quot;lat&quot;, &quot;depth&quot;)
 NWA_bathy_lowres &lt;- NWA_bathy_lowres %&gt;% 
   filter(depth &lt;= 0) %&gt;% 
@@ -815,9 +853,8 @@ NWA_bathy_lowres &lt;- NWA_bathy_lowres %&gt;%
          lat = round(lat, 4))
 # saveRDS(NWA_bathy_lowres, file = &quot;data/NWA_bathy_lowres.Rda&quot;)</code></pre>
 <p>With our high res bathymetry data downloaded we will now go about finding the 50 and 200 metre isobaths. These lines will be used to define the edges of our sub-regions. The naming conventions we will use will be</p>
-<pre class="r"><code># Load hires bathymetry data and NWA corners
+<pre class="r"><code># Load hires bathymetry data
 NWA_bathy_hires &lt;- readRDS(&quot;data/NWA_bathy_hires.Rda&quot;)
-NWA_corners &lt;- readRDS(&quot;data/NWA_corners.Rda&quot;)
 
 # Plot to see what we&#39;ve got
 bathy_hires_plot &lt;- ggplot(NWA_coords_cabot, aes(x = lon, y = lat)) +
