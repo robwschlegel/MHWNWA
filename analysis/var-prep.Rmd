@@ -47,6 +47,15 @@ NAPA_bathy <- readRDS("data/NAPA_bathy.Rda")
 NAPA_MHW_sub <- readRDS("data/NAPA_MHW_sub.Rda")
 ```
 
+For the upcoming variable prep we are also going to want the NAPA coordinates that are within our chosen study area as seen with `NWA_corners`. THis will help us to reduce a lot of computational cost as we go along.
+
+```{r NAPA-coords-sub}
+NAPA_coords_sub <- NAPA_coords %>% 
+  filter(lon >= NWA_corners[1], lon <= NWA_corners[2],
+           lat >= NWA_corners[3], lat <= NWA_corners[4])
+# saveRDS(NAPA_coords_sub, "data/NAPA_coords_sub.Rda")
+```
+
 
 ## Chosen variables
 
@@ -104,7 +113,7 @@ NAPA_files_dates <- dplyr::arrange(NAPA_files_dates, date)
 
 ### Variable climatologies
 
-Part of the data packet we need to create for the SOMs is the anomaly values. In order to create anomalies however we need to first create climatologies for all of the variables. This may prove to be a somewhat daunting task, but it's what we are here to do! In order to create a climatology of values we will need to load all of the files and then pixel-wise go about getting the seasonal (daily) climatologies. This will be done with the same function (`ts2clm()`) that is used for the MHW climatologies.
+Part of the data packet we need to create for the SOMs is the anomaly values. In order to create anomalies however we need to first create climatologies for all of the variables. This may prove to be a somewhat daunting task, but it's what we are here to do! In order to create a climatology of values we will need to load all of the files and then pixel-wise go about getting the seasonal (daily) climatologies. This will be done with the same function (`ts2clm()`) that is used for the MHW climatologies. We will first create a function that extracts the desired variables from any NetCDF files fed to it. With that done it should be a routine matter to get the climatologies. Hold onto your hats, this is going to be RAM heavy...
 
 ```{r clim-var-all}
 
@@ -113,38 +122,9 @@ Part of the data packet we need to create for the SOMs is the anomaly values. In
 
 ### Variable extractor
 
-We needed a list of the dates present in each file so that we can easily load only the NetCDF files we need to extract our desired variables. The dates we want are the range of dates during each of the MHWs detected in the [SST preparation](https://robwschlegel.github.io/MHWNWA/sst-prep.html) vignette. In the chunk below we will create a function that extracts the desired variables from any NetCDF files fed to it, a function that decides which files should be fed, and a function that binds everything up into tidy data packets that our SOM can ingest.
+We needed a list of the dates present in each file so that we can easily load only the NetCDF files we need to extract our desired variables. The dates we want are the range of dates during each of the MHWs detected in the [SST preparation](https://robwschlegel.github.io/MHWNWA/sst-prep.html) vignette. In the chunk below we will create a function that decides which files should have their variables loaded and a function that binds everything up into tidy data packets that our SOM can ingest.
 
 ```{r ncdf-var-extractor}
-
-# Function for extracting a given variable
-# testers...
-# nc_file <- nc
-# nc_var <- "ssh"
-extract_one_var <- function(nc_var, file_name){
-  # Open connection
-  nc <- nc_open(as.character(file_name))
-  
-  # Extract dates from file name
-  date_start <- ymd(str_sub(basename(as.character(file_name)), start = 29, end = 36))
-  date_end <- ymd(str_sub(basename(as.character(file_name)), start = 38, end = 45))
-  date_seq <- seq(date_start, date_end, by = "day")
-  
-  # Extract and process data
-  want_var <- as.data.frame(ncvar_get(nc, varid = nc_var)) %>% 
-    mutate(lon_index = as.numeric(nc$dim$x$vals)) %>%
-    gather(-lon_index, key = lat_index, value = var) %>%
-    mutate(t = rep(date_seq, each = 388080),
-           lat_index = rep(rep(as.numeric(nc$dim$y$vals), each = 528), times = 5)) %>%
-    select(lon_index, lat_index, t, var) %>%
-    na.omit()
-  colnames(want_var)[4] <- nc_var
-  
-  # Close connection and exit
-  nc_close(nc)
-  return(want_var)
-}
-
 # Function for extracting the desired variables from a given NetCDF file
 # testers...
 # file_name <- NAPA_files[1]
@@ -163,16 +143,16 @@ extract_all_var <- function(file_name, coords = NWA_corners){
   }
 
   # Subset to the study area
-  NAPA_vars_sub <- left_join(NAPA_vars_extracted, NAPA_coords, by = c("lon_index", "lat_index")) %>% 
-    filter(lon >= NWA_corners[1], lon <= NWA_corners[2],
-           lat >= NWA_corners[3], lat <= NWA_corners[4]) %>% 
-    dplyr::select(lon_index, lat_index, lon, lat, everything())
+  # NAPA_vars_sub <- left_join(NAPA_vars_extracted, NAPA_coords, by = c("lon_index", "lat_index")) %>% 
+    # filter(lon >= NWA_corners[1], lon <= NWA_corners[2],
+           # lat >= NWA_corners[3], lat <= NWA_corners[4]) %>% 
+    # dplyr::select(lon_index, lat_index, lon, lat, everything())
   
   # Free up disk space, useful when being multi-cored
-  rm(NAPA_vars_extracted); gc()
+  # rm(NAPA_vars_extracted); gc()
   
   # Exit
-  return(NAPA_vars_sub)
+  return(NAPA_vars_extracted)
 }
 
 # Function for extracting variables from as many files as a MHW event requires
