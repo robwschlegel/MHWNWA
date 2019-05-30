@@ -47,13 +47,19 @@ NAPA_bathy <- readRDS("data/NAPA_bathy.Rda")
 NAPA_MHW_sub <- readRDS("data/NAPA_MHW_sub.Rda")
 ```
 
-For the upcoming variable prep we are also going to want the NAPA coordinates that are within our chosen study area as seen with `NWA_corners`. THis will help us to reduce a lot of computational cost as we go along.
+For the upcoming variable prep we are also going to want the NAPA coordinates that are within our chosen study area as seen with `NWA_corners`. We will also create a subsetted bathy coord file, too, so as to have an effective land mask.. This will help us to reduce a lot of computational cost as we go along because many of the pixels over land are given 0 values, rather than missing values, which is a strange choice...
 
 ```{r NAPA-coords-sub}
+# The NAPPA coordinates for the study area only
 NAPA_coords_sub <- NAPA_coords %>% 
   filter(lon >= NWA_corners[1], lon <= NWA_corners[2],
            lat >= NWA_corners[3], lat <= NWA_corners[4])
 # saveRDS(NAPA_coords_sub, "data/NAPA_coords_sub.Rda")
+
+# Tha NAPA bathymetry for the study area only
+NAPA_bathy_sub <- NAPA_bathy %>% 
+  right_join(NAPA_coords_sub, by = c("lon_index", "lat_index", "lon", "lat"))
+saveRDS(NAPA_bathy_sub, "data/NAPA_bathy_sub.Rda")
 ```
 
 

@@ -31,3 +31,7 @@ doMC::registerDoMC(cores = 50)
   # I just find it annoying
 options(scipen = 999)
 ```
+
+## More
+
+It would be interesting to see if the SOM outputs differ in any meaningful wayss when only data from the first half of the study time period are used compared against the second half.

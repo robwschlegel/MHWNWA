@@ -101,7 +101,11 @@ NAPA_coords <- left_join(lon, lat, by = c("lon", "lat")) %>%
                 lon = nav_lon, lat = nav_lat) %>% 
   mutate(lon = round(lon, 4),
          lat = round(lat, 4))
-saveRDS(NAPA_coords, "data/NAPA_coords.Rda")
+# saveRDS(NAPA_coords, "data/NAPA_coords.Rda")
+
+# Save bathymetry subsetted to study area
+  # This functions as an effective mask for water only pixels
+
 
 # Clean up
 rm(nc_bathy, bathy, lon, lat)
