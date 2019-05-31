@@ -21,10 +21,11 @@ source("code/functions.R")
 
 # NB: The creation of a clim for one variable is too large to run via ldply
 # Rather they must be run one at a time via a for loop and the memmory dumped after each
-# for(i in 1:length(NAPA_vars)){
-#   clim_one_var(NAPA_vars$name[i])
-#   gc()
-# }
+for(i in 1:nrow(NAPA_vars)){
+# for(i in c(7:13,15)){
+  clim_one_var(NAPA_vars$name[i])
+  gc()
+}
 
 
 # Data packets ------------------------------------------------------------
