@@ -61,7 +61,7 @@ map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE
 # nc_var <- "sst"
 # nc_var <- "taum"
 # file_name <- NAPA_files[1]
-extract_one_var <- function(file_name, nc_var, coords = NAPA_coords_sub){
+extract_one_var <- function(file_name, nc_var, coords = NAPA_bathy_sub){
   # Open connection
   nc <- nc_open(as.character(file_name))
 
@@ -76,21 +76,16 @@ extract_one_var <- function(file_name, nc_var, coords = NAPA_coords_sub){
     gather(-lon_index, key = lat_index, value = var) %>%
     mutate(t = rep(date_seq, each = 388080),
            lat_index = rep(rep(as.numeric(nc$dim$y$vals), each = 528), times = 5)) %>%
-    select(lon_index, lat_index, t, var)
-
-  # Subset pixels to study area
-  want_var <- right_join(want_var, coords, by = c("lon_index", "lat_index")) %>%
-    na.omit() %>%
-    group_by(lon, lat) %>%
-    filter(mean(var) != 0) %>%
-    # filter(max(t, na.rm = T) == date_end) %>%
-    ungroup()
+    select(lon_index, lat_index, t, var) %>%
+    right_join(coords, by = c("lon_index", "lat_index")) %>%
+    na.omit()
   colnames(want_var)[4] <- nc_var
+
 
   test <- filter(want_var, t == date_end)
   ggplot(NAPA_coords, aes(x = lon, y = lat)) +
     # geom_polygon(data = map_base, aes(group = group), show.legend = F) +
-    geom_point(data = test, aes(colour = taum),
+    geom_point(data = test, aes(colour = sst),
                shape = 15, size = 0.5) +
     coord_cartesian(xlim = NWA_corners[1:2],
                     ylim = NWA_corners[3:4])
@@ -106,40 +101,29 @@ extract_one_var <- function(file_name, nc_var, coords = NAPA_coords_sub){
 # testers...
 # one_var <- "sst"
 clim_one_var <- function(one_var, chosen_files = NAPA_files){
+
+  print(paste0("Began run on ",one_var," at ",Sys.time()))
   # Load all of the data within the study area for one variable
-  system.time(
-    all_one_var <- plyr::ldply(chosen_files, extract_one_var, nc_var = one_var, .parallel = T)
-  ) # 200 seconds
-
-  # test <- filter(all_one_var, lon_index == 116, lat_index == 340)
-  # colnames(test)[4] <- "temp"
-  # test <- ts2clm(test, climatologyPeriod = c("1994-01-01", "2015-12-29"), clmOnly = T, roundClm = FALSE)
-
-  # test <- all_one_var %>%
-    # group_by(lon, lat) %>%
-    # filter(max(t, na.rm = T) == "2015-12-29") %>%
-    # ungroup()
-    # filter(t == "2015-12-29")
-
-  # ggplot(NWA_coords, aes(x = lon, y = lat)) +
-  #   geom_polygon(data = map_base, aes(group = group), show.legend = F) +
-  #   geom_point(data = test, aes(colour = sst),
-  #              shape = 15, size = 0.5) +
-  #   coord_cartesian(xlim = NWA_corners[1:2],
-  #                   ylim = NWA_corners[3:4])
-
-  # Screen out incomplete time series
   # system.time(
-  #   all_one_var_sub <- plyr::ddply(all_one_var, c("lon", "lat"), screen_ts, .parallel = T)
+  all_one_var <- plyr::ldply(chosen_files, extract_one_var, nc_var = one_var, .parallel = T)
   # ) # 200 seconds
+  print(paste0("Finished loading ",one_var," at ",Sys.time()))
 
   # Calculate climatologies
-    # Change the column name to 'temp' for ease of use
+    # Change variable column name to 'temp' for ease of use
   colnames(all_one_var)[4] <- "temp"
-  system.time(
-    all_one_clim <- plyr::ddply(all_one_var, c("lon", "lat"), ts2clm, .parallel = T,
-                                clmOnly = T,  roundClm = FALSE,
-                                climatologyPeriod = c("1994-01-01", "2015-12-29"))
-  ) # xxx seconds
-  colnames(all_one_var)[4] <- one_var
+  # system.time(
+  all_one_clim <- plyr::ddply(all_one_var, c("lon", "lat"), ts2clm, .parallel = T,
+                              clmOnly = T,  roundClm = FALSE,
+                              climatologyPeriod = c("1994-01-01", "2015-12-29"))
+  # ) # 230 seconds
+  colnames(all_one_clim)[4] <- one_var
+  all_one_clim$thresh <- NULL
+  print(paste0("Finished calculating ",one_var," clims at ",Sys.time()))
+
+  # Save, clean-up and exit
+  saveRDS(all_one_clim, paste0("data/NAPA_clim_",one_var,".Rda"))
+  rm(all_one_var, all_one_clim); gc()
+  print(paste0("Finished run on ",one_var," at ",Sys.time()))
 }
+
