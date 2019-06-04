@@ -258,6 +258,9 @@ data_packet <- function(event_sub){
   # Create mean synoptic values
   packet_mean <- packet_anom %>% 
     select(-doy) %>% 
+    # NB: The lowest pixels are a forcing edge and shouldn't be included
+      # We can catch these out by filtering pixels whose SST is exactly 0
+    filter(sst != 0) %>% 
     group_by(lon, lat) %>% 
     summarise_all(mean, na.rm = T) %>% 
     arrange(lon, lat) %>% 
@@ -267,23 +270,19 @@ data_packet <- function(event_sub){
   # Combine results with MHW dataframe
   packet_res <- cbind(event_sub, packet_mean)
   
-  # Make long and create coords column
-  # packet_long <- packet_mean %>% 
-    # gather(key = "var", value = "val", -c(lon, lat)) %>% 
-    # mutate(coords = paste0(lon,"_" ,lat,"_",var)) %>% 
-    # arrange(var, lon, lat)
-  
-  # Transpose
-  # packet_wide <- t(packet_long$val)
-  # colnames(packet_wide) <- packet_long$coords
+  # Test visuals
+  # ggplot(packet_mean, aes(x = lon, y = lat)) +
+  #   geom_point(aes(colour = sst_anom)) +
+  #   scale_colour_gradient2(low = "blue", high = "red") +
+  #   coord_cartesian(xlim = NWA_corners[1:2],
+  #                   ylim = NWA_corners[3:4])
   
   # Exit
-  # return(packet_wide)
   return(packet_res)
 }
 ```
 
-With our functions sorted, it is now time to create our data packets
+With our functions sorted, it is now time to create our data packets.
 
 ```{r synoptic-states}
 # Set number of cores
@@ -291,9 +290,12 @@ With our functions sorted, it is now time to create our data packets
 doMC::registerDoMC(cores = 25)
 
 # Create one big packet
-system.time(
+# system.time(
 synoptic_states <- plyr::ddply(NAPA_MHW_event, c("region", "sub_region", "event_no"), data_packet, .parallel = T)
-) # 82 seconds for 2
+# ) # 82 seconds for first 2, 6125 seconds (102 minutes) for all
+
+# Save
+# saveRDS(synoptic_states, "data/synoptic_states.Rda")
 ```
 
 With all of our synoptic snapshots for our chosen variables created it is now time to feed them to the [Self-organising map (SOM) analysis](https://robwschlegel.github.io/MHWNWA/som.html).

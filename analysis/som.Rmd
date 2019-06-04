@@ -21,11 +21,17 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
 This markdown file will contain the code used to perform the self-organising map (SOM) analysis on the prepared variable data as seen in the [Variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette.
 
 ```{r libraries}
+# Insatll from GitHub
+# .libPaths(c("~/R-packages", .libPaths()))
+# devtools::install_github("fabrice-rossi/yasomi")
+
 # Packages used in this vignette
 library(jsonlite, lib.loc = "../R-packages/")
 library(tidyverse) # Base suite of functions
 library(ncdf4) # For opening and working with NetCDF files
 library(lubridate) # For convenient date manipulation
+library(scales) # For scaling data before running SOM
+library(yasomi) # The SOM package of choice due to PCI compliance
 
 # Set number of cores
 doMC::registerDoMC(cores = 50)
@@ -33,7 +39,18 @@ doMC::registerDoMC(cores = 50)
 # Disable scientific notation for numeric values
   # I just find it annoying
 options(scipen = 999)
+
+# Set number of cores
+doMC::registerDoMC(cores = 50)
+
+# Disable scientific notation for numeric values
+  # I just find it annoying
+options(scipen = 999)
+
+# Load the synoptic states data packet
+synoptic_states <- readRDS("data/synoptic_states.Rda")
 ```
+
 
 ## Possible mechanisms
 
@@ -45,6 +62,137 @@ Net heatflux (OAFlux) doesn't line up perfectly with seasonal SST signal, but is
 
 There is almost no seasonal cycle for slope waters in any of the regions [@Richaud2016].
 
-## More
+## More ideas
 
 It would be interesting to see if the SOM outputs differ in any meaningful wayss when only data from the first half of the study time period are used compared against the second half.
+
+## Tailored data packets
+
+In this last step before running our SOM analyses we want to create some bespoke data packets. Specifically what we mean her is that we are going to filter the `synoptic_states` data created in the [Variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette to match some pre-designed hypotheses. Foremost of these at the moment is that we want to create individual packets for each of the regions. WHile creating whatever packets we desire we will also be converting them into the super-wide matrix format that the SOM model desires.
+
+```{r tailor-packets-func}
+# Function for creating custom packets
+# testers...
+# df <- packet_all_anom[1:1000000, ]
+wide_matrix <- function(df){
+    # Make long and create coords column
+  df_long <- data.table::data.tabledata.table() #%>%
+    # select(-region, - sub_region, -event_no) %>% 
+    # gather(key = "var", value = "val", -c(region:lat)) %>%
+    # arrange(var, lon, lat) %>% 
+    # mutate(coords = paste0(lon,"_" ,lat,"_",var))
+  
+  # Transpose
+  # df_wide <- t(df_long$val)
+  # colnames(df_wide) <- df_long$coords
+  # rownames(df_wide) <- paste0(df$region,"_" ,df$sub_region,"_",df$event_no)
+  
+  # Exit
+  return(packet_wide)
+}
+```
+
+With our function sorted, we can now make whatever sort of custom packets we desire. These can all then simply be plugged into the SOM calculator below.
+
+```{r create-packets}
+# Packet for all synoptic anomaly data for all regions etc.
+packet_all_anom <- synoptic_states %>% 
+  select(region, sub_region, event_no, synoptic) %>% 
+  unnest() %>% 
+  select(region:lat, emp_oce_anom:taum_anom) #%>% 
+  # wide_matrix()
+saveRDS(packet_all_anom, "data/packet_all_anom.Rda")
+```
+
+
+## Run SOM models
+
+Now that we have some data packets to feed the SOM, we need a function that will ingest them and produce results for us.
+
+```{r som-func}
+# Function for calculating SOMs using PCI
+som_model_PCI <- function(data_packet, xdim = 4, ydim = 4){
+  # Create a scaled matrix for the SOM
+  # Cancel out first column as this is the file name of the data packet
+  data_packet_matrix <- as.matrix(scale(data_packet[,-1]))
+
+  # Create the grid that the SOM will use to determine the number of nodes
+  som_grid <- somgrid(xdim = xdim, ydim = ydim, topo = "hexagonal")
+
+  # Run the SOM with PCI
+  som_model <- batchsom(data_packet_matrix,
+                        somgrid = som_grid,
+                        init = "pca",
+                        max.iter = 100)
+  return(som_model)
+}
+```
+
+With the function sorted, we now begin to feed the data.
+
+```{r som-run}
+all_anom <- readRDS("data/packet_all_anom.Rda")
+system.time(all_anom_som <- som_model_PCI(all_anom)) # 2 seconds
+saveRDS(all_anom_som, file = "data/all_anom_som.Rda")
+```
+
+
+## Unpack SOM results
+
+We will create two functions below that will be useful for unpacking the SOM results.
+
+```{r som-unpack-func}
+# Function for determining node indexes
+# testers...
+# data_packet <- all_anom; som_output <- som_mdel_pci
+event_node_index <- function(data_packet, som_output){
+  event_node <- data.frame(event = sapply(strsplit(basename(as.character(data_packet$event)), ".Rdata"),  "[[", 1),
+                            node = som_output$classif)
+  node_count <- as.data.frame(table(event_node$node))
+  event_node <- event_node %>%
+    group_by(node) %>%
+    mutate(count = node_count$Freq[as.integer(node_count$Var1) == node[1]]) %>%
+    mutate(site = sapply(strsplit(as.character(event), "_"), "[[", 1)) %>%
+    mutate(event_no = as.integer(sapply(strsplit(as.character(event), "_"), "[[", 2))) %>%
+    group_by(site) %>%
+    mutate(lon = SACTN_site_list$lon[as.character(SACTN_site_list$site) == site[1]]) %>%
+    mutate(lat = SACTN_site_list$lat[as.character(SACTN_site_list$site) == site[1]]) %>%
+    group_by(event) %>%
+    mutate(season = SACTN_events$season[SACTN_events$event == event[1]])
+  event_node <- as.data.frame(event_node)
+  return(event_node)
+}
+
+# Functions for unpacking som results
+  # Create mean results from initial data frame based on node clustering
+# testers...
+# data_packet <- all_anom; som_output <- som_mdel_pci
+som_unpack_mean <- function(data_packet, som_output){
+  # Melt data_packet
+  data_packet$event <- sapply(strsplit(basename(as.character(data_packet$event)), ".Rdata"),  "[[", 1)
+  data_packet$node <- som_output$classif
+  data_packet_long <- melt(data_packet, id = c("event", "node"))
+  # Determine which event goes in which node
+  # event_node <- data.frame(event = data_packet$event, node = som_output$classif)
+  # data_packet_long <- data_packet_long %>%
+  #   group_by(event) %>%
+  #   mutate(node = event_node$node[event_node$event == event][1])
+  data_packet_long <- data.table::data.table(data_packet_long)
+  # Create the mean values that serve as the unscaled results from the SOM
+  var_unscaled <- data_packet_long[, .(value = mean(value, na.rm = TRUE)),
+                                   by = .(node, variable)]
+  var_unscaled$x <- as.numeric(sapply(strsplit(as.character(var_unscaled$variable), "_"), "[[", 1))
+  var_unscaled$y <- as.numeric(sapply(strsplit(as.character(var_unscaled$variable), "_"), "[[", 2))
+  var_unscaled$var <- sapply(strsplit(as.character(var_unscaled$variable), "_"), "[[", 3)
+  var_unscaled$variable <- NULL
+  var_unscaled <- var_unscaled[order(var_unscaled$var, var_unscaled$node, var_unscaled$x, var_unscaled$y),]
+  return(var_unscaled)
+}
+```
+
+And now we unpack the SOM results.
+
+```{r som-unpack}
+
+```
+
