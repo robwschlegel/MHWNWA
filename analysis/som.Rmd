@@ -5,6 +5,8 @@ date: "2019-05-13"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
+csl: FMars.csl
+bibliography: MHWNWA.bib
 ---
 
 ```{r global_options, include = FALSE}
@@ -20,6 +22,7 @@ This markdown file will contain the code used to perform the self-organising map
 
 ```{r libraries}
 # Packages used in this vignette
+library(jsonlite, lib.loc = "../R-packages/")
 library(tidyverse) # Base suite of functions
 library(ncdf4) # For opening and working with NetCDF files
 library(lubridate) # For convenient date manipulation
@@ -31,6 +34,16 @@ doMC::registerDoMC(cores = 50)
   # I just find it annoying
 options(scipen = 999)
 ```
+
+## Possible mechanisms
+
+"Finally, Shearman and Lentz (2010) showed that century-long ocean warming trends observed along the entire northeast U.S. coast are not related to local atmospheric forcing but driven by atmospheric warming of source waters in the Labrador Sea and the Arctic, which are advected into the region." [@Richaud2016]
+
+Downelling
+
+Net heatflux (OAFlux) doesn't line up perfectly with seasonal SST signal, but is very close, with heat flux tending to lead SST by 2 -- 3 months.s [@Richaud2016]. It is therefore likely one of the primary drivers of SST and should therefore be strongly considered when constructing SOMs.
+
+There is almost no seasonal cycle for slope waters in any of the regions [@Richaud2016].
 
 ## More
 

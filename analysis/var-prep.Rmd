@@ -20,9 +20,13 @@ This vignette will walk through the steps needed to create mean 'whatever' state
 
 ```{r startup}
 # Packages used in this vignette
+library(jsonlite, lib.loc = "../R-packages/")
 library(tidyverse) # Base suite of functions
 library(ncdf4) # For opening and working with NetCDF files
 library(lubridate) # For convenient date manipulation
+
+# Load functions required below
+source("code/functions.R")
 
 # Set number of cores
 doMC::registerDoMC(cores = 50)
@@ -45,6 +49,13 @@ NAPA_bathy <- readRDS("data/NAPA_bathy.Rda")
 
 # Load MHW results
 NAPA_MHW_sub <- readRDS("data/NAPA_MHW_sub.Rda")
+
+# MHW Events
+NAPA_MHW_event <- NAPA_MHW_sub %>%
+  select(-clims, -cats) %>%
+  unnest(events) %>%
+  filter(row_number() %% 2 == 0) %>%
+  unnest(events)
 ```
 
 For the upcoming variable prep we are also going to want the NAPA coordinates that are within our chosen study area as seen with `NWA_corners`. We will also create a subsetted bathy coord file, too, so as to have an effective land mask.. This will help us to reduce a lot of computational cost as we go along because many of the pixels over land are given 0 values, rather than missing values, which is a strange choice...
@@ -59,7 +70,7 @@ NAPA_coords_sub <- NAPA_coords %>%
 # Tha NAPA bathymetry for the study area only
 NAPA_bathy_sub <- NAPA_bathy %>% 
   right_join(NAPA_coords_sub, by = c("lon_index", "lat_index", "lon", "lat"))
-saveRDS(NAPA_bathy_sub, "data/NAPA_bathy_sub.Rda")
+# saveRDS(NAPA_bathy_sub, "data/NAPA_bathy_sub.Rda")
 ```
 
 
@@ -73,16 +84,18 @@ NAPA_vars <- ncdump::NetCDF(NAPA_files[1])$variable[1:6]
 NAPA_vars
 ```
 
-These variable are not an unruly amount of information and so we will extract and compile all of them when creating the data packets that will be fed into our SOMs later. Many of these variables are likely to have very high auto-correlative relationships in which case we will need to select only the most representative of them. I foresee the multiple heat terms coming to a head with one another, though I can't yet say from this early vantage point which will be best.
+These variable are not an unruly amount of information and so we will extract and compile most of them when creating the data packets that will be fed into our SOMs later. Many of these variables are likely to have very high auto-correlative relationships in which case we will need to select only the most representative of them. I foresee the multiple heat terms coming to a head with one another, though I can't yet say from this early vantage point which will be best.
 
-It should go without saying, but we will not be accounting for lon/lat or the three time variables at the end of the above spreadsheet as these are not proper abiotic variables. Therefore our initial variable list is as follows:
+It should go without saying, but we will not be accounting for lon/lat or the three time variables at the end of the above spreadsheet as these are not proper abiotic variables. Also, upon closer examination it was discovered that the heat terms for sensible (`qsb_oce`) and latent (`qla_oce`) heat flux into the ocean do not contain any data, so they cannot be used here. Lastly, we only want to use variables that are present in all of the regions. This means that river runoff (`runoffs`) is not relevant to this work as it's localised effects will be reflected in changes to `sss`, which is a variable present in all regions, whereas river runoff is not. We will also exclude evaporation/preciptation over ice (`emp_ice`) as this variable is only present in the northern regions. That being said, we will keep water flux due t0 freezing/melting ice (`fmmflx`), even though this variable does not have data in all regions, because we suspect it may play a role in the formation of MHWs. Specifically as they pertain to phenological shifts in ice formation.
+
+Therefore our initial variable list is as follows:
 
 ```{r ncdf-var-initial}
 # Remove unwanted variables
-NAPA_vars <- ncdump::NetCDF(NAPA_files[1])$variable[c(1:5, 8:17), 1:6]
+NAPA_vars <- ncdump::NetCDF(NAPA_files[1])$variable[c(2:5, 8, 10, 12, 14:17), 1:6]
 
 # Save
-saveRDS(NAPA_vars, "data/NAPA_vars.Rda")
+# saveRDS(NAPA_vars, "data/NAPA_vars.Rda")
 
 NAPA_vars
 ```
@@ -121,8 +134,47 @@ NAPA_files_dates <- dplyr::arrange(NAPA_files_dates, date)
 
 Part of the data packet we need to create for the SOMs is the anomaly values. In order to create anomalies however we need to first create climatologies for all of the variables. This may prove to be a somewhat daunting task, but it's what we are here to do! In order to create a climatology of values we will need to load all of the files and then pixel-wise go about getting the seasonal (daily) climatologies. This will be done with the same function (`ts2clm()`) that is used for the MHW climatologies. We will first create a function that extracts the desired variables from any NetCDF files fed to it. With that done it should be a routine matter to get the climatologies. Hold onto your hats, this is going to be RAM heavy...
 
-```{r clim-var-all}
+```{r clim-var-all, eval=FALSE}
+# Load functions required below
+source("code/functions.R")
 
+# NB: The creation of a clim for one variable is too large to run via ldply
+# Rather they must be run one at a time via a for loop and the memmory dumped after each
+for(i in 1:nrow(NAPA_vars)){
+  clim_one_var(NAPA_vars$name[i])
+  gc()
+}
+```
+
+With that large hurdle jumped, let's double down and join all of these data together for ease of loading in the future.
+
+```{r clim-var-all-join, eval=FALSE}
+# Load all variable climatologies and join variables with a for loop
+  # NB: This should be optimised...
+NAPA_clim_vars <- data.frame()
+# system.time(
+for(i in 1:length(NAPA_vars$name)){
+  var_one <- readRDS(file = paste0("data/NAPA_clim_",NAPA_vars$name[i],".Rda"))
+  if(nrow(NAPA_clim_vars) == 0){
+    NAPA_clim_vars <- rbind(var_one, NAPA_clim_vars)
+  } else {
+    NAPA_clim_vars <- left_join(NAPA_clim_vars, var_one, 
+                                by = c("lon", "lat", "doy"))
+  }
+}
+# ) # 115 seconds for all
+rm(var_one, i); gc()
+
+# Convert DOY to MM-DD for joining to daily data below
+NAPA_clim_vars$doy <- format(as.Date(NAPA_clim_vars$doy, origin = "2015-12-31"), "%m-%d")
+
+# Change column names to highlight that these are climatology values
+colnames(NAPA_clim_vars)[-c(1:3)] <- paste0(colnames(NAPA_clim_vars)[-c(1:3)],"_clim")
+
+# Reorder columns
+# NAPA_clim_vars <- dplyr::select(NAPA_clim_vars, lon, lat, doy, everything())
+
+# saveRDS(NAPA_clim_vars, "data/NAPA_clim_vars.Rda")
 ```
 
 
@@ -130,32 +182,34 @@ Part of the data packet we need to create for the SOMs is the anomaly values. In
 
 We needed a list of the dates present in each file so that we can easily load only the NetCDF files we need to extract our desired variables. The dates we want are the range of dates during each of the MHWs detected in the [SST preparation](https://robwschlegel.github.io/MHWNWA/sst-prep.html) vignette. In the chunk below we will create a function that decides which files should have their variables loaded and a function that binds everything up into tidy data packets that our SOM can ingest.
 
-```{r ncdf-var-extractor}
+```{r extractor-funcs}
+# Load NAPA file date index
+NAPA_files_dates <- readRDS("data/NAPA_files_dates.Rda")
+
+# Load full variable climatology file
+NAPA_clim_vars <- readRDS("data/NAPA_clim_vars.Rda")
+
 # Function for extracting the desired variables from a given NetCDF file
 # testers...
 # file_name <- NAPA_files[1]
-extract_all_var <- function(file_name, coords = NWA_corners){
+extract_all_var <- function(file_name){
   
   # Extract and join variables with a for loop
-    # This should be optimised...
+    # NB: This should be optimised...
   NAPA_vars_extracted <- data.frame()
+  system.time(
   for(i in 1:length(NAPA_vars$name)){
     extract_one <- extract_one_var(NAPA_vars$name[i], file_name = file_name)
     if(nrow(NAPA_vars_extracted) == 0){
       NAPA_vars_extracted <- rbind(extract_one, NAPA_vars_extracted)
     } else {
-      NAPA_vars_extracted <- left_join(NAPA_vars_extracted, extract_one, by = c("lon_index", "lat_index", "t"))
+      NAPA_vars_extracted <- left_join(NAPA_vars_extracted, extract_one, 
+                                       by = c("lon_index", "lat_index", "lon", "lat", "bathy", "t"))
     }
   }
-
-  # Subset to the study area
-  # NAPA_vars_sub <- left_join(NAPA_vars_extracted, NAPA_coords, by = c("lon_index", "lat_index")) %>% 
-    # filter(lon >= NWA_corners[1], lon <= NWA_corners[2],
-           # lat >= NWA_corners[3], lat <= NWA_corners[4]) %>% 
-    # dplyr::select(lon_index, lat_index, lon, lat, everything())
-  
-  # Free up disk space, useful when being multi-cored
-  # rm(NAPA_vars_extracted); gc()
+  ) # 18 seconds for one
+  NAPA_vars_extracted <- dplyr::select(NAPA_vars_extracted,
+                                       lon_index, lat_index, lon, lat, t, bathy, everything())
   
   # Exit
   return(NAPA_vars_extracted)
@@ -165,30 +219,82 @@ extract_all_var <- function(file_name, coords = NWA_corners){
 # testers...
 # event_sub <- NAPA_MHW_event[23,]
 data_packet <- function(event_sub){
+  
+  # Create date and file index for loading
   date_idx <- seq(event_sub$date_start, event_sub$date_end, by = "day")
   file_idx <- filter(NAPA_files_dates, date %in% date_idx) %>% 
     mutate(file = as.character(file)) %>% 
     select(file) %>% 
     unique()
-  system.time(
+  
+  # Load required base data
+  # system.time(
   packet_base <- plyr::ldply(file_idx$file, extract_all_var) %>% 
-    filter(t %in% date_idx)
-  ) # 264 seconds for seven files
+    filter(t %in% date_idx) %>% 
+    mutate(doy = format(t, "%m-%d"))
+  # ) # 125 seconds for seven files
+  
+  # Join to climatologies
+  packet_join <- left_join(packet_base, NAPA_clim_vars, by = c("lon", "lat", "doy"))
+  
+  # Create anomaly values and remove clim columns
+  packet_anom <- packet_join %>% 
+    mutate(emp_oce_anom = emp_oce - emp_oce_clim,
+           fmmflx_anom = fmmflx - fmmflx_clim,
+           mldkz5_anom = mldkz5 - mldkz5_clim,
+           mldr10_1_anom = mldr10_1 - mldr10_1_clim,
+           qemp_oce_anom = qemp_oce - qemp_oce_clim,
+           qns_anom = qns - qns_clim,
+           qt_anm = qt - qt_clim,
+           ssh_anom = ssh - ssh_clim,
+           sss_anom = sss - sss_clim,
+           sst_anom = sst - sst_clim,
+           taum_anom = taum - taum_clim) %>% 
+    dplyr::select(lon, lat, doy, emp_oce:taum_anom, 
+                  -c(colnames(NAPA_clim_vars)[-c(1:3)]))
+    # dplyr::select(-c(colnames(packet_base)[-c(3,4,ncol(packet_base))]), 
+    #               -c(colnames(NAPA_clim_vars)[-c(1:3)]))
+  
+  # Create mean synoptic values
+  packet_mean <- packet_anom %>% 
+    select(-doy) %>% 
+    group_by(lon, lat) %>% 
+    summarise_all(mean, na.rm = T) %>% 
+    arrange(lon, lat) %>% 
+    ungroup() %>% 
+    nest(.key = "synoptic")
+  
+  # Combine results with MHW dataframe
+  packet_res <- cbind(event_sub, packet_mean)
+  
+  # Make long and create coords column
+  # packet_long <- packet_mean %>% 
+    # gather(key = "var", value = "val", -c(lon, lat)) %>% 
+    # mutate(coords = paste0(lon,"_" ,lat,"_",var)) %>% 
+    # arrange(var, lon, lat)
+  
+  # Transpose
+  # packet_wide <- t(packet_long$val)
+  # colnames(packet_wide) <- packet_long$coords
+  
+  # Exit
+  # return(packet_wide)
+  return(packet_res)
 }
 ```
 
-
+With our functions sorted, it is now time to create our data packets
 
 ```{r synoptic-states}
-# Load NAPA file date index
-NAPA_files_dates <- readRDS("data/NAPA_files_dates.Rda")
-# MHW Events
-NAPA_MHW_event <- NAPA_MHW_sub %>%
-  select(-clims, -cats) %>%
-  unnest(events) %>%
-  filter(row_number() %% 2 == 0) %>%
-  unnest(events)
+# Set number of cores
+  # NB: Was set to 25 as someone else was using the server at the time
+doMC::registerDoMC(cores = 25)
+
+# Create one big packet
+system.time(
+synoptic_states <- plyr::ddply(NAPA_MHW_event, c("region", "sub_region", "event_no"), data_packet, .parallel = T)
+) # 82 seconds for 2
 ```
 
-With all of our synoptic snapshots for our chosen variables created it now time to feed them to the [Self-organising map (SOM) analysis](https://robwschlegel.github.io/MHWNWA/som.html).
+With all of our synoptic snapshots for our chosen variables created it is now time to feed them to the [Self-organising map (SOM) analysis](https://robwschlegel.github.io/MHWNWA/som.html).
 

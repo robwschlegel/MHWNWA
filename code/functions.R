@@ -60,6 +60,7 @@ map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE
 # testers...
 # nc_var <- "sst"
 # nc_var <- "taum"
+# nc_var <- "qla_oce"
 # file_name <- NAPA_files[1]
 extract_one_var <- function(file_name, nc_var, coords = NAPA_bathy_sub){
   # Open connection
@@ -82,13 +83,13 @@ extract_one_var <- function(file_name, nc_var, coords = NAPA_bathy_sub){
   colnames(want_var)[4] <- nc_var
 
 
-  test <- filter(want_var, t == date_end)
-  ggplot(NAPA_coords, aes(x = lon, y = lat)) +
-    # geom_polygon(data = map_base, aes(group = group), show.legend = F) +
-    geom_point(data = test, aes(colour = sst),
-               shape = 15, size = 0.5) +
-    coord_cartesian(xlim = NWA_corners[1:2],
-                    ylim = NWA_corners[3:4])
+  # test <- filter(want_var, t == date_end)
+  # ggplot(NAPA_coords, aes(x = lon, y = lat)) +
+  #   # geom_polygon(data = map_base, aes(group = group), show.legend = F) +
+  #   geom_point(data = test, aes(colour = sst),
+  #              shape = 15, size = 0.5) +
+  #   coord_cartesian(xlim = NWA_corners[1:2],
+  #                   ylim = NWA_corners[3:4])
 
   # Close connection and exit
   nc_close(nc)

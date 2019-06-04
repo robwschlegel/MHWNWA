@@ -5,6 +5,8 @@ date: "2019-05-23"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
+csl: FMars.csl
+bibliography: MHWNWA.bib
 ---
 
 ```{r global_options, include = FALSE}
@@ -20,6 +22,7 @@ Building on the work performed in the [Polygon preparation](https://robwschlegel
 
 ```{r libraries}
 # Packages used in this vignette
+library(jsonlite, lib.loc = "../R-packages/")
 library(tidyverse) # Base suite of functions
 library(heatwaveR, lib.loc = "../R-packages/") # For detecting MHWs
 # cat(paste0("heatwaveR version = ", packageDescription("heatwaveR")$Version))
@@ -273,3 +276,6 @@ event_lolli_plot
 ```
 
 Everything appears to check out. Up next in the [Variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette we will go through the steps necessary to build the data that will be fed into our self-organising maps as seen in the [Self-organising map (SOM) analysis](https://robwschlegel.github.io/MHWNWA/som.html) vignette.
+
+One last point however is that according to @Richaud2016 the different slopebreaks for the different regions occur at different depths, from 50 m to 400 m depending. They do however note that using a static definition of 200 m for the break does not produce significantly different results. Therefore, for the time being we will maintain the spatial breaks used above.
+
