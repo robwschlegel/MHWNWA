@@ -28,6 +28,7 @@ library(heatwaveR, lib.loc = "../R-packages/") # For detecting MHWs
 # cat(paste0("heatwaveR version = ", packageDescription("heatwaveR")$Version))
 library(FNN) # For fastest nearest neighbour searches
 library(ncdf4) # For opening and working with NetCDF files
+# library(tidync) # For a more tidy approach to managing NetCDF data
 library(SDMTools) # For finding points within polygons
 library(lubridate) # For convenient date manipulation
 
