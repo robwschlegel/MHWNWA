@@ -245,6 +245,7 @@ data_packet <- function(event_sub){
            mldr10_1_anom = mldr10_1 - mldr10_1_clim,
            qemp_oce_anom = qemp_oce - qemp_oce_clim,
            qns_anom = qns - qns_clim,
+           # NB: I misspelled 'qt_anom' here...
            qt_anm = qt - qt_clim,
            ssh_anom = ssh - ssh_clim,
            sss_anom = sss - sss_clim,

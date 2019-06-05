@@ -48,6 +48,9 @@ doMC::registerDoMC(cores = 50)
   # I just find it annoying
 options(scipen = 999)
 
+# Individual regions
+NWA_coords <- readRDS("data/NWA_coords_cabot.Rda")
+
 # The NAPA variables
 NAPA_vars <- readRDS("data/NAPA_vars.Rda")
 
@@ -58,6 +61,13 @@ NWA_corners <- readRDS("data/NWA_corners.Rda")
   # This also better matches the previous South African work
   # The Tasmania work had corners of roughly 2 degrees greater than the study area
 NWA_corners_sub <- c(NWA_corners[1]+8, NWA_corners[2]-8, NWA_corners[3]+8, NWA_corners[4]-8)
+
+# The base map
+map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE)) %>%
+  dplyr::rename(lon = long) %>%
+  mutate(group = ifelse(lon > 180, group+9999, group),
+         lon = ifelse(lon > 180, lon-360, lon)) %>% 
+  select(-region, -subregion)
 ```
 
 
@@ -99,7 +109,7 @@ packet_all_anom <- synoptic_states_unnest %>%
   # select(region, sub_region, event_no, synoptic) %>% 
   # unnest() %>% 
   # NB: A shortened list of variables to be more manageable
-  select(region:lat, sst, taum, qt, mldr10_1) %>% 
+  select(region:lat, sst_anom, taum_anom, qt_anm, mldr10_1_anom) %>% 
   # NB: The full list if one desires
   # select(region:lat, emp_oce_anom:taum_anom) %>% 
   data.table::data.table() %>% 
@@ -117,7 +127,7 @@ packet_all_anom <- synoptic_states_unnest %>%
          # sub_region_ply = sub_region) %>% 
   # plyr::ddply(c("region_ply", "sub_region_ply"), wide_matrix, .parallel = T) %>% 
   # select(-region_ply, -sub_region_ply)
-) # 230 seconds
+) # 209 seconds
 saveRDS(packet_all_anom, "data/packet_all_anom.Rda")
 ```
 
@@ -194,48 +204,37 @@ som_unpack_mean <- function(data_packet, som_output){
                            node = som_output$classif) %>% 
     separate(event_ID, into = c("region", "sub_region", "event_no"), sep = "BBB") %>% 
     cbind(data_packet[,-1]) %>% 
-    # separate(event_ID, into = c("region", "sub_region", "event_no"), sep = "_") %>% 
-    # mutate(node = som_output$classif) %>% 
-    # gather(key = "var", value = "val", -c(region, sub_region, event_no, node))
     data.table() %>% 
     reshape2::melt(id = c("region", "sub_region", "event_no", "node"),
                    measure = c(colnames(.)[-c(1:4)]), 
-                   variable.name = "variable", value.name = "val")
-  
-  
-  # data_packet_long <- melt(data_packet, id = c("event", "node"))
+                   variable.name = "variable", value.name = "value")
   
   # Create the mean values that serve as the unscaled results from the SOM
-  # var_unscaled <- data.table::data.table(data_packet_long)
-  var_unscaled <- data_packet_long[, .(value = mean(val, na.rm = TRUE)),
+  var_unscaled <- data_packet_long[, .(val = mean(value, na.rm = TRUE)),
                                    by = .(node, variable)] %>% 
-    # mutate(lon = as.numeric(sapply(strsplit(as.character(variable), "_"), "[[", 1)),
-    #        lat = as.numeric(sapply(strsplit(as.character(variable), "_"), "[[", 2)),
-    #        var = as.numeric(sapply(strsplit(as.character(variable), "_"), "[[", 3)),
-    #        variable = NULL) %>% 
     separate(variable, into = c("lon", "lat", "var"), sep = "BBB") %>%
-    # tidyr::unite(col = "var", c(var, var2)) %>% 
-    arrange(node, var, lon, lat)
-  # var_unscaled$x <- as.numeric(sapply(strsplit(as.character(var_unscaled$variable), "_"), "[[", 1))
-  # var_unscaled$y <- as.numeric(sapply(strsplit(as.character(var_unscaled$variable), "_"), "[[", 2))
-  # var_unscaled$var <- sapply(strsplit(as.character(var_unscaled$variable), "_"), "[[", 3)
-  # var_unscaled$variable <- NULL
-  # var_unscaled <- var_unscaled[order(var_unscaled$var, var_unscaled$node, var_unscaled$x, var_unscaled$y),]
+    dplyr::arrange(node, var, lon, lat) %>% 
+    mutate(lon = as.numeric(lon),
+           lat = as.numeric(lat))
   return(var_unscaled)
 }
-
-# test <- strsplit(as.character(var_unscaled$variable), "_")
 ```
 
 And now we unpack the SOM results.
 
 ```{r som-unpack}
+# Load data packet
+all_anom <- readRDS("data/packet_all_anom.Rda")
+
 # Load SOM packet for anomaly data
 som_all_anom <- readRDS("data/som_all_anom.Rda")
 
 # Determine node index
 node_index_all_anom <- event_node_index(all_anom, som_all_anom)
 
+# Create and save mean synoptic states per node
+node_mean_all_anom <- som_unpack_mean(all_anom, som_all_anom)
+# saveRDS(node_mean_all_anom, "data/node_mean_all_anom.Rda")
 ```
 
 ## Visualise SOM results
@@ -243,13 +242,57 @@ node_index_all_anom <- event_node_index(all_anom, som_all_anom)
 First up the functions for visualising the unpacked results.
 
 ```{r som-visualise-func}
+# Ease of life function
+som_node_visualise <- function(sub_var = "sst_anom", viridis_option = "D"){
+  
+  # Subset data
+  node_mean_all_anom_sub <- node_mean_all_anom %>% 
+    filter(var == sub_var) %>% 
+    mutate(lon = plyr::round_any(lon, 0.25),
+           lat = plyr::round_any(lat, 0.25)) %>% 
+    group_by(node, lon, lat, var) %>% 
+    summarise(val = mean(val, na.rm = T))
 
+  # Create plot
+  som_panel_plot <- ggplot(node_mean_all_anom_sub, aes(x = lon, y = lat)) +
+    # geom_point(aes(colour = val)) +
+    geom_raster(aes(fill  = val)) +
+    geom_polygon(data = map_base, aes(group = group), show.legend = F) +
+    geom_label(data = node_index_all_anom, aes(x = -60, y = 35, label = paste0("n = ",count))) +
+    # geom_polygon(data = NWA_coords, aes(group = region, fill = region, colour = region), alpha = 0.1) +
+    coord_cartesian(xlim = NWA_corners_sub[1:2],
+                    ylim = NWA_corners_sub[3:4], 
+                    expand = F) +
+    scale_fill_gradient2(low = "blue", high = "red") +
+    # scale_colour_viridis_c(option = viridis_option) +
+    labs(x = NULL, y = NULL, fill = sub_var) +
+    facet_wrap(~node, ncol = 4)
+  return(som_panel_plot)
+}
 ```
-
 
 And now for the big reveal!
 
 ```{r som-visualise}
+# SST
+plot_sst_anom <- som_node_visualise("sst_anom")
+# plot_sst_anom
+ggsave(plot_sst_anom, filename = "output/som_plot_sst_anom.pdf", height = 12, width = 13)
 
+# Net downward heat flux (qt)
+plot_qt_anom <- som_node_visualise("qt_anm")
+# plot_qt_anom
+ggsave(plot_qt_anom, filename = "output/som_plot_qt_anom.pdf", height = 12, width = 13)
+
+# Mixed Layer Depth (mldr10_1)
+plot_mldr10_1_anom <- som_node_visualise("mldr10_1_anom")
+# plot_mldr10_1_anom
+ggsave(plot_mldr10_1_anom, filename = "output/som_plot_mldr10_1_anom.pdf", height = 12, width = 13)
+
+# Wind stress (taum)
+plot_taum_anom <- som_node_visualise("taum_anom")
+# plot_taum_anom
+ggsave(plot_taum_anom, filename = "output/som_plot_taum_anom.pdf", height = 12, width = 13)
 ```
 
+See the files in the `output/` folder. They aren't shown here because they take a bit too long to render.
