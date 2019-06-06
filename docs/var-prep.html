@@ -11,7 +11,7 @@
 
 <meta name="author" content="Robert Schlegel" />
 
-<meta name="date" content="2019-05-23" />
+<meta name="date" content="2019-05-29" />
 
 <title>Variable preparation</title>
 
@@ -303,6 +303,9 @@ div.tocify {
       <a href="var-prep.html">Variable preparation</a>
     </li>
     <li>
+      <a href="vec-prep.html">Vector preparation</a>
+    </li>
+    <li>
       <a href="som.html">SOM analysis</a>
     </li>
   </ul>
@@ -337,7 +340,7 @@ div.section {
 
 <h1 class="title toc-ignore">Variable preparation</h1>
 <h4 class="author"><em>Robert Schlegel</em></h4>
-<h4 class="date"><em>2019-05-23</em></h4>
+<h4 class="date"><em>2019-05-29</em></h4>
 
 </div>
 
@@ -371,12 +374,15 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/07137d9327fc8ba24bc6a5586b0cc5117bb31d0c" target="_blank">07137d9</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/46b98f20c94f2ec57316e9a834e5290c3e7942ec" target="_blank">46b98f2</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    data/NAPA_clim_U.Rda
+    Ignored:    data/NAPA_clim_V.Rda
+    Ignored:    data/NAPA_clim_W.Rda
     Ignored:    data/NAPA_clim_emp_ice.Rda
     Ignored:    data/NAPA_clim_emp_oce.Rda
     Ignored:    data/NAPA_clim_fmmflx.Rda
@@ -393,10 +399,14 @@ Ignored files:
     Ignored:    data/NAPA_clim_sst.Rda
     Ignored:    data/NAPA_clim_taum.Rda
     Ignored:    data/NAPA_clim_vars.Rda
+    Ignored:    data/NAPA_clim_vecs.Rda
     Ignored:    data/node_mean_all_anom.Rda
     Ignored:    data/packet_all_anom.Rda
     Ignored:    data/som_all_anom.Rda
     Ignored:    data/synoptic_states.Rda
+
+Unstaged changes:
+    Modified:   analysis/_site.yml
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -427,6 +437,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/49c610573c920e241a16a0ce72d593e1408b1e90/analysis/var-prep.Rmd" target="_blank">49c6105</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-06
+</td>
+<td style="text-align:left;">
+Finished vector data packet pipeline
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/44ac335c253cdc971d10cb55aa0d82ec27f52540/analysis/var-prep.Rmd" target="_blank">44ac335</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-06
+</td>
+<td style="text-align:left;">
+Working on inclusion of vectors into SOM pipeline
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/6dd6da87ca5aa18617a30851b7f9cffe25ed7b10/docs/var-prep.html" target="_blank">6dd6da8</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-06
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -608,7 +669,7 @@ NAPA_MHW_event &lt;- NAPA_MHW_sub %&gt;%
   unnest(events) %&gt;%
   filter(row_number() %% 2 == 0) %&gt;%
   unnest(events)</code></pre>
-<p>For the upcoming variable prep we are also going to want the NAPA coordinates that are within our chosen study area as seen with <code>NWA_corners</code>. We will also create a subsetted bathy coord file, too, so as to have an effective land mask.. This will help us to reduce a lot of computational cost as we go along because many of the pixels over land are given 0 values, rather than missing values, which is a strange choice…</p>
+<p>For the upcoming variable prep we are also going to want the NAPA coordinates that are within our chosen study area as seen with <code>NWA_corners</code>. We will also create a subsetted bathy coord file, too, so as to have an effective land mask. This will help us to reduce a lot of computational cost as we go along because many of the pixels over land are given 0 values, rather than missing values, which is a strange choice…</p>
 <pre class="r"><code># The NAPPA coordinates for the study area only
 NAPA_coords_sub &lt;- NAPA_coords %&gt;% 
   filter(lon &gt;= NWA_corners[1], lon &lt;= NWA_corners[2],
@@ -617,7 +678,8 @@ NAPA_coords_sub &lt;- NAPA_coords %&gt;%
 
 # Tha NAPA bathymetry for the study area only
 NAPA_bathy_sub &lt;- NAPA_bathy %&gt;% 
-  right_join(NAPA_coords_sub, by = c(&quot;lon_index&quot;, &quot;lat_index&quot;, &quot;lon&quot;, &quot;lat&quot;))
+  right_join(NAPA_coords_sub, by = c(&quot;lon_index&quot;, &quot;lat_index&quot;, &quot;lon&quot;, &quot;lat&quot;)) %&gt;% 
+  na.omit()
 # saveRDS(NAPA_bathy_sub, &quot;data/NAPA_bathy_sub.Rda&quot;)</code></pre>
 </div>
 <div id="chosen-variables" class="section level2">
@@ -676,7 +738,7 @@ NAPA_vars</code></pre>
 </div>
 <div id="synoptic-states" class="section level2">
 <h2>Synoptic states</h2>
-<p>With the variables chosen, the next step is to create mean synoptic states for each variable during each of the MHWs detected in all sub-regions. In order to make that process go more smoothly we will first create a date index of all of the NAPA files present on Eric Oliver’s <code>tikoraluk</code> server. Unfortunately that means that from here out the code in this vignette will only run on said server. The output of this vignette will however be publicly available <a href="https://github.com/robwschlegel/MHWNWA/tree/master/data">here</a>.</p>
+<p>With the variables chosen, the next step is to create mean synoptic states for each variable during each of the MHWs detected in all sub-regions. In order to make that process go more smoothly we will first create a date index of all of the NAPA files present on Eric Oliver’s local server. Unfortunately that means that from here out the code in this vignette will only run on said server. The output of this vignette will however be publicly available <a href="https://github.com/robwschlegel/MHWNWA/tree/master/data">here</a>.</p>
 <div id="date-index-for-napa-files" class="section level3">
 <h3>Date index for NAPA files</h3>
 <p>To create the index of dates to be found within each of the thousands of NAPA surface NetCDF files we will use a simple for loop to crawl through the files and write down for us in one long spreadsheet which dates are to be found in which files. While this could be done on the fly in the following steps, it will just be easier to have a stable index prepared.</p>
@@ -802,8 +864,7 @@ data_packet &lt;- function(event_sub){
            mldr10_1_anom = mldr10_1 - mldr10_1_clim,
            qemp_oce_anom = qemp_oce - qemp_oce_clim,
            qns_anom = qns - qns_clim,
-           # NB: I misspelled &#39;qt_anom&#39; here...
-           qt_anm = qt - qt_clim,
+           qt_anom = qt - qt_clim,
            ssh_anom = ssh - ssh_clim,
            sss_anom = sss - sss_clim,
            sst_anom = sst - sst_clim,
@@ -851,6 +912,9 @@ synoptic_states &lt;- plyr::ddply(NAPA_MHW_event, c(&quot;region&quot;, &quot;su
 # Save
 # saveRDS(synoptic_states, &quot;data/synoptic_states.Rda&quot;)</code></pre>
 <p>With all of our synoptic snapshots for our chosen variables created it is now time to feed them to the <a href="https://robwschlegel.github.io/MHWNWA/som.html">Self-organising map (SOM) analysis</a>.</p>
+<div id="refs">
+
+</div>
 </div>
 </div>
 <div id="session-information" class="section level2">
@@ -876,34 +940,35 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] bindrcpp_0.2.2       heatwaveR_0.3.6.9004 data.table_1.11.6   
- [4] lubridate_1.7.4      ncdf4_1.16           forcats_0.3.0       
- [7] stringr_1.3.1        dplyr_0.7.6          purrr_0.2.5         
-[10] readr_1.1.1          tidyr_0.8.1          tibble_1.4.2        
-[13] ggplot2_3.0.0        tidyverse_1.2.1      jsonlite_1.6        
+ [1] bindrcpp_0.2.2       tidync_0.2.1         heatwaveR_0.3.6.9004
+ [4] data.table_1.11.6    lubridate_1.7.4      ncdf4_1.16          
+ [7] forcats_0.3.0        stringr_1.3.1        dplyr_0.7.6         
+[10] purrr_0.2.5          readr_1.1.1          tidyr_0.8.1         
+[13] tibble_1.4.2         ggplot2_3.0.0        tidyverse_1.2.1     
+[16] jsonlite_1.6        
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.18      lattice_0.20-35   assertthat_0.2.0 
- [4] rprojroot_1.3-2   digest_0.6.16     foreach_1.4.4    
- [7] utf8_1.1.4        R6_2.2.2          cellranger_1.1.0 
+ [1] Rcpp_0.12.18      lattice_0.20-35   utf8_1.1.4       
+ [4] assertthat_0.2.0  rprojroot_1.3-2   digest_0.6.16    
+ [7] foreach_1.4.4     R6_2.2.2          cellranger_1.1.0 
 [10] plyr_1.8.4        backports_1.1.2   evaluate_0.11    
 [13] httr_1.3.1        pillar_1.3.0      rlang_0.2.2      
-[16] lazyeval_0.2.1    readxl_1.1.0      rstudioapi_0.7   
-[19] whisker_0.3-2     R.utils_2.7.0     R.oo_1.22.0      
-[22] rmarkdown_1.10    htmlwidgets_1.3   munsell_0.5.0    
-[25] broom_0.5.0       compiler_3.6.0    modelr_0.1.2     
-[28] pkgconfig_2.0.2   htmltools_0.3.6   tidyselect_0.2.4 
-[31] workflowr_1.1.1   codetools_0.2-15  doMC_1.3.5       
-[34] fansi_0.3.0       viridisLite_0.3.0 crayon_1.3.4     
-[37] withr_2.1.2       R.methodsS3_1.7.1 grid_3.6.0       
-[40] nlme_3.1-137      gtable_0.2.0      git2r_0.23.0     
-[43] magrittr_1.5      scales_1.0.0      cli_1.0.0        
-[46] stringi_1.2.4     xml2_1.2.0        iterators_1.0.10 
-[49] tools_3.6.0       glue_1.3.0        maps_3.3.0       
-[52] hms_0.4.2         parallel_3.6.0    ncdump_0.0.3     
-[55] yaml_2.2.0        colorspace_1.3-2  rvest_0.3.2      
-[58] plotly_4.9.0      knitr_1.20        bindr_0.1.1      
-[61] haven_1.1.2      </code></pre>
+[16] lazyeval_0.2.1    readxl_1.1.0      ncmeta_0.0.4     
+[19] rstudioapi_0.7    whisker_0.3-2     R.utils_2.7.0    
+[22] R.oo_1.22.0       rmarkdown_1.10    htmlwidgets_1.3  
+[25] munsell_0.5.0     broom_0.5.0       compiler_3.6.0   
+[28] modelr_0.1.2      pkgconfig_2.0.2   htmltools_0.3.6  
+[31] tidyselect_0.2.4  workflowr_1.1.1   codetools_0.2-15 
+[34] doMC_1.3.5        fansi_0.3.0       viridisLite_0.3.0
+[37] crayon_1.3.4      withr_2.1.2       R.methodsS3_1.7.1
+[40] grid_3.6.0        nlme_3.1-137      gtable_0.2.0     
+[43] git2r_0.23.0      magrittr_1.5      scales_1.0.0     
+[46] cli_1.0.0         stringi_1.2.4     xml2_1.2.0       
+[49] iterators_1.0.10  tools_3.6.0       glue_1.3.0       
+[52] RNetCDF_1.9-1     maps_3.3.0        hms_0.4.2        
+[55] ncdump_0.0.3      parallel_3.6.0    yaml_2.2.0       
+[58] colorspace_1.3-2  rvest_0.3.2       plotly_4.9.0     
+[61] knitr_1.20        bindr_0.1.1       haven_1.1.2      </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
