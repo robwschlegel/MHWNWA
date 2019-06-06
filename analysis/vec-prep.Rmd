@@ -94,7 +94,7 @@ NAPA_W <- ncdump::NetCDF(NAPA_W_files[1])$variable[1:6]
 NAPA_W
 ```
 
-It appears that the U and V files also contain their corresponding downward stress (`utau` and `vtau`), though with the availability of the W vectors, I don't know that we need these, too.
+It appears that the U and V files also contain their corresponding downward stress (`utau` and `vtau`), though with the availability of the W vectors, I don't know that we need these, too. For now we will just stick with: `uoce`, `voce`, and `wo`.
 
 
 ## Synoptic states
@@ -114,15 +114,16 @@ for(i in 1:length(NAPA_files)){
   date_start <- ymd(str_sub(basename(as.character(file_name)), start = 26, end = 33))
   date_end <- ymd(str_sub(basename(as.character(file_name)), start = 35, end = 43))
   date_seq <- seq(date_start, date_end, by = "day")
-  date_info <- data.frame(file = file_name, date = date_seq)
-  NAPA_files_dates <- rbind(date_info, NAPA_vector_files_dates)
+  # Take the middle date as this is the real data in the pentad
+  date_info <- data.frame(file = file_name, date = date_seq[3])
+  NAPA_vector_files_dates <- rbind(date_info, NAPA_vector_files_dates)
 }
 
 # Order by date, just for tidiness
 NAPA_vector_files_dates <- dplyr::arrange(NAPA_vector_files_dates, date)
 
 # Save
-# saveRDS(NAPA_files_dates, "data/NAPA_files_dates.Rda")
+# saveRDS(NAPA_vector_files_dates, "data/NAPA_vector_files_dates.Rda")
 ```
 
 
@@ -134,43 +135,40 @@ Part of the data packet we need to create for the SOMs is the anomaly values. In
 # Load functions required below
 source("code/functions.R")
 
-# NB: The creation of a clim for one variable is too large to run via ldply
-# Rather they must be run one at a time via a for loop and the memmory dumped after each
-for(i in 1:nrow(NAPA_vars)){
-  clim_one_var(NAPA_vars$name[i])
-  gc()
-}
+# U
+clim_one_vec(NAPA_U_files)
+gc()
+
+# V
+clim_one_vec(NAPA_V_files)
+gc()
+
+# W
+clim_one_vec(NAPA_W_files)
+gc()
 ```
 
-With that large hurdle jumped, let's double down and join all of these data together for ease of loading in the future.
+And then combine them into one big clim file.
 
 ```{r clim-var-all-join, eval=FALSE}
-# Load all variable climatologies and join variables with a for loop
-  # NB: This should be optimised...
-NAPA_clim_vars <- data.frame()
-# system.time(
-for(i in 1:length(NAPA_vars$name)){
-  var_one <- readRDS(file = paste0("data/NAPA_clim_",NAPA_vars$name[i],".Rda"))
-  if(nrow(NAPA_clim_vars) == 0){
-    NAPA_clim_vars <- rbind(var_one, NAPA_clim_vars)
-  } else {
-    NAPA_clim_vars <- left_join(NAPA_clim_vars, var_one, 
-                                by = c("lon", "lat", "doy"))
-  }
-}
-# ) # 115 seconds for all
-rm(var_one, i); gc()
+# Load all variable climatologies
+NAPA_clim_U <- readRDS("data/NAPA_clim_U.Rda")
+NAPA_clim_V <- readRDS("data/NAPA_clim_V.Rda")
+NAPA_clim_W <- readRDS("data/NAPA_clim_W.Rda")
+
+# left join them
+NAPA_clim_vecs <- left_join(NAPA_clim_U, NAPA_clim_V, by = c("lon", "lat", "doy")) %>% 
+  left_join(NAPA_clim_W, by = c("lon", "lat", "doy"))
 
 # Convert DOY to MM-DD for joining to daily data below
-NAPA_clim_vars$doy <- format(as.Date(NAPA_clim_vars$doy, origin = "2015-12-31"), "%m-%d")
+NAPA_clim_vecs$doy <- format(as.Date(NAPA_clim_vecs$doy, origin = "2015-12-31"), "%m-%d")
 
 # Change column names to highlight that these are climatology values
-colnames(NAPA_clim_vars)[-c(1:3)] <- paste0(colnames(NAPA_clim_vars)[-c(1:3)],"_clim")
+colnames(NAPA_clim_vecs)[-c(1:3)] <- paste0(colnames(NAPA_clim_vecs)[-c(1:3)],"_clim")
 
-# Reorder columns
-# NAPA_clim_vars <- dplyr::select(NAPA_clim_vars, lon, lat, doy, everything())
-
-# saveRDS(NAPA_clim_vars, "data/NAPA_clim_vars.Rda")
+# Save
+saveRDS(NAPA_clim_vecs, "data/NAPA_clim_vecs.Rda")
+rm(NAPA_clim_U, NAPA_clim_V, NAPA_clim_W); gc()
 ```
 
 
@@ -180,84 +178,67 @@ We needed a list of the dates present in each file so that we can easily load on
 
 ```{r extractor-funcs}
 # Load NAPA file date index
-NAPA_files_dates <- readRDS("data/NAPA_files_dates.Rda")
+NAPA_vector_files_dates <- readRDS("data/NAPA_vector_files_dates.Rda")
 
 # Load full variable climatology file
-NAPA_clim_vars <- readRDS("data/NAPA_clim_vars.Rda")
+NAPA_clim_vecs <- readRDS("data/NAPA_clim_vecs.Rda")
 
 # Function for extracting the desired variables from a given NetCDF file
 # testers...
-# file_name <- NAPA_files[1]
-extract_all_var <- function(file_name){
+# file_number <- 1376
+extract_all_vec <- function(file_number){
   
   # Extract and join variables with a for loop
     # NB: This should be optimised...
-  NAPA_vars_extracted <- data.frame()
-  system.time(
-  for(i in 1:length(NAPA_vars$name)){
-    extract_one <- extract_one_var(NAPA_vars$name[i], file_name = file_name)
-    if(nrow(NAPA_vars_extracted) == 0){
-      NAPA_vars_extracted <- rbind(extract_one, NAPA_vars_extracted)
-    } else {
-      NAPA_vars_extracted <- left_join(NAPA_vars_extracted, extract_one, 
-                                       by = c("lon_index", "lat_index", "lon", "lat", "bathy", "t"))
-    }
+  u_vecs <- extract_one_vec(NAPA_U_files[file_number])
+  v_vecs <- extract_one_vec(NAPA_V_files[file_number])
+  if(file_number == 276){
+    w_vecs <- v_vecs[1,]
+    colnames(w_vecs)[6] <- "wo"
+  } else {
+    w_vecs <- extract_one_vec(NAPA_W_files[file_number])
   }
-  ) # 18 seconds for one
-  NAPA_vars_extracted <- dplyr::select(NAPA_vars_extracted,
-                                       lon_index, lat_index, lon, lat, t, bathy, everything())
+  
+  NAPA_vecs_extracted <- left_join(u_vecs, v_vecs, by = colnames(u_vecs)[1:5]) %>% 
+    left_join(w_vecs, by = colnames(u_vecs)[1:5])
   
   # Exit
-  return(NAPA_vars_extracted)
+  return(NAPA_vecs_extracted)
 }
 
 # Function for extracting variables from as many files as a MHW event requires
 # testers...
 # event_sub <- NAPA_MHW_event[23,]
-data_packet <- function(event_sub){
+data_vec_packet <- function(event_sub){
   
   # Create date and file index for loading
   date_idx <- seq(event_sub$date_start, event_sub$date_end, by = "day")
-  file_idx <- filter(NAPA_files_dates, date %in% date_idx) %>% 
-    mutate(file = as.character(file)) %>% 
-    select(file) %>% 
-    unique()
+  file_idx <- which(NAPA_vector_files_dates$date %in% date_idx)
   
   # Load required base data
   # system.time(
-  packet_base <- plyr::ldply(file_idx$file, extract_all_var) %>% 
-    filter(t %in% date_idx) %>% 
+  packet_base <- plyr::ldply(file_idx, extract_all_vec) %>% 
+    filter(t %in% date_idx) %>%
     mutate(doy = format(t, "%m-%d"))
-  # ) # 125 seconds for seven files
+  # ) # 16 seconds for seven files
   
   # Join to climatologies
-  packet_join <- left_join(packet_base, NAPA_clim_vars, by = c("lon", "lat", "doy"))
+  packet_join <- left_join(packet_base, NAPA_clim_vecs, by = c("lon", "lat", "doy"))
   
   # Create anomaly values and remove clim columns
   packet_anom <- packet_join %>% 
-    mutate(emp_oce_anom = emp_oce - emp_oce_clim,
-           fmmflx_anom = fmmflx - fmmflx_clim,
-           mldkz5_anom = mldkz5 - mldkz5_clim,
-           mldr10_1_anom = mldr10_1 - mldr10_1_clim,
-           qemp_oce_anom = qemp_oce - qemp_oce_clim,
-           qns_anom = qns - qns_clim,
-           # NB: I misspelled 'qt_anom' here...
-           qt_anm = qt - qt_clim,
-           ssh_anom = ssh - ssh_clim,
-           sss_anom = sss - sss_clim,
-           sst_anom = sst - sst_clim,
-           taum_anom = taum - taum_clim) %>% 
-    dplyr::select(lon, lat, doy, emp_oce:taum_anom, 
-                  -c(colnames(NAPA_clim_vars)[-c(1:3)]))
-    # dplyr::select(-c(colnames(packet_base)[-c(3,4,ncol(packet_base))]), 
-    #               -c(colnames(NAPA_clim_vars)[-c(1:3)]))
+    mutate(uoce_anom = uoce - uoce_clim,
+           voce_anom = voce - voce_clim,
+           wo_anom = wo - wo_clim) %>% 
+    dplyr::select(lon, lat, doy, uoce:wo_anom, 
+                  -c(colnames(NAPA_clim_vecs)[-c(1:3)]))
   
   # Create mean synoptic values
   packet_mean <- packet_anom %>% 
     select(-doy) %>% 
     # NB: The lowest pixels are a forcing edge and shouldn't be included
       # We can catch these out by filtering pixels whose SST is exactly 0
-    filter(sst != 0) %>% 
+    # filter(sst != 0) %>% 
     group_by(lon, lat) %>% 
     summarise_all(mean, na.rm = T) %>% 
     arrange(lon, lat) %>% 
@@ -269,7 +250,7 @@ data_packet <- function(event_sub){
   
   # Test visuals
   # ggplot(packet_mean, aes(x = lon, y = lat)) +
-  #   geom_point(aes(colour = sst_anom)) +
+  #   geom_point(aes(colour = uoce_anom)) +
   #   scale_colour_gradient2(low = "blue", high = "red") +
   #   coord_cartesian(xlim = NWA_corners[1:2],
   #                   ylim = NWA_corners[3:4])
@@ -287,12 +268,13 @@ With our functions sorted, it is now time to create our data packets.
 doMC::registerDoMC(cores = 25)
 
 # Create one big packet
-# system.time(
-synoptic_states <- plyr::ddply(NAPA_MHW_event, c("region", "sub_region", "event_no"), data_packet, .parallel = T)
-# ) # 82 seconds for first 2, 6125 seconds (102 minutes) for all
+system.time(
+synoptic_vec_states <- plyr::ddply(NAPA_MHW_event, c("region", "sub_region", "event_no"), data_vec_packet, .parallel = T)
+) # 28 seconds for first 2, 6125 seconds (102 minutes) for all
 
 # Save
-# saveRDS(synoptic_states, "data/synoptic_states.Rda")
+# saveRDS(synoptic_vec_states, "data/synoptic_vec_states.Rda")
 ```
 
 With all of our synoptic snapshots for our chosen variables created it is now time to feed them to the [Self-organising map (SOM) analysis](https://robwschlegel.github.io/MHWNWA/som.html).
+

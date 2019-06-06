@@ -71,7 +71,8 @@ NAPA_coords_sub <- NAPA_coords %>%
 
 # Tha NAPA bathymetry for the study area only
 NAPA_bathy_sub <- NAPA_bathy %>% 
-  right_join(NAPA_coords_sub, by = c("lon_index", "lat_index", "lon", "lat"))
+  right_join(NAPA_coords_sub, by = c("lon_index", "lat_index", "lon", "lat")) %>% 
+  na.omit()
 # saveRDS(NAPA_bathy_sub, "data/NAPA_bathy_sub.Rda")
 ```
 
@@ -247,8 +248,7 @@ data_packet <- function(event_sub){
            mldr10_1_anom = mldr10_1 - mldr10_1_clim,
            qemp_oce_anom = qemp_oce - qemp_oce_clim,
            qns_anom = qns - qns_clim,
-           # NB: I misspelled 'qt_anom' here...
-           qt_anm = qt - qt_clim,
+           qt_anom = qt - qt_clim,
            ssh_anom = ssh - ssh_clim,
            sss_anom = sss - sss_clim,
            sst_anom = sst - sst_clim,
