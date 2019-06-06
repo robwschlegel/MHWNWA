@@ -1,7 +1,7 @@
 ---
 title: "Self-organising map (SOM) analysis"
 author: "Robert Schlegel"
-date: "2019-05-13"
+date: "2019-06-04"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
@@ -18,7 +18,7 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
 
 ## Introduction
 
-This markdown file will contain the code used to perform the self-organising map (SOM) analysis on the prepared variable data as seen in the [Variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette.
+This markdown file will contain the code used to perform the self-organising map (SOM) analysis on the prepared variable data as seen in the [Variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette and on the prepared vectors seen in the [Vector preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette.
 
 ```{r libraries}
 # Insatll from GitHub
@@ -30,7 +30,7 @@ library(jsonlite, lib.loc = "../R-packages/")
 library(tidyverse) # Base suite of functions
 library(ncdf4) # For opening and working with NetCDF files
 library(lubridate) # For convenient date manipulation
-library(scales) # For scaling data before running SOM
+# library(scales) # For scaling data before running SOM
 library(yasomi, lib.loc = "../R-packages/") # The SOM package of choice due to PCI compliance
 library(data.table) # For working with massive dataframes
 

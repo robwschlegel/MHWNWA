@@ -5,6 +5,8 @@ date: "2019-05-23"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
+csl: FMars.csl
+bibliography: MHWNWA.bib
 ---
 
 ```{r global_options, include = FALSE}
