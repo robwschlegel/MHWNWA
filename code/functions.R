@@ -57,6 +57,9 @@ NAPA_bathy_sub <- readRDS("data/NAPA_bathy_sub.Rda")
 # Load MHW results
 NAPA_MHW_sub <- readRDS("data/NAPA_MHW_sub.Rda")
 
+# Load the NAPA clim vector files
+NAPA_clim_vecs <- readRDS("data/NAPA_clim_vecs.Rda")
+
 # MHW Events
 NAPA_MHW_event <- NAPA_MHW_sub %>%
   select(-clims, -cats) %>%
