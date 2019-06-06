@@ -222,7 +222,7 @@ som_unpack_mean <- function(data_packet, som_output){
 
 And now we unpack the SOM results.
 
-```{r som-unpack}
+```{r som-unpack, eval=FALSE}
 # Load data packet
 all_anom <- readRDS("data/packet_all_anom.Rda")
 
@@ -273,7 +273,7 @@ som_node_visualise <- function(sub_var = "sst_anom", viridis_option = "D"){
 
 And now for the big reveal!
 
-```{r som-visualise}
+```{r som-visualise, eval=FALSE}
 # SST
 plot_sst_anom <- som_node_visualise("sst_anom")
 # plot_sst_anom

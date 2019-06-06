@@ -285,7 +285,7 @@ data_packet <- function(event_sub){
 
 With our functions sorted, it is now time to create our data packets.
 
-```{r synoptic-states}
+```{r synoptic-states, eval=FALSE}
 # Set number of cores
   # NB: Was set to 25 as someone else was using the server at the time
 doMC::registerDoMC(cores = 25)
