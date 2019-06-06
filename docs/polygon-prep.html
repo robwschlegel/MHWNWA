@@ -342,7 +342,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-05-28</p>
+<p><strong>Last updated:</strong> 2019-06-06</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -371,22 +371,32 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/3cdb0aadca51d10dc5a5d834647c6709e2124848" target="_blank">3cdb0aa</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/07137d9327fc8ba24bc6a5586b0cc5117bb31d0c" target="_blank">07137d9</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
-
-Untracked files:
-    Untracked:  data/NAPA_files_dates.Rda
-
-Unstaged changes:
-    Modified:   analysis/var-prep.Rmd
-    Modified:   data/NWA_corners.Rda
-    Modified:   output/NWA_coords_cabot_plot.pdf
-    Modified:   output/NWA_coords_plot.pdf
+    Ignored:    data/NAPA_clim_emp_ice.Rda
+    Ignored:    data/NAPA_clim_emp_oce.Rda
+    Ignored:    data/NAPA_clim_fmmflx.Rda
+    Ignored:    data/NAPA_clim_mldkz5.Rda
+    Ignored:    data/NAPA_clim_mldr10_1.Rda
+    Ignored:    data/NAPA_clim_qemp_oce.Rda
+    Ignored:    data/NAPA_clim_qla_oce.Rda
+    Ignored:    data/NAPA_clim_qns.Rda
+    Ignored:    data/NAPA_clim_qsb_oce.Rda
+    Ignored:    data/NAPA_clim_qt.Rda
+    Ignored:    data/NAPA_clim_runoffs.Rda
+    Ignored:    data/NAPA_clim_ssh.Rda
+    Ignored:    data/NAPA_clim_sss.Rda
+    Ignored:    data/NAPA_clim_sst.Rda
+    Ignored:    data/NAPA_clim_taum.Rda
+    Ignored:    data/NAPA_clim_vars.Rda
+    Ignored:    data/node_mean_all_anom.Rda
+    Ignored:    data/packet_all_anom.Rda
+    Ignored:    data/som_all_anom.Rda
+    Ignored:    data/synoptic_states.Rda
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -417,6 +427,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/94ce8f67d95d2a30c7b904784e619457ee4907a7/analysis/polygon-prep.Rmd" target="_blank">94ce8f6</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-04
+</td>
+<td style="text-align:left;">
+Functions for creating data packets are up and running
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/5cb8e8f594d0cc85039ef11473f926e876eecf2a/docs/polygon-prep.html" target="_blank">5cb8e8f</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-28
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -579,6 +623,7 @@ Working on polygon vignette
 <h2>Introduction</h2>
 <p>This markdown file contains all of the code used to prepare the polygons that are used to define the different regions in the Northwest Atlantic. These different regions will then have their SST pixels spatially averaged to create a single time series per region. This is done so that the MHW detection algorithm may then be run on these individual time series to represent a general representation of the SST in those regions, rather than running the algorithm on each pixel individually, which would introduce a host of problems.</p>
 <pre class="r"><code># Packages used in this vignette
+library(jsonlite, lib.loc = &quot;../R-packages/&quot;)
 library(tidyverse) # Base suite of functions
 library(R.matlab) # For dealing with MATLAB files
 library(marmap) # For bathymetry
@@ -587,7 +632,7 @@ library(rgeos) # For intersections</code></pre>
 </div>
 <div id="coastal-region-polygons" class="section level2">
 <h2>Coastal region polygons</h2>
-<p>The first step in this analysis is to broadly define the coastal regions based on previous research into thermally relevant boundaries. We have chosen to use a paper by Richaud et al 2016 to do this (<a href="https://www.sciencedirect.com/science/article/pii/S0278434316303181#f0010" class="uri">https://www.sciencedirect.com/science/article/pii/S0278434316303181#f0010</a>). Being the kind-hearted man that he is, Benjamin forwarded us the polygons (Richaud et al. 2016; Figure 2) from this work as a MATLAB file so we must first open that up and convert it to an R format for further use.</p>
+<p>The first step in this analysis is to broadly define the coastal regions based on previous research into thermally relevant boundaries. We have chosen to use a paper by Richaud et al 2016 to do this (<a href="https://www.sciencedirect.com/science/article/pii/S0278434316303181#f0010" class="uri">https://www.sciencedirect.com/science/article/pii/S0278434316303181#f0010</a>). Being the kind-hearted man that he is, Benjamin forwarded us the polygons (Richaud et al. 2016; Figure 2) from this work as a MATLAB file so we must first open that up and convert it to an R format for further use. It should be noted that these areas were designed to not encompass depths deeper than 600 m as the investigators were itnerested in characterising the climatolgoies for the shelf and upper slope regions of the north east coast of North America.</p>
 <pre class="r"><code># Load the file
 NWA_polygons &lt;- R.matlab::readMat(&quot;data/boundaries.mat&quot;)
 
@@ -660,6 +705,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/5cb8e8f594d0cc85039ef11473f926e876eecf2a/docs/figure/polygon-prep.Rmd/poly-vis-1.png" target="_blank">5cb8e8f</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-28
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/robwschlegel/MHWNWA/blob/c09b4f7548427da023cfaf19ba517cb49e9456df/docs/figure/polygon-prep.Rmd/poly-vis-1.png" target="_blank">c09b4f7</a>
 </td>
 <td style="text-align:left;">
@@ -725,6 +781,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/5cb8e8f594d0cc85039ef11473f926e876eecf2a/docs/figure/polygon-prep.Rmd/cabot-strait-1-1.png" target="_blank">5cb8e8f</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-28
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/robwschlegel/MHWNWA/blob/c09b4f7548427da023cfaf19ba517cb49e9456df/docs/figure/polygon-prep.Rmd/cabot-strait-1-1.png" target="_blank">c09b4f7</a>
@@ -799,6 +866,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/5cb8e8f594d0cc85039ef11473f926e876eecf2a/docs/figure/polygon-prep.Rmd/cabot-strait-2-1.png" target="_blank">5cb8e8f</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-28
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/robwschlegel/MHWNWA/blob/c09b4f7548427da023cfaf19ba517cb49e9456df/docs/figure/polygon-prep.Rmd/cabot-strait-2-1.png" target="_blank">c09b4f7</a>
@@ -890,6 +968,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/5cb8e8f594d0cc85039ef11473f926e876eecf2a/docs/figure/polygon-prep.Rmd/isobath-hires-plot-1.png" target="_blank">5cb8e8f</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-28
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/robwschlegel/MHWNWA/blob/c09b4f7548427da023cfaf19ba517cb49e9456df/docs/figure/polygon-prep.Rmd/isobath-hires-plot-1.png" target="_blank">c09b4f7</a>
 </td>
 <td style="text-align:left;">
@@ -949,6 +1038,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/5cb8e8f594d0cc85039ef11473f926e876eecf2a/docs/figure/polygon-prep.Rmd/isobath-lowres-plot-1.png" target="_blank">5cb8e8f</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-05-28
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/robwschlegel/MHWNWA/blob/c09b4f7548427da023cfaf19ba517cb49e9456df/docs/figure/polygon-prep.Rmd/isobath-lowres-plot-1.png" target="_blank">c09b4f7</a>
@@ -1108,7 +1208,7 @@ other attached packages:
  [1] bindrcpp_0.2.2  rgeos_0.3-28    maptools_0.9-4  sp_1.3-1       
  [5] marmap_1.0.1    R.matlab_3.6.1  forcats_0.3.0   stringr_1.3.1  
  [9] dplyr_0.7.6     purrr_0.2.5     readr_1.1.1     tidyr_0.8.1    
-[13] tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
+[13] tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1 jsonlite_1.6   
 
 loaded via a namespace (and not attached):
  [1] Rcpp_0.12.18        lubridate_1.7.4     lattice_0.20-35    
@@ -1125,14 +1225,14 @@ loaded via a namespace (and not attached):
 [34] shape_1.4.4         htmltools_0.3.6     tidyselect_0.2.4   
 [37] workflowr_1.1.1     crayon_1.3.4        withr_2.1.2        
 [40] R.methodsS3_1.7.1   grid_3.6.0          nlme_3.1-137       
-[43] jsonlite_1.5        gtable_0.2.0        DBI_1.0.0          
-[46] adehabitatMA_0.3.12 git2r_0.23.0        magrittr_1.5       
-[49] scales_1.0.0        ncdf4_1.16          cli_1.0.0          
-[52] stringi_1.2.4       reshape2_1.4.3      xml2_1.2.0         
-[55] tools_3.6.0         bit64_0.9-7         glue_1.3.0         
-[58] maps_3.3.0          hms_0.4.2           yaml_2.2.0         
-[61] colorspace_1.3-2    rvest_0.3.2         memoise_1.1.0      
-[64] knitr_1.20          bindr_0.1.1         haven_1.1.2        </code></pre>
+[43] gtable_0.2.0        DBI_1.0.0           adehabitatMA_0.3.12
+[46] git2r_0.23.0        magrittr_1.5        scales_1.0.0       
+[49] ncdf4_1.16          cli_1.0.0           stringi_1.2.4      
+[52] reshape2_1.4.3      xml2_1.2.0          tools_3.6.0        
+[55] bit64_0.9-7         glue_1.3.0          maps_3.3.0         
+[58] hms_0.4.2           yaml_2.2.0          colorspace_1.3-2   
+[61] rvest_0.3.2         memoise_1.1.0       knitr_1.20         
+[64] bindr_0.1.1         haven_1.1.2        </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
