@@ -94,8 +94,18 @@ In this last step before running our SOM analyses we want to create data packets
 # Load the synoptic states data packet
 synoptic_states <- readRDS("data/synoptic_states.Rda")
 
+# Load the synoptic vector states data packet
+synoptic_vec_states <- readRDS("data/synoptic_vec_states.Rda")
+
 # Unnest the synoptic data
 synoptic_states_unnest <- synoptic_states %>% 
+  select(region, sub_region, event_no, synoptic) %>% 
+  unnest()
+
+# Unnest the synoptic data
+  # NB: There is an issue downstream with one or more of the vector pixels always having a value of 0
+  # This needs to be accounted for here before joining the data further
+synoptic_vec_states_unnest <- synoptic_vec_states %>% 
   select(region, sub_region, event_no, synoptic) %>% 
   unnest()
 
@@ -105,11 +115,12 @@ doMC::registerDoMC(cores = 25)
 
 # Packet for all synoptic anomaly data for all regions etc.
 system.time(
-packet_all_anom <- synoptic_states_unnest %>% 
-  # select(region, sub_region, event_no, synoptic) %>% 
-  # unnest() %>% 
+packet_all_anom <- left_join(synoptic_states_unnest, 
+                             synoptic_vec_states_unnest,
+                             by = colnames(synoptic_states_unnest)[1:5]) %>% 
   # NB: A shortened list of variables to be more manageable
-  select(region:lat, sst_anom, taum_anom, qt_anm, mldr10_1_anom) %>% 
+  select(region:lat, sst_anom, taum_anom, qt_anm, 
+         mldr10_1_anom, uoce_anom, voce_anom) %>% 
   # NB: The full list if one desires
   # select(region:lat, emp_oce_anom:taum_anom) %>% 
   data.table::data.table() %>% 
@@ -127,7 +138,7 @@ packet_all_anom <- synoptic_states_unnest %>%
          # sub_region_ply = sub_region) %>% 
   # plyr::ddply(c("region_ply", "sub_region_ply"), wide_matrix, .parallel = T) %>% 
   # select(-region_ply, -sub_region_ply)
-) # 209 seconds
+) # 370 seconds
 saveRDS(packet_all_anom, "data/packet_all_anom.Rda")
 ```
 
