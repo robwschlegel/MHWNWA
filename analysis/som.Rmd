@@ -102,6 +102,17 @@ synoptic_states_unnest <- synoptic_states %>%
   select(region, sub_region, event_no, synoptic) %>% 
   unnest()
 
+# NB: The range of values for mixed layer depth anomalies is muuuuch greater
+  # in the Labrador sea than elsewhere in the study area.
+  # So we scale it here first before feeding it into the SOM to be scaled again
+synoptic_states_anom_fix <- synoptic_states_unnest %>% 
+  select(region:lat, sst_anom, taum_anom, qt_anm, mldr10_1_anom) %>% 
+  # slice(1:100000) %>% 
+  group_by(lon, lat) %>% 
+  mutate(mldr10_1_anom = mldr10_1_anom/max(abs(mldr10_1_anom), na.rm = T)) %>% 
+  # na.omit() %>% 
+  ungroup()
+
 # Unnest the synoptic vector data
 synoptic_vec_states_unnest <- synoptic_vec_states %>% 
   select(region, sub_region, event_no, synoptic) %>% 
@@ -111,15 +122,11 @@ synoptic_vec_states_unnest <- synoptic_vec_states %>%
   # This needs to be accounted for here before joining the data further
 synoptic_vec_states_anom_fix <- synoptic_vec_states_unnest %>% 
   select(region:lat, uoce_anom:voce_anom) %>% 
-  # slice(1:10000) %>% 
   group_by(lon, lat) %>% 
-  # mutate(uoce_anom_max = max(uoce_anom))
-  # mutate()
   mutate(uoce_anom = case_when(min(uoce_anom, na.rm = T) != 0 & max(uoce_anom, na.rm = T) != 0 ~ uoce_anom),
          voce_anom = case_when(min(voce_anom, na.rm = T) != 0 & max(voce_anom, na.rm = T) != 0 ~ voce_anom)) %>% 
-  na.omit()
-  # mutate(uoce_anom = if_else(min(uoce_anom, na.rm = T) == 0,
-                             # if_else(max(uoce_anom, na.rm = T) == 0), NA), uoce_anom)
+  # na.omit() %>% 
+  ungroup()
 
 # Set number of cores
   # NB: 50 uses too much RAM
@@ -127,12 +134,14 @@ doMC::registerDoMC(cores = 25)
 
 # Packet for all synoptic anomaly data for all regions etc.
 system.time(
-packet_all_anom <- left_join(synoptic_states_unnest, 
+packet_all_anom <- left_join(synoptic_states_anom_fix, 
                              synoptic_vec_states_anom_fix,
-                             by = colnames(synoptic_states_unnest)[1:5]) %>% 
+                             by = c("region", "sub_region", "event_no", "lon", "lat")) %>% 
+  # The variable dataframe is longer than the vector dataframe
+  # na.omit() %>% 
   # NB: A shortened list of variables to be more manageable
-  select(region:lat, sst_anom, taum_anom, qt_anm, 
-         mldr10_1_anom, uoce_anom, voce_anom) %>% 
+  # select(region:lat, sst_anom, taum_anom, qt_anm, 
+         # mldr10_1_anom, uoce_anom, voce_anom) %>% 
   # NB: The full list if one desires
   # select(region:lat, emp_oce_anom:taum_anom) %>% 
   data.table::data.table() %>% 
@@ -150,8 +159,10 @@ packet_all_anom <- left_join(synoptic_states_unnest,
          # sub_region_ply = sub_region) %>% 
   # plyr::ddply(c("region_ply", "sub_region_ply"), wide_matrix, .parallel = T) %>% 
   # select(-region_ply, -sub_region_ply)
-) # 370 seconds
-saveRDS(packet_all_anom, "data/packet_all_anom.Rda")
+) # 367 seconds
+# Remove columns (pixels) with missing data
+packet_all_anom_fix <- packet_all_anom[,colSums(is.na(packet_all_anom))<1]
+saveRDS(packet_all_anom_fix, "data/packet_all_anom.Rda")
 ```
 
 
@@ -180,11 +191,11 @@ som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
 }
 ```
 
-With the function sorted, we now begin to feed the data.
+With the function sorted, we now feed the data.
 
 ```{r som-run, eval=FALSE}
 all_anom <- readRDS("data/packet_all_anom.Rda")
-system.time(som_all_anom <- som_model_PCI(all_anom)) # 122 seconds
+system.time(som_all_anom <- som_model_PCI(all_anom)) # 225 seconds
 saveRDS(som_all_anom, file = "data/som_all_anom.Rda")
 ```
 
@@ -245,7 +256,7 @@ som_unpack_mean <- function(data_packet, som_output){
 
 And now we unpack the SOM results.
 
-```{r som-unpack, eval=FALSE}
+```{r som-unpack, eval=TRUE}
 # Load data packet
 all_anom <- readRDS("data/packet_all_anom.Rda")
 
@@ -289,12 +300,13 @@ som_node_visualise <- function(sub_var = "sst_anom", viridis_option = "D"){
     scale_fill_gradient2(low = "blue", high = "red") +
     # scale_colour_viridis_c(option = viridis_option) +
     labs(x = NULL, y = NULL, fill = sub_var) +
-    facet_wrap(~node, ncol = 4)
+    facet_wrap(~node, ncol = 4) +
+    theme(legend.position = "bottom")
   return(som_panel_plot)
 }
 ```
 
-And now for the big reveal!
+And now we create a PDF for each of the 12 nodes for each variable individually.
 
 ```{r som-visualise, eval=FALSE}
 # SST
@@ -316,12 +328,23 @@ ggsave(plot_mldr10_1_anom, filename = "output/som_plot_mldr10_1_anom.pdf", heigh
 plot_taum_anom <- som_node_visualise("taum_anom")
 # plot_taum_anom
 ggsave(plot_taum_anom, filename = "output/som_plot_taum_anom.pdf", height = 12, width = 13)
+
+# Ocean current; U (uoce)
+plot_uoce_anom <- som_node_visualise("uoce_anom")
+# plot_uoce_anom
+ggsave(plot_uoce_anom, filename = "output/som_plot_uoce_anom.pdf", height = 12, width = 13)
+
+# Ocean current; U (uoce)
+plot_voce_anom <- som_node_visualise("voce_anom")
+# plot_voce_anom
+ggsave(plot_voce_anom, filename = "output/som_plot_voce_anom.pdf", height = 12, width = 13)
 ```
 
-See the files in the `output/` folder. They aren't all shown here because they take a bit too long to render. But the following shows what the SST anomaly nodes look like.
+See the files in the `output/` folder in the GitHub repo for this project. They aren't all shown here because they take a bit too long to render. But the following shows what the SST anomaly nodes look like.
 
 ```{r plot-sst-anom}
 plot_sst_anom <- som_node_visualise("sst_anom")
 plot_sst_anom
 ```
 
+Up next in the [Figures](https://robwschlegel.github.io/MHWNWA/som.html) vignette we will show the results in more depth.
