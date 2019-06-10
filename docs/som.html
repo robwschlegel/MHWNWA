@@ -345,7 +345,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-06-06</p>
+<p><strong>Last updated:</strong> 2019-06-10</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -374,7 +374,7 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/46b98f20c94f2ec57316e9a834e5290c3e7942ec" target="_blank">46b98f2</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/c6b3c7bf45e652e3344cde203c6698e9a744698d" target="_blank">c6b3c7b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -404,9 +404,19 @@ Ignored files:
     Ignored:    data/packet_all_anom.Rda
     Ignored:    data/som_all_anom.Rda
     Ignored:    data/synoptic_states.Rda
+    Ignored:    data/synoptic_vec_states.Rda
+
+Untracked files:
+    Untracked:  output/som_plot_uoce_anom.pdf
+    Untracked:  output/som_plot_voce_anom.pdf
 
 Unstaged changes:
-    Modified:   analysis/_site.yml
+    Modified:   analysis/MHWNWA.bib
+    Modified:   code/workflow.R
+    Modified:   output/som_plot_mldr10_1_anom.pdf
+    Modified:   output/som_plot_qt_anom.pdf
+    Modified:   output/som_plot_sst_anom.pdf
+    Modified:   output/som_plot_taum_anom.pdf
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -437,6 +447,74 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/c6b3c7bf45e652e3344cde203c6698e9a744698d/analysis/som.Rmd" target="_blank">c6b3c7b</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-10
+</td>
+<td style="text-align:left;">
+Re-publish entire site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/1b53eeb30e63f82f19ec3aa11b2a2befe88c5e66/analysis/som.Rmd" target="_blank">1b53eeb</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-10
+</td>
+<td style="text-align:left;">
+SOM packet pipeline testing
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/4504e125b28f55766c189e57f88bfd2e45f8701e/analysis/som.Rmd" target="_blank">4504e12</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-07
+</td>
+<td style="text-align:left;">
+Working on joining in vector data
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/c61a15f695d6d807427b5642f6e657830a527970/docs/som.html" target="_blank">c61a15f</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-06
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -731,10 +809,39 @@ map_base &lt;- ggplot2::fortify(maps::map(fill = TRUE, col = &quot;grey80&quot;,
 <pre class="r"><code># Load the synoptic states data packet
 synoptic_states &lt;- readRDS(&quot;data/synoptic_states.Rda&quot;)
 
+# Load the synoptic vector states data packet
+synoptic_vec_states &lt;- readRDS(&quot;data/synoptic_vec_states.Rda&quot;)
+
 # Unnest the synoptic data
 synoptic_states_unnest &lt;- synoptic_states %&gt;% 
   select(region, sub_region, event_no, synoptic) %&gt;% 
   unnest()
+
+# NB: The range of values for mixed layer depth anomalies is muuuuch greater
+  # in the Labrador sea than elsewhere in the study area.
+  # So we scale it here first before feeding it into the SOM to be scaled again
+synoptic_states_anom_fix &lt;- synoptic_states_unnest %&gt;% 
+  select(region:lat, sst_anom, taum_anom, qt_anm, mldr10_1_anom) %&gt;% 
+  # slice(1:100000) %&gt;% 
+  group_by(lon, lat) %&gt;% 
+  mutate(mldr10_1_anom = mldr10_1_anom/max(abs(mldr10_1_anom), na.rm = T)) %&gt;% 
+  # na.omit() %&gt;% 
+  ungroup()
+
+# Unnest the synoptic vector data
+synoptic_vec_states_unnest &lt;- synoptic_vec_states %&gt;% 
+  select(region, sub_region, event_no, synoptic) %&gt;% 
+  unnest() 
+
+# NB: There is an issue downstream with one or more of the vector pixels always having a value of 0
+  # This needs to be accounted for here before joining the data further
+synoptic_vec_states_anom_fix &lt;- synoptic_vec_states_unnest %&gt;% 
+  select(region:lat, uoce_anom:voce_anom) %&gt;% 
+  group_by(lon, lat) %&gt;% 
+  mutate(uoce_anom = case_when(min(uoce_anom, na.rm = T) != 0 &amp; max(uoce_anom, na.rm = T) != 0 ~ uoce_anom),
+         voce_anom = case_when(min(voce_anom, na.rm = T) != 0 &amp; max(voce_anom, na.rm = T) != 0 ~ voce_anom)) %&gt;% 
+  # na.omit() %&gt;% 
+  ungroup()
 
 # Set number of cores
   # NB: 50 uses too much RAM
@@ -742,11 +849,14 @@ doMC::registerDoMC(cores = 25)
 
 # Packet for all synoptic anomaly data for all regions etc.
 system.time(
-packet_all_anom &lt;- synoptic_states_unnest %&gt;% 
-  # select(region, sub_region, event_no, synoptic) %&gt;% 
-  # unnest() %&gt;% 
+packet_all_anom &lt;- left_join(synoptic_states_anom_fix, 
+                             synoptic_vec_states_anom_fix,
+                             by = c(&quot;region&quot;, &quot;sub_region&quot;, &quot;event_no&quot;, &quot;lon&quot;, &quot;lat&quot;)) %&gt;% 
+  # The variable dataframe is longer than the vector dataframe
+  # na.omit() %&gt;% 
   # NB: A shortened list of variables to be more manageable
-  select(region:lat, sst_anom, taum_anom, qt_anm, mldr10_1_anom) %&gt;% 
+  # select(region:lat, sst_anom, taum_anom, qt_anm, 
+         # mldr10_1_anom, uoce_anom, voce_anom) %&gt;% 
   # NB: The full list if one desires
   # select(region:lat, emp_oce_anom:taum_anom) %&gt;% 
   data.table::data.table() %&gt;% 
@@ -764,8 +874,10 @@ packet_all_anom &lt;- synoptic_states_unnest %&gt;%
          # sub_region_ply = sub_region) %&gt;% 
   # plyr::ddply(c(&quot;region_ply&quot;, &quot;sub_region_ply&quot;), wide_matrix, .parallel = T) %&gt;% 
   # select(-region_ply, -sub_region_ply)
-) # 209 seconds
-saveRDS(packet_all_anom, &quot;data/packet_all_anom.Rda&quot;)</code></pre>
+) # 367 seconds
+# Remove columns (pixels) with missing data
+packet_all_anom_fix &lt;- packet_all_anom[,colSums(is.na(packet_all_anom))&lt;1]
+saveRDS(packet_all_anom_fix, &quot;data/packet_all_anom.Rda&quot;)</code></pre>
 </div>
 <div id="run-som-models" class="section level2">
 <h2>Run SOM models</h2>
@@ -788,9 +900,9 @@ som_model_PCI &lt;- function(data_packet, xdim = 4, ydim = 3){
                         max.iter = 100)
   return(som_model)
 }</code></pre>
-<p>With the function sorted, we now begin to feed the data.</p>
+<p>With the function sorted, we now feed the data.</p>
 <pre class="r"><code>all_anom &lt;- readRDS(&quot;data/packet_all_anom.Rda&quot;)
-system.time(som_all_anom &lt;- som_model_PCI(all_anom)) # 122 seconds
+system.time(som_all_anom &lt;- som_model_PCI(all_anom)) # 225 seconds
 saveRDS(som_all_anom, file = &quot;data/som_all_anom.Rda&quot;)</code></pre>
 </div>
 <div id="unpack-som-results" class="section level2">
@@ -884,10 +996,11 @@ som_node_visualise &lt;- function(sub_var = &quot;sst_anom&quot;, viridis_option
     scale_fill_gradient2(low = &quot;blue&quot;, high = &quot;red&quot;) +
     # scale_colour_viridis_c(option = viridis_option) +
     labs(x = NULL, y = NULL, fill = sub_var) +
-    facet_wrap(~node, ncol = 4)
+    facet_wrap(~node, ncol = 4) +
+    theme(legend.position = &quot;bottom&quot;)
   return(som_panel_plot)
 }</code></pre>
-<p>And now for the big reveal!</p>
+<p>And now we create a PDF for each of the 12 nodes for each variable individually.</p>
 <pre class="r"><code># SST
 plot_sst_anom &lt;- som_node_visualise(&quot;sst_anom&quot;)
 # plot_sst_anom
@@ -906,8 +1019,22 @@ ggsave(plot_mldr10_1_anom, filename = &quot;output/som_plot_mldr10_1_anom.pdf&qu
 # Wind stress (taum)
 plot_taum_anom &lt;- som_node_visualise(&quot;taum_anom&quot;)
 # plot_taum_anom
-ggsave(plot_taum_anom, filename = &quot;output/som_plot_taum_anom.pdf&quot;, height = 12, width = 13)</code></pre>
-<p>See the files in the <code>output/</code> folder. They aren’t shown here because they take a bit too long to render.</p>
+ggsave(plot_taum_anom, filename = &quot;output/som_plot_taum_anom.pdf&quot;, height = 12, width = 13)
+
+# Ocean current; U (uoce)
+plot_uoce_anom &lt;- som_node_visualise(&quot;uoce_anom&quot;)
+# plot_uoce_anom
+ggsave(plot_uoce_anom, filename = &quot;output/som_plot_uoce_anom.pdf&quot;, height = 12, width = 13)
+
+# Ocean current; U (uoce)
+plot_voce_anom &lt;- som_node_visualise(&quot;voce_anom&quot;)
+# plot_voce_anom
+ggsave(plot_voce_anom, filename = &quot;output/som_plot_voce_anom.pdf&quot;, height = 12, width = 13)</code></pre>
+<p>See the files in the <code>output/</code> folder in the GitHub repo for this project. They aren’t all shown here because they take a bit too long to render. But the following shows what the SST anomaly nodes look like.</p>
+<pre class="r"><code>plot_sst_anom &lt;- som_node_visualise(&quot;sst_anom&quot;)
+plot_sst_anom</code></pre>
+<p><img src="figure/som.Rmd/plot-sst-anom-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>Up next in the <a href="https://robwschlegel.github.io/MHWNWA/som.html">Figures</a> vignette we will show the results in more depth.</p>
 <div id="refs">
 <div id="ref-Richaud2016">
 <p>Richaud, B., Kwon, Y.-O., Joyce, T. M., Fratantoni, P. S., and Lentz, S. J. (2016). Surface and bottom temperature and salinity climatology along the continental shelf off the canadian and us east coasts. <em>Continental Shelf Research</em> 124, 165–181.</p>
@@ -945,25 +1072,26 @@ other attached packages:
 [16] tidyverse_1.2.1   jsonlite_1.6     
 
 loaded via a namespace (and not attached):
- [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
- [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
- [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
-[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
-[13] doMC_1.3.5        modelr_0.1.2      readxl_1.1.0     
-[16] foreach_1.4.4     bindr_0.1.1       plyr_1.8.4       
-[19] munsell_0.5.0     gtable_0.2.0      workflowr_1.1.1  
-[22] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
-[25] codetools_0.2-15  evaluate_0.11     knitr_1.20       
-[28] parallel_3.6.0    class_7.3-14      broom_0.5.0      
-[31] Rcpp_0.12.18      backports_1.1.2   scales_1.0.0     
-[34] hms_0.4.2         digest_0.6.16     stringi_1.2.4    
-[37] grid_3.6.0        rprojroot_1.3-2   cli_1.0.0        
-[40] tools_3.6.0       maps_3.3.0        magrittr_1.5     
-[43] lazyeval_0.2.1    crayon_1.3.4      whisker_0.3-2    
-[46] pkgconfig_2.0.2   xml2_1.2.0        iterators_1.0.10 
-[49] assertthat_0.2.0  rmarkdown_1.10    httr_1.3.1       
-[52] rstudioapi_0.7    R6_2.2.2          nlme_3.1-137     
-[55] git2r_0.23.0      compiler_3.6.0   </code></pre>
+ [1] tidyselect_0.2.4  reshape2_1.4.3    haven_1.1.2      
+ [4] lattice_0.20-35   colorspace_1.3-2  htmltools_0.3.6  
+ [7] yaml_2.2.0        rlang_0.2.2       R.oo_1.22.0      
+[10] pillar_1.3.0      glue_1.3.0        withr_2.1.2      
+[13] R.utils_2.7.0     doMC_1.3.5        modelr_0.1.2     
+[16] readxl_1.1.0      foreach_1.4.4     bindr_0.1.1      
+[19] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
+[22] workflowr_1.1.1   cellranger_1.1.0  rvest_0.3.2      
+[25] R.methodsS3_1.7.1 codetools_0.2-15  evaluate_0.11    
+[28] labeling_0.3      knitr_1.20        parallel_3.6.0   
+[31] class_7.3-14      broom_0.5.0       Rcpp_0.12.18     
+[34] backports_1.1.2   scales_1.0.0      hms_0.4.2        
+[37] digest_0.6.16     stringi_1.2.4     grid_3.6.0       
+[40] rprojroot_1.3-2   cli_1.0.0         tools_3.6.0      
+[43] maps_3.3.0        magrittr_1.5      lazyeval_0.2.1   
+[46] crayon_1.3.4      whisker_0.3-2     pkgconfig_2.0.2  
+[49] xml2_1.2.0        iterators_1.0.10  assertthat_0.2.0 
+[52] rmarkdown_1.10    httr_1.3.1        rstudioapi_0.7   
+[55] R6_2.2.2          nlme_3.1-137      git2r_0.23.0     
+[58] compiler_3.6.0   </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using

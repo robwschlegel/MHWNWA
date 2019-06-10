@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Robert Schlegel" />
+
+<meta name="date" content="2019-06-10" />
+
+<title>Figure creation</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MHW Northwest Atlantic</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Overview</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Analyses
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="polygon-prep.html">Polygon preparation</a>
+    </li>
+    <li>
+      <a href="sst-prep.html">SST preparation</a>
+    </li>
+    <li>
+      <a href="var-prep.html">Variable preparation</a>
+    </li>
+    <li>
+      <a href="vec-prep.html">Vector preparation</a>
+    </li>
+    <li>
+      <a href="som.html">SOM analysis</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/robwschlegel/MHWNWA">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Figure creation</h1>
+<h4 class="author"><em>Robert Schlegel</em></h4>
+<h4 class="date"><em>2019-06-10</em></h4>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2019-06-10</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(20190513)</code> </summary></p>
+<p>The command <code>set.seed(20190513)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/c6b3c7bf45e652e3344cde203c6698e9a744698d" target="_blank">c6b3c7b</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/NAPA_clim_U.Rda
+    Ignored:    data/NAPA_clim_V.Rda
+    Ignored:    data/NAPA_clim_W.Rda
+    Ignored:    data/NAPA_clim_emp_ice.Rda
+    Ignored:    data/NAPA_clim_emp_oce.Rda
+    Ignored:    data/NAPA_clim_fmmflx.Rda
+    Ignored:    data/NAPA_clim_mldkz5.Rda
+    Ignored:    data/NAPA_clim_mldr10_1.Rda
+    Ignored:    data/NAPA_clim_qemp_oce.Rda
+    Ignored:    data/NAPA_clim_qla_oce.Rda
+    Ignored:    data/NAPA_clim_qns.Rda
+    Ignored:    data/NAPA_clim_qsb_oce.Rda
+    Ignored:    data/NAPA_clim_qt.Rda
+    Ignored:    data/NAPA_clim_runoffs.Rda
+    Ignored:    data/NAPA_clim_ssh.Rda
+    Ignored:    data/NAPA_clim_sss.Rda
+    Ignored:    data/NAPA_clim_sst.Rda
+    Ignored:    data/NAPA_clim_taum.Rda
+    Ignored:    data/NAPA_clim_vars.Rda
+    Ignored:    data/NAPA_clim_vecs.Rda
+    Ignored:    data/node_mean_all_anom.Rda
+    Ignored:    data/packet_all_anom.Rda
+    Ignored:    data/som_all_anom.Rda
+    Ignored:    data/synoptic_states.Rda
+    Ignored:    data/synoptic_vec_states.Rda
+
+Untracked files:
+    Untracked:  output/som_plot_uoce_anom.pdf
+    Untracked:  output/som_plot_voce_anom.pdf
+
+Unstaged changes:
+    Modified:   analysis/MHWNWA.bib
+    Modified:   code/workflow.R
+    Modified:   output/som_plot_mldr10_1_anom.pdf
+    Modified:   output/som_plot_qt_anom.pdf
+    Modified:   output/som_plot_sst_anom.pdf
+    Modified:   output/som_plot_taum_anom.pdf
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</details>
+</li>
+</ul>
+<details>
+<summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/c6b3c7bf45e652e3344cde203c6698e9a744698d/analysis/figures.Rmd" target="_blank">c6b3c7b</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-10
+</td>
+<td style="text-align:left;">
+Re-publish entire site.
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+</details>
+<hr />
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>In this final vignette we will go over the creation of the figures used in the publication for this research. These figures are largely adapted from the techniques seen in <span class="citation">Oliver et al. (2018)</span> and <span class="citation">Schlegel et al. (2017)</span>.</p>
+<pre class="r"><code># Insatll from GitHub
+# .libPaths(c(&quot;~/R-packages&quot;, .libPaths()))
+# devtools::install_github(&quot;fabrice-rossi/yasomi&quot;)
+
+# Packages used in this vignette
+library(jsonlite, lib.loc = &quot;../R-packages/&quot;)
+library(tidyverse) # Base suite of functions
+library(ncdf4) # For opening and working with NetCDF files
+library(lubridate) # For convenient date manipulation
+# library(scales) # For scaling data before running SOM
+library(yasomi, lib.loc = &quot;../R-packages/&quot;) # The SOM package of choice due to PCI compliance
+library(data.table) # For working with massive dataframes
+
+# Set number of cores
+doMC::registerDoMC(cores = 50)
+
+# Disable scientific notation for numeric values
+  # I just find it annoying
+options(scipen = 999)
+
+# Set number of cores
+doMC::registerDoMC(cores = 50)
+
+# Disable scientific notation for numeric values
+  # I just find it annoying
+options(scipen = 999)
+
+# Individual regions
+NWA_coords &lt;- readRDS(&quot;data/NWA_coords_cabot.Rda&quot;)
+
+# The NAPA variables
+NAPA_vars &lt;- readRDS(&quot;data/NAPA_vars.Rda&quot;)
+
+# Corners of the study area
+NWA_corners &lt;- readRDS(&quot;data/NWA_corners.Rda&quot;)
+
+# Create smaller corners to use less RAM
+  # This also better matches the previous South African work
+  # The Tasmania work had corners of roughly 2 degrees greater than the study area
+NWA_corners_sub &lt;- c(NWA_corners[1]+8, NWA_corners[2]-8, NWA_corners[3]+8, NWA_corners[4]-8)
+
+# The base map
+map_base &lt;- ggplot2::fortify(maps::map(fill = TRUE, col = &quot;grey80&quot;, plot = FALSE)) %&gt;%
+  dplyr::rename(lon = long) %&gt;%
+  mutate(group = ifelse(lon &gt; 180, group+9999, group),
+         lon = ifelse(lon &gt; 180, lon-360, lon)) %&gt;% 
+  select(-region, -subregion)</code></pre>
+<pre class="r"><code>###########################################################################
+### &quot;3.Figures.R&quot;
+## This script creates the figures for the paper and supplemental
+# 1. Load all libraries and functions used in this script
+# 2. Create synoptic figure for each event
+# 3. Create synoptic figure showing SOM nodes
+# 4. Create lolliplots for the SOM nodes
+# 5. Create dendrogram for HCA results
+# 6. Create ordiplot for MDS results
+# 7. Create map of study area
+#############################################################################
+
+
+# 1. Load all libraries and functions used in this script -----------------
+source(&quot;func/synoptic.func.R&quot;)
+source(&quot;func/som.func.R&quot;)
+source(&quot;func/scale.bar.func.R&quot;)
+library(vegan)
+library(ggdendro)
+library(broom)
+
+
+# 2. Create synoptic figure for each event  -------------------------------
+
+# Load SACTN data
+load(&quot;~/data/SACTN/AHW/SACTN_clims.Rdata&quot;)
+load(&quot;data/SACTN/SACTN_events.Rdata&quot;)
+load(&quot;setupParams/SACTN_site_list.Rdata&quot;)
+
+# The files for loading
+event_idx &lt;- data.frame(event = dir(&quot;data/SOM&quot;, full.names = TRUE),
+                        x = length(dir(&quot;data/SOM&quot;)))
+
+# Create a synoptic atlas figure for each MHW
+system.time(plyr::ddply(event_idx, c(&quot;event&quot;), synoptic.fig, .progress = &quot;text&quot;)) # 539 seconds
+
+
+# 3. Create synoptic figure showing SOM nodes -----------------------------
+
+load(&quot;data/node_means.Rdata&quot;)
+load(&quot;data/node_all_anom.Rdata&quot;)
+all.panels(node_means, node_all_anom)
+
+
+# 4. Create lolliplots for the SOM nodes ----------------------------------
+
+# Load data for figure
+load(&quot;data/SACTN/SACTN_events.Rdata&quot;)
+load(&quot;data/node_all_anom.Rdata&quot;)
+
+# Merge into one dataframe
+node_all &lt;- merge(node_all_anom, SACTN_events, by = c(&quot;event&quot;, &quot;site&quot;, &quot;season&quot;, &quot;event_no&quot;))
+
+# Calculate mean and median per node for plotting
+node_h_lines &lt;- node_all %&gt;% 
+  group_by(node) %&gt;% 
+  summarise(mean_int_cum = mean(int_cum, na.rm = T),
+            median_int_cum = median(int_cum, na.rm = T))
+
+# Create the figure
+ggplot(data = node_all, aes(x = date_start, y = int_cum)) +
+  geom_lolli() +
+  geom_point(aes(colour = season)) +
+  geom_label(aes(x = as.Date(&quot;2005-01-01&quot;), y = 580, label = paste0(&quot;n = &quot;, count,&quot;/&quot;,length(node))), 
+             size = 3, label.padding = unit(0.5, &quot;lines&quot;)) +
+  geom_hline(data = node_h_lines, aes(yintercept = mean_int_cum), linetype = &quot;dashed&quot;) +
+  geom_hline(data = node_h_lines, aes(yintercept = median_int_cum), linetype = &quot;dotted&quot;) +
+  facet_wrap(~node) +
+  labs(x = &quot;&quot;, y = &quot;Cummulative intensity (°C·days)&quot;, colour = &quot;Season&quot;) +
+  theme_grey() +
+  # scale_y_continuous(expand = c(0, 100)) +
+  theme(strip.background = element_rect(fill = NA),
+        panel.border = element_rect(fill = NA, colour = &quot;black&quot;, size = 1),
+        axis.text = element_text(size = 12, colour = &quot;black&quot;),
+        axis.ticks = element_line(colour = &quot;black&quot;))
+ggsave(&quot;graph/SOM_lolli.pdf&quot;, height = 9, width = 10)
+
+
+# 5. Create dendrogram for HCA results ------------------------------------
+
+# Load data
+load(&quot;data/all_anom_hclust.Rdata&quot;)
+load(&quot;data/all_anom_env.Rdata&quot;)
+
+# Prep dendrogram
+dhc &lt;- as.dendrogram(all_anom_hclust)
+ddata &lt;- dendro_data(dhc, type = &quot;rectangle&quot;)
+label_data &lt;- label(ddata)
+label_data$season &lt;- all_anom_env$season[as.numeric(as.character(label_data$label))]
+label_data$type &lt;- all_anom_env$type[as.numeric(as.character(label_data$label))]
+
+# Plot the dendrogram
+ggplot(segment(ddata)) + 
+  geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_point(data = label_data, aes(x = x, y = y, shape = type, colour = season)) +
+  scale_shape_manual(values = c(1, 16)) +
+  theme_grey() +
+  theme(panel.border = element_rect(fill = NA, colour = &quot;black&quot;, size = 1),
+        axis.text = element_text(size = 12, colour = &quot;black&quot;),
+        axis.ticks = element_line(colour = &quot;black&quot;))
+ggsave(&quot;graph/HCA.pdf&quot;, height = 9, width = 9)
+
+
+# 6. Create ordiplot for MDS results --------------------------------------
+
+# Load data
+load(&quot;data/all_anom_MDS.Rdata&quot;)
+load(&quot;data/all_anom_env.Rdata&quot;)
+load(&quot;data/SACTN/SACTN_events.Rdata&quot;)
+SACTN_events$type &lt;- NULL
+# load(&quot;data/node_means.Rdata&quot;)
+# load(&quot;data/node_all_anom.Rdata&quot;)
+
+## Fit environmental variables
+ord_fit &lt;- envfit(all_anom_MDS ~ season + type, data = all_anom_env)
+# ord_fit
+ord_fit_df &lt;- as.data.frame(ord_fit$factors$centroids)
+ord_fit_df$factors &lt;- c(&quot;autumn&quot;, &quot;spring&quot;, &quot;summer&quot;, &quot;winter&quot;, &quot;clim&quot;, &quot;MHW&quot;)
+
+# Merge event values
+# SACTN_events_sub &lt;- SACTN_events[,c(1,2)]
+all_anom_env &lt;- left_join(all_anom_env, SACTN_events, by = c(&quot;event&quot;, &quot;season&quot;))
+
+# Create MDS dataframe
+# mds_df &lt;- data.frame(all_anom_MDS$points, type = all_anom_env$type, 
+#                      event = all_anom_env$event, season = all_anom_env$season)
+mds_df &lt;- data.frame(all_anom_MDS$points, all_anom_env)
+mds_df$duration[is.na(mds_df$duration)] &lt;- mean(mds_df$duration, na.rm = T)
+
+# Plot the fits
+ggplot(data = mds_df, aes(x = MDS1, y = MDS2)) +
+  geom_point(aes(colour = season, shape = type, size = duration)) +
+  geom_segment(data = ord_fit_df, aes(x = 0, y = 0, xend = NMDS1, yend = NMDS2),
+               arrow = arrow(angle = 40, length = unit(0.2, &quot;cm&quot;), type = &quot;open&quot;), 
+               alpha = 1, colour = &quot;black&quot;, size = 0.5)  +
+  geom_text(data = ord_fit_df, aes(label = factors, x = NMDS1, y = NMDS2), size = 8) +
+  scale_shape_manual(name = &quot;State&quot;, values = c(19, 15), labels = c(&quot;clim&quot;, &quot;MHW&quot;)) +
+  scale_colour_discrete(name = &quot;Season&quot;) +
+  scale_size_continuous(name = &quot;Duration\n(days)&quot;, breaks = c(20, 70, 120, 170, 220)) +
+  guides(colour = guide_legend(order = 1),
+         shape = guide_legend(order = 2),
+         size = guide_legend(override.aes = list(shape = 15), order = 3)) +
+  # labs(size = &quot;Duration&quot;) +
+  theme_grey() +
+  theme(strip.background = element_rect(fill = NA),
+        panel.border = element_rect(fill = NA, colour = &quot;black&quot;, size = 1),
+        axis.text = element_text(size = 12, colour = &quot;black&quot;),
+        axis.ticks = element_line(colour = &quot;black&quot;))
+ggsave(&quot;graph/MDS.pdf&quot;, height = 9, width = 12)
+
+# Linear model: duration vs. ordination from centre point
+lm_all_results &lt;- mds_df %&gt;%
+  na.omit() %&gt;%
+  mutate(MDS2 = abs(MDS2)) %&gt;% 
+  select(-MDS1, -event, -season, -type, -coast, -site) %&gt;%
+  gather(key = group, 
+         value = measurement,
+         -MDS2) %&gt;%
+  group_by(group) %&gt;% 
+  nest() %&gt;%
+  mutate(model = purrr::map(data, ~lm(measurement ~ MDS2, data = .))) %&gt;% 
+  unnest(model %&gt;% purrr::map(glance)) %&gt;% 
+  select(-data, -model)
+lm_all_results[lm_all_results$adj.r.squared == max(lm_all_results$adj.r.squared, na.rm = T),]
+
+# Visualization of the best linear model
+ggplot(data = mds_df) +
+  geom_smooth(aes(x = duration, y = abs(MDS2)), method = &quot;lm&quot;, se = F) +
+  theme_grey()
+
+
+# 7. Create map of study area ---------------------------------------------
+
+## Load data
+# International borders
+load(&quot;graph/africa_borders.Rdata&quot;)
+
+# Hi-res bathy
+load(&quot;graph/bathy.Rdata&quot;)
+
+# Reanalysis data
+load(&quot;data/ERA/ERA_temp_clim.Rdata&quot;)
+load(&quot;data/ERA/ERA_u_clim.Rdata&quot;)
+colnames(ERA_u_clim)[4] &lt;- &quot;val&quot;
+ERA_u_clim$variable &lt;- &quot;u&quot;
+load(&quot;data/ERA/ERA_v_clim.Rdata&quot;)
+colnames(ERA_v_clim)[4] &lt;- &quot;val&quot;
+ERA_v_clim$variable &lt;- &quot;v&quot;
+
+# Remote data
+load(&quot;data/OISST/OISST_temp_clim.Rdata&quot;)
+load(&quot;data/AVISO/AVISO_u_clim.Rdata&quot;)
+colnames(AVISO_u_clim)[4] &lt;- &quot;val&quot;
+AVISO_u_clim$variable &lt;- &quot;u&quot;
+load(&quot;data/AVISO/AVISO_v_clim.Rdata&quot;)
+colnames(AVISO_v_clim)[4] &lt;- &quot;val&quot;
+AVISO_v_clim$variable &lt;- &quot;v&quot;
+
+# In situ time series locations
+load(&quot;setupParams/SACTN_site_list.Rdata&quot;)
+SACTN_site_list$order &lt;- 1:nrow(SACTN_site_list)
+
+# Create annual mean air-sea state
+# sea_temp &lt;- filter(OISST_temp_clim, date == &quot;01-15&quot;) %&gt;% 
+sea_temp &lt;- data.table::data.table(OISST_temp_clim)
+sea_temp &lt;- sea_temp[, .(temp = mean(temp, na.rm = TRUE)),
+           by = .(x, y)] %&gt;% 
+  rename(lon = x, lat = y)
+currents &lt;- data.table::data.table(rbind(AVISO_u_clim, AVISO_v_clim))
+currents &lt;- currents[, .(val = mean(val, na.rm = TRUE)),
+                     by = .(x, y, variable)] %&gt;% 
+  spread(key = variable, value = val) %&gt;% 
+  rename(lon = x, lat = y) %&gt;% 
+  mutate(arrow_size = ((abs(u*v)/ max(abs(u*v)))+0.2)/6)
+air_temp &lt;- data.table::data.table(ERA_temp_clim)
+air_temp &lt;- air_temp[, .(temp = mean(temp, na.rm = TRUE)),
+                     by = .(x, y)] %&gt;% 
+  rename(lon = x, lat = y)
+winds &lt;- data.table::data.table(rbind(ERA_u_clim, ERA_v_clim))
+winds &lt;- winds[, .(val = mean(val, na.rm = TRUE)),
+                     by = .(x, y, variable)] %&gt;% 
+  spread(key = variable, value = val) %&gt;% 
+  rename(lon = x, lat = y) %&gt;% 
+  mutate(arrow_size = ((abs(u*v)/ max(abs(u*v)))+0.3)/6)
+
+# Reduce wind/ current vectors
+lon_sub &lt;- seq(10, 40, by = 1)
+lat_sub &lt;- seq(-40, -15, by = 1)
+# currents &lt;- currents[(currents$lon %in% lon_sub &amp; currents$lat %in% lat_sub),]
+winds &lt;- winds[(winds$lon %in% lon_sub &amp; winds$lat %in% lat_sub),]
+
+# Establish the vector scalar for the currents
+current_uv_scalar &lt;- 2
+
+# Establish the vector scalar for the wind
+wind_uv_scalar &lt;- 0.5
+
+# Wind feature vector coordinates
+cyc_atlantic &lt;- data.frame(x = c(14.0, 16.1, 16.0), y = c(-36.0, -34.4, -32.1), xend = c(16.0, 16.1, 14.0), yend = c(-34.5, -32.2, -30.6))
+cyc_indian &lt;- data.frame(x = c(36.0, 33.9, 34.0), y = c(-31.5, -33.1, -35.4), xend = c(34.0, 33.9, 36.0), yend = c(-33.0, -35.3, -36.9))
+westerlies &lt;- data.frame(x = c(18.0, 21.1, 24.2), y = c(-38.0, -37.8, -37.8), xend = c(21.0, 24.1, 27.2), yend = c(-37.8, -37.8, -38.0))
+
+# The top figure (sea)
+fig_1_top &lt;- ggplot(data = southern_africa_coast, aes(x = lon, y = lat)) +
+  # The ocean temperature
+  geom_raster(data = sea_temp, aes(fill = temp)) +
+  # The bathymetry
+  stat_contour(data = bathy[bathy$depth &lt; -100 &amp; bathy$depth &gt; -300,], 
+               aes(x = lon, y = lat, z = depth), alpha = 0.5,
+               colour = &quot;ivory&quot;, size = 0.5, binwidth = 200, na.rm = TRUE, show.legend = FALSE) +
+  # The current vectors
+  geom_segment(data = currents, aes(xend = lon + u * current_uv_scalar, yend = lat + v * current_uv_scalar),
+               arrow = arrow(angle = 40, length = unit(currents$arrow_size, &quot;cm&quot;), type = &quot;open&quot;),
+                             linejoin = &quot;mitre&quot;, size = 0.4) +
+  # The land mass
+  geom_polygon(aes(group = group), fill = &quot;grey70&quot;, colour = &quot;black&quot;, size = 0.5, show.legend = FALSE) +
+  geom_path(data = africa_borders, aes(group = group)) +
+  # The legend for the vector length
+  geom_label(aes(x = 37.0, y = -38.0, label = &quot;1.0 m/s\n&quot;), size = 3, label.padding = unit(0.5, &quot;lines&quot;)) +
+  geom_segment(aes(x = 36.0, y = -38.3, xend = 38.0, yend = -38.3), linejoin = &quot;mitre&quot;,
+               arrow = arrow(angle = 40, length = unit(0.2, &quot;cm&quot;), type = &quot;open&quot;)) +
+  # The in situ sites
+  geom_point(data = SACTN_site_list, shape = 19,  size = 2.8, colour = &quot;ivory&quot;) +
+  geom_text(data = SACTN_site_list[-c(3,4,7:9,18,21,23:24),], aes(label = order), size = 1.9, colour = &quot;red&quot;) +
+  # Oceans
+  annotate(&quot;text&quot;, label = &quot;INDIAN\nOCEAN&quot;, x = 37.00, y = -34.0, size = 4.0, angle = 0, colour = &quot;ivory&quot;) +
+  
+  annotate(&quot;text&quot;, label = &quot;ATLANTIC\nOCEAN&quot;, x = 13.10, y = -34.0, size = 4.0, angle = 0, colour = &quot;ivory&quot;) +
+  # Benguela
+  geom_segment(aes(x = 17.2, y = -32.6, xend = 15.2, yend = -29.5),
+               arrow = arrow(length = unit(0.3, &quot;cm&quot;)), size = 0.5, colour = &quot;ivory&quot;) +
+  annotate(&quot;text&quot;, label = &quot;Benguela&quot;, x = 16.0, y = -31.8, size = 3.5, angle = 298, colour = &quot;ivory&quot;) +
+  # Agulhas
+  geom_segment(aes(x = 33, y = -29.5, xend = 29.8, yend = -33.0),
+               arrow = arrow(length = unit(0.3, &quot;cm&quot;)), size = 0.5, colour = &quot;ivory&quot;) +
+  annotate(&quot;text&quot;, label = &quot;Agulhas&quot;, x = 31.7, y = -31.7, size = 3.5, angle = 53, colour = &quot;ivory&quot;) +
+  # Agulhas Bank
+  annotate(&quot;text&quot;, label = &quot;Agulhas\nBank&quot;, x = 22.5, y = -35.5, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
+  # Cape Peninsula
+  annotate(&quot;text&quot;, label = &quot;Cape\nPeninsula&quot;, x = 17.2, y = -35, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
+  # Improve on the x and y axis labels
+  scale_x_continuous(breaks = seq(15, 35, 5),
+                     labels = scales::unit_format(&quot;°E&quot;, sep = &quot;&quot;),
+                     position = &quot;top&quot;) +
+  scale_y_continuous(breaks = seq(-35, -30, 5),
+                     labels = c(&quot;35°S&quot;, &quot;30°S&quot;)) +
+  labs(x = NULL, y = NULL) +
+  # Slightly shrink the plotting area
+  coord_cartesian(xlim = c(10.5, 39.5), ylim = c(-39.5, -25.5), expand = F) +
+  # Use viridis colour scheme
+  scale_fill_viridis(name = &quot;Temp.\n(°C)&quot;, option = &quot;D&quot;, breaks = c(24, 20, 16)) +
+  # Adjust the theme
+  theme_bw() +
+  theme(panel.border = element_rect(fill = NA, colour = &quot;black&quot;, size = 1),
+        axis.text = element_text(size = 12, colour = &quot;black&quot;),
+        axis.ticks = element_line(colour = &quot;black&quot;))
+# fig_1_top
+
+# False Bay inset
+fb_inset &lt;- ggplot(data = sa_shore, aes(x = lon, y = lat)) +
+  # The land mass
+  geom_polygon(aes(group = PID),
+               fill = &quot;grey70&quot;, colour = NA, size = 0.5, show.legend = FALSE) +
+  # The in situ sites
+  geom_point(data = SACTN_site_list, shape = 1,  size = 3, colour = &quot;black&quot;) +
+  geom_text(data = SACTN_site_list[-6,], aes(label = order), size = 2.0, colour = &quot;red&quot;) +
+  # Text label
+  geom_text(aes(x = 18.65, y = -34.25, label = &quot;False\nBay&quot;), size = 2.7) +
+  # Control the x and y axes
+  coord_cartesian(xlim = c(18.2, 19), ylim = c(-34.5, -33.8), expand = F) +
+  scale_x_continuous(breaks = c(18.5), label = &quot;18.5°E&quot;) +
+  scale_y_continuous(breaks = c(-34.1), label = &quot;34.1°S&quot;) +
+  labs(x = NULL, y = NULL) +
+  # Change the theme for cleaner over-plotting
+  theme_bw() +
+  theme(plot.background = element_blank(),
+        axis.text = element_text(colour = &quot;ivory&quot;),
+        axis.text.y = element_text(angle = 90, hjust = 0.5),
+        axis.ticks = element_line(colour = &quot;ivory&quot;),
+        panel.border = element_rect(colour = &quot;ivory&quot;),
+        panel.grid = element_blank())
+# fb_inset
+
+# The bottom figure (air)
+fig_1_bottom &lt;- ggplot(data = southern_africa_coast, aes(x = lon, y = lat)) +
+  # The ocean temperature
+  geom_raster(data = air_temp, aes(fill = temp)) +
+  # The land mass
+  geom_polygon(aes(group = group), fill = NA, colour = &quot;black&quot;, size = 0.5, show.legend = FALSE) +
+  geom_path(data = africa_borders, aes(group = group)) +
+  # The current vectors
+  geom_segment(data = winds, aes(xend = lon + u * wind_uv_scalar, yend = lat + v * wind_uv_scalar),
+               arrow = arrow(angle = 40, length = unit(winds$arrow_size, &quot;cm&quot;), type = &quot;open&quot;),
+               linejoin = &quot;mitre&quot;, size = 0.4) +
+  # The legend for the vector length
+  geom_label(aes(x = 37.0, y = -38.0, label = &quot;4.0 m/s\n&quot;), size = 3, label.padding = unit(0.5, &quot;lines&quot;)) +
+  geom_segment(aes(x = 36.0, y = -38.3, xend = 38.0, yend = -38.3), linejoin = &quot;mitre&quot;,
+               arrow = arrow(angle = 40, length = unit(0.2, &quot;cm&quot;), type = &quot;open&quot;)) +
+  # The coastal sections
+  geom_spoke(aes(x = 18.46520, y = -34.31050, angle = 180, radius = -2), linetype = &quot;dotted&quot;, colour = &quot;ivory&quot;) +
+  geom_spoke(aes(x = 18.46520, y = -34.31050, angle = 180, radius = 2), linetype = &quot;dotted&quot;, colour = &quot;ivory&quot;) +
+  geom_spoke(aes(x = 27.48889, y = -33.28611, angle = 40, radius = -2), linetype = &quot;dotted&quot;, colour = &quot;ivory&quot;) +
+  geom_spoke(aes(x = 27.48889, y = -33.28611, angle = 40, radius = 2), linetype = &quot;dotted&quot;, colour = &quot;ivory&quot;) +
+  annotate(&quot;text&quot;, label = &quot;West\nCoast&quot;, x = 19.5, y = -31.2, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
+  annotate(&quot;text&quot;, label = &quot;South\nCoast&quot;, x = 23, y = -33.0, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
+  annotate(&quot;text&quot;, label = &quot;East\nCoast&quot;, x = 28, y = -31, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
+  # South Atlantic Anticyclone
+  annotate(&quot;text&quot;, label = &quot;SOUTH\nATLANTIC\nANTICYCLONE&quot;, x = 13.5, y = -33.5, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
+  geom_curve(data = cyc_atlantic, aes(x = x, y = y, xend = xend, yend = yend), curvature = 0.2, colour = &quot;ivory&quot;,
+             arrow = arrow(angle = 40, type = &quot;open&quot;, length = unit(0.25,&quot;cm&quot;))) +
+  # South Indian Anticyclone
+  annotate(&quot;text&quot;, label = &quot;SOUTH\nINDIAN\nANTICYCLONE&quot;, x = 36.5, y = -34.0, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
+  geom_curve(data = cyc_indian, aes(x = x, y = y, xend = xend, yend = yend), curvature = 0.2, colour = &quot;ivory&quot;,
+             arrow = arrow(angle = 40, type = &quot;open&quot;, length = unit(0.25,&quot;cm&quot;))) +
+  # Westerlies
+  annotate(&quot;text&quot;, label = &quot;WESTERLIES&quot;, x = 22.5, y = -37.0, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
+  geom_curve(data = westerlies, aes(x = x, y = y, xend = xend, yend = yend), colour = &quot;ivory&quot;,
+             arrow = arrow(angle = 40, type = &quot;open&quot;, length = unit(0.25,&quot;cm&quot;)), curvature = -0.01) +
+  # Improve on the x and y axis labels
+  scale_x_continuous(breaks = seq(15, 35, 5),
+                     labels = scales::unit_format(&quot;°E&quot;, sep = &quot;&quot;)) +
+  scale_y_continuous(breaks = seq(-35, -30, 5),
+                     labels = c(&quot;35°S&quot;, &quot;30°S&quot;)) +
+  labs(x = NULL, y = NULL) +
+  # Scale bar
+  scaleBar(lon = 22.0, lat = -29.5, distanceLon = 200, distanceLat = 50, distanceLegend = 90, dist.unit = &quot;km&quot;,
+           arrow.length = 100, arrow.distance = 130, arrow.North.size = 3, 
+           legend.colour = &quot;ivory&quot;, arrow.colour = &quot;ivory&quot;, N.colour = &quot;ivory&quot;) +
+  # Slightly shrink the plotting area
+  coord_cartesian(xlim = c(10.5, 39.5), ylim = c(-39.5, -25.5), expand = F) +
+  # Use viridis colour scheme
+  scale_fill_viridis(name = &quot;Temp.\n(°C)&quot;, option = &quot;A&quot;, breaks = c(24, 20, 16)) +
+  # Adjust the theme
+  theme_bw() +
+  theme(panel.border = element_rect(fill = NA, colour = &quot;black&quot;, size = 1),
+        axis.text = element_text(size = 12, colour = &quot;black&quot;),
+        axis.ticks = element_line(colour = &quot;black&quot;))
+# fig_1_bottom
+
+# Convert the figures to grobs
+fig_1_top_grob &lt;- ggplotGrob(fig_1_top)
+fb_inset_grob &lt;- ggplotGrob(fb_inset)
+fig_1_bottom_grob &lt;- ggplotGrob(fig_1_bottom)
+
+# Stick them together
+fig_1 &lt;- ggplot() +
+  # First set the x and y axis values so we know what the ranges are
+  # in order to make it easier to place our facets
+  coord_equal(xlim = c(1, 10), ylim = c(1, 10), expand = F) +
+  # Then we place our facetsover one another using the coordinates we created
+  annotation_custom(fig_1_top_grob,
+                    xmin = 1, xmax = 10, ymin = 5.5, ymax = 10) +
+  annotation_custom(fb_inset_grob,
+                    xmin = 3.5, xmax = 5.5, ymin = 7.2, ymax = 8.8) +
+  annotation_custom(fig_1_bottom_grob,
+                    xmin = 1, xmax = 10, ymin = 1, ymax = 5.5)
+# save
+ggsave(plot = fig_1, filename = &quot;graph/fig_1.pdf&quot;, height = 8, width = 8)</code></pre>
+<div id="refs">
+<div id="ref-Oliver2018tasmania">
+<p>Oliver, E. C., Lago, V., Hobday, A. J., Holbrook, N. J., Ling, S. D., and Mundy, C. N. (2018). Marine heatwaves off eastern tasmania: Trends, interannual variability, and predictability. <em>Progress in oceanography</em> 161, 116–130.</p>
+</div>
+<div id="ref-Schlegel2017predominant">
+<p>Schlegel, R. W., Oliver, E. C., Perkins-Kirkpatrick, S., Kruger, A., and Smit, A. J. (2017). Predominant atmospheric and oceanic patterns during coastal marine heatwaves. <em>Frontiers in Marine Science</em> 4, 323.</p>
+</div>
+</div>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.6.0 (2019-04-26)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 16.04.5 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/openblas-base/libblas.so.3
+LAPACK: /usr/lib/libopenblasp-r0.2.18.so
+
+locale:
+ [1] LC_CTYPE=en_CA.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_CA.UTF-8        LC_COLLATE=en_CA.UTF-8    
+ [5] LC_MONETARY=en_CA.UTF-8    LC_MESSAGES=en_CA.UTF-8   
+ [7] LC_PAPER=en_CA.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_CA.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] bindrcpp_0.2.2    data.table_1.11.6 yasomi_0.3       
+ [4] proxy_0.4-22      e1071_1.7-0       lubridate_1.7.4  
+ [7] ncdf4_1.16        forcats_0.3.0     stringr_1.3.1    
+[10] dplyr_0.7.6       purrr_0.2.5       readr_1.1.1      
+[13] tidyr_0.8.1       tibble_1.4.2      ggplot2_3.0.0    
+[16] tidyverse_1.2.1   jsonlite_1.6     
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
+ [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
+ [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
+[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
+[13] doMC_1.3.5        modelr_0.1.2      readxl_1.1.0     
+[16] foreach_1.4.4     bindr_0.1.1       plyr_1.8.4       
+[19] munsell_0.5.0     gtable_0.2.0      workflowr_1.1.1  
+[22] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
+[25] codetools_0.2-15  evaluate_0.11     knitr_1.20       
+[28] parallel_3.6.0    class_7.3-14      broom_0.5.0      
+[31] Rcpp_0.12.18      backports_1.1.2   scales_1.0.0     
+[34] hms_0.4.2         digest_0.6.16     stringi_1.2.4    
+[37] grid_3.6.0        rprojroot_1.3-2   cli_1.0.0        
+[40] tools_3.6.0       maps_3.3.0        magrittr_1.5     
+[43] lazyeval_0.2.1    crayon_1.3.4      whisker_0.3-2    
+[46] pkgconfig_2.0.2   xml2_1.2.0        iterators_1.0.10 
+[49] assertthat_0.2.0  rmarkdown_1.10    httr_1.3.1       
+[52] rstudioapi_0.7    R6_2.2.2          nlme_3.1-137     
+[55] git2r_0.23.0      compiler_3.6.0   </code></pre>
+</div>
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
+</p>
+<hr>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
