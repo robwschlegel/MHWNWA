@@ -3,6 +3,20 @@
 # climatologies for all of the variables used in the study
 
 
+# Workflowr code ----------------------------------------------------------
+
+# All analysis files
+# dir("analysis", pattern = ".Rmd", full.names = T)
+
+# Run this to re-compile the entire project
+# system.time(
+# workflowr::wflow_publish(files = c("analysis/index.Rmd", "analysis/polygon-prep.Rmd",
+#                                    "analysis/sst-prep.Rmd", "analysis/var-prep.Rmd",
+#                                    "analysis/vec-prep.Rmd", "analysis/som.Rmd",
+#                                    "analysis/figures.Rmd"),
+#                          message = "Re-publish entire site.")
+# ) # 193 seconds
+
 # Startup -----------------------------------------------------------------
 
 # Base libraries etc.
