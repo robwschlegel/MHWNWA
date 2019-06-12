@@ -13,7 +13,7 @@ library(lubridate) # For convenient date manipulation
 library(heatwaveR, lib.loc = "../R-packages/")
 # cat(paste0("heatwaveR version = ", packageDescription("heatwaveR")$Version))
 library(tidync, lib.loc = "../R-packages/")
-# library(akima)
+library(akima) # For finding pixels next to missing pixels
 library(FNN) # For finding pixels next to missing pixels
 
 # Set number of cores
@@ -340,14 +340,10 @@ OISST_land_mask_func <- function(){
 }
 
 
-# Function for fillling in missing pixels ---------------------------------
+# Functions for fillling in missing pixels --------------------------------
 
 # Find nearest neighbours and take average
-
-# Find pixels with NA
-# Find the nearest 9 pixels for each missing row
-# Create a mean row of values from those nine
-# Add those reults back into the parent dataframe
+  # NB: For some reason this does not work well
 #testers...
 # df <- synoptic_states_anom_cartesian %>%
 #   ungroup() %>%
@@ -355,26 +351,53 @@ OISST_land_mask_func <- function(){
 #   select(-region, -sub_region, -event_no)
 # Order by lon/lat and exit
 fill_grid_func <- function(df){
+
+  # Create base dataframe
   df_base <- left_join(land_mask_OISST_sub_water, df, by = c("lon", "lat")) %>%
     mutate(row_index = 1:n()) %>%
     select(row_index, everything())
+
+  # Par it down for later
+  df_bare <- df_base %>%
+    dplyr::select(-lon, -lat, -lsmask)
+
+  # Take only rows with missing pixels
   df_NA <- df_base[!complete.cases(df_base),]
-  # We intentionally use the land mask with land pixels for merging to feel the coastline
+  # Find their nine nearest neighbours
+    # We intentionally use the land mask with land pixels for merging to feel the coastline
   pixel_index <- FNN::knnx.index(data = as.matrix(land_mask_OISST_sub[,c("lon", "lat")]),
                                  query = as.matrix(df_NA[,c("lon", "lat")]), k = 9)
-  merge_index <- cbind(df_NA[,c("lon", "lat")], pixel_index) %>%
-    gather(key = "pixel", value = "row_index", -lon, -lat)
-    # reshape2::melt(id = c("lon", "lat"),
-    #                measure = c(colnames(.)[-c(1:2)]),
-    #                variable.name = "pixel", value.name = "row_index")
 
+  # Create the means of the nearest pixels
+  merge_index <- cbind(df_NA[,c("lon", "lat", "lsmask")], pixel_index) %>%
+    gather(key = "pixel", value = "row_index", -lon, -lat, -lsmask) %>%
+    dplyr::select(-lsmask) %>%
+    left_join(mutate(land_mask_OISST_sub, row_index = 1:n()), by = "row_index") %>%
+    filter(lsmask == 1) %>%  # Remove land pixels
+    left_join(df_bare, by = "row_index") %>%
+    dplyr::select(-pixel, -row_index, -lsmask, -lon.y, -lat.y) %>%
+    dplyr::rename(lon = lon.x, lat = lat.x) %>%
+    group_by(lon, lat) %>%
+    summarise_all(.funs = "mean", na.rm = T) %>%
+    ungroup() %>%
+    na.omit()
+
+  # Combine and exit
+  df_res <- df %>%
+    na.omit() %>%
+    bind_rows(merge_index) %>%
+    group_by(lon, lat) #%>%
+    # summarise_all(.funs = "mean", na.rm = T) %>%
+    # ungroup()
+
+  # Check
+  # length(unique(paste(df_res$lon, df_res$lat)))
 }
 
 
-
-
-
-# Function for interpolating while nested
+# Function for interpolating with kima
+# testers...
+# interpp_stat <- "sst_anom"
 interpp_data <- function(df_base, df_grid, interpp_stat){
   df_base <- data.frame(df_base)
   suppressWarnings(

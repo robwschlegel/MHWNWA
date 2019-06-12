@@ -230,7 +230,7 @@ bathy_lowres_plot <- ggplot(NWA_coords_cabot, aes(x = lon, y = lat)) +
   geom_polygon(aes(group = region, fill = region, colour = region), alpha = 0.2) +
   geom_contour(data = NWA_bathy_lowres, aes(z = depth),
                breaks = c(-50),  size = c(0.3),  colour = "grey70") +
-    geom_contour(data = NWA_bathy_lowres, aes(z = depth),
+  geom_contour(data = NWA_bathy_lowres, aes(z = depth),
                breaks = c(-200),  size = c(0.3),  colour = "grey30") +
   coord_cartesian(xlim = NWA_corners[1:2],
                   ylim = NWA_corners[3:4]) +

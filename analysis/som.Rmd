@@ -183,23 +183,36 @@ synoptic_states_anom_cartesian <- synoptic_states_anom_fix %>%
   group_by(region, sub_region, event_no, lon, lat) %>% 
   summarise_all(.funs = "mean", na.rm = T) #%>% 
   # Then interpolate the few pixels that aren't filled
+    # NB: After spending a day working on interpolation techniques 
+    # I decided to leave it as this creates more artefacts than it removes
   # group_by(region, sub_region, event_no)
-) # xxx seconds
+) # 34 seconds
+
+# Constrain vectors
+system.time(
+synoptic_vec_states_anom_cartesian <- synoptic_vec_states_anom_fix %>% 
+  # First create means based on the nearest NAPA pixel to OISST pixel
+  left_join(lon_lat_NAPA_OISST, by = c("lon", "lat")) %>% 
+  dplyr::select(-lon, -lat) %>% 
+  dplyr::rename(lon = lon_O, lat = lat_O) %>% 
+  group_by(region, sub_region, event_no, lon, lat) %>% 
+  summarise_all(.funs = "mean", na.rm = T)
+) # 32 seconds
 
 # Test visuals
-# test <- synoptic_states_anom_cartesian %>% 
+# test <- synoptic_states_anom_cartesian %>%
 #   filter(region == "cbs", sub_region == "(0,50]", event_no == 1)
 # ggplot(test, aes(x = lon, y = lat)) +
 #   geom_raster(aes(fill = sst_anom)) +
-#   scale_fill_gradient2(low = "blue", high = "red") #+
-  # coord_cartesian(xlim = NWA_corners[1:2],
-                  # ylim = NWA_corners[3:4])
+#   scale_fill_gradient2(low = "blue", high = "red") +
+#   coord_cartesian(xlim = NWA_corners_sub[1:2],
+#                   ylim = NWA_corners_sub[3:4])
 ```
 
 
 ### Merge and save
 
-With all of our data ready we may 
+With all of our data ready we may now stick them together and save the packet for SOM use.
 
 ```{r create-SOM-packet, eval=FALSE}
 # Packet for all synoptic anomaly data for all regions etc.
@@ -207,32 +220,19 @@ system.time(
 packet_all_anom <- left_join(synoptic_states_anom_fix, 
                              synoptic_vec_states_anom_fix,
                              by = c("region", "sub_region", "event_no", "lon", "lat")) %>% 
-  # The variable dataframe is longer than the vector dataframe
-  # na.omit() %>% 
-  # NB: A shortened list of variables to be more manageable
-  # select(region:lat, sst_anom, taum_anom, qt_anm, 
-         # mldr10_1_anom, uoce_anom, voce_anom) %>% 
-  # NB: The full list if one desires
-  # select(region:lat, emp_oce_anom:taum_anom) %>% 
   data.table::data.table() %>% 
-  # filter(lon >= NWA_corners_sub[1], lon <= NWA_corners_sub[2],
-  #        lat >= NWA_corners_sub[3], lat <= NWA_corners_sub[4]) %>% 
   reshape2::melt(id = c("region", "sub_region", "event_no", "lon", "lat"),
                  measure = c(colnames(.)[-c(1:5)]), 
                  variable.name = "var", value.name = "val") %>% 
   dplyr::arrange(var, lon, lat) %>%
-  # reshape2::dcast(formula = region + sub_region, event_no ~ lon + lat + var, value.var = "val")
   unite(coords, c(lon, lat, var), sep = "BBB") %>%
   unite(event_ID, c(region, sub_region, event_no), sep = "BBB") %>%
   reshape2::dcast(event_ID ~ coords, value.var = "val")
-  # mutate(region_ply = region,
-         # sub_region_ply = sub_region) %>% 
-  # plyr::ddply(c("region_ply", "sub_region_ply"), wide_matrix, .parallel = T) %>% 
-  # select(-region_ply, -sub_region_ply)
-) # 367 seconds
-# Remove columns (pixels) with missing data
+) # 339 seconds
+
+# Remove columns (pixels) with missing data and save
 packet_all_anom_fix <- packet_all_anom[,colSums(is.na(packet_all_anom))<1]
-saveRDS(packet_all_anom_fix, "data/packet_all_anom.Rda")
+# saveRDS(packet_all_anom_fix, "data/packet_all_anom.Rda")
 ```
 
 
@@ -265,7 +265,7 @@ With the function sorted, we now feed the data.
 
 ```{r som-run, eval=FALSE}
 all_anom <- readRDS("data/packet_all_anom.Rda")
-system.time(som_all_anom <- som_model_PCI(all_anom)) # 225 seconds
+system.time(som_all_anom <- som_model_PCI(all_anom)) # 220 seconds
 saveRDS(som_all_anom, file = "data/som_all_anom.Rda")
 ```
 
