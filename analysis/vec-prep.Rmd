@@ -183,7 +183,7 @@ NAPA_vector_files_dates <- readRDS("data/NAPA_vector_files_dates.Rda")
 # Load full variable climatology file
 NAPA_clim_vecs <- readRDS("data/NAPA_clim_vecs.Rda")
 
-# Function for extracting the desired variables from a given NetCDF file
+# Function for extracting the desired vectors from a given NetCDF file
 # testers...
 # file_number <- 1376
 extract_all_vec <- function(file_number){
@@ -192,12 +192,7 @@ extract_all_vec <- function(file_number){
     # NB: This should be optimised...
   u_vecs <- extract_one_vec(NAPA_U_files[file_number])
   v_vecs <- extract_one_vec(NAPA_V_files[file_number])
-  if(file_number == 276){
-    w_vecs <- v_vecs[1,]
-    colnames(w_vecs)[6] <- "wo"
-  } else {
-    w_vecs <- extract_one_vec(NAPA_W_files[file_number])
-  }
+  w_vecs <- extract_one_vec(NAPA_W_files[file_number])
   
   NAPA_vecs_extracted <- left_join(u_vecs, v_vecs, by = colnames(u_vecs)[1:5]) %>% 
     left_join(w_vecs, by = colnames(u_vecs)[1:5])
@@ -206,7 +201,7 @@ extract_all_vec <- function(file_number){
   return(NAPA_vecs_extracted)
 }
 
-# Function for extracting variables from as many files as a MHW event requires
+# Function for extracting vectors from as many files as a MHW event requires
 # testers...
 # event_sub <- NAPA_MHW_event[23,]
 data_vec_packet <- function(event_sub){
@@ -236,9 +231,6 @@ data_vec_packet <- function(event_sub){
   # Create mean synoptic values
   packet_mean <- packet_anom %>% 
     select(-doy) %>% 
-    # NB: The lowest pixels are a forcing edge and shouldn't be included
-      # We can catch these out by filtering pixels whose SST is exactly 0
-    # filter(sst != 0) %>% 
     group_by(lon, lat) %>% 
     summarise_all(mean, na.rm = T) %>% 
     arrange(lon, lat) %>% 
@@ -270,7 +262,7 @@ doMC::registerDoMC(cores = 25)
 # Create one big packet
 system.time(
 synoptic_vec_states <- plyr::ddply(NAPA_MHW_event, c("region", "sub_region", "event_no"), data_vec_packet, .parallel = T)
-) # 28 seconds for first 2, 6125 seconds (102 minutes) for all
+) # xxx seconds
 
 # Save
 # saveRDS(synoptic_vec_states, "data/synoptic_vec_states.Rda")

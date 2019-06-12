@@ -60,12 +60,12 @@ source("code/functions.R")
 
 # Set number of cores
 # NB: Was set to 25 as someone else was using the server at the time
-# doMC::registerDoMC(cores = 25)
+# doMC::registerDoMC(cores = 50)
 
 # Create one big packet
 # system.time(
-  # synoptic_vec_states <- plyr::ddply(NAPA_MHW_event, c("region", "sub_region", "event_no"), data_vec_packet, .parallel = T)
-# ) # 28 seconds for first 2, 6125 seconds (102 minutes) for all
+# synoptic_vec_states <- plyr::ddply(NAPA_MHW_event, c("region", "sub_region", "event_no"), data_vec_packet, .parallel = T)
+# ) # xxx seconds
 
 # Save
 # saveRDS(synoptic_vec_states, "data/synoptic_vec_states.Rda")

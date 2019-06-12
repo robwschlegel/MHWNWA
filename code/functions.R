@@ -13,6 +13,8 @@ library(lubridate) # For convenient date manipulation
 library(heatwaveR, lib.loc = "../R-packages/")
 # cat(paste0("heatwaveR version = ", packageDescription("heatwaveR")$Version))
 library(tidync, lib.loc = "../R-packages/")
+# library(akima)
+library(FNN) # For finding pixels next to missing pixels
 
 # Set number of cores
 doMC::registerDoMC(cores = 50)
@@ -76,6 +78,18 @@ map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE
   mutate(group = ifelse(lon > 180, group+9999, group),
          lon = ifelse(lon > 180, lon-360, lon)) %>%
   select(-region, -subregion)
+
+# The OISST land mask
+land_mask_OISST <- readRDS("data/land_mask_OISST.Rda")
+
+# Filter it to the smaller domain only
+land_mask_OISST_sub <- land_mask_OISST%>%
+  filter(lon >= NWA_corners_sub[1], lon <= NWA_corners_sub[2],
+         lat >= NWA_corners_sub[3], lat <= NWA_corners_sub[4])
+
+# Create a subsetted water only mask
+land_mask_OISST_sub_water <- land_mask_OISST_sub %>%
+  filter(lsmask == 1)
 
 
 # Extract one variable ----------------------------------------------------
@@ -168,12 +182,6 @@ extract_one_vec <- function(file_name, coords = NAPA_bathy_sub){
 
   # Find the name of the depth variable
   depth_var <- tidync(file_name) %>% hyper_dims()
-  # NB: The W vector file number 276
-  # "../../data/NAPA025/5d_grid_W/CREG025E-GLSII_5d_grid_W_19970707-19970711.nc"
-  # is empty so needs to be caught
-  if(depth_var$count[4] == 0){
-    return()
-  }
   depth_var <- depth_var$name[grepl(pattern = "depth", depth_var$name)]
 
   # Extract data
@@ -251,12 +259,7 @@ extract_all_vec <- function(file_number){
   # NB: This should be optimised...
   u_vecs <- extract_one_vec(NAPA_U_files[file_number])
   v_vecs <- extract_one_vec(NAPA_V_files[file_number])
-  if(file_number == 276){
-    w_vecs <- v_vecs[1,]
-    colnames(w_vecs)[6] <- "wo"
-  } else {
-    w_vecs <- extract_one_vec(NAPA_W_files[file_number])
-  }
+  w_vecs <- extract_one_vec(NAPA_W_files[file_number])
 
   NAPA_vecs_extracted <- left_join(u_vecs, v_vecs, by = colnames(u_vecs)[1:5]) %>%
     left_join(w_vecs, by = colnames(u_vecs)[1:5])
@@ -297,9 +300,6 @@ data_vec_packet <- function(event_sub){
   # Create mean synoptic values
   packet_mean <- packet_anom %>%
     select(-doy) %>%
-    # NB: The lowest pixels are a forcing edge and shouldn't be included
-    # We can catch these out by filtering pixels whose SST is exactly 0
-    # filter(sst != 0) %>%
     group_by(lon, lat) %>%
     summarise_all(mean, na.rm = T) %>%
     arrange(lon, lat) %>%
@@ -320,3 +320,72 @@ data_vec_packet <- function(event_sub){
   return(packet_res)
 }
 
+
+# Function to create the OISST landmask -----------------------------------
+
+# The land mask NetCDF file is downloaded here:
+# https://www.esrl.noaa.gov/psd/data/gridded/data.noaa.oisst.v2.highres.html
+OISST_land_mask_func <- function(){
+  lmask <- want_vec <- tidync("data/lsmask.oisst.v2.nc") %>%
+    activate() %>%
+    hyper_tibble() %>%
+    dplyr::select(-time) %>%
+    mutate(lon = ifelse(lon > 180, lon-360, lon))
+
+  # Test visuals
+  # ggplot(lmask, aes(x = lon, y = lat)) +
+  # geom_raster(aes(fill = lsmask))
+
+  saveRDS(lmask, "data/land_mask_OISST.Rda")
+}
+
+
+# Function for fillling in missing pixels ---------------------------------
+
+# Find nearest neighbours and take average
+
+# Find pixels with NA
+# Find the nearest 9 pixels for each missing row
+# Create a mean row of values from those nine
+# Add those reults back into the parent dataframe
+#testers...
+# df <- synoptic_states_anom_cartesian %>%
+#   ungroup() %>%
+#   filter(region == "cbs", sub_region == "(0,50]", event_no == 1) %>%
+#   select(-region, -sub_region, -event_no)
+# Order by lon/lat and exit
+fill_grid_func <- function(df){
+  df_base <- left_join(land_mask_OISST_sub_water, df, by = c("lon", "lat")) %>%
+    mutate(row_index = 1:n()) %>%
+    select(row_index, everything())
+  df_NA <- df_base[!complete.cases(df_base),]
+  # We intentionally use the land mask with land pixels for merging to feel the coastline
+  pixel_index <- FNN::knnx.index(data = as.matrix(land_mask_OISST_sub[,c("lon", "lat")]),
+                                 query = as.matrix(df_NA[,c("lon", "lat")]), k = 9)
+  merge_index <- cbind(df_NA[,c("lon", "lat")], pixel_index) %>%
+    gather(key = "pixel", value = "row_index", -lon, -lat)
+    # reshape2::melt(id = c("lon", "lat"),
+    #                measure = c(colnames(.)[-c(1:2)]),
+    #                variable.name = "pixel", value.name = "row_index")
+
+}
+
+
+
+
+
+# Function for interpolating while nested
+interpp_data <- function(df_base, df_grid, interpp_stat){
+  df_base <- data.frame(df_base)
+  suppressWarnings(
+    res <- as.data.frame(interpp(x = as.vector(df_base$lon), y = as.vector(df_base$lat),
+                                 as.vector(df_base[,colnames(df_base) == interpp_stat]),
+                                 xo = as.vector(df_grid$lon), yo = as.vector(df_grid$lat), linear = T,
+                                 extrap = FALSE, duplicate = "mean"))
+  )
+  colnames(res) <- c("lon_O_corrected", "lat_O", "interp")
+  suppressMessages(
+    df_res <- right_join(df_base, res)
+  )
+  return(df_res)
+}
