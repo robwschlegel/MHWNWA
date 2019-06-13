@@ -1,0 +1,338 @@
+---
+title: 'Primary Drivers of marine heatwaves in the North West Atlantic'
+author: "Robert W. Schlegel and Eric C. J. Oliver"
+date: "June 19th, 2019"
+output:
+  html_document:
+    # code_folding: show
+    # css: acid.css
+    fig_caption: yes
+    # fig_width: 2 
+    # fig_height: 2 
+    highlight: default
+    number_sections: yes
+    theme: yeti
+    toc: yes
+    toc_float: yes
+# fontsize: 10pt
+language: Australian
+css: acid.css
+# mainfont: PT Serif
+# monofont: PT Mono
+csl: frontiers.csl
+# sansfont: PT Sans
+bibliography: Presentations.bib
+# papersize: A4
+---
+
+![](graph/dying_coral.jpeg)
+
+***
+
+# What are marine heatwaves? 
+
+## Definition
+
+<font size="5">"A prolonged discrete anomalously warm water event that can be described by its duration, intensity, rate of evolution, and spatial extent." </font>  
+  
+[@Hobday2016]
+
+<br>
+
+<center>
+![Eric Oliver, www.marineheatwaves.org](graph/mhw-definition_1_orig.png){ width=90% }  
+(_Eric Oliver, www.marineheatwaves.org_)
+</center>
+  
+* The temperature at a location exceeds the 90% percentile of that calendar day    
+* This occurs at least 5 days in a row with no more than a 2 day gap thereafter    
+
+## Methods {.tabset}
+
+### Time series
+<center>
+![](graph/ts_full.png){ width=90% }
+</center>  
+  
+* First we start with a normal temperature time series
+    * Temperature (°C) on the y-axis, date on the x-axis
+
+### Day of year
+<center>
+![](graph/ts_box.png){ width=90% }
+</center>
+  
+* Then we clump all of the same days of the year (doy) together
+* The range of values for each doy are shown here as boxplots
+
+### Climatologies
+<center>
+![](graph/ts_box_clim.png){ width=90% }
+</center>
+  
+* We smooth these values with an 11-day moving average while finding the:
+    * mean _seasonal signal_ (blue line) & 90th percentile _threshold_ (red line)
+* These both are then smoothed with a 31-day moving average
+
+## Results {.tabset}
+
+### Events
+<center>
+![](graph/MHW_flame.png)
+</center>
+  
+* Any temperatures above the _threshold_ for 5+ days are marked as a marine heatwave
+
+### Categories
+<center>
+![](graph/MHW_category.png)
+</center>
+
+* There is also a more qualitative ranking system [@Hobday2018]
+
+### Event metrics
+<center>
+![](graph/MHW_lolli.png)
+</center>
+  
+* Summary metrics for each event are created
+* Here the max intensity of each event is shown with a lolliplot
+
+## In practice
+
+[Marine Heatwave Tracker](http://www.marineheatwaves.org/tracker)
+
+***
+
+# Why should we care? 
+  
+* Marine heatwaves are increasing in duration and intensity globally [@Oliver2018]
+* We already know of many marine heatwaves that have had dire consequences
+
+## Infamous marine heatwaves {.tabset}
+
+### Mediterranean - 2003
+
+<center>
+![](graph/gorgonian_fan.jpg){ width=70% }
+</center>
+
+* Cause - Atmospheric forcing  
+* Effect - Gorgonian mortality up to 80% [@Garrabou2009]
+
+### Western Australia - 2010/11
+
+<center>
+![Thomas Wernberg](graph/WA_kelp_change.jpg)  
+(_Thomas Wernberg_)
+</center>  
+  
+* Cause - La Nina + Abnormal Leeuwin Current movement onto coast  [@Feng2013; @Benthuysen2014]
+* Effect - Permanent loss of more than 100 km of kelp forests [@Wernberg2016]
+
+### North West Atlantic - 2012
+
+<center>
+![](graph/lobster.jpeg)
+</center>
+
+* Cause - Interactions between Labrador Current and Gulf Stream [@Brickman2018]
+* Effect - Range shifts, early lobsters, CAN vs. USA [@Mills2013]
+
+### "The Blob" North East Pacific - 2014/16
+
+<center>
+![EPA](graph/dead_sea_lions.jpg){ width=70% }  
+(_EPA_)
+</center>  
+  
+* Cause - Warm winter, poor mixing, high SLP, air-sea flux, followed by an El Nino [@Bond2015a]
+* Effect - Practically every trophic level negatively impacted to some degree
+
+***
+
+# What are we doing about it?
+
+## International Working Group
+
+<center>
+![http://www.marineheatwaves.org/](graph/working_group_screen_shot.png)  
+</center>
+
+## Programming languages
+
+* It is currently possible to calculate marine heatwaves in:
+    * Python: <https://github.com/ecjoliver/marineHeatWaves>
+    * R: <https://robwschlegel.github.io/heatwaveR/index.html>
+    * MATLAB: <https://github.com/ZijieZhaoMMHW/m_mhw1.0>
+
+## Databases
+  
+<center>
+![Link available soon!](graph/MHW_tracker_screen.png){ width=100% }  
+</center>
+
+* One may also download marine heatwave results from the daily updating Marine Heatwave Tracker
+    * Contains climatologies, event metrics, and categories
+
+## Machine learning {.tabset}
+
+* Are there recurrent environmental patterns during marine heatwaves?
+* If so, can these be detected/quantified by a computer?
+
+### Definition 
+
+<center>
+![](graph/machine_learning_aliens.png){ width=60% }
+</center>    
+  
+<font size="5">"A field of study concerned with the design and development of algorithms and techniques that allow computers to learn." </font>    
+(_Wiktionary_)
+
+***
+
+### Stress
+
+</center>
+![](graph/cat_herd.gif){ width=110% }
+</center> 
+
+* The computer "learns" by reducing stress
+
+***
+
+### Clustering
+
+<center> 
+![](graph/K-mean kats.png)  
+(_Angé Ackerman_)
+</center> 
+
+* After ordinating the data the computer tries to find the most similar clusters for them
+
+***
+
+### Self-organising maps {.tabset}
+
+#### Self-organising cats
+
+<center> 
+![](graph/Self-organising cats2.png)  
+(_Angé Ackerman_)
+</center> 
+
+* With self-organising maps the computer then arranges the clusters
+
+***
+
+#### Methods {.tabset}
+
+##### Study area
+
+<center>
+![](graph/study_area.png)
+</center>
+
+***
+
+##### Synoptic states
+
+<center>
+![](graph/Fish Hoek_16.png)
+</center>
+
+***
+
+<!-- ##### Anomalous states -->
+
+<!-- <center> -->
+<!-- ![](graph/anom_panels.png) -->
+<!-- </center> -->
+
+<!-- *** -->
+
+#### Results
+
+<center> 
+![](graph/SOM_nodes.png)
+</center> 
+
+***
+
+#### Choice {.tabset}
+
+##### Oceanic forcing
+
+<center> 
+![](graph/sea_panel.png)
+</center> 
+
+***
+
+##### Atmospheric forcing
+<center> 
+![](graph/air_panel.png)
+</center> 
+
+***
+
+# Where are we going?
+
+* Find common global patterns between marine heatwaves and environmental variables
+    * Move towards methods of prediction
+* Database for quantified effects of marine heatwaves on biology/ecology/fisheries
+    * Expand the applicability of the Marine Heatwave Tracker
+* Begin using models and reanalyses to understand depth of marine heatwaves
+
+***
+
+# Acknowledgements
+
+<br>
+
+<center>  
+![](graph/dal_science.png)  
+  
+<br>
+  
+![](graph/ofi_logo.jpg)  
+  
+<br>
+  
+![](graph/team_kelp.png){ width=60% }
+</center>
+
+***
+
+# Questions {.tabset}
+
+## Thank you
+
+<center>
+![](graph/thanks_for_all_the_fish.gif){ width=120% }
+</center>
+
+***
+
+## Marine cold-spells
+
+<center>
+![](graph/MCS_flame.png)  
+
+![](graph/MCS_lolli.png)
+</center>
+
+***
+
+## Ordination
+
+<center>
+![](graph/MDS.png){ width=90% }
+</center>
+  
+* Note how the daily synoptic states form a smooth ellipsoid
+* Then note how scattered the marine heatwave synoptic states are
+
+***
+
+# References
