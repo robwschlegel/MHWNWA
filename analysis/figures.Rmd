@@ -18,7 +18,7 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
 
 ## Introduction
 
-In this final vignette we will go over the creation of the figures used in the publication for this research. These figures are largely adapted from the techniques seen in @Oliver2018tasmania and @Schlegel2017predominant.
+In this final vignette we will go over the creation of the figures used in the publication for this research. These figures are largely adapted from the techniques seen in @Oliver2018tasmania (https://www.sciencedirect.com/science/article/pii/S0079661117303336) and @Schlegel2017predominant (https://www.frontiersin.org/articles/10.3389/fmars.2017.00323/full).
 
 ```{r libraries}
 # Insatll from GitHub
