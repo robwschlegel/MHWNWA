@@ -5,26 +5,20 @@ poster_height: "45in"
 poster_width: "90in"
 font_family: 'Rasa'
 #ESSENTIALS
-title: Primary drivers of marine heatwaves in the North West Atlantic
+title: '**Primary drivers of marine heatwaves in the Northwest Atlantic**'
 author:
-  - name: W. Brent Thorne
+  - name: '**Robert W. Schlegel**'
     affil: 1,*
     main: true
-    orcid: '0000-0002-1099-3857'
-    twitter: brentthorne18 
-    email: bthorne2@brocku.ca
-  - name: Another G. Contributor
-    affil: 2
-    email: ag.con@posterdown.net
-  - name: Person Three
-    affil: 3
+    orcid: '0000-0002-0705-1287'
+    twitter: wiederweiter 
+    email: robert.schlegel@dal.ca
+  - name: Eric C. J. Oliver
+    affil: 1
+    # main: false
 affiliation:
   - num: 1
-    address: Department of Earth Science, Brock University
-  - num: 2
-    address: Department of Graphics and Layouts, University of Posters; Canada
-  - num: 3
-    address: Another Institute of a place where work gets done, Earth, Milky Way
+    address: Department of Oceanography, Dalhousie University, Halifax, Nova Scotia, Canada
 #STYLE & FORMATTING
 title_textsize: "125pt"
 author_textsize: "1.17em"
@@ -38,7 +32,6 @@ middle_textcol: "#FFFFFF90"
 middle_fontsize: "170px"
 main_findings:
   - "Make **better posters** with <br> RMarkdown + **posterdown**."
-  - "Transition from **poster** to **manuscript** with ease!"
 logoleft_name: "Figures/qr-code-black.png"
 logoright_name: "Figures/posterdownlogo.png"
 #---POSTER BODY OPTIONS---#
@@ -56,82 +49,107 @@ output:
     highlight: espresso
     number_sections: false
 link-citations: true
-bibliography: MyBib.bib
+bibliography: MHWNWA.bib
 ---
 
+<!-- TO DO
+Write main statement
+Create QR code
+Create Dal OFI logo
+Finish most text-->
+
 ```{r, include=FALSE}
-knitr::opts_chunk$set(results = 'asis', echo = FALSE, comment = FALSE,  warning = FALSE,tidy = FALSE, message = FALSE, fig.align = 'center')
+knitr::opts_chunk$set(results = 'asis', 
+                      echo = FALSE, 
+                      comment = FALSE,  
+                      warning = FALSE,
+                      tidy = FALSE, 
+                      message = FALSE, 
+                      fig.align = 'center')
 options(knitr.table.format = "html") 
 ```
 
 # Introduction
 
-This is the `posterdown_betterland` template for the {posterdown} package! I was inspired by the twitter thread of [Mike Morrison](https://mobile.twitter.com/mikemorrison/status/1110191245035479041) and wanted to apply the `#betterposter` concept to the reproducible (yet simple to use) functionality of the {posterdown} package [@thorneposterdown2019]. If you're not an R user don't sweat as you do **NOT** need to use it at all! Feel free to use only the Markdown functionality of this package :)
+This research uses the @Hobday2016 and @Hobday2018 definitions for marine heatwaves (MHWs) and their categories and was conducted using the {heatwaveR} implementation of the algorithm [@Schlegel2018]. 
+<!-- These events are increasing in duration and intensity around the globe [@Oliver2018].  -->
+It is not yet known what the primary drivers are of MHWs in the Northwest Atlantic. We use here a methodology from @Schlegel2017predominant and @Oliver2018tasmania to implement a self-organising map (SOM) to determine the primary synoptic patterns in several key abiotic variables. 
+The data used in this research were from the NAP (3-Oceans) model.
+
+<!-- Many coastal, oceanic, and polar regions with ecosystems/species that are vulnerable to these events [@Smale2019] do not have optimal sea water temperature time series available for the detection of MHWs.    -->
+<!-- An optimal time series is defined here as meeting these two primary requirements: 1) 30 years long, 2) no missing data. Any time series shorter than 30 years long or missing any data is therefore sub-optimal. The purpose of this study was to determine how confident we may be in our results when using sub-optimal data. -->
+  
+## Objectives
+
+1. Find the primary drivers of MHWs in the Northwest Atlantic  
+2. Determine if these drivers occur during certain seasons  
+3. Determine if these drivers have relationships with specific regions
 
 # Methods
 
-1. Install R and `posterdown`, see [github](github.com/brentthorne/posterdown)
-2. Open the `posterdown_betterland` template
-3. Make all your poster dreams come true!
+- Regions created along coast of Atlantic Canada based on @Richaud2016
+- Sub-regions created based on bottom depth within region
+- SST time series made for each region from average of pixels therein
+- MHWs calculated from each average SST time series
+- Average anomaly abiotic synoptic states created during each MHW
+- Anomalies fed to SOM to produce 12 most common states
+- The occurrence of these states with sub-regions and/or seasons quantified
+
+<!-- - Reference time series from the `heatwaveR` package [@Schlegel2018] were re-sampled 100 times and made increasingly sub-optimal by: -->
+    <!-- - Removing one year of data; 37 -- 10 years -->
+    <!-- - Randomly removing 1% of data; 0 -- 50%  -->
+    <!-- - Adding linear trend of 0.01°C/dec.; 0.00 -- 0.50°C/dec. -->
+<!-- - The effect on an entire time series and one focus MHW (Figure \@ref(fig:event-flames)) were measured -->
+<!-- - The sub-optimal treatments were performed on global NOAA OISST product and effects measured -->
+
+```{r event-flames, out.width='90%', fig.align='center', fig.cap='Focus MHWs from the three reference time series: A) Western Australia, B) Northwest Atlantic, C) Mediterranean. Start/end dates shown with light-green marks.', fig.height=2}
+knitr::include_graphics("~/MHWdetection/LaTeX/fig_1_flat.png")
+```
 
 # Results
 
-```{r, out.width='90%', fig.height=5.5, fig.cap='Using {ggplot} and {patchwork} to generate a layout of multiple plots in one figure [@patchwork2017].'}
+- The primary difference in synoptic states is a dipole between a warm (cold) Gulf Stream and cold (warm) Labrador Sea (Figure \@ref(fig:synoptic-sst))
+- More nuanced patterns are .....
+- Sub-mesoscale patterns are ......
+- By season ......
+- By region ......
 
-library(tidyverse)
-library(patchwork)
-library(ggthemes)
+<!-- - MHWs detected with 10 years of data do not differ significantly from those detected with 30 years of data (Figure \@ref(fig:length-KS))   -->
+<!-- - 20% missing data or less does not have an appreciable effect on the MHWs in a time series, but this can impact individual MHWs by dividing them up into smaller events \@ref(fig:effect-event))   -->
+<!-- - Individual MHWs in 10 year time series around the globe are on average 10% less intense (Figure \@ref(fig:global-intensity)) and 28% shorter than the same event in a 30 year time series   -->
+<!-- - The shifting up or down of the mean climatology is the primary driver of change in individual events   -->
+<!-- - The change in the count of events is caused by missing data   -->
 
-theme_set(theme_tufte() + theme(legend.position = "none"))
-
-base <- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, colour = Species))
-  
-p_point <- base + geom_point()
-p_line  <- base + geom_line() 
-p_area  <- base + geom_area()
-p_box1  <- ggplot(iris) + geom_boxplot(aes(x = Species, y = Sepal.Length, fill = Species))
-p_box2  <- ggplot(iris) + geom_boxplot(aes(x = Species, y = Sepal.Width, fill = Species))
-
-p_line + 
-  {p_point + p_box1} +
-  plot_layout(ncol = 1) + plot_annotation(tag_levels = "a", tag_prefix = "(",tag_suffix = ")")
-
+```{r length-KS, out.width='90%', fig.align='center', fig.cap='The effect of length on the MHWs detected within the 100 re-sampled time series. Note that lengths greater than 30 years also produce different results.', fig.height=2}
+knitr::include_graphics("~/MHWdetection/LaTeX/fig_2.png")
 ```
 
-## More Figures and Tables
-
-```{r, mytable, fig.align='center', out.width='90%'}
-
-library(knitr)
-library(kableExtra)
-
-dt <- iris[1:5, 1:5]
-
-kable(dt, caption = 'Here is a caption for the table made with the {kableExtra} package [@kableExtra2019].',align = 'c', col.names = c("Sepal W","Sepal L","Pedal W","Pedal L","Species")) %>% 
-  kable_styling(full_width = T) %>% 
-  row_spec(0, color = "#fff", background = "#0b454580")
+```{r effect-event, out.width='90%', fig.align='center', fig.cap='The effect on the focus MHWs (Figure \\@ref(fig:event-flames)) given the three different sub-optimal data challenges.', fig.height=5}
+knitr::include_graphics("~/MHWdetection/LaTeX/fig_3.png")
 ```
 
-```{r, echo=TRUE}
-library(ggplot2)
-library(ggspatial)
-
-load_longlake_data()
-
-map <- ggplot() + 
-  theme_pander() +
-  layer_spatial(longlake_depthdf,
-                aes(colour = DEPTH)) +
-  theme(legend.position = "bottom")
+```{r global-intensity, out.width='90%', fig.align='center', fig.cap='Global map showing the trends in increasing or decreasing maximum intensity of MHWs as a time series is lengthened.', fig.height=5}
+knitr::include_graphics("~/MHWdetection/LaTeX/fig_4.png")
 ```
 
-```{r, mymapfig, out.width='70%', cache=FALSE, fig.cap='Map of Long Lake eample from the [ggspatial](https://github.com/paleolimbot/ggspatial) package [@ggspatial].',strip.white= TRUE, comment=FALSE}
+<!-- ```{r, out.width='90%', fig.align='center', fig.cap='Map showing the trends in increasing or decreasing duration of MHWs as a time series is lengthened.'} -->
+<!-- knitr::include_graphics("~/MHWdetection/LaTeX/fig_5.png") -->
+<!-- ``` -->
 
-ggsave(map,filename = "Figures/map.svg", width = 3.5, height = 3.5, device = 'svg', bg = 'transparent')
+# Conclusions
 
-knitr::include_graphics("Figures/map.svg")
-```
+The SOM technique was able to determine common synoptic states during MHWs.  
+The primary driver was .....  
+Another imprtant drivers was ....  
+The sub/region with the most ....
+The season with the most ....
 
-A **BIG** thank you to [Romain Leasur](https://twitter.com/RLesur) and [Yihui Xie](https://twitter.com/xieyihui) for their wonderful work on [{pagedown}](https://github.com/rstudio/pagedown) which had made this poster possible [@pagedown]!
+This work may be used in the development of predictive models for MHWs.  
+
+<!-- The MHW detection algorithm provides robust results that are insensitive to sub-optimal data challenges.   -->
+<!-- Missing data has a greater effect on MHWs than time series length. Linear interpolation is an effective fix for missing data up to 40%.   -->
+<!-- Time series length has a less predictable effect than missing data.   -->
+<!-- The shifting up or down of the mean climatology is the primary driver of change in MHWs.   -->
+<!-- Optimal data should still be used when possible. -->
 
 # References

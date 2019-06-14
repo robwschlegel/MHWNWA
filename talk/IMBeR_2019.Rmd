@@ -1,5 +1,5 @@
 ---
-title: 'Primary Drivers of marine heatwaves in the North West Atlantic'
+title: '**Primary drivers of marine heatwaves in the Northwest Atlantic**'
 author: "Robert W. Schlegel and Eric C. J. Oliver"
 date: "June 19th, 2019"
 output:
@@ -9,7 +9,7 @@ output:
     fig_caption: yes
     # fig_width: 2 
     # fig_height: 2 
-    highlight: default
+    highlight: default    
     number_sections: yes
     theme: yeti
     toc: yes
@@ -21,17 +21,19 @@ css: acid.css
 # monofont: PT Mono
 csl: frontiers.csl
 # sansfont: PT Sans
-bibliography: Presentations.bib
+bibliography: MHWNWA.bib
 # papersize: A4
 ---
 
-![](graph/dying_coral.jpeg)
+<!-- ![](graph/dying_coral.jpeg) -->
 
 ***
 
-# What are marine heatwaves? 
+# Introduction
 
-## Definition
+## What are marine heatwaves? 
+
+<!-- ## Definition -->
 
 <font size="5">"A prolonged discrete anomalously warm water event that can be described by its duration, intensity, rate of evolution, and spatial extent." </font>  
   
@@ -47,133 +49,64 @@ bibliography: Presentations.bib
 * The temperature at a location exceeds the 90% percentile of that calendar day    
 * This occurs at least 5 days in a row with no more than a 2 day gap thereafter    
 
-## Methods {.tabset}
-
-### Time series
-<center>
-![](graph/ts_full.png){ width=90% }
-</center>  
-  
-* First we start with a normal temperature time series
-    * Temperature (°C) on the y-axis, date on the x-axis
-
-### Day of year
-<center>
-![](graph/ts_box.png){ width=90% }
-</center>
-  
-* Then we clump all of the same days of the year (doy) together
-* The range of values for each doy are shown here as boxplots
-
-### Climatologies
-<center>
-![](graph/ts_box_clim.png){ width=90% }
-</center>
-  
-* We smooth these values with an 11-day moving average while finding the:
-    * mean _seasonal signal_ (blue line) & 90th percentile _threshold_ (red line)
-* These both are then smoothed with a 31-day moving average
-
-## Results {.tabset}
-
-### Events
-<center>
-![](graph/MHW_flame.png)
-</center>
-  
-* Any temperatures above the _threshold_ for 5+ days are marked as a marine heatwave
-
-### Categories
-<center>
-![](graph/MHW_category.png)
-</center>
-
-* There is also a more qualitative ranking system [@Hobday2018]
-
-### Event metrics
-<center>
-![](graph/MHW_lolli.png)
-</center>
-  
-* Summary metrics for each event are created
-* Here the max intensity of each event is shown with a lolliplot
-
 ## In practice
 
 [Marine Heatwave Tracker](http://www.marineheatwaves.org/tracker)
 
-***
-
-# Why should we care? 
-  
-* Marine heatwaves are increasing in duration and intensity globally [@Oliver2018]
-* We already know of many marine heatwaves that have had dire consequences
-
-## Infamous marine heatwaves {.tabset}
-
-### Mediterranean - 2003
-
-<center>
-![](graph/gorgonian_fan.jpg){ width=70% }
-</center>
-
-* Cause - Atmospheric forcing  
-* Effect - Gorgonian mortality up to 80% [@Garrabou2009]
-
-### Western Australia - 2010/11
-
-<center>
-![Thomas Wernberg](graph/WA_kelp_change.jpg)  
-(_Thomas Wernberg_)
-</center>  
-  
-* Cause - La Nina + Abnormal Leeuwin Current movement onto coast  [@Feng2013; @Benthuysen2014]
-* Effect - Permanent loss of more than 100 km of kelp forests [@Wernberg2016]
-
-### North West Atlantic - 2012
-
-<center>
-![](graph/lobster.jpeg)
-</center>
-
-* Cause - Interactions between Labrador Current and Gulf Stream [@Brickman2018]
-* Effect - Range shifts, early lobsters, CAN vs. USA [@Mills2013]
-
-### "The Blob" North East Pacific - 2014/16
-
-<center>
-![EPA](graph/dead_sea_lions.jpg){ width=70% }  
-(_EPA_)
-</center>  
-  
-* Cause - Warm winter, poor mixing, high SLP, air-sea flux, followed by an El Nino [@Bond2015a]
-* Effect - Practically every trophic level negatively impacted to some degree
-
-***
-
-# What are we doing about it?
-
-## International Working Group
-
-<center>
-![http://www.marineheatwaves.org/](graph/working_group_screen_shot.png)  
-</center>
-
-## Programming languages
-
-* It is currently possible to calculate marine heatwaves in:
-    * Python: <https://github.com/ecjoliver/marineHeatWaves>
-    * R: <https://robwschlegel.github.io/heatwaveR/index.html>
-    * MATLAB: <https://github.com/ZijieZhaoMMHW/m_mhw1.0>
-
 ## Databases
   
 <center>
-![Link available soon!](graph/MHW_tracker_screen.png){ width=100% }  
+![marineheatwaves.org/tracker](graph/Nova_Scotia_2012_MHW.png){ width=100% }  
 </center>
 
 * One may also download marine heatwave results from the daily updating Marine Heatwave Tracker
     * Contains climatologies, event metrics, and categories
+
+## What causes them?
+
+* Different regions of the world show different primary drivers
+* For much of the coastal oceans the primary driver is abnormal movement of warm currents onto the coast
+* For large seas (i.e. the Mediterannean) warm air plays a more important role
+
+
+## What are the drivers for MHWs in the NW Atlanttic?
+
+![](graph/fig_1.png)
+
+# Methods {.tabset}
+
+## Sub/regions
+
+- The coastline of Atlantic Canada was divided into several regions based on @Richaud2016
+- These regions were then divided into three sub-regions each based on bottom depth:
+  - 0 - 50 m
+  - 50 - 200 m 
+  - 200+ m
+
+![](graph/regions.png)
+
+## SST time series
+
+- All of the SST data for pixels within each sub-region were averaged together
+
+![](graph/)
+
+## Marine heatwaves (MHWs)
+
+- MHWs calculated from each average SST time series
+
+![](graph/)
+
+## Synoptic states
+
+- Average anomaly abiotic synoptic states created during each MHW
+
+
+## Self-organising map
+
+- Anomalies fed to SOM to produce 12 most common states
+- The occurrence of these states with sub-regions and/or seasons quantified
+
 
 ## Machine learning {.tabset}
 
@@ -225,56 +158,69 @@ bibliography: Presentations.bib
 
 ***
 
-#### Methods {.tabset}
-
-##### Study area
-
-<center>
-![](graph/study_area.png)
-</center>
-
-***
-
-##### Synoptic states
-
-<center>
-![](graph/Fish Hoek_16.png)
-</center>
-
-***
-
-<!-- ##### Anomalous states -->
-
+<!-- ### Time series -->
 <!-- <center> -->
-<!-- ![](graph/anom_panels.png) -->
+<!-- ![](graph/ts_full.png){ width=90% } -->
+<!-- </center>   -->
+  
+<!-- * First we start with a normal temperature time series -->
+    <!-- * Temperature (°C) on the y-axis, date on the x-axis -->
+
+<!-- ### Day of year -->
+<!-- <center> -->
+<!-- ![](graph/ts_box.png){ width=90% } -->
+<!-- </center> -->
+  
+<!-- * Then we clump all of the same days of the year (doy) together -->
+<!-- * The range of values for each doy are shown here as boxplots -->
+
+<!-- ### Climatologies -->
+<!-- <center> -->
+<!-- ![](graph/ts_box_clim.png){ width=90% } -->
+<!-- </center> -->
+  
+<!-- * We smooth these values with an 11-day moving average while finding the: -->
+    <!-- * mean _seasonal signal_ (blue line) & 90th percentile _threshold_ (red line) -->
+<!-- * These both are then smoothed with a 31-day moving average -->
+
+# Results {.tabset}
+
+- The primary difference in synoptic states is a dipole between a warm (cold) Gulf Stream and cold (warm) Labrador Sea (Figure \@ref(fig:synoptic-sst))
+- More nuanced patterns are .....
+- Sub-mesoscale patterns are ......
+- By season ......
+- By region ......
+
+<!-- ### Events -->
+<!-- <center> -->
+<!-- ![](graph/MHW_flame.png) -->
+<!-- </center> -->
+  
+<!-- * Any temperatures above the _threshold_ for 5+ days are marked as a marine heatwave -->
+
+<!-- ### Categories -->
+<!-- <center> -->
+<!-- ![](graph/MHW_category.png) -->
 <!-- </center> -->
 
-<!-- *** -->
+<!-- * There is also a more qualitative ranking system [@Hobday2018] -->
 
-#### Results
+<!-- ### Event metrics -->
+<!-- <center> -->
+<!-- ![](graph/MHW_lolli.png) -->
+<!-- </center> -->
+  
+<!-- * Summary metrics for each event are created -->
+<!-- * Here the max intensity of each event is shown with a lolliplot -->
 
-<center> 
-![](graph/SOM_nodes.png)
-</center> 
 
-***
+<!-- ## Programming languages -->
 
-#### Choice {.tabset}
+<!-- * It is currently possible to calculate marine heatwaves in: -->
+    <!-- * Python: <https://github.com/ecjoliver/marineHeatWaves> -->
+    <!-- * R: <https://robwschlegel.github.io/heatwaveR/index.html> -->
+    <!-- * MATLAB: <https://github.com/ZijieZhaoMMHW/m_mhw1.0> -->
 
-##### Oceanic forcing
-
-<center> 
-![](graph/sea_panel.png)
-</center> 
-
-***
-
-##### Atmospheric forcing
-<center> 
-![](graph/air_panel.png)
-</center> 
-
-***
 
 # Where are we going?
 
@@ -296,10 +242,7 @@ bibliography: Presentations.bib
 <br>
   
 ![](graph/ofi_logo.jpg)  
-  
-<br>
-  
-![](graph/team_kelp.png){ width=60% }
+
 </center>
 
 ***
