@@ -98,6 +98,8 @@ The first figure we will want is that of the study area. This figure will have m
 # Interpolate pixels for visual nice-ness
 # Improve bathymetry contours
   # Look into the new ggfriendly method
+# One panel should contain current vectors
+# And the other panel should contain bathymetry contours
 
 # Mean variable states
 system.time(
@@ -324,9 +326,9 @@ som_node_visualise <- function(sub_var = "sst_anom", viridis_option = "D"){
 
 ## Figure 5
 
-This figure needs to provide a detailed breakdown of the meta data behind the synoptic states being clustered into the 12 node panels. Thi means that we want to be able to show, primarily, during which seasons the MHWs in each node were occurring. This is shown effectively in Figure 7 of @Oliver2018tasmania. But it would also be good to show other meta data, such as MHW metrics, as seen in Figure 5 of @Schlegel2017predominant. It may be that we want both. Or it may be that the metric summary could be done via a table.
+This figure needs to provide a detailed breakdown of the meta data behind the synoptic states being clustered into the 12 node panels. This means that we want to be able to show, primarily, during which seasons the MHWs in each node were occurring. This is shown effectively in Figure 7 of @Oliver2018tasmania. But it would also be good to show other meta data, such as MHW metrics, as seen in Figure 5 of @Schlegel2017predominant. It may be that we want both. Or it may be that the metric summary could be done via a table.
 
-```{r extra-info-fig, eval=FALSE}
+```{r seasonal-info-fig, eval=FALSE}
 ### TO DO
 # Left 
 ```
@@ -336,7 +338,12 @@ This figure needs to provide a detailed breakdown of the meta data behind the sy
 
 The following code is for creating meta-data visualisations of the MHW metrics for each node.
 
-```{r}
+```{r extra-info-fig, eval=FALSE}
+# Calculate the season during the peak of the event
+# Join tables that have sub/region + season + node
+# Think of a way to visualise this information
+  # Or just copy Eric
+
 # Load data for figure
 load("data/SACTN/SACTN_events.Rdata")
 load("data/node_all_anom.Rdata")
