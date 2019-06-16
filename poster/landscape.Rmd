@@ -5,26 +5,19 @@ poster_height: "45in"
 poster_width: "90in"
 font_family: 'Rasa'
 #ESSENTIALS
-title: Primary drivers of marine heatwaves in the North West Atlantic
+title: '**Primary drivers of marine heatwaves in the Northwest Atlantic**'
 author:
-  - name: W. Brent Thorne
+  - name: '**Robert W. Schlegel**'
     affil: 1,*
     main: true
-    orcid: '0000-0002-1099-3857'
-    twitter: brentthorne18 
-    email: bthorne2@brocku.ca
-  - name: Another G. Contributor
-    affil: 2
-    email: ag.con@posterdown.net
-  - name: Person Three
-    affil: 3
+    orcid: '0000-0002-0705-1287'
+    twitter: wiederweiter 
+    email: robert.schlegel@dal.ca
+  - name: Eric C. J. Oliver
+    affil: 1
 affiliation:
   - num: 1
-    address: Department of Earth Science, Brock University
-  - num: 2
-    address: Department of Graphics and Layouts, University of Posters; Canada
-  - num: 3
-    address: Another Institute of a place where work gets done, Earth, Milky Way
+    address: Department of Oceanography, Dalhousie University, Halifax, Nova Scotia, Canada
 #STYLE & FORMATTING
 title_textsize: "125pt"
 author_textsize: "1.17em"
