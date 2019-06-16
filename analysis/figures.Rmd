@@ -34,6 +34,9 @@ library(lubridate) # For convenient date manipulation
 library(yasomi, lib.loc = "../R-packages/") # The SOM package of choice due to PCI compliance
 library(data.table) # For working with massive dataframes
 
+# Load functions written in previous vignettes
+source("code/functions.R")
+
 # Set number of cores
 doMC::registerDoMC(cores = 50)
 
@@ -83,6 +86,16 @@ lon_lat_NAPA_OISST <- lon_lat_NAPA_OISST %>%
   mutate(lon = round(lon, 4),
          lat = round(lat, 4)) %>% 
   mutate(lon_O = ifelse(lon_O > 180, lon_O-360, lon_O))
+
+# Load MHW results
+NAPA_MHW_sub <- readRDS("data/NAPA_MHW_sub.Rda")
+
+# Events only
+NAPA_MHW_event <- NAPA_MHW_sub %>%
+  select(-clims, -cats) %>%
+  unnest(events) %>%
+  filter(row_number() %% 2 == 0) %>%
+  unnest(events)
 ```
 
 ## Figure 1
@@ -246,7 +259,7 @@ fig_1_bottom <- ggplot(data = map_base, aes(x = lon, y = lat)) +
   # Slightly shrink the plotting area
   coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
   # Use viridis colour scheme
-  scale_fill_viridis_c(name = "Temp.\n(°C)", option = "A") +
+  scale_fill_viridis_c(name = "Net\ndownward\nheat flux", option = "A") +
   # Adjust the theme
   theme_bw() +
   theme(panel.border = element_rect(fill = NA, colour = "black", size = 1),
@@ -256,23 +269,24 @@ fig_1_bottom
 
 # Convert the figures to grobs
 fig_1_top_grob <- ggplotGrob(fig_1_top)
-fb_inset_grob <- ggplotGrob(fb_inset)
+# fb_inset_grob <- ggplotGrob(fb_inset)
 fig_1_bottom_grob <- ggplotGrob(fig_1_bottom)
 
 # Stick them together
 fig_1 <- ggplot() +
   # First set the x and y axis values so we know what the ranges are
   # in order to make it easier to place our facets
-  coord_equal(xlim = c(1, 10), ylim = c(1, 10), expand = F) +
+  # coord_equal(xlim = c(1, 10), ylim = c(1, 10), expand = F) +
   # Then we place our facetsover one another using the coordinates we created
   annotation_custom(fig_1_top_grob,
                     xmin = 1, xmax = 10, ymin = 5.5, ymax = 10) +
-  annotation_custom(fb_inset_grob,
-                    xmin = 3.5, xmax = 5.5, ymin = 7.2, ymax = 8.8) +
+  # annotation_custom(fb_inset_grob,
+                    # xmin = 3.5, xmax = 5.5, ymin = 7.2, ymax = 8.8) +
   annotation_custom(fig_1_bottom_grob,
                     xmin = 1, xmax = 10, ymin = 1, ymax = 5.5)
+fig_1
 # save
-ggsave(plot = fig_1, filename = "graph/fig_1.pdf", height = 8, width = 8)
+# ggsave(plot = fig_1, filename = "graph/fig_1.pdf", height = 8, width = 8)
 ```
 
 
@@ -330,7 +344,89 @@ This figure needs to provide a detailed breakdown of the meta data behind the sy
 
 ```{r seasonal-info-fig, eval=FALSE}
 ### TO DO
-# Left 
+# Calculate season based on peak of event
+# Left join tables for event number, sub/region, node
+# Create visuals for the nodes
+
+# Load data packet
+all_anom <- readRDS("data/packet_all_anom.Rda")
+
+# Load SOM packet for anomaly data
+som_all_anom <- readRDS("data/som_all_anom.Rda")
+
+# Determine node index
+node_index_all_anom <- event_node_index(all_anom, som_all_anom) %>% 
+  mutate(event_no = as.numeric(event_no))
+
+# MHW season of (peak) occurrence and other meta-data
+NAPA_MHW_meta <- NAPA_MHW_event %>% 
+  mutate(month_peak = lubridate::month(date_peak, label = T),
+         season_peak = case_when(month_peak %in% c("Jan", "Feb", "Mar") ~ "Winter",
+                                 month_peak %in% c("Apr", "May", "Jun") ~ "Spring",
+                                 month_peak %in% c("Jul", "Aug", "Sep") ~ "Summer",
+                                 month_peak %in% c("Oct", "Nov", "Dec") ~ "Autumn"),
+         sub_region = as.character(sub_region)) %>% 
+  left_join(node_index_all_anom, by = c("region", "sub_region", "event_no"))
+  
+# Proportion of MHWs in each season in each node
+node_prop_info <- NAPA_MHW_meta %>% 
+  dplyr::select(region:event_no, month_peak:count) %>% 
+  group_by(node, season_peak) %>% 
+  mutate(node_season_prop = round(n()/count, 2)) %>% 
+  select(season_peak:node_season_prop) %>% 
+  unique() %>% 
+  ungroup()
+
+# Proportion of MHWs in each season in each region
+region_prop_info <- NAPA_MHW_meta %>% 
+  dplyr::select(region:event_no, month_peak:count) %>% 
+  group_by(node, region) %>% 
+  mutate(region_node_prop = round(n()/count, 2)) %>% 
+  select(region, node, count, region_node_prop) %>% 
+  unique() %>% 
+  ungroup() #%>% 
+  # right_join(data.frame(node = 1:12), by = "node")
+  # right_join(NWA_coords, by = "region")
+
+# Fill in the blanks
+region_prop_grid <- expand.grid(unique(region_prop_info$region), 1:12) %>% 
+  dplyr::rename(region = Var1, node = Var2) %>% 
+  mutate(region = as.character(region)) %>% 
+  left_join(NWA_coords, by = "region") %>% 
+  left_join(region_prop_info, by = c("region", "node")) %>% 
+  mutate(count = replace_na(count, 0),
+         region_node_prop = replace_na(region_node_prop, 0))
+
+# Join node info to region coordinates to keep ggplot happy
+# NWA_coords_more <- left_join(NWA_coords, region_prop_info)
+
+# som_season_runner <- ggplot()
+
+som_season_plot <- ggplot() +
+  # geom_point(aes(colour = val)) +
+  # geom_raster(aes(fill  = val)) +
+  geom_polygon(data = map_base, aes(group = group, x = lon, y = lat), show.legend = F) +
+  geom_polygon(data = region_prop_grid, aes(group = region, x = lon, y = lat, fill = region_node_prop), colour = "black") +
+  geom_label(data = region_prop_grid, aes(x = -60, y = 35, label = paste0("n = ",count))) +
+  # geom_label(data = filter(node_prop_info, season_peak == "Winter"),
+  #            aes(x = -60, y = 35, fill = node_season_prop, label = "Winter"), colour = "white") +
+  # geom_label(data = filter(node_prop_info, season_peak == "Spring"),
+  #            aes(x = -55, y = 35, fill = node_season_prop, label = "Spring"), colour = "white") +
+  # geom_label(data = filter(node_prop_info, season_peak == "Summer"),
+  #            aes(x = -50, y = 35, fill = node_season_prop, label = "Summer"), colour = "white") +
+  # geom_label(data = filter(node_prop_info, season_peak == "Autumn"),
+  #            aes(x = -45, y = 35, fill = node_season_prop, label = "Autumn"), colour = "white") +
+  # geom_label(data = node_index_all_anom, aes(x = -60, y = 35, label = paste0("n = ",count))) +
+  # geom_polygon(data = NWA_coords, aes(group = region, fill = region, colour = region), alpha = 0.1) +
+  coord_cartesian(xlim = NWA_corners_sub[1:2],
+                  ylim = NWA_corners_sub[3:4], 
+                  expand = F) +
+  scale_fill_viridis_c(option = "C") +
+  # scale_colour_viridis_c(option = viridis_option) +
+  labs(x = NULL, y = NULL, fill = "Proportion of events\nper region per node") +
+  facet_wrap(~node, ncol = 4) +
+  theme(legend.position = "bottom")
+som_season_plot
 ```
 
 
@@ -375,6 +471,11 @@ ggplot(data = node_all, aes(x = date_start, y = int_cum)) +
         axis.ticks = element_line(colour = "black"))
 ggsave("graph/SOM_lolli.pdf", height = 9, width = 10)
 ```
+
+
+## Figure 7
+
+This figure should summarise what all of the other figures have shown by using arrows going form one direction to the other across the 12 panels of the SOM. It may make sense to put the bullet points that would make up Table 1 into the panels of this figure.
 
 
 ## Table 1

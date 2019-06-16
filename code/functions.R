@@ -412,3 +412,57 @@ interpp_data <- function(df_base, df_grid, interpp_stat){
   )
   return(df_res)
 }
+
+
+
+# Determine node indexes --------------------------------------------------
+
+# testers...
+# data_packet <- all_anom; som_output <- som_all_anom
+event_node_index <- function(data_packet, som_output){
+
+  # Count the number of events per node
+  node_count <- as.data.frame(table(som_output$classif)) %>%
+    dplyr::rename(node = Var1,
+                  count = Freq) %>%
+    mutate(node = as.numeric(as.character(node)))
+
+  # Create a more complete data.frame of info
+  event_node <- data.frame(event_ID = data_packet[,"event_ID"],
+                           node = som_output$classif) %>%
+    separate(event_ID, into = c("region", "sub_region", "event_no"), sep = "BBB") %>%
+    left_join(node_count, by = "node")
+
+  # NB: This is potentially where the season of the event would be inserted
+
+  return(event_node)
+}
+
+
+# Unpack SOM results ------------------------------------------------------
+
+# Create mean results from initial data frame based on node clustering
+# testers...
+# data_packet <- all_anom; som_output <- som_all_anom
+som_unpack_mean <- function(data_packet, som_output){
+
+  # Determine which event goes in which node and melt
+  data_packet_long <- data.frame(event_ID = data_packet[,"event_ID"],
+                                 node = som_output$classif) %>%
+    separate(event_ID, into = c("region", "sub_region", "event_no"), sep = "BBB") %>%
+    cbind(data_packet[,-1]) %>%
+    data.table() %>%
+    reshape2::melt(id = c("region", "sub_region", "event_no", "node"),
+                   measure = c(colnames(.)[-c(1:4)]),
+                   variable.name = "variable", value.name = "value")
+
+  # Create the mean values that serve as the unscaled results from the SOM
+  var_unscaled <- data_packet_long[, .(val = mean(value, na.rm = TRUE)),
+                                   by = .(node, variable)] %>%
+    separate(variable, into = c("lon", "lat", "var"), sep = "BBB") %>%
+    dplyr::arrange(node, var, lon, lat) %>%
+    mutate(lon = as.numeric(lon),
+           lat = as.numeric(lat))
+  return(var_unscaled)
+}
+
