@@ -29,9 +29,7 @@ bibliography: MHWNWA.bib
 
 ***
 
-# Introduction
-
-## What are marine heatwaves? 
+# What are marine heatwaves? 
 
 <!-- ## Definition -->
 
@@ -49,12 +47,6 @@ bibliography: MHWNWA.bib
 * The temperature at a location exceeds the 90% percentile of that calendar day    
 * This occurs at least 5 days in a row with no more than a 2 day gap thereafter    
 
-## In practice
-
-[Marine Heatwave Tracker](http://www.marineheatwaves.org/tracker)
-
-## Databases
-  
 <center>
 ![marineheatwaves.org/tracker](graph/Nova_Scotia_2012_MHW.png){ width=100% }  
 </center>
@@ -62,18 +54,37 @@ bibliography: MHWNWA.bib
 * One may also download marine heatwave results from the daily updating Marine Heatwave Tracker
     * Contains climatologies, event metrics, and categories
 
-## What causes them?
+***
+
+# What are known drivers of past MHWs?
 
 * Different regions of the world show different primary drivers
 * For much of the coastal oceans the primary driver is abnormal movement of warm currents onto the coast
 * For large seas (i.e. the Mediterannean) warm air plays a more important role
 
+***
 
-## What are the drivers for MHWs in the NW Atlanttic?
+# What is the Northwest Atlantic?
 
 ![](graph/fig_1.png)
 
-# Methods {.tabset}
+***
+
+# Why do we need to use a new method to find drivers?
+
+* Events are happening too rapidly to spend a year working on them one at a time
+* These provide us with a snapshot of what the future ocean will look like
+
+***
+
+# How do we determine drivers? {.tabset}
+
+## Data
+
+- NAPA (3-Oceans) model
+- Tri-polar grid
+- Daily surface resolution
+
 
 ## Sub/regions
 
@@ -83,29 +94,61 @@ bibliography: MHWNWA.bib
   - 50 - 200 m 
   - 200+ m
 
-![](graph/regions.png)
+![](graph/fig_2.png)
 
-## SST time series
+- The region abbreviations are: 
+  - `gm` = Gulf of Maine 
+  - `gls` = Gulf of St. Lawrence
+  - `ls` = Labrador Shelf
+  - `mab` = Mid-Atlantic Bight
+  - `nfs` = Newfoundland Shelf 
+  - `ss` = Scotian Shelf
 
 - All of the SST data for pixels within each sub-region were averaged together
 
-![](graph/)
+<!-- ![](graph/) -->
 
-## Marine heatwaves (MHWs)
+## Calculating marine heatwaves (MHWs) {.tabset}
 
 - MHWs calculated from each average SST time series
 
-![](graph/)
+### Time series
+<center>
+![](graph/ts_full.png){ width=90% }
+</center>
+
+* First we start with a normal temperature time series
+* Temperature (°C) on the y-axis, date on the x-axis
+
+### Day of year
+<center>
+![](graph/ts_box.png){ width=90% }
+</center>
+
+* Then we clump all of the same days of the year (doy) together
+* The range of values for each doy are shown here as boxplots
+
+### Climatologies
+<center>
+![](graph/ts_box_clim.png){ width=90% }
+</center>
+
+* We smooth these values with an 11-day moving average while finding the:
+* mean _seasonal signal_ (blue line) & 90th percentile _threshold_ (red line)
+* These both are then smoothed with a 31-day moving average
 
 ## Synoptic states
+<!-- Rather above show how a detected MHW sits over a number of days and how that is cause for the synoptic state -->
+<!-- May want to just re-create the panel of figures from the SA work -->
+* Average anomaly abiotic synoptic states created during each MHW
 
-- Average anomaly abiotic synoptic states created during each MHW
+![](graph/)
 
 
 ## Self-organising map
 
-- Anomalies fed to SOM to produce 12 most common states
-- The occurrence of these states with sub-regions and/or seasons quantified
+* Anomalies fed to SOM to produce 12 most common states
+* The occurrence of these states with sub-regions and/or seasons quantified
 
 
 ## Machine learning {.tabset}
@@ -122,128 +165,54 @@ bibliography: MHWNWA.bib
 <font size="5">"A field of study concerned with the design and development of algorithms and techniques that allow computers to learn." </font>    
 (_Wiktionary_)
 
-***
 
-### Stress
+# What are the primary drivers? {.tabset}
 
-</center>
-![](graph/cat_herd.gif){ width=110% }
-</center> 
+## Most apparent
 
-* The computer "learns" by reducing stress
+- The primary difference in synoptic states is a dipole between a warm (cold) Gulf Stream and cold (warm) Labrador Sea 
 
-***
+![](../output/som_plot_sst_anom.png)
 
-### Clustering
+## More nuanced
 
-<center> 
-![](graph/K-mean kats.png)  
-(_Angé Ackerman_)
-</center> 
-
-* After ordinating the data the computer tries to find the most similar clusters for them
-
-***
-
-### Self-organising maps {.tabset}
-
-#### Self-organising cats
-
-<center> 
-![](graph/Self-organising cats2.png)  
-(_Angé Ackerman_)
-</center> 
-
-* With self-organising maps the computer then arranges the clusters
-
-***
-
-<!-- ### Time series -->
-<!-- <center> -->
-<!-- ![](graph/ts_full.png){ width=90% } -->
-<!-- </center>   -->
-  
-<!-- * First we start with a normal temperature time series -->
-    <!-- * Temperature (°C) on the y-axis, date on the x-axis -->
-
-<!-- ### Day of year -->
-<!-- <center> -->
-<!-- ![](graph/ts_box.png){ width=90% } -->
-<!-- </center> -->
-  
-<!-- * Then we clump all of the same days of the year (doy) together -->
-<!-- * The range of values for each doy are shown here as boxplots -->
-
-<!-- ### Climatologies -->
-<!-- <center> -->
-<!-- ![](graph/ts_box_clim.png){ width=90% } -->
-<!-- </center> -->
-  
-<!-- * We smooth these values with an 11-day moving average while finding the: -->
-    <!-- * mean _seasonal signal_ (blue line) & 90th percentile _threshold_ (red line) -->
-<!-- * These both are then smoothed with a 31-day moving average -->
-
-# Results {.tabset}
-
-- The primary difference in synoptic states is a dipole between a warm (cold) Gulf Stream and cold (warm) Labrador Sea (Figure \@ref(fig:synoptic-sst))
 - More nuanced patterns are .....
+
+<!-- ![]() -->
+
 - Sub-mesoscale patterns are ......
 - By season ......
 - By region ......
 
-<!-- ### Events -->
-<!-- <center> -->
-<!-- ![](graph/MHW_flame.png) -->
-<!-- </center> -->
-  
-<!-- * Any temperatures above the _threshold_ for 5+ days are marked as a marine heatwave -->
+***
 
-<!-- ### Categories -->
-<!-- <center> -->
-<!-- ![](graph/MHW_category.png) -->
-<!-- </center> -->
+# Conclusions
 
-<!-- * There is also a more qualitative ranking system [@Hobday2018] -->
-
-<!-- ### Event metrics -->
-<!-- <center> -->
-<!-- ![](graph/MHW_lolli.png) -->
-<!-- </center> -->
-  
-<!-- * Summary metrics for each event are created -->
-<!-- * Here the max intensity of each event is shown with a lolliplot -->
-
-
-<!-- ## Programming languages -->
-
-<!-- * It is currently possible to calculate marine heatwaves in: -->
-    <!-- * Python: <https://github.com/ecjoliver/marineHeatWaves> -->
-    <!-- * R: <https://robwschlegel.github.io/heatwaveR/index.html> -->
-    <!-- * MATLAB: <https://github.com/ZijieZhaoMMHW/m_mhw1.0> -->
-
-
-# Where are we going?
-
-* Find common global patterns between marine heatwaves and environmental variables
-    * Move towards methods of prediction
-* Database for quantified effects of marine heatwaves on biology/ecology/fisheries
-    * Expand the applicability of the Marine Heatwave Tracker
-* Begin using models and reanalyses to understand depth of marine heatwaves
 
 ***
 
 # Acknowledgements
 
-<br>
+
+## Funding
 
 <center>  
-![](graph/dal_science.png)  
-  
-<br>
-  
 ![](graph/ofi_logo.jpg)  
-
 </center>
+  
+## University
+
+<center>
+![](graph/dal_science.png)  
+</center>
+
+## Model support
+
+Prof. Youyu Lu
+  
+Dr. Xianmin Hu
+
+Dr. Timothée Bourgeois
 
 ***
 
@@ -253,16 +222,6 @@ bibliography: MHWNWA.bib
 
 <center>
 ![](graph/thanks_for_all_the_fish.gif){ width=120% }
-</center>
-
-***
-
-## Marine cold-spells
-
-<center>
-![](graph/MCS_flame.png)  
-
-![](graph/MCS_lolli.png)
 </center>
 
 ***

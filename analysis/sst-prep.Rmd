@@ -158,7 +158,9 @@ The `pnt.in.poly` function was remarkably convenient. Our points have now very e
 ```{r depth-sub-regions}
 # Cut the depth strata into sub-regions as desired
 NWA_NAPA_info <- NWA_NAPA_info %>% 
-  mutate(sub_region = cut(bathy, breaks = c(0, 50, 200, ceiling(max(bathy))), dig.lab = 4))
+  mutate(sub_region = cut(bathy, breaks = c(0, 50, 200, ceiling(max(bathy))), dig.lab = 4))#,
+         # mutate(sub_region = fct_recode(., sub_region, "(200+]" = "(200,3881]")))
+NWA_NAPA_info <- mutate(NWA_NAPA_info, sub_region = fct_recode(sub_region, "(200+]" = "(200,3881]"))
 # saveRDS(NWA_NAPA_info, "data/NWA_NAPA_info.Rda")
 
 # Visualise to ensure success
@@ -169,9 +171,9 @@ sub_region_map <- ggplot(NWA_coords, aes(x = lon, y = lat)) +
              shape = 15, size = 0.5) +
   guides(colour = guide_legend(override.aes = list(size = 5))) +
   scale_alpha_manual(values = c(0.4, 0.7, 1)) +
-  coord_cartesian(xlim = NWA_corners[1:2],
-                  ylim = NWA_corners[3:4]) +
-  labs(x = NULL, y = NULL, colour = "Region", alpha = "Sub region")
+  coord_cartesian(xlim = NWA_corners_sub[1:2],
+                  ylim = NWA_corners_sub[3:4]) +
+  labs(x = NULL, y = NULL, colour = "Region", alpha = "Sub-region")
 # ggsave(plot = sub_region_map, filename = "output/sub_region_map.pdf", height = 5, width = 6)
 
 # Visualise
@@ -218,7 +220,7 @@ system.time(
   NAPA_sst_sub <- plyr::ldply(NAPA_files,
                               .fun = load_NAPA_sst_sub, 
                               .parallel = TRUE)
-) # 1.5 seconds for 1, 135 seconds for all
+) # 1.5 seconds for 1,135 seconds for all
 
 # For some reason the rounding didn't stick in the function above so we wack it again here
 NAPA_sst_sub <- NAPA_sst_sub %>% 
@@ -238,17 +240,21 @@ With our clumped SST time series ready the last step in this vignette is to dete
 NAPA_sst_sub <- readRDS("data/NAPA_sst_sub.Rda")
 
 # Calculate base results
+system.time(
 NAPA_MHW_sub <- NAPA_sst_sub %>%
+  # NB: Should not use data before 1998-01-01 as this is model spin-up
+  filter(t >= "1998-01-01") %>% 
   group_by(region, sub_region) %>%
   nest() %>%
   mutate(clims = map(data, ts2clm,
                      # NB: I've chosen here to use as much of the 2015 data as exists,
                      # rather than to use none of it as I think it will create a better climatology
                      # even though the last two days of the year are missing
-                     climatologyPeriod = c("1994-01-01", "2015-12-29")),
+                     climatologyPeriod = c("1998-01-01", "2015-12-29")),
          events = map(clims, detect_event),
          cats = map(events, category)) %>%
   select(-data)
+) # 2 seconds
 # saveRDS(NAPA_MHW_sub, "data/NAPA_MHW_sub.Rda")
 ```
 
