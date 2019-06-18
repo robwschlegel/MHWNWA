@@ -61,6 +61,7 @@ current_uv_scalar <- 4
 #                          xend = c(21.0, 24.1, 27.2), yend = c(-37.8, -37.8, -38.0))
 
 # The top figure (sea)
+  # NB: Add bathymetry as a contour here
 fig_1_top <- ggplot(data = map_base, aes(x = lon, y = lat)) +
   # The ocean temperature
   geom_raster(data = var_mean_states, aes(fill = sst_clim)) +
@@ -118,6 +119,8 @@ fig_1_top <- ggplot(data = map_base, aes(x = lon, y = lat)) +
 ggsave(fig_1_top, filename = "talk/graph/fig_1_top.png", height = 4, width = 5)
 
 # The bottom figure (heat flux)
+  # NB: Rather show the MLD as a contour here
+  # Also add labels for oceanographic/shelf/floor featurs
 fig_1_bottom <- ggplot(data = map_base, aes(x = lon, y = lat)) +
   # The ocean temperature
   geom_raster(data = var_mean_states, aes(fill = qt_clim)) +
@@ -188,3 +191,88 @@ fig_2 <- ggplot(NWA_coords, aes(x = lon, y = lat)) +
 fig_2
 ggsave(fig_2, filename = "talk/graph/fig_2.png", height = 5, width = 6)
 
+
+# Figure 3 ----------------------------------------------------------------
+
+# The synoptic summary figure
+
+# Find a large-ish MHW
+sub_event_meta <- filter(NAPA_MHW_meta, intensity_cumulative == 102.4355)
+
+# Extract the data packet for this event
+sub_synoptic_var_state <- synoptic_states_anom_cartesian %>%
+  ungroup() %>%
+  filter(region == sub_event_meta$region,
+         sub_region == sub_event_meta$sub_region,
+         event_no == sub_event_meta$event_no)
+sub_synoptic_vec_state <- synoptic_vec_states_anom_cartesian %>%
+  ungroup() %>%
+  filter(region == sub_event_meta$region,
+         sub_region == sub_event_meta$sub_region,
+         event_no == sub_event_meta$event_no)
+sub_synoptic_state <- left_join(sub_synoptic_var_state, sub_synoptic_vec_state,
+                                by = colnames(sub_synoptic_var_state)[1:5]) %>%
+  dplyr::rename(u_anom = uoce_anom, v_anom = voce_anom) %>%
+  group_by(lon, lat) %>%
+  mutate(arrow_size = ((abs(u_anom*v_anom)/ max(abs(u_anom*v_anom)))+0.2)/6) %>%
+  ungroup()
+
+# Reduce wind/ current vectors
+lon_sub <- seq(min(sub_synoptic_state$lon), max(sub_synoptic_state$lon), by = 1)
+lat_sub <- seq(min(sub_synoptic_state$lat), max(sub_synoptic_state$lat), by = 1)
+vec_sub <- sub_synoptic_state %>%
+  filter(lon %in% lon_sub, lat %in% lat_sub) %>%
+  na.omit()
+
+
+# Establish the vector scalar for the currents
+current_uv_scalar <- 4
+
+# SST and ocean current panel
+sst_U_V_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
+  geom_raster(data = sub_synoptic_state, aes(fill = sst_anom)) +
+  geom_segment(data = vec_sub, aes(xend = lon + u_anom * current_uv_scalar, yend = lat + v_anom * current_uv_scalar),
+               arrow = arrow(angle = 40, length = unit(vec_sub$arrow_size, "cm"), type = "open"),
+               linejoin = "mitre", size = 0.4) +
+  # The land mass
+  geom_polygon(data = map_base, aes(group = group), fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
+  # The region of the MHW
+  geom_polygon(data = filter(NWA_coords, region == sub_event_meta$region), fill = NA, colour = "black", size = 2) +
+  # Colour scale
+  scale_fill_gradient2(low = "blue", high = "red") +
+  # Improve on the x and y axis labels
+  scale_x_continuous(breaks = seq(-70, -50, 10),
+                     labels = scales::unit_format(suffix = "°E", sep = ""),
+                     position = "top") +
+  scale_y_continuous(breaks = seq(35, 55, 10),
+                     labels = scales::unit_format(suffix = "°N", sep = "")) +
+  labs(x = NULL, y = NULL, fill = "SST anom. (°C)") +
+  # Slightly shrink the plotting area
+  coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F)
+sst_U_V_panel
+
+qt_taum_mld_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
+  geom_raster(data = sub_synoptic_state, aes(fill = qt_anom)) +
+  # The land mass
+  geom_polygon(data = map_base, aes(group = group), fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
+  # The MLD contours
+    # NB: Rather show this as three distinct colours
+  geom_contour(aes(z = mldr10_1_anom), breaks = c(-0.5, 0, 0.5),  size = c(0.3),  colour = "black") +
+  # The vectors
+  geom_segment(data = vec_sub, aes(xend = lon, yend = lat + taum_anom * 50),
+               arrow = arrow(angle = 40, length = unit(0.2, "cm"), type = "open"),
+               linejoin = "mitre", size = 0.4) +
+  # The region of the MHW
+  geom_polygon(data = filter(NWA_coords, region == sub_event_meta$region), fill = NA, colour = "black", size = 2) +
+  # Colour scale
+  scale_fill_gradient2(low = "blue", high = "red") +
+  # Improve on the x and y axis labels
+  scale_x_continuous(breaks = seq(-70, -50, 10),
+                     labels = scales::unit_format(suffix = "°E", sep = ""),
+                     position = "top") +
+  scale_y_continuous(breaks = seq(35, 55, 10),
+                     labels = scales::unit_format(suffix = "°N", sep = "")) +
+  labs(x = NULL, y = NULL, fill = "Net downward\nheat flux\nanom. (W/m2)") +
+  # Slightly shrink the plotting area
+  coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F)
+qt_taum_mld_panel
