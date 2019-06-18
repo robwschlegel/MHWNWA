@@ -173,8 +173,16 @@ bibliography: MHWNWA.bib
 
 ***
 
-# Acknowledgements
+# Future work
 
+* Extend the methodology seen here into the third and fourth dimensions of the data
+* Test these drivers (node synoptic states) as predictors for events in different data products
+* Rank the drivers by their predictive accuracy
+* Create operational prediction data layer for public use/consumption
+
+***
+
+# Acknowledgements
 
 ## Funding
 
