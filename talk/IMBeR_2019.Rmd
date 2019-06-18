@@ -64,6 +64,13 @@ bibliography: MHWNWA.bib
 
 ***
 
+# Why are these drivers?
+
+* Oceanic Heat budget
+  * Advection and heat flux are primary drivers of SST
+
+***
+
 # What is the Northwest Atlantic?
 
 ![](graph/fig_1.png)
@@ -77,14 +84,26 @@ bibliography: MHWNWA.bib
 
 ***
 
-# How do we determine drivers? {.tabset}
-
-## Data
+# What data are we using?
 
 - NAPA (3-Oceans) model
-- Tri-polar grid
+  - Model outputs supplied by the Bedford Institute of Oceanography (BIO) ![](graph/BIO_logo.jpg)
+  - Based on the NEMO community ocean model ![](graph/NEMO_logo.png)
 - Daily surface resolution
+- Five day (pentad) resolution at 75 depth layers
+- Tri-polar grid
+  - 10 to 20 km resolution
+![](graph/NAPA_resolution_graph.png)
+(_courtesy Timothée Bourgeois_)
+- Variable of interest:
+  - Sea surface temperature (SST; °C)
+  - Net downward heatflux (Q; W/m2)
+  - Mixed layer depth ()
+  - Surface wind stres (tau m; )
+  - Surface ocean currents (U and V; )
 
+
+# How are we using these data?
 
 ## Sub/regions
 
@@ -104,85 +123,48 @@ bibliography: MHWNWA.bib
   - `nfs` = Newfoundland Shelf 
   - `ss` = Scotian Shelf
 
-- All of the SST data for pixels within each sub-region were averaged together
+- All of the SST pixels within each sub-region were averaged together into one time series
+- MHWs were calculated from these averaged time series
+- The start and end dates of each MHW were used to create a packet of synoptic state information
 
 <!-- ![](graph/) -->
 
-## Calculating marine heatwaves (MHWs) {.tabset}
-
-- MHWs calculated from each average SST time series
-
-### Time series
-<center>
-![](graph/ts_full.png){ width=90% }
-</center>
-
-* First we start with a normal temperature time series
-* Temperature (°C) on the y-axis, date on the x-axis
-
-### Day of year
-<center>
-![](graph/ts_box.png){ width=90% }
-</center>
-
-* Then we clump all of the same days of the year (doy) together
-* The range of values for each doy are shown here as boxplots
-
-### Climatologies
-<center>
-![](graph/ts_box_clim.png){ width=90% }
-</center>
-
-* We smooth these values with an 11-day moving average while finding the:
-* mean _seasonal signal_ (blue line) & 90th percentile _threshold_ (red line)
-* These both are then smoothed with a 31-day moving average
-
 ## Synoptic states
+
+<!-- * Average anomaly abiotic synoptic states created during each MHW -->
+
 <!-- Rather above show how a detected MHW sits over a number of days and how that is cause for the synoptic state -->
 <!-- May want to just re-create the panel of figures from the SA work -->
-* Average anomaly abiotic synoptic states created during each MHW
 
-![](graph/)
+<!-- ![](graph/) -->
 
 
 ## Self-organising map
 
+* Are there recurrent environmental patterns during marine heatwaves?
+* If so, can these be detected/quantified by a computer?
 * Anomalies fed to SOM to produce 12 most common states
 * The occurrence of these states with sub-regions and/or seasons quantified
 
 
-## Machine learning {.tabset}
-
-* Are there recurrent environmental patterns during marine heatwaves?
-* If so, can these be detected/quantified by a computer?
-
-### Definition 
-
-<center>
-![](graph/machine_learning_aliens.png){ width=60% }
-</center>    
-  
-<font size="5">"A field of study concerned with the design and development of algorithms and techniques that allow computers to learn." </font>    
-(_Wiktionary_)
-
-
 # What are the primary drivers? {.tabset}
 
-## Most apparent
+## Broad view of SST
 
-- The primary difference in synoptic states is a dipole between a warm (cold) Gulf Stream and cold (warm) Labrador Sea 
+- The primary difference in synoptic SST states is a dipole between a warm (cold) Gulf Stream and cold (warm) Labrador Sea 
+- We do not see a state during which the entire study area shows a warm SST signal
 
 ![](../output/som_plot_sst_anom.png)
 
-## More nuanced
+## Focus on node 9
 
-- More nuanced patterns are .....
+<!-- - More nuanced patterns are ..... -->
 
 <!-- ![]() -->
 
-- Sub-mesoscale patterns are ......
-- By season ......
-- By region ......
+<!-- - Sub-mesoscale patterns are ...... -->
+<!-- - By season ...... -->
+<!-- - By region ...... -->
 
 ***
 
@@ -223,6 +205,85 @@ Dr. Timothée Bourgeois
 <center>
 ![](graph/thanks_for_all_the_fish.gif){ width=120% }
 </center>
+
+***
+
+## Calculating marine heatwaves (MHWs) {.tabset}
+
+### Time series
+<center>
+![](graph/ts_full.png){ width=90% }
+</center>
+
+* First we start with a normal temperature time series
+* Temperature (°C) on the y-axis, date on the x-axis
+
+### Day of year
+<center>
+![](graph/ts_box.png){ width=90% }
+</center>
+
+* Then we clump all of the same days of the year (doy) together
+* The range of values for each doy are shown here as boxplots
+
+### Climatologies
+<center>
+![](graph/ts_box_clim.png){ width=90% }
+</center>
+
+* We smooth these values with an 11-day moving average while finding the:
+* mean _seasonal signal_ (blue line) & 90th percentile _threshold_ (red line)
+* These both are then smoothed with a 31-day moving average
+
+***
+
+## Machine learning {.tabset}
+
+* Are there recurrent environmental patterns during marine heatwaves?
+* If so, can these be detected/quantified by a computer?
+
+### Definition 
+
+<center>
+![](graph/machine_learning_aliens.png){ width=60% }
+</center>    
+  
+<font size="5">"A field of study concerned with the design and development of algorithms and techniques that allow computers to learn." </font>    
+(_Wiktionary_)
+
+***
+
+### Stress
+
+</center>
+![](graph/cat_herd.gif){ width=110% }
+</center> 
+
+* The computer "learns" by reducing stress
+
+***
+
+### Clustering
+
+<center> 
+![](graph/K-mean kats.png)  
+(_courtesy Angé Ackerman_)
+</center> 
+
+* After ordinating the data the computer tries to find the most similar clusters for them
+
+***
+
+### Self-organising maps {.tabset}
+
+#### Self-organising cats
+
+<center> 
+![](graph/Self-organising cats2.png)  
+(_courtesy Angé Ackerman_)
+</center> 
+
+* With self-organising maps the computer then arranges the clusters
 
 ***
 
