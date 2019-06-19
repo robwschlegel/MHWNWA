@@ -21,7 +21,8 @@ system.time(
     dplyr::select(-lon, -lat) %>%
     dplyr::rename(lon = lon_O, lat = lat_O) %>%
     group_by(lon, lat) %>%
-    summarise_all(.funs = "mean", na.rm = T)
+    summarise_all(.funs = "mean", na.rm = T) %>%
+    ungroup()
 ) # 12 seconds
 
 # Vector mean states
@@ -37,7 +38,8 @@ system.time(
     group_by(lon, lat) %>%
     summarise_all(.funs = "mean", na.rm = T) %>%
     dplyr::rename(u = uoce_clim, v = voce_clim) %>%
-    mutate(arrow_size = ((abs(u*v)/ max(abs(u*v)))+0.2)/6)
+    mutate(arrow_size = ((abs(u*v)/ max(abs(u*v)))+0.2)/6) %>%
+    ungroup()
 ) # 7 seconds
 
 # Reduce wind/ current vectors
@@ -61,7 +63,7 @@ current_uv_scalar <- 4
 #                          xend = c(21.0, 24.1, 27.2), yend = c(-37.8, -37.8, -38.0))
 
 # The top figure (sea)
-  # NB: Add bathymetry as a contour here
+# NB: Add bathymetry as a contour here
 fig_1_top <- ggplot(data = map_base, aes(x = lon, y = lat)) +
   # The ocean temperature
   geom_raster(data = var_mean_states, aes(fill = sst_clim)) +
@@ -116,22 +118,22 @@ fig_1_top <- ggplot(data = map_base, aes(x = lon, y = lat)) +
         axis.ticks = element_line(colour = "black"),
         legend.position = "top")
 # fig_1_top
-ggsave(fig_1_top, filename = "talk/graph/fig_1_top.png", height = 4, width = 5)
+# ggsave(fig_1_top, filename = "talk/graph/fig_1_top.png", height = 4, width = 5)
 
 # The bottom figure (heat flux)
-  # NB: Rather show the MLD as a contour here
-  # Also add labels for oceanographic/shelf/floor featurs
+# NB: Rather show the MLD as a contour here
+# Also add labels for oceanographic/shelf/floor featurs
 fig_1_bottom <- ggplot(data = map_base, aes(x = lon, y = lat)) +
   # The ocean temperature
   geom_raster(data = var_mean_states, aes(fill = qt_clim)) +
   # The land mass
   geom_polygon(aes(group = group), fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
   # The bathymetry contours
-  geom_contour(data = bathy, aes(z = depth),
+  geom_contour(data = NAPA_bathy_sub, aes(z = bathy),
                breaks = c(-50),  size = c(0.3),  colour = "black") +
-  geom_contour(data = bathy, aes(z = depth),
+  geom_contour(data = NAPA_bathy_sub, aes(z = bathy),
                breaks = c(-200),  size = c(0.3),  colour = "grey30") +
-  geom_contour(data = bathy, aes(z = depth),
+  geom_contour(data = NAPA_bathy_sub, aes(z = bathy),
                breaks = c(-2000),  size = c(0.3),  colour = "grey70") +
   # Improve on the x and y axis labels
   scale_x_continuous(breaks = seq(-70, -50, 10),
@@ -150,11 +152,10 @@ fig_1_bottom <- ggplot(data = map_base, aes(x = lon, y = lat)) +
         axis.ticks = element_line(colour = "black"),
         legend.position = "bottom")
 # fig_1_bottom
-ggsave(fig_1_bottom, filename = "talk/graph/fig_1_bottom.png", height = 4, width = 5)
+# ggsave(fig_1_bottom, filename = "talk/graph/fig_1_bottom.png", height = 4, width = 5)
 
 # Convert the figures to grobs
 fig_1_top_grob <- ggplotGrob(fig_1_top)
-# fb_inset_grob <- ggplotGrob(fb_inset)
 fig_1_bottom_grob <- ggplotGrob(fig_1_bottom)
 
 # Stick them together
@@ -171,7 +172,7 @@ fig_1 <- ggplot() +
                     xmin = 1, xmax = 10, ymin = 1, ymax = 5.5)
 # fig_1
 # save
-ggsave(plot = fig_1, filename = "talk/graph/fig_1.png", height = 8, width = 8)
+ggsave(plot = fig_1, filename = "talk/graph/fig_1.png", height = 8, width = 6)
 
 
 # Figure 2 ----------------------------------------------------------------
@@ -196,8 +197,103 @@ ggsave(fig_2, filename = "talk/graph/fig_2.png", height = 5, width = 6)
 
 # The synoptic summary figure
 
+# Load data packet
+all_anom <- readRDS("data/packet_all_anom.Rda")
+
+# Load SOM packet for anomaly data
+som_all_anom <- readRDS("data/som_all_anom.Rda")
+
+# Determine node index
+node_index_all_anom <- event_node_index(all_anom, som_all_anom) %>%
+  mutate(event_no = as.numeric(event_no))
+
+# MHW season of (peak) occurrence and other meta-data
+NAPA_MHW_meta <- NAPA_MHW_event %>%
+  mutate(month_peak = lubridate::month(date_peak, label = T),
+         season_peak = case_when(month_peak %in% c("Jan", "Feb", "Mar") ~ "Winter",
+                                 month_peak %in% c("Apr", "May", "Jun") ~ "Spring",
+                                 month_peak %in% c("Jul", "Aug", "Sep") ~ "Summer",
+                                 month_peak %in% c("Oct", "Nov", "Dec") ~ "Autumn"),
+         sub_region = as.character(sub_region)) %>%
+  left_join(node_index_all_anom, by = c("region", "sub_region", "event_no"))
+
+
 # Find a large-ish MHW
 sub_event_meta <- filter(NAPA_MHW_meta, intensity_cumulative == 102.4355)
+
+# Load the synoptic states data packet
+system.time(
+  synoptic_states <- readRDS("data/synoptic_states.Rda")
+) # 30 seconds
+
+# Unnest the synoptic data
+system.time(
+  synoptic_states_unnest <- synoptic_states %>%
+    select(region, sub_region, event_no, synoptic) %>%
+    unnest()
+) # 30 seconds
+
+# Load the synoptic vector states data packet
+system.time(
+  synoptic_vec_states <- readRDS("data/synoptic_vec_states.Rda")
+) # 10 seconds
+
+# Unnest the synoptic vector data
+system.time(
+  synoptic_vec_states_unnest <- synoptic_vec_states %>%
+    select(region, sub_region, event_no, synoptic) %>%
+    unnest()
+) # 27 seconds
+
+system.time(
+  synoptic_states_anom_fix <- synoptic_states_unnest %>%
+    select(region:lat, sst_anom, taum_anom, qt_anom, mldr10_1_anom) %>%
+    filter(lon >= NWA_corners_sub[1], lon <= NWA_corners_sub[2],
+           lat >= NWA_corners_sub[3], lat <= NWA_corners_sub[4]) %>%
+    group_by(lon, lat) %>%
+    mutate(mldr10_1_anom = mldr10_1_anom/max(abs(mldr10_1_anom), na.rm = T)) %>%
+    # na.omit() %>%
+    ungroup()
+) # 3 seconds
+
+# NB: There is an issue downstream with one or more of the vector pixels always having a value of 0
+# This needs to be accounted for here before joining the data further
+system.time(
+  synoptic_vec_states_anom_fix <- synoptic_vec_states_unnest %>%
+    select(region:lat, uoce_anom:voce_anom) %>%
+    filter(lon >= NWA_corners_sub[1], lon <= NWA_corners_sub[2],
+           lat >= NWA_corners_sub[3], lat <= NWA_corners_sub[4]) %>%
+    group_by(lon, lat) %>%
+    mutate(uoce_anom = case_when(min(uoce_anom, na.rm = T) != 0 & max(uoce_anom, na.rm = T) != 0 ~ uoce_anom),
+           voce_anom = case_when(min(voce_anom, na.rm = T) != 0 & max(voce_anom, na.rm = T) != 0 ~ voce_anom)) %>%
+    # na.omit() %>%
+    ungroup()
+) # 8 seconds
+
+system.time(
+  synoptic_states_anom_cartesian <- synoptic_states_anom_fix %>%
+    # First create means based on the nearest NAPA pixel to OISST pixel
+    left_join(lon_lat_NAPA_OISST, by = c("lon", "lat")) %>%
+    dplyr::select(-lon, -lat) %>%
+    dplyr::rename(lon = lon_O, lat = lat_O) %>%
+    group_by(region, sub_region, event_no, lon, lat) %>%
+    summarise_all(.funs = "mean", na.rm = T) #%>%
+  # Then interpolate the few pixels that aren't filled
+  # NB: After spending a day working on interpolation techniques
+  # I decided to leave it as this creates more artefacts than it removes
+  # group_by(region, sub_region, event_no)
+) # 34 seconds
+
+# Constrain vectors
+system.time(
+  synoptic_vec_states_anom_cartesian <- synoptic_vec_states_anom_fix %>%
+    # First create means based on the nearest NAPA pixel to OISST pixel
+    left_join(lon_lat_NAPA_OISST, by = c("lon", "lat")) %>%
+    dplyr::select(-lon, -lat) %>%
+    dplyr::rename(lon = lon_O, lat = lat_O) %>%
+    group_by(region, sub_region, event_no, lon, lat) %>%
+    summarise_all(.funs = "mean", na.rm = T)
+) # 32 seconds
 
 # Extract the data packet for this event
 sub_synoptic_var_state <- synoptic_states_anom_cartesian %>%
@@ -233,7 +329,158 @@ sst_U_V_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
   geom_raster(data = sub_synoptic_state, aes(fill = sst_anom)) +
   geom_segment(data = vec_sub, aes(xend = lon + u_anom * current_uv_scalar, yend = lat + v_anom * current_uv_scalar),
                arrow = arrow(angle = 40, length = unit(vec_sub$arrow_size, "cm"), type = "open"),
-               linejoin = "mitre", size = 0.4) +
+               linejoin = "mitre", size = 0.4, alpha = 0.5) +
+  # The land mass
+  geom_polygon(data = map_base, aes(group = group), fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
+  # The region of the MHW
+  geom_polygon(data = filter(NWA_coords, region == sub_event_meta$region), fill = NA, colour = "black", size = 2) +
+  # Colour scale
+  scale_fill_gradient2(low = "blue", high = "red") +
+  # Improve on the x and y axis labels
+  scale_x_continuous(breaks = seq(-70, -50, 10),
+                     labels = scales::unit_format(suffix = "°E", sep = ""),
+                     position = "bottom") +
+  scale_y_continuous(breaks = seq(35, 55, 10),
+                     labels = scales::unit_format(suffix = "°N", sep = "")) +
+  labs(x = NULL, y = NULL, fill = "SST anom. (°C)") +
+  # Slightly shrink the plotting area
+  coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
+  theme(legend.position = "bottom")
+sst_U_V_panel
+
+qt_taum_mld_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
+  geom_raster(data = sub_synoptic_state, aes(fill = qt_anom)) +
+  # The land mass
+  geom_polygon(data = map_base, aes(group = group), fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
+  # The MLD contours
+  geom_contour(aes(z = mldr10_1_anom), breaks = 0,  size = c(0.3),  colour = "black") +
+  geom_contour(aes(z = mldr10_1_anom), breaks = 0.1,  size = c(0.3),  colour = "green") +
+  geom_contour(aes(z = mldr10_1_anom), breaks = 0.2,  size = c(0.3),  colour = "pink") +
+  # Showing taum via size of alpha dot
+  geom_point(data = filter(vec_sub, taum_anom > 0.0), aes(size = taum_anom), shape = 1, alpha = 0.4) +
+  geom_point(data = filter(vec_sub, taum_anom < 0.0), aes(size = taum_anom), shape = 4, alpha = 0.4) +
+  # The vectors
+  # geom_segment(data = vec_sub, aes(xend = lon, yend = lat + taum_anom * 50),
+  # arrow = arrow(angle = 40, length = unit(0.2, "cm"), type = "open"),
+  # linejoin = "mitre", size = 0.4) +
+
+  # The region of the MHW
+  geom_polygon(data = filter(NWA_coords, region == sub_event_meta$region), fill = NA, colour = "black", size = 2) +
+  # Colour scale
+  scale_fill_gradient2(low = "blue", high = "red") +
+  # Size scale
+  scale_size_continuous(range = c(0,5)) +
+  # Improve on the x and y axis labels
+  scale_x_continuous(breaks = seq(-70, -50, 10),
+                     labels = scales::unit_format(suffix = "°E", sep = ""),
+                     position = "bottom") +
+  scale_y_continuous(breaks = seq(35, 55, 10),
+                     labels = scales::unit_format(suffix = "°N", sep = ""),
+                     position = "right") +
+  labs(x = NULL, y = NULL,
+       fill = "Net downward\nheat flux\nanom. (W/m2)",
+       size = "N/m2") +
+  # Slightly shrink the plotting area
+  coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
+  theme(legend.position = "bottom")
+qt_taum_mld_panel
+
+# Extract time series data for top panel
+sub_NAPA_MHW_ts <- NAPA_MHW_sub %>%
+  select(-clims, -cats) %>%
+  unnest(events) %>%
+  filter(row_number() %% 2 == 1) %>%
+  unnest(events) %>%
+  filter(region == sub_event_meta$region,
+         sub_region == sub_event_meta$sub_region)
+
+# Subset further only one year for plotting
+sub_NAPA_MHW_ts_1_year <- sub_NAPA_MHW_ts %>%
+  filter(t >= sub_event_meta$date_peak-183,
+         t <= sub_event_meta$date_peak+183)
+
+peak_event <- sub_NAPA_MHW_ts %>%
+  filter(t >= sub_event_meta$date_start-1,
+         t <= sub_event_meta$date_end+1) %>%
+  mutate(start_point = thresh[t == min(t)],
+         peak_point = thresh[t == sub_event_meta$date_peak],
+         end_point = thresh[t == max(t)])
+
+ts_panel <- ggplot(data = sub_NAPA_MHW_ts_1_year, aes(x = t, y = temp)) +
+  geom_line() +
+  geom_line(aes(y = seas), col = "skyblue") +
+  geom_line(aes(y = thresh), col = "navy") +
+  geom_flame(aes(y2 = thresh)) +
+  geom_flame(data = peak_event, aes(y2 = thresh), fill = "red") +
+  geom_segment(data = peak_event, colour = "springgreen",
+               aes(x = sub_event_meta$date_start-1, xend = sub_event_meta$date_start-1,
+                   y = start_point-1, yend = start_point+1)) +
+  geom_segment(data = peak_event, colour = "springgreen",
+               aes(x = sub_event_meta$date_end+1, xend = sub_event_meta$date_end+1,
+                   y = end_point-1,
+                   yend = end_point+1)) +
+  geom_segment(data = peak_event, colour = "forestgreen",
+               aes(x = sub_event_meta$date_peak, xend = sub_event_meta$date_peak,
+                   y = peak_point-1,
+                   yend = peak_point+1)) +
+  labs(x = NULL, y = "Temp. (°C)") +
+  scale_x_date(expand = c(0,0))
+ts_panel
+
+# Merge the panels together
+bottom_row <- cowplot::plot_grid(sst_U_V_panel, qt_taum_mld_panel, labels = c('B', 'C'), align = 'h', rel_widths = c(1, 1))
+fig_3 <- cowplot::plot_grid(ts_panel, bottom_row, labels = c('A', ''), ncol = 1, rel_heights = c(1, 3))
+# fig_3
+ggsave(fig_3, filename = "talk/graph/fig_3.png", height = 10, width = 12)
+
+
+# Figure 4 ----------------------------------------------------------------
+
+# The summary of a single node
+
+# Find the index of node 9 only
+# node_index_9 <- node_index_all_anom %>%
+#   filter(node == 9)
+
+# Extract the data packet for this event
+sub_synoptic_var_state <- synoptic_states_anom_cartesian %>%
+  ungroup() %>%
+  left_join(node_index_all_anom, by = c("region", "sub_region", "event_no")) %>%
+  filter(node == 9) %>%
+  dplyr::select(-region, -sub_region, -event_no, -node, -count) %>%
+  group_by(lon, lat) %>%
+  summarise_all(.funs = "mean")
+sub_synoptic_vec_state <- synoptic_vec_states_anom_cartesian %>%
+  ungroup() %>%
+  left_join(node_index_all_anom, by = c("region", "sub_region", "event_no")) %>%
+  filter(node == 9) %>%
+  dplyr::select(-region, -sub_region, -event_no, -node, -count) %>%
+  group_by(lon, lat) %>%
+  summarise_all(.funs = "mean")
+sub_synoptic_state <- left_join(sub_synoptic_var_state, sub_synoptic_vec_state,
+                                by = colnames(sub_synoptic_var_state)[1:2]) %>%
+  dplyr::rename(u_anom = uoce_anom, v_anom = voce_anom) %>%
+  group_by(lon, lat) %>%
+  mutate(arrow_size = ((abs(u_anom*v_anom)/ max(abs(u_anom*v_anom)))+0.2)/6) %>%
+  ungroup()
+
+# Reduce wind/ current vectors
+lon_sub <- seq(min(sub_synoptic_state$lon), max(sub_synoptic_state$lon), by = 1)
+lat_sub <- seq(min(sub_synoptic_state$lat), max(sub_synoptic_state$lat), by = 1)
+vec_sub <- sub_synoptic_state %>%
+  filter(lon %in% lon_sub, lat %in% lat_sub) %>%
+  na.omit()
+
+
+# Establish the vector scalar for the currents
+current_uv_scalar <- 4
+
+# SST and ocean current panel
+sst_U_V_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
+  geom_raster(data = sub_synoptic_state, aes(fill = sst_anom)) +
+  geom_segment(data = vec_sub, aes(xend = lon + u_anom * current_uv_scalar, yend = lat + v_anom * current_uv_scalar),
+               arrow = arrow(angle = 40, length = unit(vec_sub$arrow_size, "cm"), type = "open"),
+               linejoin = "mitre", size = 0.4, alpha = 0.5) +
   # The land mass
   geom_polygon(data = map_base, aes(group = group), fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
   # The region of the MHW
@@ -248,7 +495,8 @@ sst_U_V_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
                      labels = scales::unit_format(suffix = "°N", sep = "")) +
   labs(x = NULL, y = NULL, fill = "SST anom. (°C)") +
   # Slightly shrink the plotting area
-  coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F)
+  coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
+  theme(legend.position = "bottom")
 sst_U_V_panel
 
 qt_taum_mld_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
@@ -256,23 +504,134 @@ qt_taum_mld_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
   # The land mass
   geom_polygon(data = map_base, aes(group = group), fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
   # The MLD contours
-    # NB: Rather show this as three distinct colours
-  geom_contour(aes(z = mldr10_1_anom), breaks = c(-0.5, 0, 0.5),  size = c(0.3),  colour = "black") +
+  geom_contour(aes(z = mldr10_1_anom), breaks = 0,  size = c(0.3),  colour = "black") +
+  geom_contour(aes(z = mldr10_1_anom), breaks = 0.1,  size = c(0.3),  colour = "green") +
+  geom_contour(aes(z = mldr10_1_anom), breaks = 0.2,  size = c(0.3),  colour = "pink") +
+  # Showing taum via size of alpha dot
+  geom_point(data = filter(vec_sub, taum_anom > 0.0), aes(size = taum_anom), shape = 1, alpha = 0.4) +
+  geom_point(data = filter(vec_sub, taum_anom < 0.0), aes(size = taum_anom), shape = 4, alpha = 0.4) +
   # The vectors
-  geom_segment(data = vec_sub, aes(xend = lon, yend = lat + taum_anom * 50),
-               arrow = arrow(angle = 40, length = unit(0.2, "cm"), type = "open"),
-               linejoin = "mitre", size = 0.4) +
+  # geom_segment(data = vec_sub, aes(xend = lon, yend = lat + taum_anom * 50),
+  # arrow = arrow(angle = 40, length = unit(0.2, "cm"), type = "open"),
+  # linejoin = "mitre", size = 0.4) +
+
   # The region of the MHW
   geom_polygon(data = filter(NWA_coords, region == sub_event_meta$region), fill = NA, colour = "black", size = 2) +
   # Colour scale
   scale_fill_gradient2(low = "blue", high = "red") +
+  # Size scale
+  scale_size_continuous(range = c(0,5), breaks = c(0.0, 0.025, 0.05)) +
   # Improve on the x and y axis labels
   scale_x_continuous(breaks = seq(-70, -50, 10),
                      labels = scales::unit_format(suffix = "°E", sep = ""),
                      position = "top") +
   scale_y_continuous(breaks = seq(35, 55, 10),
-                     labels = scales::unit_format(suffix = "°N", sep = "")) +
-  labs(x = NULL, y = NULL, fill = "Net downward\nheat flux\nanom. (W/m2)") +
+                     labels = scales::unit_format(suffix = "°N", sep = ""),
+                     position = "left") +
+  labs(x = NULL, y = NULL,
+       fill = "Net downward\nheat flux\nanom. (W/m2)",
+       size = "N/m2") +
   # Slightly shrink the plotting area
-  coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F)
+  coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
+  theme(legend.position = "bottom")
 qt_taum_mld_panel
+
+# The proportion plot
+# MHW season of (peak) occurrence and other meta-data
+NAPA_MHW_meta <- NAPA_MHW_event %>%
+  mutate(month_peak = lubridate::month(date_peak, label = T),
+         season_peak = case_when(month_peak %in% c("Jan", "Feb", "Mar") ~ "Winter",
+                                 month_peak %in% c("Apr", "May", "Jun") ~ "Spring",
+                                 month_peak %in% c("Jul", "Aug", "Sep") ~ "Summer",
+                                 month_peak %in% c("Oct", "Nov", "Dec") ~ "Autumn"),
+         sub_region = as.character(sub_region)) %>%
+  left_join(node_index_all_anom, by = c("region", "sub_region", "event_no"))
+
+# Proportion of MHWs in each season in each node
+node_prop_info <- NAPA_MHW_meta %>%
+  dplyr::select(region:event_no, month_peak:count) %>%
+  group_by(node, season_peak) %>%
+  mutate(node_season_prop = round(n()/count, 2)) %>%
+  select(season_peak:node_season_prop) %>%
+  unique() %>%
+  ungroup()
+
+# Fill in the blanks
+node_prop_grid <- expand.grid(unique(node_prop_info$season_peak), 1:12) %>%
+  dplyr::rename(season_peak = Var1, node = Var2) %>%
+  mutate(season_peak = as.character(season_peak)) %>%
+  # left_join(NWA_coords, by = "") %>%
+  left_join(node_prop_info, by = c("node", "season_peak")) %>%
+  mutate(count = replace_na(count, 0),
+         node_season_prop = replace_na(node_season_prop, 0))
+
+# Proportion of MHWs in each season in each region
+region_prop_info <- NAPA_MHW_meta %>%
+  dplyr::select(region:event_no, month_peak:count) %>%
+  group_by(node, region) %>%
+  mutate(region_node_prop = round(n()/count, 2)) %>%
+  select(region, node, count, region_node_prop) %>%
+  unique() %>%
+  ungroup() #%>%
+# right_join(data.frame(node = 1:12), by = "node")
+# right_join(NWA_coords, by = "region")
+
+# Fill in the blanks
+region_prop_grid <- expand.grid(unique(region_prop_info$region), 1:12) %>%
+  dplyr::rename(region = Var1, node = Var2) %>%
+  mutate(region = as.character(region)) %>%
+  left_join(NWA_coords, by = "region") %>%
+  left_join(region_prop_info, by = c("region", "node")) %>%
+  mutate(count = replace_na(count, 0),
+         region_node_prop = replace_na(region_node_prop, 0)) %>%
+  filter(node == 9)
+
+# Join node info to region coordinates to keep ggplot happy
+# NWA_coords_more <- left_join(NWA_coords, region_prop_info)
+
+# som_season_runner <- ggplot()
+
+som_prop_plot <- ggplot() +
+  # geom_point(aes(colour = val)) +
+  # geom_raster(aes(fill  = val)) +
+  geom_polygon(data = map_base, aes(group = group, x = lon, y = lat), show.legend = F) +
+  geom_polygon(data = region_prop_grid, aes(group = region, x = lon, y = lat, fill = region_node_prop), colour = "black") +
+  geom_label(data = region_prop_grid, aes(x = -60, y = 35, label = paste0("n = ",count,"/611"))) +
+  coord_cartesian(xlim = NWA_corners_sub[1:2],
+                  ylim = NWA_corners_sub[3:4],
+                  expand = F) +
+  scale_fill_distiller(palette = "BuPu", direction = -1) +
+  labs(x = NULL, y = NULL, fill = "Proportion of events\nper region") +
+  # facet_wrap(~node, ncol = 4) +
+  theme(legend.position = "bottom")
+som_prop_plot
+
+# The meta plot
+
+# Calculate mean and median per node for plotting
+node_h_lines <- NAPA_MHW_meta %>%
+  filter(node == 9) %>%
+  group_by(node) %>%
+  summarise(mean_int_cum = mean(intensity_cumulative, na.rm = T),
+            median_int_cum = median(intensity_cumulative, na.rm = T))
+
+# Create the figure
+som_lolli_plot <- ggplot(data = NAPA_MHW_meta, aes(x = date_peak, y = intensity_cumulative)) +
+  geom_lolli() +
+  geom_point(aes(colour = season_peak)) +
+  geom_label(aes(x = as.Date("2007-01-01"), y = 450, label = paste0("n = ", count,"/",length(node))),
+             size = 3, label.padding = unit(0.5, "lines")) +
+  geom_hline(data = node_h_lines, aes(yintercept = mean_int_cum), linetype = "dashed") +
+  # geom_hline(data = node_h_lines, aes(yintercept = median_int_cum), linetype = "dotted") +
+  # facet_wrap(~node) +
+  labs(x = "", y = "Cumulative intensity (°C x days)", colour = "Season") +
+  theme(legend.position = "bottom")
+som_lolli_plot
+
+# Stick them together
+# bottom_row <- cowplot::plot_grid(sst_U_V_panel, qt_taum_mld_panel, labels = c('B', 'C'), align = 'h', rel_widths = c(1, 1))
+fig_4 <- cowplot::plot_grid(sst_U_V_panel, qt_taum_mld_panel,
+                            som_prop_plot, som_lolli_plot,
+                            labels = c('A', 'B', 'C', 'D'), ncol = 2, rel_heights = c(1, 1))
+# fig_4
+ggsave(fig_4, filename = "talk/graph/fig_4.png", height = 10, width = 12)

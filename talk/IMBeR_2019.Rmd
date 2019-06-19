@@ -52,35 +52,26 @@ bibliography: MHWNWA.bib
 </center>
 
 * One may also download marine heatwave results from the daily updating Marine Heatwave Tracker
+    * www.marineheatwaves.org/tracker
     * Contains climatologies, event metrics, and categories
 
 ***
 
 # What are known drivers of past MHWs?
 
+* Advection and heat flux are primary drivers of SST
 * Different regions of the world show different primary drivers
 * For much of the coastal oceans the primary driver is abnormal movement of warm currents onto the coast
-* For large seas (i.e. the Mediterannean) warm air plays a more important role
+* For large seas (i.e. the Mediterranean) warm air plays a more important role
 
 ***
 
-# Why are these drivers?
+# Why use a new method?
 
-* Oceanic Heat budget
-  * Advection and heat flux are primary drivers of SST
-
-***
-
-# What is the Northwest Atlantic?
-
-![](graph/fig_1.png)
-
-***
-
-# Why do we need to use a new method to find drivers?
-
+* Current standard is to analyse the drivers of one large event at a time
+* Smaller events may also be important
 * Events are happening too rapidly to spend a year working on them one at a time
-* These provide us with a snapshot of what the future ocean will look like
+* Machine learning may be a better choice moving forwards
 
 ***
 
@@ -97,13 +88,17 @@ bibliography: MHWNWA.bib
 (_courtesy Timothée Bourgeois_)
 - Variable of interest:
   - Sea surface temperature (SST; °C)
-  - Net downward heatflux (Q; W/m2)
-  - Mixed layer depth ()
-  - Surface wind stres (tau m; )
-  - Surface ocean currents (U and V; )
+  - Net downward heat flux (Q; W/m2)
+  - Mixed layer depth (mld, dsigma = 0.01 wrt 10m)
+  - Surface wind stress (tau m; N/m2)
+  - Surface ocean currents (U and V; m/s)
 
 
 # How are we using these data?
+
+## Study area
+
+![](graph/fig_1.png)
 
 ## Sub/regions
 
@@ -122,21 +117,14 @@ bibliography: MHWNWA.bib
   - `mab` = Mid-Atlantic Bight
   - `nfs` = Newfoundland Shelf 
   - `ss` = Scotian Shelf
+  
+## Calculating MHWs and creating synoptic states
 
 - All of the SST pixels within each sub-region were averaged together into one time series
 - MHWs were calculated from these averaged time series
 - The start and end dates of each MHW were used to create a packet of synoptic state information
 
-<!-- ![](graph/) -->
-
-## Synoptic states
-
-<!-- * Average anomaly abiotic synoptic states created during each MHW -->
-
-<!-- Rather above show how a detected MHW sits over a number of days and how that is cause for the synoptic state -->
-<!-- May want to just re-create the panel of figures from the SA work -->
-
-<!-- ![](graph/) -->
+![](graph/fig_3.png)
 
 
 ## Self-organising map
@@ -151,31 +139,34 @@ bibliography: MHWNWA.bib
 
 ## Broad view of SST
 
-- The primary difference in synoptic SST states is a dipole between a warm (cold) Gulf Stream and cold (warm) Labrador Sea 
+- The primary difference in synoptic SST states is between a warm (cold) Gulf Stream and cold (warm) Labrador Sea 
 - We do not see a state during which the entire study area shows a warm SST signal
 
 ![](../output/som_plot_sst_anom.png)
 
 ## Focus on node 9
 
-<!-- - More nuanced patterns are ..... -->
+* Strong warm nearshore Gulf Stream current
+* Deeper mixed layer and negative downward heat flux
+* Predominantly time series from the Mid-Atlantic Bight
+* No seasonality, with more recent events increasing in intensity
 
-<!-- ![]() -->
-
-<!-- - Sub-mesoscale patterns are ...... -->
-<!-- - By season ...... -->
-<!-- - By region ...... -->
+![](graph/fig_4.png)
 
 ***
 
 # Conclusions
 
+* The SOM technique functions as expected in the Northwest Atlantic
+* The lack of a completely warm SST 'flavour' was surprising
+* Each node tells a different complex story
 
 ***
 
 # Future work
 
 * Extend the methodology seen here into the third and fourth dimensions of the data
+* Run this same analysis 1, 2, 3, etc. months prior to see how well it works
 * Test these drivers (node synoptic states) as predictors for events in different data products
 * Rank the drivers by their predictive accuracy
 * Create operational prediction data layer for public use/consumption

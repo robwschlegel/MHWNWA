@@ -15,6 +15,7 @@ library(heatwaveR, lib.loc = "../R-packages/")
 library(tidync, lib.loc = "../R-packages/")
 library(akima) # For finding pixels next to missing pixels
 library(FNN) # For finding pixels next to missing pixels
+# library(cowplot) # For gridding multiple figures together
 
 # Set number of cores
 doMC::registerDoMC(cores = 50)
@@ -104,6 +105,17 @@ land_mask_OISST_sub <- land_mask_OISST%>%
 # Create a subsetted water only mask
 land_mask_OISST_sub_water <- land_mask_OISST_sub %>%
   filter(lsmask == 1)
+
+# Load grid for converting NAPA to OISST coordinates
+load("data/lon_lat_NAPA_OISST.Rdata")
+
+# Change to fit with this project
+lon_lat_NAPA_OISST <- lon_lat_NAPA_OISST %>%
+  dplyr::select(-lon, -lat, -dist, -nav_lon_corrected) %>%
+  dplyr::rename(lon = nav_lon, lat = nav_lat) %>%
+  mutate(lon = round(lon, 4),
+         lat = round(lat, 4)) %>%
+  mutate(lon_O = ifelse(lon_O > 180, lon_O-360, lon_O))
 
 
 # Extract one variable ----------------------------------------------------

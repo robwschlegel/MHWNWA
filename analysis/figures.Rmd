@@ -73,6 +73,7 @@ map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE
   select(-region, -subregion)
 
 # Bathymetry data
+  # NB: Should rather use model bathymetry
 bathy <- readRDS("data/NWA_bathy_lowres.Rda")
 
 # The grid that will convert the tri-polar coordinates to cartesian
