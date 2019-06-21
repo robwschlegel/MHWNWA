@@ -53,22 +53,34 @@ source("code/functions.R")
 # gc()
 
 
-# Data packets ------------------------------------------------------------
+# Variable data packets ---------------------------------------------------
+
+# Set number of cores
+  # NB: Was set to 25 as someone else was using the server at the time
+# doMC::registerDoMC(cores = 25)
+
+# Create one big packet
+# system.time(
+# synoptic_states <- plyr::ddply(NAPA_MHW_event, c("region", "sub_region", "event_no"), data_packet, .parallel = T)
+# ) # 82 seconds for first event, 2,6125 seconds (102 minutes) for all events
+
+# Save
+# saveRDS(synoptic_states, "data/synoptic_states.Rda")
 
 
 # Vector data packets -----------------------------------------------------
 
 # Set number of cores
 # NB: Was set to 25 as someone else was using the server at the time
-# doMC::registerDoMC(cores = 50)
+doMC::registerDoMC(cores = 50)
 
 # Create one big packet
-# system.time(
-# synoptic_vec_states <- plyr::ddply(NAPA_MHW_event, c("region", "sub_region", "event_no"), data_vec_packet, .parallel = T)
-# ) # xxx seconds
+system.time(
+synoptic_vec_states <- plyr::ddply(NAPA_MHW_event, c("region", "sub_region", "event_no"), data_vec_packet, .parallel = T)
+) # xxx seconds
 
 # Save
-# saveRDS(synoptic_vec_states, "data/synoptic_vec_states.Rda")
+saveRDS(synoptic_vec_states, "data/synoptic_vec_states.Rda")
 
 
 # SOM analysis ------------------------------------------------------------

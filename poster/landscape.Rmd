@@ -15,7 +15,6 @@ author:
     email: robert.schlegel@dal.ca
   - name: Eric C. J. Oliver
     affil: 1
-    # main: false
 affiliation:
   - num: 1
     address: Department of Oceanography, Dalhousie University, Halifax, Nova Scotia, Canada

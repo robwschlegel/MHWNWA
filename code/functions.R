@@ -15,6 +15,7 @@ library(heatwaveR, lib.loc = "../R-packages/")
 library(tidync, lib.loc = "../R-packages/")
 library(akima) # For finding pixels next to missing pixels
 library(FNN) # For finding pixels next to missing pixels
+# library(cowplot) # For gridding multiple figures together
 
 # Set number of cores
 doMC::registerDoMC(cores = 50)
@@ -26,11 +27,25 @@ options(scipen = 999)
 # Corners of the study area
 NWA_corners <- readRDS("data/NWA_corners.Rda")
 
+# Sub-region coordinates
+NWA_NAPA_info <- readRDS("data/NWA_NAPA_info.Rda")
+
+# Create smaller corners to use less RAM
+  # This also better matches the previous South African work
+  # The Tasmania work had corners of roughly 2 degrees greater than the study area
+NWA_corners_sub <- c(NWA_corners[1]+8, NWA_corners[2]-8, NWA_corners[3]+8, NWA_corners[4]-8)
+
 # Individual regions
 NWA_coords <- readRDS("data/NWA_coords_cabot.Rda")
 
 # The NAPA data location
 NAPA_files <- dir("../../data/NAPA025/1d_grid_T_2D", full.names = T)
+
+# Load NAPA file date index
+NAPA_files_dates <- readRDS("data/NAPA_files_dates.Rda")
+
+# Load full variable climatology file
+NAPA_clim_vars <- readRDS("data/NAPA_clim_vars.Rda")
 
 # The NAPA 5 day U vector data location
 NAPA_U_files <- dir("../../data/NAPA025/5d_grid_U", full.names = T)
@@ -90,6 +105,17 @@ land_mask_OISST_sub <- land_mask_OISST%>%
 # Create a subsetted water only mask
 land_mask_OISST_sub_water <- land_mask_OISST_sub %>%
   filter(lsmask == 1)
+
+# Load grid for converting NAPA to OISST coordinates
+load("data/lon_lat_NAPA_OISST.Rdata")
+
+# Change to fit with this project
+lon_lat_NAPA_OISST <- lon_lat_NAPA_OISST %>%
+  dplyr::select(-lon, -lat, -dist, -nav_lon_corrected) %>%
+  dplyr::rename(lon = nav_lon, lat = nav_lat) %>%
+  mutate(lon = round(lon, 4),
+         lat = round(lat, 4)) %>%
+  mutate(lon_O = ifelse(lon_O > 180, lon_O-360, lon_O))
 
 
 # Extract one variable ----------------------------------------------------
@@ -153,7 +179,7 @@ clim_one_var <- function(one_var, chosen_files = NAPA_files){
   # system.time(
   all_one_clim <- plyr::ddply(all_one_var, c("lon", "lat"), ts2clm, .parallel = T,
                               clmOnly = T,  roundClm = FALSE,
-                              climatologyPeriod = c("1994-01-01", "2015-12-29"))
+                              climatologyPeriod = c("1998-01-01", "2015-12-29"))
   # ) # 230 seconds
   colnames(all_one_clim)[4] <- one_var
   all_one_clim$thresh <- NULL
@@ -236,7 +262,7 @@ clim_one_vec <- function(chosen_files){
   # system.time(
   all_one_clim <- plyr::ddply(all_one_vec, c("lon", "lat"), ts2clm, .parallel = T,
                               clmOnly = T,  roundClm = FALSE, maxPadLength = 6,
-                              climatologyPeriod = c("1994-01-01", "2015-12-27"))
+                              climatologyPeriod = c("1998-01-01", "2015-12-27"))
   # ) # 147 seconds
   colnames(all_one_clim)[4] <- name_hold
   all_one_clim$thresh <- NULL
@@ -248,6 +274,101 @@ clim_one_vec <- function(chosen_files){
   print(paste0("Finished run on ",var_ref," at ",Sys.time()))
 }
 
+
+# Extract the desired variables from a given NetCDF file ------------------
+
+# testers...
+# file_name <- NAPA_files[1]
+extract_all_var <- function(file_name){
+
+  # Extract and join variables with a for loop
+  # NB: This should be optimised...
+  NAPA_vars_extracted <- data.frame()
+  system.time(
+    for(i in 1:length(NAPA_vars$name)){
+      extract_one <- extract_one_var(NAPA_vars$name[i], file_name = file_name)
+      if(nrow(NAPA_vars_extracted) == 0){
+        NAPA_vars_extracted <- rbind(extract_one, NAPA_vars_extracted)
+      } else {
+        NAPA_vars_extracted <- left_join(NAPA_vars_extracted, extract_one,
+                                         by = c("lon_index", "lat_index", "lon", "lat", "bathy", "t"))
+      }
+    }
+  ) # 18 seconds for one
+  NAPA_vars_extracted <- dplyr::select(NAPA_vars_extracted,
+                                       lon_index, lat_index, lon, lat, t, bathy, everything())
+
+  # Exit
+  return(NAPA_vars_extracted)
+}
+
+
+# Build variable data packets ---------------------------------------------
+
+# testers...
+# event_sub <- NAPA_MHW_event[1,]
+data_packet <- function(event_sub){
+
+  # Create date and file index for loading
+  date_idx <- seq(event_sub$date_start, event_sub$date_end, by = "day")
+  file_idx <- filter(NAPA_files_dates, date %in% date_idx) %>%
+    mutate(file = as.character(file)) %>%
+    select(file) %>%
+    unique()
+
+  # Load required base data
+  # system.time(
+  packet_base <- plyr::ldply(file_idx$file, extract_all_var) %>%
+    filter(t %in% date_idx) %>%
+    mutate(doy = format(t, "%m-%d"))
+  # ) # 125 seconds for seven files
+
+  # Join to climatologies
+  packet_join <- left_join(packet_base, NAPA_clim_vars, by = c("lon", "lat", "doy"))
+
+  # Create anomaly values and remove clim columns
+  packet_anom <- packet_join %>%
+    mutate(emp_oce_anom = emp_oce - emp_oce_clim,
+           fmmflx_anom = fmmflx - fmmflx_clim,
+           mldkz5_anom = mldkz5 - mldkz5_clim,
+           mldr10_1_anom = mldr10_1 - mldr10_1_clim,
+           qemp_oce_anom = qemp_oce - qemp_oce_clim,
+           qns_anom = qns - qns_clim,
+           qt_anom = qt - qt_clim,
+           ssh_anom = ssh - ssh_clim,
+           sss_anom = sss - sss_clim,
+           sst_anom = sst - sst_clim,
+           taum_anom = taum - taum_clim) %>%
+    dplyr::select(lon, lat, doy, emp_oce:taum_anom,
+                  -c(colnames(NAPA_clim_vars)[-c(1:3)]))
+  # dplyr::select(-c(colnames(packet_base)[-c(3,4,ncol(packet_base))]),
+  #               -c(colnames(NAPA_clim_vars)[-c(1:3)]))
+
+  # Create mean synoptic values
+  packet_mean <- packet_anom %>%
+    select(-doy) %>%
+    # NB: The lowest pixels are a forcing edge and shouldn't be included
+    # We can catch these out by filtering pixels whose SST is exactly 0
+    filter(sst != 0) %>%
+    group_by(lon, lat) %>%
+    summarise_all(mean, na.rm = T) %>%
+    arrange(lon, lat) %>%
+    ungroup() %>%
+    nest(.key = "synoptic")
+
+  # Combine results with MHW dataframe
+  packet_res <- cbind(event_sub, packet_mean)
+
+  # Test visuals
+  # ggplot(packet_mean, aes(x = lon, y = lat)) +
+  #   geom_point(aes(colour = sst_anom)) +
+  #   scale_colour_gradient2(low = "blue", high = "red") +
+  #   coord_cartesian(xlim = NWA_corners[1:2],
+  #                   ylim = NWA_corners[3:4])
+
+  # Exit
+  return(packet_res)
+}
 
 # Function to extract all vectors at a file step --------------------------
 
@@ -412,3 +533,57 @@ interpp_data <- function(df_base, df_grid, interpp_stat){
   )
   return(df_res)
 }
+
+
+
+# Determine node indexes --------------------------------------------------
+
+# testers...
+# data_packet <- all_anom; som_output <- som_all_anom
+event_node_index <- function(data_packet, som_output){
+
+  # Count the number of events per node
+  node_count <- as.data.frame(table(som_output$classif)) %>%
+    dplyr::rename(node = Var1,
+                  count = Freq) %>%
+    mutate(node = as.numeric(as.character(node)))
+
+  # Create a more complete data.frame of info
+  event_node <- data.frame(event_ID = data_packet[,"event_ID"],
+                           node = som_output$classif) %>%
+    separate(event_ID, into = c("region", "sub_region", "event_no"), sep = "BBB") %>%
+    left_join(node_count, by = "node")
+
+  # NB: This is potentially where the season of the event would be inserted
+
+  return(event_node)
+}
+
+
+# Unpack SOM results ------------------------------------------------------
+
+# Create mean results from initial data frame based on node clustering
+# testers...
+# data_packet <- all_anom; som_output <- som_all_anom
+som_unpack_mean <- function(data_packet, som_output){
+
+  # Determine which event goes in which node and melt
+  data_packet_long <- data.frame(event_ID = data_packet[,"event_ID"],
+                                 node = som_output$classif) %>%
+    separate(event_ID, into = c("region", "sub_region", "event_no"), sep = "BBB") %>%
+    cbind(data_packet[,-1]) %>%
+    data.table() %>%
+    reshape2::melt(id = c("region", "sub_region", "event_no", "node"),
+                   measure = c(colnames(.)[-c(1:4)]),
+                   variable.name = "variable", value.name = "value")
+
+  # Create the mean values that serve as the unscaled results from the SOM
+  var_unscaled <- data_packet_long[, .(val = mean(value, na.rm = TRUE)),
+                                   by = .(node, variable)] %>%
+    separate(variable, into = c("lon", "lat", "var"), sep = "BBB") %>%
+    dplyr::arrange(node, var, lon, lat) %>%
+    mutate(lon = as.numeric(lon),
+           lat = as.numeric(lat))
+  return(var_unscaled)
+}
+

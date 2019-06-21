@@ -143,14 +143,14 @@ Here we select the most relavant anomaly values and correct for a couple of issu
 # So we scale it here first before feeding it into the SOM to be scaled again
 system.time(
 synoptic_states_anom_fix <- synoptic_states_unnest %>% 
-  select(region:lat, sst_anom, taum_anom, qt_anm, mldr10_1_anom) %>% 
+  select(region:lat, sst_anom, taum_anom, qt_anom, mldr10_1_anom) %>% 
   filter(lon >= NWA_corners_sub[1], lon <= NWA_corners_sub[2],
          lat >= NWA_corners_sub[3], lat <= NWA_corners_sub[4]) %>% 
   group_by(lon, lat) %>% 
   mutate(mldr10_1_anom = mldr10_1_anom/max(abs(mldr10_1_anom), na.rm = T)) %>% 
   # na.omit() %>% 
   ungroup()
-) # 4 seconds
+) # 3 seconds
 
 # NB: There is an issue downstream with one or more of the vector pixels always having a value of 0
   # This needs to be accounted for here before joining the data further
@@ -164,7 +164,7 @@ synoptic_vec_states_anom_fix <- synoptic_vec_states_unnest %>%
          voce_anom = case_when(min(voce_anom, na.rm = T) != 0 & max(voce_anom, na.rm = T) != 0 ~ voce_anom)) %>% 
   # na.omit() %>% 
   ungroup()
-) # 10 seconds
+) # 8 seconds
 ```
 
 
@@ -228,7 +228,7 @@ packet_all_anom <- left_join(synoptic_states_anom_fix,
   unite(coords, c(lon, lat, var), sep = "BBB") %>%
   unite(event_ID, c(region, sub_region, event_no), sep = "BBB") %>%
   reshape2::dcast(event_ID ~ coords, value.var = "val")
-) # 339 seconds
+) # 312 seconds
 
 # Remove columns (pixels) with missing data and save
 packet_all_anom_fix <- packet_all_anom[,colSums(is.na(packet_all_anom))<1]
@@ -265,7 +265,7 @@ With the function sorted, we now feed the data.
 
 ```{r som-run, eval=FALSE}
 all_anom <- readRDS("data/packet_all_anom.Rda")
-system.time(som_all_anom <- som_model_PCI(all_anom)) # 220 seconds
+system.time(som_all_anom <- som_model_PCI(all_anom)) # 201 seconds
 saveRDS(som_all_anom, file = "data/som_all_anom.Rda")
 ```
 
@@ -383,9 +383,10 @@ And now we create a PDF for each of the 12 nodes for each variable individually.
 plot_sst_anom <- som_node_visualise("sst_anom")
 # plot_sst_anom
 ggsave(plot_sst_anom, filename = "output/som_plot_sst_anom.pdf", height = 12, width = 13)
+ggsave(plot_sst_anom, filename = "output/som_plot_sst_anom.png", height = 12, width = 13)
 
 # Net downward heat flux (qt)
-plot_qt_anom <- som_node_visualise("qt_anm")
+plot_qt_anom <- som_node_visualise("qt_anom")
 # plot_qt_anom
 ggsave(plot_qt_anom, filename = "output/som_plot_qt_anom.pdf", height = 12, width = 13)
 

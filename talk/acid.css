@@ -32,3 +32,14 @@
 .kwd {
   color: #004466;
 }
+#TOC {
+  position: fixed;
+  left: 20px;
+  top: 10px;
+  width: 200px;
+  overflow:auto;
+}
+body {
+  margin-left: 0;
+  line-height: 30px;
+}

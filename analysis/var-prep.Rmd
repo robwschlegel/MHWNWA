@@ -295,7 +295,7 @@ doMC::registerDoMC(cores = 25)
 # Create one big packet
 # system.time(
 synoptic_states <- plyr::ddply(NAPA_MHW_event, c("region", "sub_region", "event_no"), data_packet, .parallel = T)
-# ) # 82 seconds for first 2, 6125 seconds (102 minutes) for all
+# ) # 82 seconds for first 2,6125 seconds (102 minutes) for all
 
 # Save
 # saveRDS(synoptic_states, "data/synoptic_states.Rda")
