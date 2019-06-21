@@ -376,7 +376,7 @@ qt_taum_mld_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
                      position = "bottom") +
   scale_y_continuous(breaks = seq(35, 55, 10),
                      labels = scales::unit_format(suffix = "°N", sep = ""),
-                     position = "right") +
+                     position = "left") +
   labs(x = NULL, y = NULL,
        fill = "Net downward\nheat flux\nanom. (W/m2)",
        size = "N/m2") +
@@ -484,7 +484,7 @@ sst_U_V_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
   # The land mass
   geom_polygon(data = map_base, aes(group = group), fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
   # The region of the MHW
-  geom_polygon(data = filter(NWA_coords, region == sub_event_meta$region), fill = NA, colour = "black", size = 2) +
+  # geom_polygon(data = filter(NWA_coords, region == sub_event_meta$region), fill = NA, colour = "black", size = 2) +
   # Colour scale
   scale_fill_gradient2(low = "blue", high = "red") +
   # Improve on the x and y axis labels
@@ -516,7 +516,7 @@ qt_taum_mld_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
   # linejoin = "mitre", size = 0.4) +
 
   # The region of the MHW
-  geom_polygon(data = filter(NWA_coords, region == sub_event_meta$region), fill = NA, colour = "black", size = 2) +
+  # geom_polygon(data = filter(NWA_coords, region == sub_event_meta$region), fill = NA, colour = "black", size = 2) +
   # Colour scale
   scale_fill_gradient2(low = "blue", high = "red") +
   # Size scale
