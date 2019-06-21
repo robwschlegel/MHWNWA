@@ -93,7 +93,6 @@ bibliography: MHWNWA.bib
   - Surface wind stress (tau m; N/m2)
   - Surface ocean currents (U and V; m/s)
 
-
 # How are we using these data?
 
 ## Study area

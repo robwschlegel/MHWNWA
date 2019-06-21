@@ -30,9 +30,9 @@ middle_fontfamily: "Special Elite"
 middle_textcol: "#FFFFFF90"
 middle_fontsize: "170px"
 main_findings:
-  - "Make **better posters** with <br> RMarkdown + **posterdown**."
-logoleft_name: "Figures/qr-code-black.png"
-logoright_name: "Figures/posterdownlogo.png"
+  - "When __marrine heatwaves__ occurr along the __Northwest Atlantic__ coast the __Gulf Stream__ anomaly is almost always __warm__ (cold) when the __Labrador Sea__ anomaly is __cold__ (warm)"
+logoleft_name: "Figures/MHWNWA_QR.png"
+logoright_name: "Figures/OFI_Dal_logo.png"
 #---POSTER BODY OPTIONS---#
 primary_colour: '#0b4545'
 secondary_colour: '#008080' 
@@ -57,98 +57,119 @@ Create QR code
 Create Dal OFI logo
 Finish most text-->
 
-```{r, include=FALSE}
-knitr::opts_chunk$set(results = 'asis', 
-                      echo = FALSE, 
-                      comment = FALSE,  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(results = 'asis',
+                      echo = FALSE,
                       warning = FALSE,
-                      tidy = FALSE, 
-                      message = FALSE, 
+                      tidy = FALSE,
+                      message = FALSE,
                       fig.align = 'center')
 options(knitr.table.format = "html") 
 ```
 
-# Introduction
+# What are known drivers of past MHWs?
 
-This research uses the @Hobday2016 and @Hobday2018 definitions for marine heatwaves (MHWs) and their categories and was conducted using the {heatwaveR} implementation of the algorithm [@Schlegel2018]. 
-<!-- These events are increasing in duration and intensity around the globe [@Oliver2018].  -->
-It is not yet known what the primary drivers are of MHWs in the Northwest Atlantic. We use here a methodology from @Schlegel2017predominant and @Oliver2018tasmania to implement a self-organising map (SOM) to determine the primary synoptic patterns in several key abiotic variables. 
-The data used in this research were from the NAP (3-Oceans) model.
+* Advection and heat flux are primary drivers of SST
+* Different regions of the world show different primary drivers
+* For much of the coastal oceans the primary driver is abnormal movement of warm currents onto the coast
+* For large seas (i.e. the Mediterranean) warm air plays a more important role
 
-<!-- Many coastal, oceanic, and polar regions with ecosystems/species that are vulnerable to these events [@Smale2019] do not have optimal sea water temperature time series available for the detection of MHWs.    -->
-<!-- An optimal time series is defined here as meeting these two primary requirements: 1) 30 years long, 2) no missing data. Any time series shorter than 30 years long or missing any data is therefore sub-optimal. The purpose of this study was to determine how confident we may be in our results when using sub-optimal data. -->
+# Why use a new method?
+
+* Current standard is to analyse the drivers of one large event at a time
+* Smaller events may also be important
+* Events are happening too rapidly to spend a year working on them one at a time
+* Machine learning may be a better choice moving forwards
+
+## Sub/regions
+
+- The coastline of Atlantic Canada was divided into several regions based on @Richaud2016
+- These regions were then divided into three sub-regions each based on bottom depth:
+  - 0 - 50 m
+  - 50 - 200 m 
+  - 200+ m
+
+![](graph/fig_2.png)
+
+- The region abbreviations are: 
+  - `gm` = Gulf of Maine 
+  - `gls` = Gulf of St. Lawrence
+  - `ls` = Labrador Shelf
+  - `mab` = Mid-Atlantic Bight
+  - `nfs` = Newfoundland Shelf 
+  - `ss` = Scotian Shelf
   
-## Objectives
+  ## Calculating MHWs and creating synoptic states
 
-1. Find the primary drivers of MHWs in the Northwest Atlantic  
-2. Determine if these drivers occur during certain seasons  
-3. Determine if these drivers have relationships with specific regions
+- All of the SST pixels within each sub-region were averaged together into one time series
+- MHWs were calculated from these averaged time series
+- The start and end dates of each MHW were used to create a packet of synoptic state information
 
-# Methods
+![](graph/fig_3.png)
 
-- Regions created along coast of Atlantic Canada based on @Richaud2016
-- Sub-regions created based on bottom depth within region
-- SST time series made for each region from average of pixels therein
-- MHWs calculated from each average SST time series
-- Average anomaly abiotic synoptic states created during each MHW
-- Anomalies fed to SOM to produce 12 most common states
-- The occurrence of these states with sub-regions and/or seasons quantified
 
-<!-- - Reference time series from the `heatwaveR` package [@Schlegel2018] were re-sampled 100 times and made increasingly sub-optimal by: -->
-    <!-- - Removing one year of data; 37 -- 10 years -->
-    <!-- - Randomly removing 1% of data; 0 -- 50%  -->
-    <!-- - Adding linear trend of 0.01°C/dec.; 0.00 -- 0.50°C/dec. -->
-<!-- - The effect on an entire time series and one focus MHW (Figure \@ref(fig:event-flames)) were measured -->
-<!-- - The sub-optimal treatments were performed on global NOAA OISST product and effects measured -->
+## Self-organising map
 
-```{r event-flames, out.width='90%', fig.align='center', fig.cap='Focus MHWs from the three reference time series: A) Western Australia, B) Northwest Atlantic, C) Mediterranean. Start/end dates shown with light-green marks.', fig.height=2}
-knitr::include_graphics("~/MHWdetection/LaTeX/fig_1_flat.png")
-```
+* Are there recurrent environmental patterns during marine heatwaves?
+* If so, can these be detected/quantified by a computer?
+* Anomalies fed to SOM to produce 12 most common states
+* The occurrence of these states with sub-regions and/or seasons quantified
 
-# Results
+# What are the primary drivers? {.tabset}
 
-- The primary difference in synoptic states is a dipole between a warm (cold) Gulf Stream and cold (warm) Labrador Sea (Figure \@ref(fig:synoptic-sst))
-- More nuanced patterns are .....
-- Sub-mesoscale patterns are ......
-- By season ......
-- By region ......
+## Broad view of SST
 
-<!-- - MHWs detected with 10 years of data do not differ significantly from those detected with 30 years of data (Figure \@ref(fig:length-KS))   -->
-<!-- - 20% missing data or less does not have an appreciable effect on the MHWs in a time series, but this can impact individual MHWs by dividing them up into smaller events \@ref(fig:effect-event))   -->
-<!-- - Individual MHWs in 10 year time series around the globe are on average 10% less intense (Figure \@ref(fig:global-intensity)) and 28% shorter than the same event in a 30 year time series   -->
-<!-- - The shifting up or down of the mean climatology is the primary driver of change in individual events   -->
-<!-- - The change in the count of events is caused by missing data   -->
+- The primary difference in synoptic SST states is between a warm (cold) Gulf Stream and cold (warm) Labrador Sea 
+- We do not see a state during which the entire study area shows a warm SST signal
 
-```{r length-KS, out.width='90%', fig.align='center', fig.cap='The effect of length on the MHWs detected within the 100 re-sampled time series. Note that lengths greater than 30 years also produce different results.', fig.height=2}
-knitr::include_graphics("~/MHWdetection/LaTeX/fig_2.png")
-```
+![](../output/som_plot_sst_anom.png)
 
-```{r effect-event, out.width='90%', fig.align='center', fig.cap='The effect on the focus MHWs (Figure \\@ref(fig:event-flames)) given the three different sub-optimal data challenges.', fig.height=5}
-knitr::include_graphics("~/MHWdetection/LaTeX/fig_3.png")
-```
+## Focus on node 9
 
-```{r global-intensity, out.width='90%', fig.align='center', fig.cap='Global map showing the trends in increasing or decreasing maximum intensity of MHWs as a time series is lengthened.', fig.height=5}
-knitr::include_graphics("~/MHWdetection/LaTeX/fig_4.png")
-```
+* Strong warm nearshore Gulf Stream current
+* Deeper mixed layer and negative downward heat flux
+* Predominantly time series from the Mid-Atlantic Bight
+* No seasonality, with more recent events increasing in intensity
 
-<!-- ```{r, out.width='90%', fig.align='center', fig.cap='Map showing the trends in increasing or decreasing duration of MHWs as a time series is lengthened.'} -->
-<!-- knitr::include_graphics("~/MHWdetection/LaTeX/fig_5.png") -->
-<!-- ``` -->
+![](graph/fig_4.png)
 
 # Conclusions
 
-The SOM technique was able to determine common synoptic states during MHWs.  
-The primary driver was .....  
-Another imprtant drivers was ....  
-The sub/region with the most ....
-The season with the most ....
+* The SOM technique functions as expected in the Northwest Atlantic
+* The lack of a completely warm SST 'flavour' was surprising
+* Each node tells a different complex story
 
-This work may be used in the development of predictive models for MHWs.  
+# Future work
 
-<!-- The MHW detection algorithm provides robust results that are insensitive to sub-optimal data challenges.   -->
-<!-- Missing data has a greater effect on MHWs than time series length. Linear interpolation is an effective fix for missing data up to 40%.   -->
-<!-- Time series length has a less predictable effect than missing data.   -->
-<!-- The shifting up or down of the mean climatology is the primary driver of change in MHWs.   -->
-<!-- Optimal data should still be used when possible. -->
+* Extend the methodology seen here into the third and fourth dimensions of the data
+* Run this same analysis 1, 2, 3, etc. months prior to see how well it works
+* Test these drivers (node synoptic states) as predictors for events in different data products
+* Rank the drivers by their predictive accuracy
+* Create operational prediction data layer for public use/consumption
+
+
+```{r fig-1, out.width='70%', fig.align='center', fig.cap='The top panel shows the overall average SST and surface currents for the study area. The bottom panel shows the overall aveage net downward heatflux.'}
+knitr::include_graphics("~/MHWNWA/talk/graph/fig_1.png")
+```
+
+```{r fig-1, out.width='70%', fig.align='center', fig.cap='The top panel shows the overall average SST and surface currents for the study area. The bottom panel shows the overall aveage net downward heatflux.'}
+knitr::include_graphics("~/MHWNWA/talk/graph/fig_1.png")
+```
+
+```{r fig-2, out.width='70%', fig.align='center', fig.cap='The regions of the coast were devided up by their temperature and salinity regimes based on work by @Richaud2016. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. The regions were furthered divided into sub-regions based on their depth.'}
+knitr::include_graphics("~/MHWNWA/talk/graph/fig_2.png")
+```
+
+```{r fig-3, out.width='70%', fig.align='center', fig.cap='Panel A shows an example MHW with the start and end dates marked in light green. Panel B shows the mean SST and ocean current anomalies during the MHW while panel C shows anomolous net downward heat flux, wind stress (O's are positive, X's are negative), and relative mixed layer depth. The region within which this event was detected is shown in black.'}
+knitr::include_graphics("~/MHWNWA/talk/graph/fig_3.png")
+```
+
+```{r sst-panel-all, out.width='70%', fig.align='center', fig.cap='The resultant 12 nodes for SST only. Note how there are rarely any occurrences of a warm anomaly for the entire study area.'}
+knitr::include_graphics("~/MHWNWA/talk/graph/fig_4.png")
+```
+
+```{r fig-4, out.width='70%', fig.align='center', fig.cap='Summary visuals for the results from node 9.'}
+knitr::include_graphics("~/MHWNWA/talk/graph/fig_4.png")
+```
 
 # References
