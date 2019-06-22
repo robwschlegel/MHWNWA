@@ -197,7 +197,7 @@ fig_2 <- ggplot(NWA_coords, aes(x = lon, y = lat)) +
   coord_equal(xlim = NWA_corners_sub[1:2],
               ylim = NWA_corners_sub[3:4], expand = F) +
   labs(x = NULL, y = NULL, colour = "Region", alpha = "Sub-region")
-fig_2
+# fig_2
 ggsave(fig_2, filename = "talk/graph/fig_2.png", height = 5, width = 6)
 
 
@@ -386,13 +386,13 @@ qt_taum_mld_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
                      position = "bottom") +
   scale_y_continuous(breaks = seq(35, 55, 10),
                      labels = scales::unit_format(suffix = "°N", sep = "")) +
-  labs(x = NULL, y = NULL,
-       fill = "Net downward\nheat flux\nanom. (W/m2)",
-       size = "N/m2") +
   # Slightly shrink the plotting area
   # coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
   coord_equal(xlim = NWA_corners_sub[1:2],
               ylim = NWA_corners_sub[3:4], expand = F) +
+  labs(x = NULL, y = NULL,
+       fill = "Net downward\nheat flux\nanom. (W/m2)",
+       size = "N/m2") +
   theme(legend.position = "bottom")
 qt_taum_mld_panel
 
@@ -500,13 +500,15 @@ sst_U_V_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
   scale_fill_gradient2(low = "blue", high = "red") +
   # Improve on the x and y axis labels
   scale_x_continuous(breaks = seq(-70, -50, 10),
-                     labels = scales::unit_format(suffix = "°E", sep = ""),
-                     position = "top") +
+                     labels = c("70°W", "60°W", "50°W"),
+                     position = "bottom") +
   scale_y_continuous(breaks = seq(35, 55, 10),
                      labels = scales::unit_format(suffix = "°N", sep = "")) +
-  labs(x = NULL, y = NULL, fill = "SST anom. (°C)") +
   # Slightly shrink the plotting area
-  coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
+  # coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
+  coord_equal(xlim = NWA_corners_sub[1:2],
+              ylim = NWA_corners_sub[3:4], expand = F) +
+  labs(x = NULL, y = NULL, fill = "SST anom. (°C)") +
   theme(legend.position = "bottom")
 sst_U_V_panel
 
@@ -534,16 +536,17 @@ qt_taum_mld_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
   scale_size_continuous(range = c(0,5), breaks = c(0.0, 0.025, 0.05)) +
   # Improve on the x and y axis labels
   scale_x_continuous(breaks = seq(-70, -50, 10),
-                     labels = scales::unit_format(suffix = "°E", sep = ""),
-                     position = "top") +
+                     labels = c("70°W", "60°W", "50°W"),
+                     position = "bottom") +
   scale_y_continuous(breaks = seq(35, 55, 10),
-                     labels = scales::unit_format(suffix = "°N", sep = ""),
-                     position = "left") +
+                     labels = scales::unit_format(suffix = "°N", sep = "")) +
+  # Slightly shrink the plotting area
+  # coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
+  coord_equal(xlim = NWA_corners_sub[1:2],
+              ylim = NWA_corners_sub[3:4], expand = F) +
   labs(x = NULL, y = NULL,
        fill = "Net downward\nheat flux\nanom. (W/m2)",
        size = "N/m2") +
-  # Slightly shrink the plotting area
-  coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
   theme(legend.position = "bottom")
 qt_taum_mld_panel
 
@@ -608,9 +611,16 @@ som_prop_plot <- ggplot() +
   geom_polygon(data = map_base, aes(group = group, x = lon, y = lat), show.legend = F) +
   geom_polygon(data = region_prop_grid, aes(group = region, x = lon, y = lat, fill = region_node_prop), colour = "black") +
   geom_label(data = region_prop_grid, aes(x = -60, y = 35, label = paste0("n = ",count,"/611"))) +
-  coord_cartesian(xlim = NWA_corners_sub[1:2],
-                  ylim = NWA_corners_sub[3:4],
-                  expand = F) +
+  # Improve on the x and y axis labels
+  scale_x_continuous(breaks = seq(-70, -50, 10),
+                     labels = c("70°W", "60°W", "50°W"),
+                     position = "bottom") +
+  scale_y_continuous(breaks = seq(35, 55, 10),
+                     labels = scales::unit_format(suffix = "°N", sep = "")) +
+  # Slightly shrink the plotting area
+  # coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
+  coord_equal(xlim = NWA_corners_sub[1:2],
+              ylim = NWA_corners_sub[3:4], expand = F) +
   scale_fill_distiller(palette = "BuPu", direction = -1) +
   labs(x = NULL, y = NULL, fill = "Proportion of events\nper region") +
   # facet_wrap(~node, ncol = 4) +
@@ -646,3 +656,4 @@ fig_4 <- cowplot::plot_grid(sst_U_V_panel, qt_taum_mld_panel,
                             labels = c('A', 'B', 'C', 'D'), ncol = 2, rel_heights = c(1, 1))
 # fig_4
 ggsave(fig_4, filename = "talk/graph/fig_4.png", height = 10, width = 12)
+
