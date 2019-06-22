@@ -294,73 +294,54 @@ span > #tab:mytable {
 <sup>1</sup> Department of Oceanography, Dalhousie University, Halifax, Nova Scotia, Canada
 </p>
 
-<!-- TO DO
-Write main statement
-Create QR code
-Create Dal OFI logo
-Finish most text-->
 <div id="what-are-known-drivers-of-past-mhws" class="section level1">
 <h1>What are known drivers of past MHWs?</h1>
-<ul>
-<li>Advection and heat flux are primary drivers of SST</li>
-<li>Different regions of the world show different primary drivers</li>
-<li>For much of the coastal oceans the primary driver is abnormal movement of warm currents onto the coast</li>
-<li>For large seas (i.e. the Mediterranean) warm air plays a more important role</li>
-</ul>
+<p>Advection and heat flux are primary drivers of SST.<br />
+Different regions of the world show different primary drivers.<br />
+For much of the coastal oceans the primary driver is abnormal movement of warm currents onto the coast.<br />
+For large seas (i.e. the Mediterranean) warm air plays a more important role.</p>
+</div>
+<div id="calculating-mhws-and-creating-synoptic-states" class="section level1">
+<h1>Calculating MHWs and creating synoptic states</h1>
+<p>All of the SST pixels within each sub-region were averaged together into one time series.<br />
+MHWs were calculated from these averaged time series.<br />
+The start and end dates of each MHW were used to create a packet of synoptic state information.</p>
+</div>
+<div id="self-organising-map" class="section level1">
+<h1>Self-organising map</h1>
+<p>Are there recurrent environmental patterns during marine heatwaves?<br />
+If so, can these be detected/quantified by a computer?<br />
+Anomalies fed to SOM to produce 12 most common states.<br />
+The occurrence of these states with sub-regions and/or seasons quantified.</p>
 </div>
 <div id="why-use-a-new-method" class="section level1">
 <h1>Why use a new method?</h1>
-<ul>
-<li>Current standard is to analyse the drivers of one large event at a time</li>
-<li>Smaller events may also be important</li>
-<li>Events are happening too rapidly to spend a year working on them one at a time</li>
-<li>Machine learning may be a better choice moving forwards</li>
-</ul>
-<div id="calculating-mhws-and-creating-synoptic-states" class="section level2">
-<h2>Calculating MHWs and creating synoptic states</h2>
-<ul>
-<li>All of the SST pixels within each sub-region were averaged together into one time series</li>
-<li>MHWs were calculated from these averaged time series</li>
-<li>The start and end dates of each MHW were used to create a packet of synoptic state information</li>
-</ul>
-</div>
-<div id="self-organising-map" class="section level2">
-<h2>Self-organising map</h2>
-<ul>
-<li>Are there recurrent environmental patterns during marine heatwaves?</li>
-<li>If so, can these be detected/quantified by a computer?</li>
-<li>Anomalies fed to SOM to produce 12 most common states</li>
-<li>The occurrence of these states with sub-regions and/or seasons quantified</li>
-</ul>
-</div>
+<p>Current standard is to analyse the drivers of one large event at a time.<br />
+Smaller events may also be important.<br />
+Events are happening too rapidly to spend a year working on them one at a time.<br />
+Machine learning may be a better choice moving forwards.</p>
 </div>
 <div id="what-are-the-primary-drivers-of-node-9" class="section level1">
 <h1>What are the primary drivers of node 9?</h1>
-<ul>
-<li>Strong warm nearshore Gulf Stream current</li>
-<li>Deeper mixed layer and negative downward heat flux</li>
-<li>Predominantly time series from the Mid-Atlantic Bight</li>
-<li>No seasonality, with more recent events increasing in intensity</li>
-</ul>
+<p>Strong warm nearshore Gulf Stream current.<br />
+Deeper mixed layer and negative downward heat flux.<br />
+Predominantly time series from the Mid-Atlantic Bight.<br />
+No seasonality, with more recent events increasing in intensity.</p>
 </div>
 <div id="conclusions" class="section level1">
 <h1>Conclusions</h1>
-<ul>
-<li>The SOM technique functions as expected in the Northwest Atlantic</li>
-<li>The lack of a completely warm SST ‘flavour’ was surprising</li>
-<li>Each node tells a different complex story</li>
-<li>To see all of the results please follow the QR code</li>
-</ul>
+<p>The SOM technique functions as expected in the Northwest Atlantic.<br />
+The lack of a completely warm SST ‘flavour’ was surprising.<br />
+Each node tells a different complex story.<br />
+To see all of the results please follow the QR code.</p>
 </div>
 <div id="future-work" class="section level1">
 <h1>Future work</h1>
-<ul>
-<li>Extend the methodology seen here into the third and fourth dimensions of the data</li>
-<li>Run this same analysis 1, 2, 3, etc. months prior to see how well it works</li>
-<li>Test these drivers (node synoptic states) as predictors for events in different data products</li>
-<li>Rank the drivers by their predictive accuracy</li>
-<li>Create operational prediction data layer for public use/consumption</li>
-</ul>
+<p>Extend the methodology seen here into the third and fourth dimensions of the data.<br />
+Run this same analysis 1, 2, 3, etc. months prior to see how well it works.<br />
+Test these drivers (node synoptic states) as predictors for events in different data products.<br />
+Rank the drivers by their predictive accuracy.<br />
+Create operational prediction data layer for public use/consumption.</p>
 <!-- ```{r fig-1, out.width='70%', fig.align='center', fig.cap='The top panel shows the overall average SST and surface currents for the study area. The bottom panel shows the overall aveage net downward heatflux.'} -->
 <!-- knitr::include_graphics("~/MHWNWA/talk/graph/fig_1.png") -->
 <!-- ``` -->

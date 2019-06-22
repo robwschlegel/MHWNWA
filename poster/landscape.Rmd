@@ -51,11 +51,9 @@ link-citations: true
 bibliography: MHWNWA.bib
 ---
 
-<!-- TO DO
-Write main statement
-Create QR code
-Create Dal OFI logo
-Finish most text-->
+<!-- TO DO 
+Add more citations
+Having a more thorough go at the text-->
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(results = 'asis',
@@ -69,52 +67,52 @@ options(knitr.table.format = "html")
 
 # What are known drivers of past MHWs?
 
-* Advection and heat flux are primary drivers of SST
-* Different regions of the world show different primary drivers
-* For much of the coastal oceans the primary driver is abnormal movement of warm currents onto the coast
-* For large seas (i.e. the Mediterranean) warm air plays a more important role
+Advection and heat flux are primary drivers of SST.  
+Different regions of the world show different primary drivers.  
+For much of the coastal oceans the primary driver is abnormal movement of warm currents onto the coast.  
+For large seas (i.e. the Mediterranean) warm air plays a more important role.  
+  
+# Calculating MHWs and creating synoptic states
+
+All of the SST pixels within each sub-region were averaged together into one time series.  
+MHWs were calculated from these averaged time series.  
+The start and end dates of each MHW were used to create a packet of synoptic state information.  
+
+# Self-organising map
+
+Are there recurrent environmental patterns during marine heatwaves?  
+If so, can these be detected/quantified by a computer?  
+Anomalies fed to SOM to produce 12 most common states.  
+The occurrence of these states with sub-regions and/or seasons quantified.  
 
 # Why use a new method?
 
-* Current standard is to analyse the drivers of one large event at a time
-* Smaller events may also be important
-* Events are happening too rapidly to spend a year working on them one at a time
-* Machine learning may be a better choice moving forwards
-  
-## Calculating MHWs and creating synoptic states
-
-- All of the SST pixels within each sub-region were averaged together into one time series
-- MHWs were calculated from these averaged time series
-- The start and end dates of each MHW were used to create a packet of synoptic state information
-
-## Self-organising map
-
-* Are there recurrent environmental patterns during marine heatwaves?
-* If so, can these be detected/quantified by a computer?
-* Anomalies fed to SOM to produce 12 most common states
-* The occurrence of these states with sub-regions and/or seasons quantified
+Current standard is to analyse the drivers of one large event at a time.  
+Smaller events may also be important.  
+Events are happening too rapidly to spend a year working on them one at a time.  
+Machine learning may be a better choice moving forwards.  
 
 # What are the primary drivers of node 9?
 
-* Strong warm nearshore Gulf Stream current
-* Deeper mixed layer and negative downward heat flux
-* Predominantly time series from the Mid-Atlantic Bight
-* No seasonality, with more recent events increasing in intensity
+Strong warm nearshore Gulf Stream current.  
+Deeper mixed layer and negative downward heat flux.  
+Predominantly time series from the Mid-Atlantic Bight.  
+No seasonality, with more recent events increasing in intensity.  
 
 # Conclusions
 
-* The SOM technique functions as expected in the Northwest Atlantic
-* The lack of a completely warm SST 'flavour' was surprising
-* Each node tells a different complex story
-* To see all of the results please follow the QR code
+The SOM technique functions as expected in the Northwest Atlantic.  
+The lack of a completely warm SST 'flavour' was surprising.  
+Each node tells a different complex story.  
+To see all of the results please follow the QR code.  
 
 # Future work
 
-* Extend the methodology seen here into the third and fourth dimensions of the data
-* Run this same analysis 1, 2, 3, etc. months prior to see how well it works
-* Test these drivers (node synoptic states) as predictors for events in different data products
-* Rank the drivers by their predictive accuracy
-* Create operational prediction data layer for public use/consumption
+Extend the methodology seen here into the third and fourth dimensions of the data.  
+Run this same analysis 1, 2, 3, etc. months prior to see how well it works.  
+Test these drivers (node synoptic states) as predictors for events in different data products.  
+Rank the drivers by their predictive accuracy.  
+Create operational prediction data layer for public use/consumption.  
 
 <!-- ```{r fig-1, out.width='70%', fig.align='center', fig.cap='The top panel shows the overall average SST and surface currents for the study area. The bottom panel shows the overall aveage net downward heatflux.'} -->
 <!-- knitr::include_graphics("~/MHWNWA/talk/graph/fig_1.png") -->
