@@ -30,7 +30,7 @@ middle_fontfamily: "Special Elite"
 middle_textcol: "#FFFFFF90"
 middle_fontsize: "170px"
 main_findings:
-  - "When __marrine heatwaves__ occurr along the __Northwest Atlantic__ coast the __Gulf Stream__ anomaly is almost always __warm__ (cold) when the __Labrador Sea__ anomaly is __cold__ (warm)"
+  - "When __marrine heatwaves__ occurr along the __Northwest Atlantic__ coast the __Gulf Stream__ anomaly is usually __warm__ (cold) when the __Labrador Sea__ anomaly is __cold__ (warm)"
 logoleft_name: "Figures/MHWNWA_QR.png"
 logoright_name: "Figures/OFI_Dal_logo.png"
 #---POSTER BODY OPTIONS---#
