@@ -198,7 +198,7 @@ fig_2 <- ggplot(NWA_coords, aes(x = lon, y = lat)) +
               ylim = NWA_corners_sub[3:4], expand = F) +
   labs(x = NULL, y = NULL, colour = "Region", alpha = "Sub-region")
 # fig_2
-ggsave(fig_2, filename = "talk/graph/fig_2.png", height = 5, width = 6)
+ggsave(fig_2, filename = "talk/graph/fig_2.png", height = 4, width = 6)
 
 
 # Figure 3 ----------------------------------------------------------------
@@ -442,7 +442,7 @@ ts_panel
 bottom_row <- cowplot::plot_grid(sst_U_V_panel, qt_taum_mld_panel, labels = c('B', 'C'), align = 'h', rel_widths = c(1, 1))
 fig_3 <- cowplot::plot_grid(ts_panel, bottom_row, labels = c('A', ''), ncol = 1, rel_heights = c(1, 3))
 # fig_3
-ggsave(fig_3, filename = "talk/graph/fig_3.png", height = 10, width = 12)
+ggsave(fig_3, filename = "talk/graph/fig_3.png", height = 7, width = 12)
 
 
 # Figure 4 ----------------------------------------------------------------
