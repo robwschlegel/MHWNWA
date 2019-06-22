@@ -80,33 +80,12 @@ options(knitr.table.format = "html")
 * Smaller events may also be important
 * Events are happening too rapidly to spend a year working on them one at a time
 * Machine learning may be a better choice moving forwards
-
-## Sub/regions
-
-- The coastline of Atlantic Canada was divided into several regions based on @Richaud2016
-- These regions were then divided into three sub-regions each based on bottom depth:
-  - 0 - 50 m
-  - 50 - 200 m 
-  - 200+ m
-
-![](graph/fig_2.png)
-
-- The region abbreviations are: 
-  - `gm` = Gulf of Maine 
-  - `gls` = Gulf of St. Lawrence
-  - `ls` = Labrador Shelf
-  - `mab` = Mid-Atlantic Bight
-  - `nfs` = Newfoundland Shelf 
-  - `ss` = Scotian Shelf
   
-  ## Calculating MHWs and creating synoptic states
+## Calculating MHWs and creating synoptic states
 
 - All of the SST pixels within each sub-region were averaged together into one time series
 - MHWs were calculated from these averaged time series
 - The start and end dates of each MHW were used to create a packet of synoptic state information
-
-![](graph/fig_3.png)
-
 
 ## Self-organising map
 
@@ -115,29 +94,19 @@ options(knitr.table.format = "html")
 * Anomalies fed to SOM to produce 12 most common states
 * The occurrence of these states with sub-regions and/or seasons quantified
 
-# What are the primary drivers? {.tabset}
-
-## Broad view of SST
-
-- The primary difference in synoptic SST states is between a warm (cold) Gulf Stream and cold (warm) Labrador Sea 
-- We do not see a state during which the entire study area shows a warm SST signal
-
-![](../output/som_plot_sst_anom.png)
-
-## Focus on node 9
+# What are the primary drivers of node 9?
 
 * Strong warm nearshore Gulf Stream current
 * Deeper mixed layer and negative downward heat flux
 * Predominantly time series from the Mid-Atlantic Bight
 * No seasonality, with more recent events increasing in intensity
 
-![](graph/fig_4.png)
-
 # Conclusions
 
 * The SOM technique functions as expected in the Northwest Atlantic
 * The lack of a completely warm SST 'flavour' was surprising
 * Each node tells a different complex story
+* To see all of the results please follow the QR code
 
 # Future work
 
@@ -147,26 +116,21 @@ options(knitr.table.format = "html")
 * Rank the drivers by their predictive accuracy
 * Create operational prediction data layer for public use/consumption
 
-
-```{r fig-1, out.width='70%', fig.align='center', fig.cap='The top panel shows the overall average SST and surface currents for the study area. The bottom panel shows the overall aveage net downward heatflux.'}
-knitr::include_graphics("~/MHWNWA/talk/graph/fig_1.png")
-```
-
-```{r fig-1, out.width='70%', fig.align='center', fig.cap='The top panel shows the overall average SST and surface currents for the study area. The bottom panel shows the overall aveage net downward heatflux.'}
-knitr::include_graphics("~/MHWNWA/talk/graph/fig_1.png")
-```
+<!-- ```{r fig-1, out.width='70%', fig.align='center', fig.cap='The top panel shows the overall average SST and surface currents for the study area. The bottom panel shows the overall aveage net downward heatflux.'} -->
+<!-- knitr::include_graphics("~/MHWNWA/talk/graph/fig_1.png") -->
+<!-- ``` -->
 
 ```{r fig-2, out.width='70%', fig.align='center', fig.cap='The regions of the coast were devided up by their temperature and salinity regimes based on work by @Richaud2016. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. The regions were furthered divided into sub-regions based on their depth.'}
 knitr::include_graphics("~/MHWNWA/talk/graph/fig_2.png")
 ```
 
-```{r fig-3, out.width='70%', fig.align='center', fig.cap='Panel A shows an example MHW with the start and end dates marked in light green. Panel B shows the mean SST and ocean current anomalies during the MHW while panel C shows anomolous net downward heat flux, wind stress (O's are positive, X's are negative), and relative mixed layer depth. The region within which this event was detected is shown in black.'}
+```{r fig-3, out.width='70%', fig.align='center', fig.cap='Panel A shows an example MHW with the start and end dates marked in light green. Panel B shows the mean SST and ocean current anomalies during the MHW while panel C shows anomolous net downward heat flux, wind stress (Os are positive, Xs are negative), and relative mixed layer depth. The region within which this event was detected is shown in black.'}
 knitr::include_graphics("~/MHWNWA/talk/graph/fig_3.png")
 ```
 
-```{r sst-panel-all, out.width='70%', fig.align='center', fig.cap='The resultant 12 nodes for SST only. Note how there are rarely any occurrences of a warm anomaly for the entire study area.'}
-knitr::include_graphics("~/MHWNWA/talk/graph/fig_4.png")
-```
+<!-- ```{r sst-panel-all, out.width='70%', fig.align='center', fig.cap='The resultant 12 nodes for SST only. Note how there are rarely any occurrences of a warm anomaly for the entire study area.'} -->
+<!-- knitr::include_graphics("~/MHWNWA/output/som_plot_sst_anom.png") -->
+<!-- ``` -->
 
 ```{r fig-4, out.width='70%', fig.align='center', fig.cap='Summary visuals for the results from node 9.'}
 knitr::include_graphics("~/MHWNWA/talk/graph/fig_4.png")
