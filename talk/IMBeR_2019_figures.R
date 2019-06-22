@@ -186,8 +186,16 @@ fig_2 <- ggplot(NWA_coords, aes(x = lon, y = lat)) +
   guides(colour = guide_legend(override.aes = list(size = 5), order = 1),
          alpha = guide_legend(override.aes = list(size = 5), order = 2)) +
   scale_alpha_manual(values = c(0.4, 0.7, 1)) +
-  coord_cartesian(xlim = NWA_corners_sub[1:2],
-                  ylim = NWA_corners_sub[3:4]) +
+  # Improve on the x and y axis labels
+  scale_x_continuous(breaks = seq(-70, -50, 10),
+                     labels = c("70°W", "60°W", "50°W"),
+                     position = "bottom") +
+  scale_y_continuous(breaks = seq(35, 55, 10),
+                     labels = scales::unit_format(suffix = "°N", sep = "")) +
+  # coord_cartesian(xlim = NWA_corners_sub[1:2],
+                  # ylim = NWA_corners_sub[3:4]) +
+  coord_equal(xlim = NWA_corners_sub[1:2],
+              ylim = NWA_corners_sub[3:4], expand = F) +
   labs(x = NULL, y = NULL, colour = "Region", alpha = "Sub-region")
 fig_2
 ggsave(fig_2, filename = "talk/graph/fig_2.png", height = 5, width = 6)
@@ -338,13 +346,15 @@ sst_U_V_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
   scale_fill_gradient2(low = "blue", high = "red") +
   # Improve on the x and y axis labels
   scale_x_continuous(breaks = seq(-70, -50, 10),
-                     labels = scales::unit_format(suffix = "°E", sep = ""),
+                     labels = c("70°W", "60°W", "50°W"),
                      position = "bottom") +
   scale_y_continuous(breaks = seq(35, 55, 10),
                      labels = scales::unit_format(suffix = "°N", sep = "")) +
   labs(x = NULL, y = NULL, fill = "SST anom. (°C)") +
   # Slightly shrink the plotting area
-  coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
+  # coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
+  coord_equal(xlim = NWA_corners_sub[1:2],
+              ylim = NWA_corners_sub[3:4], expand = F) +
   theme(legend.position = "bottom")
 sst_U_V_panel
 
@@ -372,16 +382,17 @@ qt_taum_mld_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
   scale_size_continuous(range = c(0,5)) +
   # Improve on the x and y axis labels
   scale_x_continuous(breaks = seq(-70, -50, 10),
-                     labels = scales::unit_format(suffix = "°E", sep = ""),
+                     labels = c("70°W", "60°W", "50°W"),
                      position = "bottom") +
   scale_y_continuous(breaks = seq(35, 55, 10),
-                     labels = scales::unit_format(suffix = "°N", sep = ""),
-                     position = "left") +
+                     labels = scales::unit_format(suffix = "°N", sep = "")) +
   labs(x = NULL, y = NULL,
        fill = "Net downward\nheat flux\nanom. (W/m2)",
        size = "N/m2") +
   # Slightly shrink the plotting area
-  coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
+  # coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
+  coord_equal(xlim = NWA_corners_sub[1:2],
+              ylim = NWA_corners_sub[3:4], expand = F) +
   theme(legend.position = "bottom")
 qt_taum_mld_panel
 
@@ -396,8 +407,8 @@ sub_NAPA_MHW_ts <- NAPA_MHW_sub %>%
 
 # Subset further only one year for plotting
 sub_NAPA_MHW_ts_1_year <- sub_NAPA_MHW_ts %>%
-  filter(t >= sub_event_meta$date_peak-183,
-         t <= sub_event_meta$date_peak+183)
+  filter(t >= sub_event_meta$date_peak-45,
+         t <= sub_event_meta$date_peak+45)
 
 peak_event <- sub_NAPA_MHW_ts %>%
   filter(t >= sub_event_meta$date_start-1,
