@@ -72,15 +72,15 @@ source("code/functions.R")
 
 # Set number of cores
 # NB: Was set to 25 as someone else was using the server at the time
-doMC::registerDoMC(cores = 50)
+# doMC::registerDoMC(cores = 50)
 
 # Create one big packet
-system.time(
-synoptic_vec_states <- plyr::ddply(NAPA_MHW_event, c("region", "sub_region", "event_no"), data_vec_packet, .parallel = T)
-) # xxx seconds
+# system.time(
+# synoptic_vec_states <- plyr::ddply(NAPA_MHW_event, c("region", "sub_region", "event_no"), data_vec_packet, .parallel = T)
+# ) # xxx seconds
 
 # Save
-saveRDS(synoptic_vec_states, "data/synoptic_vec_states.Rda")
+# saveRDS(synoptic_vec_states, "data/synoptic_vec_states.Rda")
 
 
 # SOM analysis ------------------------------------------------------------
@@ -92,4 +92,5 @@ saveRDS(synoptic_vec_states, "data/synoptic_vec_states.Rda")
 
 # Visuals -----------------------------------------------------------------
 
-
+# Create a four panel summary figure for each node result
+# plyr::l_ply(1:12, .fun = node_figure, .parallel = T)
