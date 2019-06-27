@@ -2,4 +2,4 @@ NAPA_clim_*
 synoptic_*
 packet_*
 som_*
-node_*
+node_mean_all_anom.Rda

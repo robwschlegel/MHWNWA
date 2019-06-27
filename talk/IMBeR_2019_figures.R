@@ -214,6 +214,7 @@ som_all_anom <- readRDS("data/som_all_anom.Rda")
 # Determine node index
 node_index_all_anom <- event_node_index(all_anom, som_all_anom) %>%
   mutate(event_no = as.numeric(event_no))
+# saveRDS(node_index_all_anom, "data/node_index_all_anom.Rda")
 
 # MHW season of (peak) occurrence and other meta-data
 NAPA_MHW_meta <- NAPA_MHW_event %>%
