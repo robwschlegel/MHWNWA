@@ -329,16 +329,18 @@ vec_sub <- sub_synoptic_state %>%
   filter(lon %in% lon_sub, lat %in% lat_sub) %>%
   na.omit()
 
-
 # Establish the vector scalar for the currents
 current_uv_scalar <- 4
+
+# Transformation function for long decimal place legends
+scale_decimal <- function(x) sprintf("%.2f", x)
 
 # SST and ocean current panel
 sst_U_V_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
   geom_raster(data = sub_synoptic_state, aes(fill = sst_anom)) +
   geom_segment(data = vec_sub, aes(xend = lon + u_anom * current_uv_scalar, yend = lat + v_anom * current_uv_scalar),
-               arrow = arrow(angle = 40, length = unit(vec_sub$arrow_size, "cm"), type = "open"),
-               linejoin = "mitre", size = 0.4, alpha = 0.5) +
+               arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
+               linejoin = "mitre", size = 0.2, alpha = 0.5) +
   # The land mass
   geom_polygon(data = map_base, aes(group = group), fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
   # The region of the MHW
@@ -351,36 +353,22 @@ sst_U_V_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
                      position = "bottom") +
   scale_y_continuous(breaks = seq(35, 55, 10),
                      labels = scales::unit_format(suffix = "°N", sep = "")) +
-  labs(x = NULL, y = NULL, fill = "SST anom. (°C)") +
   # Slightly shrink the plotting area
-  # coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
   coord_equal(xlim = NWA_corners_sub[1:2],
               ylim = NWA_corners_sub[3:4], expand = F) +
+  labs(x = NULL, y = NULL, fill = "SST anom. (°C)") +
   theme(legend.position = "bottom")
-sst_U_V_panel
+# sst_U_V_panel
 
-qt_taum_mld_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
+# The net downward heatflux panel
+qt_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
   geom_raster(data = sub_synoptic_state, aes(fill = qt_anom)) +
   # The land mass
   geom_polygon(data = map_base, aes(group = group), fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
-  # The MLD contours
-  geom_contour(aes(z = mldr10_1_anom), breaks = 0,  size = c(0.3),  colour = "black") +
-  geom_contour(aes(z = mldr10_1_anom), breaks = 0.1,  size = c(0.3),  colour = "green") +
-  geom_contour(aes(z = mldr10_1_anom), breaks = 0.2,  size = c(0.3),  colour = "pink") +
-  # Showing taum via size of alpha dot
-  geom_point(data = filter(vec_sub, taum_anom > 0.0), aes(size = taum_anom), shape = 1, alpha = 0.4) +
-  geom_point(data = filter(vec_sub, taum_anom < 0.0), aes(size = taum_anom), shape = 4, alpha = 0.4) +
-  # The vectors
-  # geom_segment(data = vec_sub, aes(xend = lon, yend = lat + taum_anom * 50),
-  # arrow = arrow(angle = 40, length = unit(0.2, "cm"), type = "open"),
-  # linejoin = "mitre", size = 0.4) +
-
   # The region of the MHW
   geom_polygon(data = filter(NWA_coords, region == sub_event_meta$region), fill = NA, colour = "black", size = 2) +
   # Colour scale
   scale_fill_gradient2(low = "blue", high = "red") +
-  # Size scale
-  scale_size_continuous(range = c(0,5)) +
   # Improve on the x and y axis labels
   scale_x_continuous(breaks = seq(-70, -50, 10),
                      labels = c("70°W", "60°W", "50°W"),
@@ -392,10 +380,40 @@ qt_taum_mld_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
   coord_equal(xlim = NWA_corners_sub[1:2],
               ylim = NWA_corners_sub[3:4], expand = F) +
   labs(x = NULL, y = NULL,
-       fill = "Net downward\nheat flux\nanom. (W/m2)",
-       size = "N/m2") +
-  theme(legend.position = "bottom")
-qt_taum_mld_panel
+       fill = "Net downward\nheat flux\nanom. (W/m2)") +
+  theme(legend.position = "bottom",
+        legend.title = element_text(size = 8))
+# qt_panel
+
+# The wind stress and mixed layer depth panel
+taum_mld_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
+  geom_raster(data = sub_synoptic_state, aes(fill = taum_anom)) +
+  # The land mass
+  geom_polygon(data = map_base, aes(group = group), fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
+  # The MLD contours
+  geom_contour(aes(z = round(mldr10_1_anom, 2), colour = ..level..),
+               breaks = c(seq(-0.5, 0.5, 0.1)), size = 1) +
+  # The region of the MHW
+  geom_polygon(data = filter(NWA_coords, region == sub_event_meta$region), fill = NA, colour = "black", size = 2) +
+  # Colour scale
+  scale_fill_gradient2(low = "blue", high = "red", labels = scale_decimal) +
+  scale_colour_gradient2("MLD\nrel. anom.", low = "yellow", high = "green", labels = scale_decimal) +
+  # Improve on the x and y axis labels
+  scale_x_continuous(breaks = seq(-70, -50, 10),
+                     labels = c("70°W", "60°W", "50°W"),
+                     position = "bottom") +
+  scale_y_continuous(breaks = seq(35, 55, 10),
+                     labels = scales::unit_format(suffix = "°N", sep = "")) +
+  # Slightly shrink the plotting area
+  coord_equal(xlim = NWA_corners_sub[1:2],
+              ylim = NWA_corners_sub[3:4], expand = F) +
+  labs(x = NULL, y = NULL,
+       fill = "Wind stress \n(N/m2)") +
+  theme(legend.position = "bottom",
+        legend.key.width = unit(0.5, "cm"),
+        legend.title = element_text(size = 7),
+        legend.text = element_text(size = 5))
+# taum_mld_panel
 
 # Extract time series data for top panel
 sub_NAPA_MHW_ts <- NAPA_MHW_sub %>%
@@ -437,13 +455,15 @@ ts_panel <- ggplot(data = sub_NAPA_MHW_ts_1_year, aes(x = t, y = temp)) +
                    yend = peak_point+1)) +
   labs(x = NULL, y = "Temp. (°C)") +
   scale_x_date(expand = c(0,0))
-ts_panel
+# ts_panel
 
 # Merge the panels together
-bottom_row <- cowplot::plot_grid(sst_U_V_panel, qt_taum_mld_panel, labels = c('B', 'C'), align = 'h', rel_widths = c(1, 1))
-fig_3 <- cowplot::plot_grid(ts_panel, bottom_row, labels = c('A', ''), ncol = 1, rel_heights = c(1, 3))
+bottom_row <- cowplot::plot_grid(sst_U_V_panel, qt_panel, taum_mld_panel, labels = c('B', 'C', 'D'),
+                                 align = 'h', rel_widths = c(1, 1, 1), nrow = 1)
+top_row <- cowplot::plot_grid(NULL, ts_panel, NULL, labels = c('', 'A', ''), nrow = 1, rel_widths = c(1,2,1))
+fig_3 <- cowplot::plot_grid(top_row, bottom_row, ncol = 1, rel_heights = c(1.5, 3))
 # fig_3
-ggsave(fig_3, filename = "talk/graph/fig_3.png", height = 7, width = 12)
+ggsave(fig_3, filename = "talk/graph/fig_3.png", height = 6, width = 12)
 
 
 # Figure 4 ----------------------------------------------------------------
