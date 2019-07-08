@@ -689,7 +689,7 @@ node_figure <- function(node_number){
     coord_equal(xlim = NWA_corners_sub[1:2],
                 ylim = NWA_corners_sub[3:4], expand = F) +
     labs(x = NULL, y = NULL,
-         fill = "Wind stress (N/m2)") +
+         fill = "Wind stress \n(N/m2)") +
     theme(legend.position = "bottom")
   # taum_mld_panel
 
@@ -748,7 +748,8 @@ node_figure <- function(node_number){
     # geom_point(aes(colour = val)) +
     # geom_raster(aes(fill  = val)) +
     geom_polygon(data = map_base, aes(group = group, x = lon, y = lat), show.legend = F) +
-    geom_polygon(data = region_prop_grid, aes(group = region, x = lon, y = lat, fill = region_node_prop), colour = "black") +
+    geom_polygon(data = region_prop_grid, aes(group = region, x = lon, y = lat, fill = region_node_prop),
+                 colour = "black", alpha = 0.8) +
     geom_label(data = region_prop_grid, aes(x = -60, y = 35, label = paste0("n = ", count,"/",nrow(NAPA_MHW_event)))) +
     # Improve on the x and y axis labels
     scale_x_continuous(breaks = seq(-70, -50, 10),
@@ -800,13 +801,17 @@ node_figure <- function(node_number){
     theme(legend.position = "bottom")
   # region_max_lolli_plot
 
+  # Create title
+  title <- cowplot::ggdraw() + cowplot::draw_label(paste0("Node: ",node_number), fontface = 'bold')
+
   # Stick them together
   fig_all <- cowplot::plot_grid(sst_U_V_panel, qt_panel, taum_mld_panel,
                                 som_prop_plot, seas_cum_lolli_plot, region_max_lolli_plot,
                                 labels = c('A', 'B', 'C', 'D', 'E', 'F'),
-                                nrow = 2, rel_heights = c(1, 1), align = "h") +
-    cowplot::draw_figure_label(label = paste0("Node: ",node_number), size = 20)
-  # fig_all
-  ggsave(fig_all, filename = paste0("output/node_",node_number,"_panels.png"), height = 12, width = 16)
-  ggsave(fig_all, filename = paste0("output/node_",node_number,"_panels.pdf"), height = 12, width = 16)
+                                nrow = 2, rel_heights = c(1, 1), align = "h")#+
+    # cowplot::draw_figure_label(label = paste0("Node: ",node_number), size = 20)
+  fig_all_title <- cowplot::plot_grid(title, fig_all, ncol = 1, rel_heights = c(0.05, 1))
+  # fig_all_title
+  ggsave(fig_all_title, filename = paste0("output/node_",node_number,"_panels.png"), height = 12, width = 16)
+  ggsave(fig_all_title, filename = paste0("output/node_",node_number,"_panels.pdf"), height = 12, width = 16)
 }
