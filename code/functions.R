@@ -627,8 +627,8 @@ node_figure <- function(node_number){
   sst_U_V_panel <- ggplot(sub_synoptic_state, aes(x = lon, y = lat)) +
     geom_raster(data = sub_synoptic_state, aes(fill = sst_anom)) +
     geom_segment(data = vec_sub, aes(xend = lon + u_anom * current_uv_scalar, yend = lat + v_anom * current_uv_scalar),
-                 arrow = arrow(angle = 40, length = unit(vec_sub$arrow_size, "cm"), type = "open"),
-                 linejoin = "mitre", size = 0.4, alpha = 0.5) +
+                 arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
+                 linejoin = "mitre", size = 0.2, alpha = 0.5) +
     # The land mass
     geom_polygon(data = map_base, aes(group = group), fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
     # Colour scale
