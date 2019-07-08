@@ -461,9 +461,9 @@ ts_panel <- ggplot(data = sub_NAPA_MHW_ts_1_year, aes(x = t, y = temp)) +
 bottom_row <- cowplot::plot_grid(sst_U_V_panel, qt_panel, taum_mld_panel, labels = c('B', 'C', 'D'),
                                  align = 'h', rel_widths = c(1, 1, 1), nrow = 1)
 top_row <- cowplot::plot_grid(NULL, ts_panel, NULL, labels = c('', 'A', ''), nrow = 1, rel_widths = c(1,2,1))
-fig_3 <- cowplot::plot_grid(top_row, bottom_row, ncol = 1, rel_heights = c(1.5, 3))
+fig_3 <- cowplot::plot_grid(top_row, bottom_row, ncol = 1, rel_heights = c(1.3, 3))
 # fig_3
-ggsave(fig_3, filename = "talk/graph/fig_3.png", height = 6, width = 12)
+ggsave(fig_3, filename = "talk/graph/fig_3.png", height = 6, width = 14)
 
 
 # Figure 4 ----------------------------------------------------------------
