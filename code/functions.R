@@ -589,6 +589,7 @@ som_unpack_mean <- function(data_packet, som_output){
 
 
 # Create a summary figure for a chosen node -------------------------------
+## NB: This function contains objects created in "IMBeR_2019_figures.R"
 
 node_figure <- function(node_number){
   sub_synoptic_var_state <- synoptic_states_anom_cartesian %>%
@@ -781,6 +782,7 @@ node_figure <- function(node_number){
                size = 3, label.padding = unit(0.5, "lines")) +
     geom_smooth(method = "lm", se = F, aes(colour = season_peak)) +
     geom_hline(data = node_h_lines, aes(yintercept = mean_int_cum), linetype = "dashed") +
+    scale_x_date(labels = scales::date_format("%b-%Y")) +
     labs(x = "", y = "Cumulative intensity (°C x days)", colour = "Season") +
     theme(legend.position = "bottom")
   # seas_cum_lolli_plot
@@ -792,6 +794,7 @@ node_figure <- function(node_number){
     geom_label(aes(x = mean(date_peak), y = max(intensity_max), label = paste0("n = ", count,"/",nrow(NAPA_MHW_event))),
                size = 3, label.padding = unit(0.5, "lines")) +
     geom_smooth(method = "lm", se = F, aes(colour = region)) +
+    scale_x_date(labels = scales::date_format("%b-%Y")) +
     geom_hline(data = node_h_lines, aes(yintercept = mean_int_max), linetype = "dashed") +
     labs(x = "", y = "Max. intensity (°C)", colour = "Region") +
     theme(legend.position = "bottom")
