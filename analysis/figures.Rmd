@@ -491,7 +491,7 @@ This table will show a synopsis of what each node appears to portray. It will be
 ```{r interpretation-table, eval=FALSE}
 # Node 1: Warm pulse of GS near NS coast. Shallowing mixed layer, low wind stress, and strong negative heat flux. Mostly gm and ss, almost no nfs. Almost entirely summer and autumn from 2013 - 2016. Mostly smaller evets but a few are massive.
 
-# Node 2: Cold GS with warm LC caused by positive heat flux, low wind stress, and shallow mixed layer. Mostly cbs with some gsl and no mab. Occurred in only one year in two pulses in spring and summer. Normal intensity but short duration.
+# Node 2: Cold GS with warm LC caused by positive heat flux, low wind stress, and shallow mixed layer. Mostly cbs with some gsl and no mab. Occurred in only 199 in two pulses in spring and summer (June - October). Normal intensity but short duration.
 
 # Node 3: Calm sea state with some positive heatflux into the LC causing events. Shallower mixed layer everywhere. Mostly nfs with progressively fewer events in regions down the coast. Almost none in ls. Smaller events with a couple of large ones. All seasons from 1999 - 2014.
 
@@ -509,7 +509,9 @@ This table will show a synopsis of what each node appears to portray. It will be
 
 # Node 10: Very unstable mostly cold GS with warm GM and SS waters. Negative heat flux into shelf waters and positive into GS. High wind stress over LS and low over shelf waters. Deep GS and GM waters but shallow over SS. Spread out over most regions with fewest events in mab and nfs. A few tiny events from 2009 - 2011 but really got going from 2012 - 2013. Spring of 2013 was small while Autumn/WInter of 2012/13 was noteworthy.
 
-# Node 11:  Occurred in only one year from July - October. A few decent sized events. 
+# Node 11: Energetic but normal temperature GS with warm inshore waters and slightly warm LS. Positive heat flux into GS and LS but negative into inshore waters. High wind stress above LS and a bit over central AO, but negative everywhere else. Very deep mixed layer next to coast in MAB but relatively normal everywhere else. Relatively equivalent occurrence in all regions. Occurred only from July - October, 2012. A few decent sized events. Mean max intensity is decent.
+
+# Node 12: Warm inshore and LS waters with cold GS and AO. GS is moving fast and consistent. Negative heatflux into GS and inshore waters, slightly positive into LS and AO. High wind stress over GS and AO, negative over inshore waters and LS. Very deep mixed layer along coast in mab and very shallow along coast in ls. Mostly events occurring in gsl, but also in other northern areas. Occurred every even year from 2008 to 2014 from ~June - September. Relatively small (short) events but with decent max intensities.
 ```
 
 
