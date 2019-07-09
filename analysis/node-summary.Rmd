@@ -25,7 +25,7 @@ This vignette will show the summary figures for the 12 nodes. The code used to c
 The captions for the figures below have a lot of acronyms in them but they are consistently used and I will provide a list of what they are here. Whenever one sees an acronym in lower case letters it is refering to one of the regions of the study area as seen in the following figure.
 
 ```{r study-regions, out.width='100%', fig.align='center', fig.cap='The regions of the coast were devided up by their temperature and salinity regimes based on work by @Richaud2016. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. The regions were furthered divided into sub-regions based on their depth.'}
-knitr::include_graphics("~/MHWNWA/talk/graph/fig_2.png")
+knitr::include_graphics("assets/study_regions.png")
 ```
 
 The upper case acronyms used in the following figure captions are as follows:  
