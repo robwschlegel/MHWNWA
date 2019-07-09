@@ -380,7 +380,7 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/497eeb224ff7db35f769040a93222fba478cbbab" target="_blank">497eeb2</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/609cca85c425d9ce94e50b91206a1e2f64026530" target="_blank">609cca8</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -412,10 +412,6 @@ Ignored files:
     Ignored:    data/synoptic_states.Rda
     Ignored:    data/synoptic_vec_states.Rda
 
-Unstaged changes:
-    Modified:   analysis/_site.yml
-    Modified:   code/workflow.R
-
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
 </details>
@@ -445,6 +441,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/609cca85c425d9ce94e50b91206a1e2f64026530/analysis/som.Rmd" target="_blank">609cca8</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+<td style="text-align:left;">
+Added some thinking to the SOM vignette.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/81e961d9f37b51867dca7c4692d68aae1349e83b/docs/som.html" target="_blank">81e961d</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -890,13 +920,15 @@ lon_lat_NAPA_OISST &lt;- lon_lat_NAPA_OISST %&gt;%
 <div id="possible-mechanisms" class="section level2">
 <h2>Possible mechanisms</h2>
 <p>“Finally, Shearman and Lentz (2010) showed that century-long ocean warming trends observed along the entire northeast U.S. coast are not related to local atmospheric forcing but driven by atmospheric warming of source waters in the Labrador Sea and the Arctic, which are advected into the region.” <span class="citation">(Richaud et al., 2016)</span></p>
-<p>Downelling</p>
+<p>Downwelling</p>
 <p>Net heatflux (OAFlux) doesn’t line up perfectly with seasonal SST signal, but is very close, with heat flux tending to lead SST by 2 – 3 months.s <span class="citation">(Richaud et al., 2016)</span>. It is therefore likely one of the primary drivers of SST and should therefore be strongly considered when constructing SOMs.</p>
 <p>There is almost no seasonal cycle for slope waters in any of the regions <span class="citation">(Richaud et al., 2016)</span>.</p>
 </div>
 <div id="more-ideas" class="section level2">
 <h2>More ideas</h2>
-<p>It would be interesting to see if the SOM outputs differ in any meaningful wayss when only data from the first half of the study time period are used compared against the second half.</p>
+<p>It would be interesting to see if the SOM outputs differ in any meaningful ways when only data from the first half of the study time period are used compared against the second half.</p>
+<p>The output of the SOMs could likely be more meaningfully conveyed from the point of view of the regions. What I mean by this is to take the summary of the nodes, convey them into a table, and then use that table to inform a series of information bits that is focused around each region. Some sort of interactive visual may be useful for this. Showing the percentage that each region has in each node would be a good start. This would allow for a more meaningful further explanation for which drivers affect which regions during which seasons and over which years.</p>
+<p>Once this summary is worked out it would then follow that the same analysis be run 1, 2, 3 etc. months in the past and see what the same information format provides w.r.t. a sort of predictive capacity. All of this can then be used to check other data products with a more focused lens in order to maximise the utility of the output.</p>
 </div>
 <div id="tailored-data-packets" class="section level2">
 <h2>Tailored data packets</h2>
@@ -930,7 +962,7 @@ synoptic_vec_states_unnest &lt;- synoptic_vec_states %&gt;%
 </div>
 <div id="quality-control-anomalies" class="section level3">
 <h3>Quality control anomalies</h3>
-<p>Here we select the most relavant anomaly values and correct for a couple of issues.</p>
+<p>Here we select the most relevant anomaly values and correct for a couple of issues.</p>
 <pre class="r"><code># NB: The range of values for mixed layer depth anomalies is muuuuch greater
 # in the Labrador sea than elsewhere in the study area.
 # So we scale it here first before feeding it into the SOM to be scaled again
@@ -960,8 +992,8 @@ synoptic_vec_states_anom_fix &lt;- synoptic_vec_states_unnest %&gt;%
 ) # 8 seconds</code></pre>
 </div>
 <div id="constrain-to-a-cartesian-grid" class="section level3">
-<h3>Constrain to a cartesian grid</h3>
-<p>The last step before creating the final packets is to constrain the tri-polar grid data to cartesian coordinates. This is important as it prevents the denser sampled areas from being over-represented in the SOM analysis.</p>
+<h3>Constrain to a Cartesian grid</h3>
+<p>The last step before creating the final packets is to constrain the tri-polar grid data to Cartesian coordinates. This is important as it prevents the denser sampled areas from being over-represented in the SOM analysis.</p>
 <pre class="r"><code># Constrain variables
 system.time(
 synoptic_states_anom_cartesian &lt;- synoptic_states_anom_fix %&gt;% 
@@ -1193,6 +1225,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/81e961d9f37b51867dca7c4692d68aae1349e83b/docs/figure/som.Rmd/plot-sst-anom-1.png" target="_blank">81e961d</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/robwschlegel/MHWNWA/blob/028d3cc02abc1761fd51e624f1bec0ef6ed68dac/docs/figure/som.Rmd/plot-sst-anom-1.png" target="_blank">028d3cc</a>
