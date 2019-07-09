@@ -19,6 +19,8 @@ navbar:
       href: som.html
     - text: "Figure creation"
       href: figures.html
+    - text: "Node summary"
+      href: node-summary.html
   - text: License
     href: license.html
   right:
