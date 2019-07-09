@@ -1,0 +1,122 @@
+---
+title: "Node summary"
+author: "Robert Schlegel"
+date: "2019-07-09"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+csl: FMars.csl
+bibliography: MHWNWA.bib
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
+                      echo = TRUE, warning = FALSE, message = FALSE, 
+                      eval = TRUE, tidy = FALSE)
+```
+
+
+## Introduction
+
+This vignette will show the summary figures for the 12 nodes. The code used to create these summary figures may be found in 'code/functions.R'. The nodes are listed below by their number. Use the table of contents on the left of the screen to move qucikly between nodes of interest as desired.
+
+### Figure caption key
+
+The captions for the figures below have a lot of acronyms in them but they are consistently used and I will provide a list of what they are here. Whenever one sees an acronym in lower case letters it is refering to one of the regions of the study area as seen in the following figure.
+
+```{r study-regions, out.width='100%', fig.align='center', fig.cap='The regions of the coast were devided up by their temperature and salinity regimes based on work by @Richaud2016. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. The regions were furthered divided into sub-regions based on their depth.'}
+knitr::include_graphics("~/MHWNWA/talk/graph/fig_2.png")
+```
+
+The upper case acronyms used in the following figure captions are as follows:  
+
+- SST = Sea surface temperature
+- SOM = Self-organising map(s)
+- GS = Gulf Stream
+- AO = Atlantic Ocean
+- LS = Labrador Sea
+- LC = Labrador Current
+- NS = Nova Scotia
+
+If I have missed any please don't hesitate to send me a message.
+
+## SST overview
+
+The figure below shows the SST anomaly per node as a means of providing a very general overview of what each node looks like so as to make navigating between them more convenient.
+
+```{r sst-summary, out.width='100%', fig.align='center', fig.cap='The SST anomaly per node of the SOM. Note that the SST patterns are calculated in conjunction with the several other variables and are not the only variable taken into account. They are shown here by themselves as I think they provide the most convenient single snap shot of the results.'}
+knitr::include_graphics("~/MHWNWA/output/som_plot_sst_anom.png")
+```
+
+## Node 1
+
+```{r node-1, out.width='100%', fig.align='center', fig.cap='Warm pulse of GS near the NS coast. Shallowing mixed layer, low wind stress, and strong negative heat flux. Mostly gm and ss, almost no nfs. Almost entirely summer and autumn from 2013 - 2016. Mostly smaller evets but a few are massive.'}
+knitr::include_graphics("~/MHWNWA/output/node_1_panels.png")
+```
+
+## Node 2
+
+```{r node-2, out.width='100%', fig.align='center', fig.cap='Cold GS with warm LC caused by positive heat flux, low wind stress, and shallow mixed layer. Mostly cbs with some gsl and no mab. Occurred in only one year in two pulses in spring and summer. Normal intensity but short duration.'}
+knitr::include_graphics("~/MHWNWA/output/node_2_panels.png")
+```
+
+## Node 3
+
+```{r node-3, out.width='100%', fig.align='center', fig.cap='Calm sea state with some positive heatflux into the LC causing events. Shallower mixed layer everywhere. Mostly nfs with progressively fewer events in regions down the coast. Almost none in ls. Smaller events with a couple of large ones. All seasons from 1999 - 2014.'}
+knitr::include_graphics("~/MHWNWA/output/node_3_panels.png")
+```
+
+## Node 4
+
+```{r node-4, out.width='100%', fig.align='center', fig.cap='Extremely shallow mixed layer with a strong positive heatflux and low wind stress. Mostly nfs with progressively fewer events further away. Smaller events. Autumn, Winter, and Spring from 1999 - 2014.'}
+knitr::include_graphics("~/MHWNWA/output/node_4_panels.png")
+```
+
+## Node 5
+
+```{r node-5, out.width='100%', fig.align='center', fig.cap='Slightly shallow slightly fast push of the GS into the coast becoming slightly deeper near WHOI before coming back away from the coast and chilling out. The core of the pulse has negative heatflux but the surrounding GS has a strong positive heatflux and snall wind stress. Almost exclusively occurs in mab with only a bit everywhere else. Smallish events with a few massive ones. All seasons from 2003 - 2015.'}
+knitr::include_graphics("~/MHWNWA/output/node_5_panels.png")
+```
+
+## Node 6
+
+```{r node-6, out.width='100%', fig.align='center', fig.cap='Slightly warmer LS and LC with cooler GS. Minor poitive heat flux into LS and large positive heat flux into GS. Normal mixed layer with low wind stress over the LS and high over the GS. Mostly in the ls with a bit in the mab with almost none elsewhere. Occurred over 1999 - 2010 in spring and summer. Smaller events that have not been increasing over time.'}
+knitr::include_graphics("~/MHWNWA/output/node_6_panels.png")
+```
+
+## Node 7
+
+```{r node-7, out.width='100%', fig.align='center', fig.cap='Warm waters from LS to LC to GSL and a cold GS. Strong downward heat flux over northern waters and negative flux over GS. Shallow northern waters with low wind stress while high stress over GS. Equally high in ls and nfs. A bit in cbs but almost none elsewhere. Spring - Autumn from 2000 - 2014. 2006 was a particularly strong year. Events are overall not particularly large.'}
+knitr::include_graphics("~/MHWNWA/output/node_7_panels.png")
+```
+
+## Node 8
+
+```{r node-8, out.width='100%', fig.align='center', fig.cap='Warm northern waters with a cold GS. Strong positive flux over LS with weaker positive flux over GSL and negative over GS. Very shallow LS and very deep GS. Affects all northern waters but highest in gsl and ls. No events in mab and almost none in gm. Almost always Autumn and Winter from 2006 - 2013. Some more intense events later on with 2010/11 being a larger year.'}
+knitr::include_graphics("~/MHWNWA/output/node_8_panels.png")
+```
+
+## Node 9
+
+```{r node-9, out.width='100%', fig.align='center', fig.cap='Similar to node 5. Strong nearshore GS pulse. Strong negative flux over LS and GS but positive over the rest of the Atlantic. Very strong wind stress over LS and eastern part of Atlantic, weak over the warm heat flux area of the Atlantic. Extremely deep LS and shallow GS. Occurred over 2002 - 2016 for winter and spring, events began occurring in Autumn from 2013. Evens becoming rather intense as time progresses with some massive ones. Increasing in intensity in most regions.'}
+knitr::include_graphics("~/MHWNWA/output/node_9_panels.png")
+```
+
+## Node 10
+
+```{r node-10, out.width='100%', fig.align='center', fig.cap='Very unstable mostly cold GS with warm GM and SS waters. Negative heat flux into shelf waters and positive into GS. High wind stress over LS and low over shelf waters. Deep GS and GM waters but shallow over SS. Spread out over most regions with fewest events in mab and nfs. A few tiny events from 2009 - 2011 but really got going from 2012 - 2013. Spring of 2013 was small while Autumn/WInter of 2012/13 was noteworthy.'}
+knitr::include_graphics("~/MHWNWA/output/node_10_panels.png")
+```
+
+## Node 11
+
+```{r node-11, out.width='100%', fig.align='center', fig.cap='Energetic but normal temperature GS with warm inshore waters and slightly warm LS. Positive heat flux into GS and LS but negative into inshore waters. High wind stress above LS and a bit over central AO, but negative everywhere else. Very deep mixed layer next to coast in MAB but relatively normal everywhere else. Relatively equivalent occurrence in all regions. Occurred only from July - October, 2012. A few decent sized events. Mean max intensity is decent.'}
+knitr::include_graphics("~/MHWNWA/output/node_11_panels.png")
+```
+
+## Node 12
+
+```{r node-11, out.width='100%', fig.align='center', fig.cap='Warm inshore and LS waters with cold GS and AO. GS is moving fast and consistent. Negative heatflux into GS and inshore waters, slightly positive into LS and AO. High wind stress over GS and AO, negative over inshore waters and LS. Very deep mixed layer along coast in mab and very shallow along coast in ls. Mostly events occurring in gsl, but also in other northern areas. Occurred every even year from 2008 to 2014 from ~June - September. Relatively small (short) events but with decent max intensities.'}
+knitr::include_graphics("~/MHWNWA/output/node_12_panels.png")
+```
+
