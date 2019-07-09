@@ -311,6 +311,9 @@ div.tocify {
     <li>
       <a href="figures.html">Figure creation</a>
     </li>
+    <li>
+      <a href="node-summary.html">Node summary</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -348,7 +351,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-06-10</p>
+<p><strong>Last updated:</strong> 2019-07-09</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -377,7 +380,7 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/028d3cc02abc1761fd51e624f1bec0ef6ed68dac" target="_blank">028d3cc</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/497eeb224ff7db35f769040a93222fba478cbbab" target="_blank">497eeb2</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -409,18 +412,9 @@ Ignored files:
     Ignored:    data/synoptic_states.Rda
     Ignored:    data/synoptic_vec_states.Rda
 
-Untracked files:
-    Untracked:  output/som_plot_uoce_anom.pdf
-    Untracked:  output/som_plot_voce_anom.pdf
-
 Unstaged changes:
-    Modified:   analysis/MHWNWA.bib
     Modified:   analysis/_site.yml
     Modified:   code/workflow.R
-    Modified:   output/som_plot_mldr10_1_anom.pdf
-    Modified:   output/som_plot_qt_anom.pdf
-    Modified:   output/som_plot_sst_anom.pdf
-    Modified:   output/som_plot_taum_anom.pdf
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -451,6 +445,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/7ff9b8b7f78e47e9d651799280c229fe6c5eccde/analysis/sst-prep.Rmd" target="_blank">7ff9b8b</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-17
+</td>
+<td style="text-align:left;">
+More work on the talk
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/c23c50b1c93aba7ecdb843fad79a20ed847bfcf3/docs/sst-prep.html" target="_blank">c23c50b</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-10
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -735,6 +763,11 @@ options(scipen = 999)</code></pre>
 <pre class="r"><code># Corners of the study area
 NWA_corners &lt;- readRDS(&quot;data/NWA_corners.Rda&quot;)
 
+# Create smaller corners to use less RAM
+  # This also better matches the previous South African work
+  # The Tasmania work had corners of roughly 2 degrees greater than the study area
+NWA_corners_sub &lt;- c(NWA_corners[1]+8, NWA_corners[2]-8, NWA_corners[3]+8, NWA_corners[4]-8)
+
 # Individual regions
 NWA_coords &lt;- readRDS(&quot;data/NWA_coords_cabot.Rda&quot;)
 
@@ -880,7 +913,9 @@ robwschlegel
 <p>The <code>pnt.in.poly</code> function was remarkably convenient. Our points have now very easily been placed within their respective regions. The last step now before we move on to creating our clumped time series is to cut the regions up into three groups each based on depth: 0 – 50 m, 51 – 200 m, 201+ m.</p>
 <pre class="r"><code># Cut the depth strata into sub-regions as desired
 NWA_NAPA_info &lt;- NWA_NAPA_info %&gt;% 
-  mutate(sub_region = cut(bathy, breaks = c(0, 50, 200, ceiling(max(bathy))), dig.lab = 4))
+  mutate(sub_region = cut(bathy, breaks = c(0, 50, 200, ceiling(max(bathy))), dig.lab = 4))#,
+         # mutate(sub_region = fct_recode(., sub_region, &quot;(200+]&quot; = &quot;(200,3881]&quot;)))
+NWA_NAPA_info &lt;- mutate(NWA_NAPA_info, sub_region = fct_recode(sub_region, &quot;(200+]&quot; = &quot;(200,3881]&quot;))
 # saveRDS(NWA_NAPA_info, &quot;data/NWA_NAPA_info.Rda&quot;)
 
 # Visualise to ensure success
@@ -891,9 +926,9 @@ sub_region_map &lt;- ggplot(NWA_coords, aes(x = lon, y = lat)) +
              shape = 15, size = 0.5) +
   guides(colour = guide_legend(override.aes = list(size = 5))) +
   scale_alpha_manual(values = c(0.4, 0.7, 1)) +
-  coord_cartesian(xlim = NWA_corners[1:2],
-                  ylim = NWA_corners[3:4]) +
-  labs(x = NULL, y = NULL, colour = &quot;Region&quot;, alpha = &quot;Sub region&quot;)
+  coord_cartesian(xlim = NWA_corners_sub[1:2],
+                  ylim = NWA_corners_sub[3:4]) +
+  labs(x = NULL, y = NULL, colour = &quot;Region&quot;, alpha = &quot;Sub-region&quot;)
 # ggsave(plot = sub_region_map, filename = &quot;output/sub_region_map.pdf&quot;, height = 5, width = 6)
 
 # Visualise
@@ -980,7 +1015,7 @@ system.time(
   NAPA_sst_sub &lt;- plyr::ldply(NAPA_files,
                               .fun = load_NAPA_sst_sub, 
                               .parallel = TRUE)
-) # 1.5 seconds for 1, 135 seconds for all
+) # 1.5 seconds for 1,135 seconds for all
 
 # For some reason the rounding didn&#39;t stick in the function above so we wack it again here
 NAPA_sst_sub &lt;- NAPA_sst_sub %&gt;% 
@@ -996,17 +1031,21 @@ NAPA_sst_sub &lt;- NAPA_sst_sub %&gt;%
 NAPA_sst_sub &lt;- readRDS(&quot;data/NAPA_sst_sub.Rda&quot;)
 
 # Calculate base results
+system.time(
 NAPA_MHW_sub &lt;- NAPA_sst_sub %&gt;%
+  # NB: Should not use data before 1998-01-01 as this is model spin-up
+  filter(t &gt;= &quot;1998-01-01&quot;) %&gt;% 
   group_by(region, sub_region) %&gt;%
   nest() %&gt;%
   mutate(clims = map(data, ts2clm,
                      # NB: I&#39;ve chosen here to use as much of the 2015 data as exists,
                      # rather than to use none of it as I think it will create a better climatology
                      # even though the last two days of the year are missing
-                     climatologyPeriod = c(&quot;1994-01-01&quot;, &quot;2015-12-29&quot;)),
+                     climatologyPeriod = c(&quot;1998-01-01&quot;, &quot;2015-12-29&quot;)),
          events = map(clims, detect_event),
          cats = map(events, category)) %&gt;%
   select(-data)
+) # 2 seconds
 # saveRDS(NAPA_MHW_sub, &quot;data/NAPA_MHW_sub.Rda&quot;)</code></pre>
 <p>With the MHWs detected, let’s visualise the results to ensure everything worked as expected.</p>
 <pre class="r"><code># Load MHW results
@@ -1082,7 +1121,7 @@ robwschlegel
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.6.0 (2019-04-26)
+<pre><code>R version 3.6.1 (2019-07-05)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 16.04.5 LTS
 
@@ -1118,16 +1157,16 @@ loaded via a namespace (and not attached):
 [16] readxl_1.1.0      rstudioapi_0.7    whisker_0.3-2    
 [19] R.utils_2.7.0     R.oo_1.22.0       rmarkdown_1.10   
 [22] labeling_0.3      htmlwidgets_1.3   munsell_0.5.0    
-[25] broom_0.5.0       compiler_3.6.0    modelr_0.1.2     
+[25] broom_0.5.0       compiler_3.6.1    modelr_0.1.2     
 [28] pkgconfig_2.0.2   htmltools_0.3.6   tidyselect_0.2.4 
 [31] workflowr_1.1.1   codetools_0.2-15  doMC_1.3.5       
 [34] viridisLite_0.3.0 crayon_1.3.4      withr_2.1.2      
-[37] R.methodsS3_1.7.1 grid_3.6.0        nlme_3.1-137     
+[37] R.methodsS3_1.7.1 grid_3.6.1        nlme_3.1-137     
 [40] gtable_0.2.0      git2r_0.23.0      magrittr_1.5     
 [43] scales_1.0.0      cli_1.0.0         stringi_1.2.4    
 [46] reshape2_1.4.3    xml2_1.2.0        iterators_1.0.10 
-[49] tools_3.6.0       glue_1.3.0        maps_3.3.0       
-[52] hms_0.4.2         parallel_3.6.0    yaml_2.2.0       
+[49] tools_3.6.1       glue_1.3.0        maps_3.3.0       
+[52] hms_0.4.2         parallel_3.6.1    yaml_2.2.0       
 [55] colorspace_1.3-2  rvest_0.3.2       plotly_4.9.0     
 [58] knitr_1.20        bindr_0.1.1       haven_1.1.2      </code></pre>
 </div>
