@@ -423,3 +423,5 @@ plot_sst_anom
 ```
 
 Up next in the [Figures](https://robwschlegel.github.io/MHWNWA/som.html) vignette we will show the results in more depth.
+
+## References
