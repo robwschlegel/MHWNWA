@@ -46,6 +46,11 @@ Before we access the SST data from the NAPA (3-Oceans) model, let's load all of 
 # Corners of the study area
 NWA_corners <- readRDS("data/NWA_corners.Rda")
 
+# Create smaller corners to use less RAM
+  # This also better matches the previous South African work
+  # The Tasmania work had corners of roughly 2 degrees greater than the study area
+NWA_corners_sub <- c(NWA_corners[1]+8, NWA_corners[2]-8, NWA_corners[3]+8, NWA_corners[4]-8)
+
 # Individual regions
 NWA_coords <- readRDS("data/NWA_coords_cabot.Rda")
 

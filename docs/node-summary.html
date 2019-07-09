@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Robert Schlegel" />
+
+<meta name="date" content="2019-07-09" />
+
+<title>Node summary</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MHW Northwest Atlantic</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Overview</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Analyses
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="polygon-prep.html">Polygon preparation</a>
+    </li>
+    <li>
+      <a href="sst-prep.html">SST preparation</a>
+    </li>
+    <li>
+      <a href="var-prep.html">Variable preparation</a>
+    </li>
+    <li>
+      <a href="vec-prep.html">Vector preparation</a>
+    </li>
+    <li>
+      <a href="som.html">SOM analysis</a>
+    </li>
+    <li>
+      <a href="figures.html">Figure creation</a>
+    </li>
+    <li>
+      <a href="node-summary.html">Node summary</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/robwschlegel/MHWNWA">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Node summary</h1>
+<h4 class="author"><em>Robert Schlegel</em></h4>
+<h4 class="date"><em>2019-07-09</em></h4>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2019-07-09</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(20190513)</code> </summary></p>
+<p>The command <code>set.seed(20190513)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/497eeb224ff7db35f769040a93222fba478cbbab" target="_blank">497eeb2</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/NAPA_clim_U.Rda
+    Ignored:    data/NAPA_clim_V.Rda
+    Ignored:    data/NAPA_clim_W.Rda
+    Ignored:    data/NAPA_clim_emp_ice.Rda
+    Ignored:    data/NAPA_clim_emp_oce.Rda
+    Ignored:    data/NAPA_clim_fmmflx.Rda
+    Ignored:    data/NAPA_clim_mldkz5.Rda
+    Ignored:    data/NAPA_clim_mldr10_1.Rda
+    Ignored:    data/NAPA_clim_qemp_oce.Rda
+    Ignored:    data/NAPA_clim_qla_oce.Rda
+    Ignored:    data/NAPA_clim_qns.Rda
+    Ignored:    data/NAPA_clim_qsb_oce.Rda
+    Ignored:    data/NAPA_clim_qt.Rda
+    Ignored:    data/NAPA_clim_runoffs.Rda
+    Ignored:    data/NAPA_clim_ssh.Rda
+    Ignored:    data/NAPA_clim_sss.Rda
+    Ignored:    data/NAPA_clim_sst.Rda
+    Ignored:    data/NAPA_clim_taum.Rda
+    Ignored:    data/NAPA_clim_vars.Rda
+    Ignored:    data/NAPA_clim_vecs.Rda
+    Ignored:    data/node_mean_all_anom.Rda
+    Ignored:    data/packet_all_anom.Rda
+    Ignored:    data/som_all_anom.Rda
+    Ignored:    data/synoptic_states.Rda
+    Ignored:    data/synoptic_vec_states.Rda
+
+Unstaged changes:
+    Modified:   analysis/_site.yml
+    Modified:   code/workflow.R
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</details>
+</li>
+</ul>
+<details>
+<summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/497eeb224ff7db35f769040a93222fba478cbbab/analysis/node-summary.Rmd" target="_blank">497eeb2</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+<td style="text-align:left;">
+Re-publish entire site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/95a168db5e0dd4ae0896313d0df16965d88818f8/analysis/node-summary.Rmd" target="_blank">95a168d</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+<td style="text-align:left;">
+Frame of node summary vignette worked out
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+</details>
+<hr />
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This vignette will show the summary figures for the 12 nodes. The code used to create these summary figures may be found in ‘code/functions.R’. The nodes are listed below by their number. Use the table of contents on the left of the screen to move qucikly between nodes of interest as desired.</p>
+<div id="figure-caption-key" class="section level3">
+<h3>Figure caption key</h3>
+<p>The captions for the figures below have a lot of acronyms in them but they are consistently used and I will provide a list of what they are here. Whenever one sees an acronym in lower case letters it is refering to one of the regions of the study area as seen in the following figure.</p>
+<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/talk/graph/fig_2.png&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="/data/home/rschlegel/MHWNWA/talk/graph/fig_2.png" alt="The regions of the coast were devided up by their temperature and salinity regimes based on work by @Richaud2016. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. The regions were furthered divided into sub-regions based on their depth." width="100%" />
+<p class="caption">
+The regions of the coast were devided up by their temperature and salinity regimes based on work by <span class="citation">Richaud et al. (2016)</span>. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. The regions were furthered divided into sub-regions based on their depth.
+</p>
+</div>
+<p>The upper case acronyms used in the following figure captions are as follows:</p>
+<ul>
+<li>SST = Sea surface temperature</li>
+<li>SOM = Self-organising map(s)</li>
+<li>GS = Gulf Stream</li>
+<li>AO = Atlantic Ocean</li>
+<li>LS = Labrador Sea</li>
+<li>LC = Labrador Current</li>
+<li>NS = Nova Scotia</li>
+</ul>
+<p>If I have missed any please don’t hesitate to send me a message.</p>
+</div>
+</div>
+<div id="sst-overview" class="section level2">
+<h2>SST overview</h2>
+<p>The figure below shows the SST anomaly per node as a means of providing a very general overview of what each node looks like so as to make navigating between them more convenient.</p>
+<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/som_plot_sst_anom.png&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="/data/home/rschlegel/MHWNWA/output/som_plot_sst_anom.png" alt="The SST anomaly per node of the SOM. Note that the SST patterns are calculated in conjunction with the several other variables and are not the only variable taken into account. They are shown here by themselves as I think they provide the most convenient single snap shot of the results." width="100%" />
+<p class="caption">
+The SST anomaly per node of the SOM. Note that the SST patterns are calculated in conjunction with the several other variables and are not the only variable taken into account. They are shown here by themselves as I think they provide the most convenient single snap shot of the results.
+</p>
+</div>
+</div>
+<div id="node-1" class="section level2">
+<h2>Node 1</h2>
+<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_1_panels.png&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="/data/home/rschlegel/MHWNWA/output/node_1_panels.png" alt="Warm pulse of GS near the NS coast. Shallowing mixed layer, low wind stress, and strong negative heat flux. Mostly gm and ss, almost no nfs. Almost entirely summer and autumn from 2013 - 2016. Mostly smaller evets but a few are massive." width="100%" />
+<p class="caption">
+Warm pulse of GS near the NS coast. Shallowing mixed layer, low wind stress, and strong negative heat flux. Mostly gm and ss, almost no nfs. Almost entirely summer and autumn from 2013 - 2016. Mostly smaller evets but a few are massive.
+</p>
+</div>
+</div>
+<div id="node-2" class="section level2">
+<h2>Node 2</h2>
+<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_2_panels.png&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="/data/home/rschlegel/MHWNWA/output/node_2_panels.png" alt="Cold GS with warm LC caused by positive heat flux, low wind stress, and shallow mixed layer. Mostly cbs with some gsl and no mab. Occurred in only one year in two pulses in spring and summer. Normal intensity but short duration." width="100%" />
+<p class="caption">
+Cold GS with warm LC caused by positive heat flux, low wind stress, and shallow mixed layer. Mostly cbs with some gsl and no mab. Occurred in only one year in two pulses in spring and summer. Normal intensity but short duration.
+</p>
+</div>
+</div>
+<div id="node-3" class="section level2">
+<h2>Node 3</h2>
+<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_3_panels.png&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="/data/home/rschlegel/MHWNWA/output/node_3_panels.png" alt="Calm sea state with some positive heatflux into the LC causing events. Shallower mixed layer everywhere. Mostly nfs with progressively fewer events in regions down the coast. Almost none in ls. Smaller events with a couple of large ones. All seasons from 1999 - 2014." width="100%" />
+<p class="caption">
+Calm sea state with some positive heatflux into the LC causing events. Shallower mixed layer everywhere. Mostly nfs with progressively fewer events in regions down the coast. Almost none in ls. Smaller events with a couple of large ones. All seasons from 1999 - 2014.
+</p>
+</div>
+</div>
+<div id="node-4" class="section level2">
+<h2>Node 4</h2>
+<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_4_panels.png&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="/data/home/rschlegel/MHWNWA/output/node_4_panels.png" alt="Extremely shallow mixed layer with a strong positive heatflux and low wind stress. Mostly nfs with progressively fewer events further away. Smaller events. Autumn, Winter, and Spring from 1999 - 2014." width="100%" />
+<p class="caption">
+Extremely shallow mixed layer with a strong positive heatflux and low wind stress. Mostly nfs with progressively fewer events further away. Smaller events. Autumn, Winter, and Spring from 1999 - 2014.
+</p>
+</div>
+</div>
+<div id="node-5" class="section level2">
+<h2>Node 5</h2>
+<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_5_panels.png&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="/data/home/rschlegel/MHWNWA/output/node_5_panels.png" alt="Slightly shallow slightly fast push of the GS into the coast becoming slightly deeper near WHOI before coming back away from the coast and chilling out. The core of the pulse has negative heatflux but the surrounding GS has a strong positive heatflux and snall wind stress. Almost exclusively occurs in mab with only a bit everywhere else. Smallish events with a few massive ones. All seasons from 2003 - 2015." width="100%" />
+<p class="caption">
+Slightly shallow slightly fast push of the GS into the coast becoming slightly deeper near WHOI before coming back away from the coast and chilling out. The core of the pulse has negative heatflux but the surrounding GS has a strong positive heatflux and snall wind stress. Almost exclusively occurs in mab with only a bit everywhere else. Smallish events with a few massive ones. All seasons from 2003 - 2015.
+</p>
+</div>
+</div>
+<div id="node-6" class="section level2">
+<h2>Node 6</h2>
+<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_6_panels.png&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="/data/home/rschlegel/MHWNWA/output/node_6_panels.png" alt="Slightly warmer LS and LC with cooler GS. Minor poitive heat flux into LS and large positive heat flux into GS. Normal mixed layer with low wind stress over the LS and high over the GS. Mostly in the ls with a bit in the mab with almost none elsewhere. Occurred over 1999 - 2010 in spring and summer. Smaller events that have not been increasing over time." width="100%" />
+<p class="caption">
+Slightly warmer LS and LC with cooler GS. Minor poitive heat flux into LS and large positive heat flux into GS. Normal mixed layer with low wind stress over the LS and high over the GS. Mostly in the ls with a bit in the mab with almost none elsewhere. Occurred over 1999 - 2010 in spring and summer. Smaller events that have not been increasing over time.
+</p>
+</div>
+</div>
+<div id="node-7" class="section level2">
+<h2>Node 7</h2>
+<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_7_panels.png&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="/data/home/rschlegel/MHWNWA/output/node_7_panels.png" alt="Warm waters from LS to LC to GSL and a cold GS. Strong downward heat flux over northern waters and negative flux over GS. Shallow northern waters with low wind stress while high stress over GS. Equally high in ls and nfs. A bit in cbs but almost none elsewhere. Spring - Autumn from 2000 - 2014. 2006 was a particularly strong year. Events are overall not particularly large." width="100%" />
+<p class="caption">
+Warm waters from LS to LC to GSL and a cold GS. Strong downward heat flux over northern waters and negative flux over GS. Shallow northern waters with low wind stress while high stress over GS. Equally high in ls and nfs. A bit in cbs but almost none elsewhere. Spring - Autumn from 2000 - 2014. 2006 was a particularly strong year. Events are overall not particularly large.
+</p>
+</div>
+</div>
+<div id="node-8" class="section level2">
+<h2>Node 8</h2>
+<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_8_panels.png&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="/data/home/rschlegel/MHWNWA/output/node_8_panels.png" alt="Warm northern waters with a cold GS. Strong positive flux over LS with weaker positive flux over GSL and negative over GS. Very shallow LS and very deep GS. Affects all northern waters but highest in gsl and ls. No events in mab and almost none in gm. Almost always Autumn and Winter from 2006 - 2013. Some more intense events later on with 2010/11 being a larger year." width="100%" />
+<p class="caption">
+Warm northern waters with a cold GS. Strong positive flux over LS with weaker positive flux over GSL and negative over GS. Very shallow LS and very deep GS. Affects all northern waters but highest in gsl and ls. No events in mab and almost none in gm. Almost always Autumn and Winter from 2006 - 2013. Some more intense events later on with 2010/11 being a larger year.
+</p>
+</div>
+</div>
+<div id="node-9" class="section level2">
+<h2>Node 9</h2>
+<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_9_panels.png&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="/data/home/rschlegel/MHWNWA/output/node_9_panels.png" alt="Similar to node 5. Strong nearshore GS pulse. Strong negative flux over LS and GS but positive over the rest of the Atlantic. Very strong wind stress over LS and eastern part of Atlantic, weak over the warm heat flux area of the Atlantic. Extremely deep LS and shallow GS. Occurred over 2002 - 2016 for winter and spring, events began occurring in Autumn from 2013. Evens becoming rather intense as time progresses with some massive ones. Increasing in intensity in most regions." width="100%" />
+<p class="caption">
+Similar to node 5. Strong nearshore GS pulse. Strong negative flux over LS and GS but positive over the rest of the Atlantic. Very strong wind stress over LS and eastern part of Atlantic, weak over the warm heat flux area of the Atlantic. Extremely deep LS and shallow GS. Occurred over 2002 - 2016 for winter and spring, events began occurring in Autumn from 2013. Evens becoming rather intense as time progresses with some massive ones. Increasing in intensity in most regions.
+</p>
+</div>
+</div>
+<div id="node-10" class="section level2">
+<h2>Node 10</h2>
+<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_10_panels.png&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="/data/home/rschlegel/MHWNWA/output/node_10_panels.png" alt="Very unstable mostly cold GS with warm GM and SS waters. Negative heat flux into shelf waters and positive into GS. High wind stress over LS and low over shelf waters. Deep GS and GM waters but shallow over SS. Spread out over most regions with fewest events in mab and nfs. A few tiny events from 2009 - 2011 but really got going from 2012 - 2013. Spring of 2013 was small while Autumn/WInter of 2012/13 was noteworthy." width="100%" />
+<p class="caption">
+Very unstable mostly cold GS with warm GM and SS waters. Negative heat flux into shelf waters and positive into GS. High wind stress over LS and low over shelf waters. Deep GS and GM waters but shallow over SS. Spread out over most regions with fewest events in mab and nfs. A few tiny events from 2009 - 2011 but really got going from 2012 - 2013. Spring of 2013 was small while Autumn/WInter of 2012/13 was noteworthy.
+</p>
+</div>
+</div>
+<div id="node-11" class="section level2">
+<h2>Node 11</h2>
+<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_11_panels.png&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="/data/home/rschlegel/MHWNWA/output/node_11_panels.png" alt="Energetic but normal temperature GS with warm inshore waters and slightly warm LS. Positive heat flux into GS and LS but negative into inshore waters. High wind stress above LS and a bit over central AO, but negative everywhere else. Very deep mixed layer next to coast in MAB but relatively normal everywhere else. Relatively equivalent occurrence in all regions. Occurred only from July - October, 2012. A few decent sized events. Mean max intensity is decent." width="100%" />
+<p class="caption">
+Energetic but normal temperature GS with warm inshore waters and slightly warm LS. Positive heat flux into GS and LS but negative into inshore waters. High wind stress above LS and a bit over central AO, but negative everywhere else. Very deep mixed layer next to coast in MAB but relatively normal everywhere else. Relatively equivalent occurrence in all regions. Occurred only from July - October, 2012. A few decent sized events. Mean max intensity is decent.
+</p>
+</div>
+</div>
+<div id="node-12" class="section level2">
+<h2>Node 12</h2>
+<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_12_panels.png&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="/data/home/rschlegel/MHWNWA/output/node_12_panels.png" alt="Warm inshore and LS waters with cold GS and AO. GS is moving fast and consistent. Negative heatflux into GS and inshore waters, slightly positive into LS and AO. High wind stress over GS and AO, negative over inshore waters and LS. Very deep mixed layer along coast in mab and very shallow along coast in ls. Mostly events occurring in gsl, but also in other northern areas. Occurred every even year from 2008 to 2014 from ~June - September. Relatively small (short) events but with decent max intensities." width="100%" />
+<p class="caption">
+Warm inshore and LS waters with cold GS and AO. GS is moving fast and consistent. Negative heatflux into GS and inshore waters, slightly positive into LS and AO. High wind stress over GS and AO, negative over inshore waters and LS. Very deep mixed layer along coast in mab and very shallow along coast in ls. Mostly events occurring in gsl, but also in other northern areas. Occurred every even year from 2008 to 2014 from ~June - September. Relatively small (short) events but with decent max intensities.
+</p>
+</div>
+<div id="refs">
+<div id="ref-Richaud2016">
+<p>Richaud, B., Kwon, Y.-O., Joyce, T. M., Fratantoni, P. S., and Lentz, S. J. (2016). Surface and bottom temperature and salinity climatology along the continental shelf off the canadian and us east coasts. <em>Continental Shelf Research</em> 124, 165–181.</p>
+</div>
+</div>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.6.1 (2019-07-05)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 16.04.5 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/openblas-base/libblas.so.3
+LAPACK: /usr/lib/libopenblasp-r0.2.18.so
+
+locale:
+ [1] LC_CTYPE=en_CA.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_CA.UTF-8        LC_COLLATE=en_CA.UTF-8    
+ [5] LC_MONETARY=en_CA.UTF-8    LC_MESSAGES=en_CA.UTF-8   
+ [7] LC_PAPER=en_CA.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_CA.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] workflowr_1.1.1   Rcpp_0.12.18      digest_0.6.16    
+ [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
+ [7] git2r_0.23.0      magrittr_1.5      evaluate_0.11    
+[10] highr_0.7         stringi_1.2.4     whisker_0.3-2    
+[13] R.oo_1.22.0       R.utils_2.7.0     rmarkdown_1.10   
+[16] tools_3.6.1       stringr_1.3.1     yaml_2.2.0       
+[19] compiler_3.6.1    htmltools_0.3.6   knitr_1.20       </code></pre>
+</div>
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
+</p>
+<hr>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

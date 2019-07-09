@@ -311,6 +311,9 @@ div.tocify {
     <li>
       <a href="figures.html">Figure creation</a>
     </li>
+    <li>
+      <a href="node-summary.html">Node summary</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -348,7 +351,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-06-10</p>
+<p><strong>Last updated:</strong> 2019-07-09</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -377,7 +380,7 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/028d3cc02abc1761fd51e624f1bec0ef6ed68dac" target="_blank">028d3cc</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/497eeb224ff7db35f769040a93222fba478cbbab" target="_blank">497eeb2</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -409,18 +412,9 @@ Ignored files:
     Ignored:    data/synoptic_states.Rda
     Ignored:    data/synoptic_vec_states.Rda
 
-Untracked files:
-    Untracked:  output/som_plot_uoce_anom.pdf
-    Untracked:  output/som_plot_voce_anom.pdf
-
 Unstaged changes:
-    Modified:   analysis/MHWNWA.bib
     Modified:   analysis/_site.yml
     Modified:   code/workflow.R
-    Modified:   output/som_plot_mldr10_1_anom.pdf
-    Modified:   output/som_plot_qt_anom.pdf
-    Modified:   output/som_plot_sst_anom.pdf
-    Modified:   output/som_plot_taum_anom.pdf
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -451,6 +445,74 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/7ff9b8b7f78e47e9d651799280c229fe6c5eccde/analysis/som.Rmd" target="_blank">7ff9b8b</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-17
+</td>
+<td style="text-align:left;">
+More work on the talk
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/b25762ef736094d51c28c5c67156fc696a5dd1e7/analysis/som.Rmd" target="_blank">b25762e</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-12
+</td>
+<td style="text-align:left;">
+More work on figures
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/413bb8b6af2c2bd19754c9a79ec27cef4f6a1bc2/analysis/som.Rmd" target="_blank">413bb8b</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-12
+</td>
+<td style="text-align:left;">
+Working on pixel interpolation
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/c23c50b1c93aba7ecdb843fad79a20ed847bfcf3/docs/som.html" target="_blank">c23c50b</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-10
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -811,7 +873,19 @@ map_base &lt;- ggplot2::fortify(maps::map(fill = TRUE, col = &quot;grey80&quot;,
   dplyr::rename(lon = long) %&gt;%
   mutate(group = ifelse(lon &gt; 180, group+9999, group),
          lon = ifelse(lon &gt; 180, lon-360, lon)) %&gt;% 
-  select(-region, -subregion)</code></pre>
+  select(-region, -subregion)
+
+# The grid that will convert the tri-polar coordinates to cartesian
+  # NB: This file was created in the &#39;tikoraluk&#39; project
+load(&quot;data/lon_lat_NAPA_OISST.Rdata&quot;)
+
+# Change to fit with this project
+lon_lat_NAPA_OISST &lt;- lon_lat_NAPA_OISST %&gt;% 
+  dplyr::select(-lon, -lat, -dist, -nav_lon_corrected) %&gt;% 
+  dplyr::rename(lon = nav_lon, lat = nav_lat) %&gt;% 
+  mutate(lon = round(lon, 4),
+         lat = round(lat, 4)) %&gt;% 
+  mutate(lon_O = ifelse(lon_O &gt; 180, lon_O-360, lon_O))</code></pre>
 </div>
 <div id="possible-mechanisms" class="section level2">
 <h2>Possible mechanisms</h2>
@@ -826,79 +900,125 @@ map_base &lt;- ggplot2::fortify(maps::map(fill = TRUE, col = &quot;grey80&quot;,
 </div>
 <div id="tailored-data-packets" class="section level2">
 <h2>Tailored data packets</h2>
-<p>In this last step before running our SOM analyses we want to create data packets that can be fed directly into the SOM algorithm. At the moment we will just create a packet for a few choice anomaly variables. This is because using all of the variables at once has proven to be too large a task. This is because we must create very wide dataframes (~80,000 columns) and R struggles with this. <!-- Specifically what we mean her is that we are going to filter the `synoptic_states` data created in the [Variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette to match some pre-designed hypotheses. Foremost of these at the moment is that we want to create individual packets for each of the regions. While creating whatever packets we desire we will also be converting them into the super-wide matrix format that the SOM model desires. --></p>
+<p>In this last stage before running our SOM analyses we want to create equally weighted and quality controlled data packets that can be fed directly into the SOM algorithm. At the moment we will just create a packet for a few choice anomaly variables. This is because not only has using all of the anomaly variables at once proven to be too large a task, it also wouldn’t be appropriate because not all of this information should be considered at the same time. The creation of these packets will be split into four steps below. <!-- Specifically what we mean her is that we are going to filter the `synoptic_states` data created in the [Variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette to match some pre-designed hypotheses. Foremost of these at the moment is that we want to create individual packets for each of the regions. While creating whatever packets we desire we will also be converting them into the super-wide matrix format that the SOM model desires. --></p>
+<div id="unnest-synoptic-state-packets" class="section level3">
+<h3>Unnest synoptic state packets</h3>
+<p>Up first we must simply load and unnest the synoptic state packets made previously.</p>
 <pre class="r"><code># Load the synoptic states data packet
+system.time(
 synoptic_states &lt;- readRDS(&quot;data/synoptic_states.Rda&quot;)
-
-# Load the synoptic vector states data packet
-synoptic_vec_states &lt;- readRDS(&quot;data/synoptic_vec_states.Rda&quot;)
+) # 30 seconds
 
 # Unnest the synoptic data
+system.time(
 synoptic_states_unnest &lt;- synoptic_states %&gt;% 
   select(region, sub_region, event_no, synoptic) %&gt;% 
   unnest()
+) # 30 seconds
 
-# NB: The range of values for mixed layer depth anomalies is muuuuch greater
-  # in the Labrador sea than elsewhere in the study area.
-  # So we scale it here first before feeding it into the SOM to be scaled again
+# Load the synoptic vector states data packet
+system.time(
+synoptic_vec_states &lt;- readRDS(&quot;data/synoptic_vec_states.Rda&quot;)
+) # 10 seconds
+
+# Unnest the synoptic vector data
+system.time(
+synoptic_vec_states_unnest &lt;- synoptic_vec_states %&gt;% 
+  select(region, sub_region, event_no, synoptic) %&gt;% 
+  unnest()
+) # 27 seconds</code></pre>
+</div>
+<div id="quality-control-anomalies" class="section level3">
+<h3>Quality control anomalies</h3>
+<p>Here we select the most relavant anomaly values and correct for a couple of issues.</p>
+<pre class="r"><code># NB: The range of values for mixed layer depth anomalies is muuuuch greater
+# in the Labrador sea than elsewhere in the study area.
+# So we scale it here first before feeding it into the SOM to be scaled again
+system.time(
 synoptic_states_anom_fix &lt;- synoptic_states_unnest %&gt;% 
-  select(region:lat, sst_anom, taum_anom, qt_anm, mldr10_1_anom) %&gt;% 
-  # slice(1:100000) %&gt;% 
+  select(region:lat, sst_anom, taum_anom, qt_anom, mldr10_1_anom) %&gt;% 
+  filter(lon &gt;= NWA_corners_sub[1], lon &lt;= NWA_corners_sub[2],
+         lat &gt;= NWA_corners_sub[3], lat &lt;= NWA_corners_sub[4]) %&gt;% 
   group_by(lon, lat) %&gt;% 
   mutate(mldr10_1_anom = mldr10_1_anom/max(abs(mldr10_1_anom), na.rm = T)) %&gt;% 
   # na.omit() %&gt;% 
   ungroup()
-
-# Unnest the synoptic vector data
-synoptic_vec_states_unnest &lt;- synoptic_vec_states %&gt;% 
-  select(region, sub_region, event_no, synoptic) %&gt;% 
-  unnest() 
+) # 3 seconds
 
 # NB: There is an issue downstream with one or more of the vector pixels always having a value of 0
   # This needs to be accounted for here before joining the data further
+system.time(
 synoptic_vec_states_anom_fix &lt;- synoptic_vec_states_unnest %&gt;% 
   select(region:lat, uoce_anom:voce_anom) %&gt;% 
+  filter(lon &gt;= NWA_corners_sub[1], lon &lt;= NWA_corners_sub[2],
+         lat &gt;= NWA_corners_sub[3], lat &lt;= NWA_corners_sub[4]) %&gt;% 
   group_by(lon, lat) %&gt;% 
   mutate(uoce_anom = case_when(min(uoce_anom, na.rm = T) != 0 &amp; max(uoce_anom, na.rm = T) != 0 ~ uoce_anom),
          voce_anom = case_when(min(voce_anom, na.rm = T) != 0 &amp; max(voce_anom, na.rm = T) != 0 ~ voce_anom)) %&gt;% 
   # na.omit() %&gt;% 
   ungroup()
+) # 8 seconds</code></pre>
+</div>
+<div id="constrain-to-a-cartesian-grid" class="section level3">
+<h3>Constrain to a cartesian grid</h3>
+<p>The last step before creating the final packets is to constrain the tri-polar grid data to cartesian coordinates. This is important as it prevents the denser sampled areas from being over-represented in the SOM analysis.</p>
+<pre class="r"><code># Constrain variables
+system.time(
+synoptic_states_anom_cartesian &lt;- synoptic_states_anom_fix %&gt;% 
+  # First create means based on the nearest NAPA pixel to OISST pixel
+  left_join(lon_lat_NAPA_OISST, by = c(&quot;lon&quot;, &quot;lat&quot;)) %&gt;% 
+  dplyr::select(-lon, -lat) %&gt;% 
+  dplyr::rename(lon = lon_O, lat = lat_O) %&gt;% 
+  group_by(region, sub_region, event_no, lon, lat) %&gt;% 
+  summarise_all(.funs = &quot;mean&quot;, na.rm = T) #%&gt;% 
+  # Then interpolate the few pixels that aren&#39;t filled
+    # NB: After spending a day working on interpolation techniques 
+    # I decided to leave it as this creates more artefacts than it removes
+  # group_by(region, sub_region, event_no)
+) # 34 seconds
 
-# Set number of cores
-  # NB: 50 uses too much RAM
-doMC::registerDoMC(cores = 25)
+# Constrain vectors
+system.time(
+synoptic_vec_states_anom_cartesian &lt;- synoptic_vec_states_anom_fix %&gt;% 
+  # First create means based on the nearest NAPA pixel to OISST pixel
+  left_join(lon_lat_NAPA_OISST, by = c(&quot;lon&quot;, &quot;lat&quot;)) %&gt;% 
+  dplyr::select(-lon, -lat) %&gt;% 
+  dplyr::rename(lon = lon_O, lat = lat_O) %&gt;% 
+  group_by(region, sub_region, event_no, lon, lat) %&gt;% 
+  summarise_all(.funs = &quot;mean&quot;, na.rm = T)
+) # 32 seconds
 
-# Packet for all synoptic anomaly data for all regions etc.
+# Test visuals
+# test &lt;- synoptic_states_anom_cartesian %&gt;%
+#   filter(region == &quot;cbs&quot;, sub_region == &quot;(0,50]&quot;, event_no == 1)
+# ggplot(test, aes(x = lon, y = lat)) +
+#   geom_raster(aes(fill = sst_anom)) +
+#   scale_fill_gradient2(low = &quot;blue&quot;, high = &quot;red&quot;) +
+#   coord_cartesian(xlim = NWA_corners_sub[1:2],
+#                   ylim = NWA_corners_sub[3:4])</code></pre>
+</div>
+<div id="merge-and-save" class="section level3">
+<h3>Merge and save</h3>
+<p>With all of our data ready we may now stick them together and save the packet for SOM use.</p>
+<pre class="r"><code># Packet for all synoptic anomaly data for all regions etc.
 system.time(
 packet_all_anom &lt;- left_join(synoptic_states_anom_fix, 
                              synoptic_vec_states_anom_fix,
                              by = c(&quot;region&quot;, &quot;sub_region&quot;, &quot;event_no&quot;, &quot;lon&quot;, &quot;lat&quot;)) %&gt;% 
-  # The variable dataframe is longer than the vector dataframe
-  # na.omit() %&gt;% 
-  # NB: A shortened list of variables to be more manageable
-  # select(region:lat, sst_anom, taum_anom, qt_anm, 
-         # mldr10_1_anom, uoce_anom, voce_anom) %&gt;% 
-  # NB: The full list if one desires
-  # select(region:lat, emp_oce_anom:taum_anom) %&gt;% 
   data.table::data.table() %&gt;% 
-  filter(lon &gt;= NWA_corners_sub[1], lon &lt;= NWA_corners_sub[2],
-         lat &gt;= NWA_corners_sub[3], lat &lt;= NWA_corners_sub[4]) %&gt;% 
   reshape2::melt(id = c(&quot;region&quot;, &quot;sub_region&quot;, &quot;event_no&quot;, &quot;lon&quot;, &quot;lat&quot;),
                  measure = c(colnames(.)[-c(1:5)]), 
                  variable.name = &quot;var&quot;, value.name = &quot;val&quot;) %&gt;% 
   dplyr::arrange(var, lon, lat) %&gt;%
-  # reshape2::dcast(formula = region + sub_region, event_no ~ lon + lat + var, value.var = &quot;val&quot;)
   unite(coords, c(lon, lat, var), sep = &quot;BBB&quot;) %&gt;%
   unite(event_ID, c(region, sub_region, event_no), sep = &quot;BBB&quot;) %&gt;%
   reshape2::dcast(event_ID ~ coords, value.var = &quot;val&quot;)
-  # mutate(region_ply = region,
-         # sub_region_ply = sub_region) %&gt;% 
-  # plyr::ddply(c(&quot;region_ply&quot;, &quot;sub_region_ply&quot;), wide_matrix, .parallel = T) %&gt;% 
-  # select(-region_ply, -sub_region_ply)
-) # 367 seconds
-# Remove columns (pixels) with missing data
+) # 312 seconds
+
+# Remove columns (pixels) with missing data and save
 packet_all_anom_fix &lt;- packet_all_anom[,colSums(is.na(packet_all_anom))&lt;1]
-saveRDS(packet_all_anom_fix, &quot;data/packet_all_anom.Rda&quot;)</code></pre>
+# saveRDS(packet_all_anom_fix, &quot;data/packet_all_anom.Rda&quot;)</code></pre>
+</div>
 </div>
 <div id="run-som-models" class="section level2">
 <h2>Run SOM models</h2>
@@ -923,7 +1043,7 @@ som_model_PCI &lt;- function(data_packet, xdim = 4, ydim = 3){
 }</code></pre>
 <p>With the function sorted, we now feed the data.</p>
 <pre class="r"><code>all_anom &lt;- readRDS(&quot;data/packet_all_anom.Rda&quot;)
-system.time(som_all_anom &lt;- som_model_PCI(all_anom)) # 225 seconds
+system.time(som_all_anom &lt;- som_model_PCI(all_anom)) # 201 seconds
 saveRDS(som_all_anom, file = &quot;data/som_all_anom.Rda&quot;)</code></pre>
 </div>
 <div id="unpack-som-results" class="section level2">
@@ -1026,9 +1146,10 @@ som_node_visualise &lt;- function(sub_var = &quot;sst_anom&quot;, viridis_option
 plot_sst_anom &lt;- som_node_visualise(&quot;sst_anom&quot;)
 # plot_sst_anom
 ggsave(plot_sst_anom, filename = &quot;output/som_plot_sst_anom.pdf&quot;, height = 12, width = 13)
+ggsave(plot_sst_anom, filename = &quot;output/som_plot_sst_anom.png&quot;, height = 12, width = 13)
 
 # Net downward heat flux (qt)
-plot_qt_anom &lt;- som_node_visualise(&quot;qt_anm&quot;)
+plot_qt_anom &lt;- som_node_visualise(&quot;qt_anom&quot;)
 # plot_qt_anom
 ggsave(plot_qt_anom, filename = &quot;output/som_plot_qt_anom.pdf&quot;, height = 12, width = 13)
 
@@ -1096,7 +1217,7 @@ robwschlegel
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.6.0 (2019-04-26)
+<pre><code>R version 3.6.1 (2019-07-05)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 16.04.5 LTS
 
@@ -1133,17 +1254,17 @@ loaded via a namespace (and not attached):
 [19] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
 [22] workflowr_1.1.1   cellranger_1.1.0  rvest_0.3.2      
 [25] R.methodsS3_1.7.1 codetools_0.2-15  evaluate_0.11    
-[28] labeling_0.3      knitr_1.20        parallel_3.6.0   
+[28] labeling_0.3      knitr_1.20        parallel_3.6.1   
 [31] class_7.3-14      broom_0.5.0       Rcpp_0.12.18     
 [34] backports_1.1.2   scales_1.0.0      hms_0.4.2        
-[37] digest_0.6.16     stringi_1.2.4     grid_3.6.0       
-[40] rprojroot_1.3-2   cli_1.0.0         tools_3.6.0      
+[37] digest_0.6.16     stringi_1.2.4     grid_3.6.1       
+[40] rprojroot_1.3-2   cli_1.0.0         tools_3.6.1      
 [43] maps_3.3.0        magrittr_1.5      lazyeval_0.2.1   
 [46] crayon_1.3.4      whisker_0.3-2     pkgconfig_2.0.2  
 [49] xml2_1.2.0        iterators_1.0.10  assertthat_0.2.0 
 [52] rmarkdown_1.10    httr_1.3.1        rstudioapi_0.7   
 [55] R6_2.2.2          nlme_3.1-137      git2r_0.23.0     
-[58] compiler_3.6.0   </code></pre>
+[58] compiler_3.6.1   </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using

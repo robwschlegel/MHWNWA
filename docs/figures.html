@@ -13,7 +13,7 @@
 
 <meta name="date" content="2019-06-10" />
 
-<title>Figure creation</title>
+<title>Figure and table creation</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -311,6 +311,9 @@ div.tocify {
     <li>
       <a href="figures.html">Figure creation</a>
     </li>
+    <li>
+      <a href="node-summary.html">Node summary</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -341,14 +344,14 @@ div.section {
 
 
 
-<h1 class="title toc-ignore">Figure creation</h1>
+<h1 class="title toc-ignore">Figure and table creation</h1>
 <h4 class="author"><em>Robert Schlegel</em></h4>
 <h4 class="date"><em>2019-06-10</em></h4>
 
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-06-10</p>
+<p><strong>Last updated:</strong> 2019-07-09</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -377,7 +380,7 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/028d3cc02abc1761fd51e624f1bec0ef6ed68dac" target="_blank">028d3cc</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/497eeb224ff7db35f769040a93222fba478cbbab" target="_blank">497eeb2</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -409,18 +412,9 @@ Ignored files:
     Ignored:    data/synoptic_states.Rda
     Ignored:    data/synoptic_vec_states.Rda
 
-Untracked files:
-    Untracked:  output/som_plot_uoce_anom.pdf
-    Untracked:  output/som_plot_voce_anom.pdf
-
 Unstaged changes:
-    Modified:   analysis/MHWNWA.bib
     Modified:   analysis/_site.yml
     Modified:   code/workflow.R
-    Modified:   output/som_plot_mldr10_1_anom.pdf
-    Modified:   output/som_plot_qt_anom.pdf
-    Modified:   output/som_plot_sst_anom.pdf
-    Modified:   output/som_plot_taum_anom.pdf
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -451,6 +445,227 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/2490b95cfd29598dda806c115cf85654a3df9996/analysis/figures.Rmd" target="_blank">2490b95</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-08
+</td>
+<td style="text-align:left;">
+Getting there
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/82b8ef871f2d6364f0e78af5c868ba903b8a78f6/analysis/figures.Rmd" target="_blank">82b8ef8</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-08
+</td>
+<td style="text-align:left;">
+Nearly finished with first pass at writing down node results.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/d73fbc031b427a66b25236799a211a7b02f0afc1/analysis/figures.Rmd" target="_blank">d73fbc0</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-02
+</td>
+<td style="text-align:left;">
+Analysed most of the outputs
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/fd36d4c98f79f594b4034cb6cc0c6a2c42d93863/analysis/figures.Rmd" target="_blank">fd36d4c</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-19
+</td>
+<td style="text-align:left;">
+Talk is as ready as its getting
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/7ff9b8b7f78e47e9d651799280c229fe6c5eccde/analysis/figures.Rmd" target="_blank">7ff9b8b</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-17
+</td>
+<td style="text-align:left;">
+More work on the talk
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/1bbfd07807d13f788a6a19e04a43aa31590b88a0/analysis/figures.Rmd" target="_blank">1bbfd07</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-16
+</td>
+<td style="text-align:left;">
+First draft of figures almost complete.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/dd82bc0ed7722e7da1ce003c979bf38a92ead234/analysis/figures.Rmd" target="_blank">dd82bc0</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-16
+</td>
+<td style="text-align:left;">
+Merging with offline edits
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/c7c29efb504091a79b39f18e3f831b2586376462/analysis/figures.Rmd" target="_blank">c7c29ef</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-16
+</td>
+<td style="text-align:left;">
+Uh-oh
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/84e9464efb8f6487505b4ff53d5e80a4f251d395/analysis/figures.Rmd" target="_blank">84e9464</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-15
+</td>
+<td style="text-align:left;">
+Little notes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/35d4717c3ab61bbcfd22fd752e27da08e763144c/analysis/figures.Rmd" target="_blank">35d4717</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-13
+</td>
+<td style="text-align:left;">
+Added URL links to publications whose figures form the base of the figures in this project
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/b25762ef736094d51c28c5c67156fc696a5dd1e7/analysis/figures.Rmd" target="_blank">b25762e</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-12
+</td>
+<td style="text-align:left;">
+More work on figures
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/413bb8b6af2c2bd19754c9a79ec27cef4f6a1bc2/analysis/figures.Rmd" target="_blank">413bb8b</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-12
+</td>
+<td style="text-align:left;">
+Working on pixel interpolation
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/c23c50b1c93aba7ecdb843fad79a20ed847bfcf3/docs/figures.html" target="_blank">c23c50b</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-06-10
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -492,7 +707,7 @@ Re-publish entire site.
 <hr />
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>In this final vignette we will go over the creation of the figures used in the publication for this research. These figures are largely adapted from the techniques seen in <span class="citation">Oliver et al. (2018)</span> and <span class="citation">Schlegel et al. (2017)</span>.</p>
+<p>In this final vignette we will go over the creation of the figures used in the publication for this research. These figures are largely adapted from the techniques seen in <span class="citation">Oliver et al. (2018)</span> (<a href="https://www.sciencedirect.com/science/article/pii/S0079661117303336" class="uri">https://www.sciencedirect.com/science/article/pii/S0079661117303336</a>) and <span class="citation">Schlegel et al. (2017)</span> (<a href="https://www.frontiersin.org/articles/10.3389/fmars.2017.00323/full" class="uri">https://www.frontiersin.org/articles/10.3389/fmars.2017.00323/full</a>).</p>
 <pre class="r"><code># Insatll from GitHub
 # .libPaths(c(&quot;~/R-packages&quot;, .libPaths()))
 # devtools::install_github(&quot;fabrice-rossi/yasomi&quot;)
@@ -505,6 +720,9 @@ library(lubridate) # For convenient date manipulation
 # library(scales) # For scaling data before running SOM
 library(yasomi, lib.loc = &quot;../R-packages/&quot;) # The SOM package of choice due to PCI compliance
 library(data.table) # For working with massive dataframes
+
+# Load functions written in previous vignettes
+source(&quot;code/functions.R&quot;)
 
 # Set number of cores
 doMC::registerDoMC(cores = 50)
@@ -539,30 +757,435 @@ map_base &lt;- ggplot2::fortify(maps::map(fill = TRUE, col = &quot;grey80&quot;,
   dplyr::rename(lon = long) %&gt;%
   mutate(group = ifelse(lon &gt; 180, group+9999, group),
          lon = ifelse(lon &gt; 180, lon-360, lon)) %&gt;% 
-  select(-region, -subregion)</code></pre>
-<pre class="r"><code>###########################################################################
-### &quot;3.Figures.R&quot;
-## This script creates the figures for the paper and supplemental
-# 1. Load all libraries and functions used in this script
-# 2. Create synoptic figure for each event
-# 3. Create synoptic figure showing SOM nodes
-# 4. Create lolliplots for the SOM nodes
-# 5. Create dendrogram for HCA results
-# 6. Create ordiplot for MDS results
-# 7. Create map of study area
-#############################################################################
+  select(-region, -subregion)
 
+# Bathymetry data
+  # NB: Should rather use model bathymetry
+bathy &lt;- readRDS(&quot;data/NWA_bathy_lowres.Rda&quot;)
 
-# 1. Load all libraries and functions used in this script -----------------
-source(&quot;func/synoptic.func.R&quot;)
-source(&quot;func/som.func.R&quot;)
-source(&quot;func/scale.bar.func.R&quot;)
-library(vegan)
-library(ggdendro)
-library(broom)
+# The grid that will convert the tri-polar coordinates to cartesian
+  # NB: This file was created in the &#39;tikoraluk&#39; project
+load(&quot;data/lon_lat_NAPA_OISST.Rdata&quot;)
 
+# Change to fit with this project
+lon_lat_NAPA_OISST &lt;- lon_lat_NAPA_OISST %&gt;% 
+  dplyr::select(-lon, -lat, -dist, -nav_lon_corrected) %&gt;% 
+  dplyr::rename(lon = nav_lon, lat = nav_lat) %&gt;% 
+  mutate(lon = round(lon, 4),
+         lat = round(lat, 4)) %&gt;% 
+  mutate(lon_O = ifelse(lon_O &gt; 180, lon_O-360, lon_O))
 
-# 2. Create synoptic figure for each event  -------------------------------
+# Load MHW results
+NAPA_MHW_sub &lt;- readRDS(&quot;data/NAPA_MHW_sub.Rda&quot;)
+
+# Events only
+NAPA_MHW_event &lt;- NAPA_MHW_sub %&gt;%
+  select(-clims, -cats) %&gt;%
+  unnest(events) %&gt;%
+  filter(row_number() %% 2 == 0) %&gt;%
+  unnest(events)</code></pre>
+</div>
+<div id="figure-1" class="section level2">
+<h2>Figure 1</h2>
+<p>The first figure we will want is that of the study area. This figure will have multiple panels show that we can show the overall average synoptic state of the important variables.</p>
+<pre class="r"><code>### TO DO
+# Gulf Stream curved vector
+# Halifax labelled point
+# Text &quot;Labrador Sea&quot;
+# Text: &quot;Labrador Current&quot;
+# Interpolate pixels for visual nice-ness
+# Improve bathymetry contours
+  # Look into the new ggfriendly method
+# One panel should contain current vectors
+# And the other panel should contain bathymetry contours
+
+# Mean variable states
+system.time(
+var_mean_states &lt;- readRDS(&quot;data/NAPA_clim_vars.Rda&quot;) %&gt;% 
+  dplyr::select(-doy) %&gt;% 
+  group_by(lon, lat) %&gt;% 
+  summarise_all(.funs = &quot;mean&quot;) %&gt;% 
+  ungroup() %&gt;% 
+  left_join(lon_lat_NAPA_OISST, by = c(&quot;lon&quot;, &quot;lat&quot;)) %&gt;% 
+  dplyr::select(-lon, -lat) %&gt;% 
+  dplyr::rename(lon = lon_O, lat = lat_O) %&gt;% 
+  group_by(lon, lat) %&gt;% 
+  summarise_all(.funs = &quot;mean&quot;, na.rm = T)
+) # 12 seconds
+
+# Vector mean states
+system.time(
+vec_mean_states &lt;- readRDS(&quot;data/NAPA_clim_vecs.Rda&quot;) %&gt;% 
+  dplyr::select(-doy, -wo_clim) %&gt;% 
+  group_by(lon, lat) %&gt;% 
+  summarise_all(.funs = &quot;mean&quot;) %&gt;% 
+  ungroup() %&gt;% 
+  left_join(lon_lat_NAPA_OISST, by = c(&quot;lon&quot;, &quot;lat&quot;)) %&gt;% 
+  dplyr::select(-lon, -lat) %&gt;% 
+  dplyr::rename(lon = lon_O, lat = lat_O) %&gt;% 
+  group_by(lon, lat) %&gt;% 
+  summarise_all(.funs = &quot;mean&quot;, na.rm = T) %&gt;% 
+  dplyr::rename(u = uoce_clim, v = voce_clim) %&gt;% 
+  mutate(arrow_size = ((abs(u*v)/ max(abs(u*v)))+0.2)/6)
+) # 7 seconds
+
+# The previous wind correction for when that info is brought in
+# winds &lt;- mutate(arrow_size = ((abs(u*v)/ max(abs(u*v)))+0.3)/6)
+
+# Reduce wind/ current vectors
+lon_sub &lt;- seq(min(var_mean_states$lon), max(var_mean_states$lon), by = 1)
+lat_sub &lt;- seq(min(var_mean_states$lat), max(var_mean_states$lat), by = 1)
+# currents &lt;- currents[(currents$lon %in% lon_sub &amp; currents$lat %in% lat_sub),]
+vec_mean_states_sub &lt;- vec_mean_states[(vec_mean_states$lon %in% lon_sub &amp; vec_mean_states$lat %in% lat_sub),]
+
+# Establish the vector scalar for the currents
+current_uv_scalar &lt;- 2
+
+# Establish the vector scalar for the wind
+wind_uv_scalar &lt;- 0.5
+
+# Wind feature vector coordinates
+# cyc_atlantic &lt;- data.frame(x = c(14.0, 16.1, 16.0), y = c(-36.0, -34.4, -32.1), 
+#                            xend = c(16.0, 16.1, 14.0), yend = c(-34.5, -32.2, -30.6))
+# cyc_indian &lt;- data.frame(x = c(36.0, 33.9, 34.0), y = c(-31.5, -33.1, -35.4), 
+#                          xend = c(34.0, 33.9, 36.0), yend = c(-33.0, -35.3, -36.9))
+# westerlies &lt;- data.frame(x = c(18.0, 21.1, 24.2), y = c(-38.0, -37.8, -37.8), 
+#                          xend = c(21.0, 24.1, 27.2), yend = c(-37.8, -37.8, -38.0))
+
+# The top figure (sea)
+fig_1_top &lt;- ggplot(data = map_base, aes(x = lon, y = lat)) +
+  # The ocean temperature
+  geom_raster(data = var_mean_states, aes(fill = sst_clim)) +
+  # The bathymetry
+  # stat_contour(data = bathy[bathy$depth &lt; -100 &amp; bathy$depth &gt; -300,], 
+               # aes(x = lon, y = lat, z = depth), alpha = 0.5,
+               # colour = &quot;ivory&quot;, size = 0.5, binwidth = 200, na.rm = TRUE, show.legend = FALSE) +
+  # The current vectors
+  geom_segment(data = vec_mean_states_sub, aes(xend = lon + u * current_uv_scalar, yend = lat + v * current_uv_scalar),
+               arrow = arrow(angle = 40, length = unit(vec_mean_states_sub$arrow_size, &quot;cm&quot;), type = &quot;open&quot;),
+                             linejoin = &quot;mitre&quot;, size = 0.4) +
+  # The land mass
+  geom_polygon(aes(group = group), fill = &quot;grey70&quot;, colour = &quot;black&quot;, size = 0.5, show.legend = FALSE) +
+  # The legend for the vector length
+  # geom_label(aes(x = 37.0, y = -38.0, label = &quot;1.0 m/s\n&quot;), size = 3, label.padding = unit(0.5, &quot;lines&quot;)) +
+  # geom_segment(aes(x = 36.0, y = -38.3, xend = 38.0, yend = -38.3), linejoin = &quot;mitre&quot;,
+               # arrow = arrow(angle = 40, length = unit(0.2, &quot;cm&quot;), type = &quot;open&quot;)) +
+  # Halifax point and label
+  # geom_point(data = SACTN_site_list, shape = 19,  size = 2.8, colour = &quot;ivory&quot;) +
+  # geom_text(data = SACTN_site_list[-c(3,4,7:9,18,21,23:24),], aes(label = order), size = 1.9, colour = &quot;red&quot;) +
+  # Ocean label
+  # annotate(&quot;text&quot;, label = &quot;ATLANTIC\nOCEAN&quot;, x = 13.10, y = -34.0, size = 4.0, angle = 0, colour = &quot;ivory&quot;) +
+  # Gulf stream line and label
+  # geom_segment(aes(x = 17.2, y = -32.6, xend = 15.2, yend = -29.5),
+               # arrow = arrow(length = unit(0.3, &quot;cm&quot;)), size = 0.5, colour = &quot;ivory&quot;) +
+  # annotate(&quot;text&quot;, label = &quot;Benguela&quot;, x = 16.0, y = -31.8, size = 3.5, angle = 298, colour = &quot;ivory&quot;) +
+  # Labrador Current line and label
+  # geom_segment(aes(x = 33, y = -29.5, xend = 29.8, yend = -33.0),
+               # arrow = arrow(length = unit(0.3, &quot;cm&quot;)), size = 0.5, colour = &quot;ivory&quot;) +
+  # annotate(&quot;text&quot;, label = &quot;Agulhas&quot;, x = 31.7, y = -31.7, size = 3.5, angle = 53, colour = &quot;ivory&quot;) +
+  # Labrador Sea label
+  # annotate(&quot;text&quot;, label = &quot;Agulhas\nBank&quot;, x = 22.5, y = -35.5, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
+  # Improve on the x and y axis labels
+  scale_x_continuous(breaks = seq(-70, -50, 10),
+                     labels = scales::unit_format(suffix = &quot;°E&quot;, sep = &quot;&quot;),
+                     position = &quot;top&quot;) +
+  scale_y_continuous(breaks = seq(35, 55, 10),
+                     labels = scales::unit_format(suffix = &quot;°N&quot;, sep = &quot;&quot;)) +
+  labs(x = NULL, y = NULL) +
+  # Slightly shrink the plotting area
+  coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
+  # Use viridis colour scheme
+  scale_fill_viridis_c(name = &quot;Temp.\n(°C)&quot;, option = &quot;D&quot;, breaks = seq(0, 25, 5)) +
+  # Adjust the theme
+  theme_bw() +
+  theme(panel.border = element_rect(fill = NA, colour = &quot;black&quot;, size = 1),
+        axis.text = element_text(size = 12, colour = &quot;black&quot;),
+        axis.ticks = element_line(colour = &quot;black&quot;))
+fig_1_top
+
+# The bottom figure (air)
+fig_1_bottom &lt;- ggplot(data = map_base, aes(x = lon, y = lat)) +
+  # The ocean temperature
+  geom_raster(data = var_mean_states, aes(fill = qt_clim)) +
+  # The land mass
+  geom_polygon(aes(group = group), fill = &quot;grey70&quot;, colour = &quot;black&quot;, size = 0.5, show.legend = FALSE) +
+  # The current vectors
+  # geom_segment(data = winds, aes(xend = lon + u * wind_uv_scalar, yend = lat + v * wind_uv_scalar),
+               # arrow = arrow(angle = 40, length = unit(winds$arrow_size, &quot;cm&quot;), type = &quot;open&quot;),
+               # linejoin = &quot;mitre&quot;, size = 0.4) +
+  # The legend for the vector length
+  # geom_label(aes(x = 37.0, y = -38.0, label = &quot;4.0 m/s\n&quot;), size = 3, label.padding = unit(0.5, &quot;lines&quot;)) +
+  # geom_segment(aes(x = 36.0, y = -38.3, xend = 38.0, yend = -38.3), linejoin = &quot;mitre&quot;,
+               # arrow = arrow(angle = 40, length = unit(0.2, &quot;cm&quot;), type = &quot;open&quot;)) +
+  # The sub/regions
+  # geom_polygon(data = NWA_coords, aes(group = region, fill = region, colour = region), alpha = 0.2) +
+  # South Atlantic Anticyclone
+  # annotate(&quot;text&quot;, label = &quot;SOUTH\nATLANTIC\nANTICYCLONE&quot;, x = 13.5, y = -33.5, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
+  # geom_curve(data = cyc_atlantic, aes(x = x, y = y, xend = xend, yend = yend), curvature = 0.2, colour = &quot;ivory&quot;,
+             # arrow = arrow(angle = 40, type = &quot;open&quot;, length = unit(0.25,&quot;cm&quot;))) +
+  # South Indian Anticyclone
+  # annotate(&quot;text&quot;, label = &quot;SOUTH\nINDIAN\nANTICYCLONE&quot;, x = 36.5, y = -34.0, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
+  # geom_curve(data = cyc_indian, aes(x = x, y = y, xend = xend, yend = yend), curvature = 0.2, colour = &quot;ivory&quot;,
+             # arrow = arrow(angle = 40, type = &quot;open&quot;, length = unit(0.25,&quot;cm&quot;))) +
+  # Westerlies
+  # annotate(&quot;text&quot;, label = &quot;WESTERLIES&quot;, x = 22.5, y = -37.0, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
+  # geom_curve(data = westerlies, aes(x = x, y = y, xend = xend, yend = yend), colour = &quot;ivory&quot;,
+             # arrow = arrow(angle = 40, type = &quot;open&quot;, length = unit(0.25,&quot;cm&quot;)), curvature = -0.01) +
+  # Improve on the x and y axis labels
+  scale_x_continuous(breaks = seq(-70, -50, 10),
+                     labels = scales::unit_format(suffix = &quot;°E&quot;, sep = &quot;&quot;)) +
+  scale_y_continuous(breaks = seq(35, 55, 10),
+                     labels = scales::unit_format(suffix = &quot;°N&quot;, sep = &quot;&quot;)) +
+  labs(x = NULL, y = NULL) +
+  # Scale bar
+  # scaleBar(lon = 22.0, lat = -29.5, distanceLon = 200, distanceLat = 50, distanceLegend = 90, dist.unit = &quot;km&quot;,
+           # arrow.length = 100, arrow.distance = 130, arrow.North.size = 3, 
+           # legend.colour = &quot;ivory&quot;, arrow.colour = &quot;ivory&quot;, N.colour = &quot;ivory&quot;) +
+  # Slightly shrink the plotting area
+  coord_cartesian(xlim = NWA_corners_sub[1:2], ylim = NWA_corners_sub[3:4], expand = F) +
+  # Use viridis colour scheme
+  scale_fill_viridis_c(name = &quot;Net\ndownward\nheat flux&quot;, option = &quot;A&quot;) +
+  # Adjust the theme
+  theme_bw() +
+  theme(panel.border = element_rect(fill = NA, colour = &quot;black&quot;, size = 1),
+        axis.text = element_text(size = 12, colour = &quot;black&quot;),
+        axis.ticks = element_line(colour = &quot;black&quot;))
+fig_1_bottom
+
+# Convert the figures to grobs
+fig_1_top_grob &lt;- ggplotGrob(fig_1_top)
+# fb_inset_grob &lt;- ggplotGrob(fb_inset)
+fig_1_bottom_grob &lt;- ggplotGrob(fig_1_bottom)
+
+# Stick them together
+fig_1 &lt;- ggplot() +
+  # First set the x and y axis values so we know what the ranges are
+  # in order to make it easier to place our facets
+  # coord_equal(xlim = c(1, 10), ylim = c(1, 10), expand = F) +
+  # Then we place our facetsover one another using the coordinates we created
+  annotation_custom(fig_1_top_grob,
+                    xmin = 1, xmax = 10, ymin = 5.5, ymax = 10) +
+  # annotation_custom(fb_inset_grob,
+                    # xmin = 3.5, xmax = 5.5, ymin = 7.2, ymax = 8.8) +
+  annotation_custom(fig_1_bottom_grob,
+                    xmin = 1, xmax = 10, ymin = 1, ymax = 5.5)
+fig_1
+# save
+# ggsave(plot = fig_1, filename = &quot;graph/fig_1.pdf&quot;, height = 8, width = 8)</code></pre>
+</div>
+<div id="figures-2-to-4" class="section level2">
+<h2>Figures 2 to 4</h2>
+<p>In these next figures we want to show the results of the SOM. These figures will contain 12 panels each and we will need to cleverly combine certain variables so as to limit the number of figures we will create.</p>
+<pre class="r"><code># Load data packet
+all_anom &lt;- readRDS(&quot;data/packet_all_anom.Rda&quot;)
+
+# Load SOM packet for anomaly data
+som_all_anom &lt;- readRDS(&quot;data/som_all_anom.Rda&quot;)
+
+# Determine node index
+node_index_all_anom &lt;- event_node_index(all_anom, som_all_anom)
+
+# Create and save mean synoptic states per node
+node_mean_all_anom &lt;- som_unpack_mean(all_anom, som_all_anom)
+
+# From the SOM vignette
+som_node_visualise &lt;- function(sub_var = &quot;sst_anom&quot;, viridis_option = &quot;D&quot;){
+  
+  # Subset data
+  node_mean_all_anom_sub &lt;- node_mean_all_anom %&gt;% 
+    filter(var == sub_var) %&gt;% 
+    mutate(lon = plyr::round_any(lon, 0.25),
+           lat = plyr::round_any(lat, 0.25)) %&gt;% 
+    group_by(node, lon, lat, var) %&gt;% 
+    summarise(val = mean(val, na.rm = T))
+
+  # Create plot
+  som_panel_plot &lt;- ggplot(node_mean_all_anom_sub, aes(x = lon, y = lat)) +
+    # geom_point(aes(colour = val)) +
+    geom_raster(aes(fill  = val)) +
+    geom_polygon(data = map_base, aes(group = group), show.legend = F) +
+    geom_label(data = node_index_all_anom, aes(x = -60, y = 35, label = paste0(&quot;n = &quot;,count))) +
+    # geom_polygon(data = NWA_coords, aes(group = region, fill = region, colour = region), alpha = 0.1) +
+    coord_cartesian(xlim = NWA_corners_sub[1:2],
+                    ylim = NWA_corners_sub[3:4], 
+                    expand = F) +
+    scale_fill_gradient2(low = &quot;blue&quot;, high = &quot;red&quot;) +
+    # scale_colour_viridis_c(option = viridis_option) +
+    labs(x = NULL, y = NULL, fill = sub_var) +
+    facet_wrap(~node, ncol = 4) +
+    theme(legend.position = &quot;bottom&quot;)
+  return(som_panel_plot)
+}</code></pre>
+</div>
+<div id="figure-5" class="section level2">
+<h2>Figure 5</h2>
+<p>This figure needs to provide a detailed breakdown of the meta data behind the synoptic states being clustered into the 12 node panels. This means that we want to be able to show, primarily, during which seasons the MHWs in each node were occurring. This is shown effectively in Figure 7 of <span class="citation">Oliver et al. (2018)</span>. But it would also be good to show other meta data, such as MHW metrics, as seen in Figure 5 of <span class="citation">Schlegel et al. (2017)</span>. It may be that we want both. Or it may be that the metric summary could be done via a table.</p>
+<pre class="r"><code>### TO DO
+# Calculate season based on peak of event
+# Left join tables for event number, sub/region, node
+# Create visuals for the nodes
+
+# Load data packet
+all_anom &lt;- readRDS(&quot;data/packet_all_anom.Rda&quot;)
+
+# Load SOM packet for anomaly data
+som_all_anom &lt;- readRDS(&quot;data/som_all_anom.Rda&quot;)
+
+# Determine node index
+node_index_all_anom &lt;- event_node_index(all_anom, som_all_anom) %&gt;% 
+  mutate(event_no = as.numeric(event_no))
+
+# MHW season of (peak) occurrence and other meta-data
+NAPA_MHW_meta &lt;- NAPA_MHW_event %&gt;% 
+  mutate(month_peak = lubridate::month(date_peak, label = T),
+         season_peak = case_when(month_peak %in% c(&quot;Jan&quot;, &quot;Feb&quot;, &quot;Mar&quot;) ~ &quot;Winter&quot;,
+                                 month_peak %in% c(&quot;Apr&quot;, &quot;May&quot;, &quot;Jun&quot;) ~ &quot;Spring&quot;,
+                                 month_peak %in% c(&quot;Jul&quot;, &quot;Aug&quot;, &quot;Sep&quot;) ~ &quot;Summer&quot;,
+                                 month_peak %in% c(&quot;Oct&quot;, &quot;Nov&quot;, &quot;Dec&quot;) ~ &quot;Autumn&quot;),
+         sub_region = as.character(sub_region)) %&gt;% 
+  left_join(node_index_all_anom, by = c(&quot;region&quot;, &quot;sub_region&quot;, &quot;event_no&quot;))
+  
+# Proportion of MHWs in each season in each node
+node_prop_info &lt;- NAPA_MHW_meta %&gt;% 
+  dplyr::select(region:event_no, month_peak:count) %&gt;% 
+  group_by(node, season_peak) %&gt;% 
+  mutate(node_season_prop = round(n()/count, 2)) %&gt;% 
+  select(season_peak:node_season_prop) %&gt;% 
+  unique() %&gt;% 
+  ungroup()
+
+# Fill in the blanks
+node_prop_grid &lt;- expand.grid(unique(node_prop_info$season_peak), 1:12) %&gt;% 
+  dplyr::rename(season_peak = Var1, node = Var2) %&gt;% 
+  mutate(season_peak = as.character(season_peak)) %&gt;% 
+  # left_join(NWA_coords, by = &quot;&quot;) %&gt;% 
+  left_join(node_prop_info, by = c(&quot;node&quot;, &quot;season_peak&quot;)) %&gt;% 
+  mutate(count = replace_na(count, 0),
+         node_season_prop = replace_na(node_season_prop, 0))
+
+# Proportion of MHWs in each season in each region
+region_prop_info &lt;- NAPA_MHW_meta %&gt;% 
+  dplyr::select(region:event_no, month_peak:count) %&gt;% 
+  group_by(node, region) %&gt;% 
+  mutate(region_node_prop = round(n()/count, 2)) %&gt;% 
+  select(region, node, count, region_node_prop) %&gt;% 
+  unique() %&gt;% 
+  ungroup() #%&gt;% 
+  # right_join(data.frame(node = 1:12), by = &quot;node&quot;)
+  # right_join(NWA_coords, by = &quot;region&quot;)
+
+# Fill in the blanks
+region_prop_grid &lt;- expand.grid(unique(region_prop_info$region), 1:12) %&gt;% 
+  dplyr::rename(region = Var1, node = Var2) %&gt;% 
+  mutate(region = as.character(region)) %&gt;% 
+  left_join(NWA_coords, by = &quot;region&quot;) %&gt;% 
+  left_join(region_prop_info, by = c(&quot;region&quot;, &quot;node&quot;)) %&gt;% 
+  mutate(count = replace_na(count, 0),
+         region_node_prop = replace_na(region_node_prop, 0))
+
+# Join node info to region coordinates to keep ggplot happy
+# NWA_coords_more &lt;- left_join(NWA_coords, region_prop_info)
+
+# som_season_runner &lt;- ggplot()
+
+som_season_plot &lt;- ggplot() +
+  # geom_point(aes(colour = val)) +
+  # geom_raster(aes(fill  = val)) +
+  geom_polygon(data = map_base, aes(group = group, x = lon, y = lat), show.legend = F) +
+  geom_polygon(data = region_prop_grid, aes(group = region, x = lon, y = lat, fill = region_node_prop), colour = &quot;black&quot;) +
+  geom_label(data = region_prop_grid, aes(x = -60, y = 35, label = paste0(&quot;n = &quot;,count))) +
+  # geom_label(data = filter(node_prop_grid, season_peak == &quot;Winter&quot;),
+  #            aes(x = -60, y = 35, fill = node_season_prop, label = &quot;Winter&quot;), colour = &quot;white&quot;) +
+  # geom_label(data = filter(node_prop_grid, season_peak == &quot;Spring&quot;),
+  #            aes(x = -55, y = 35, fill = node_season_prop, label = &quot;Spring&quot;), colour = &quot;white&quot;) +
+  # geom_label(data = filter(node_prop_grid, season_peak == &quot;Summer&quot;),
+  #            aes(x = -50, y = 35, fill = node_season_prop, label = &quot;Summer&quot;), colour = &quot;white&quot;) +
+  # geom_label(data = filter(node_prop_grid, season_peak == &quot;Autumn&quot;),
+  #            aes(x = -45, y = 35, fill = node_season_prop, label = &quot;Autumn&quot;), colour = &quot;white&quot;) +
+  # geom_label(data = node_index_all_anom, aes(x = -60, y = 35, label = paste0(&quot;n = &quot;,count))) +
+  # geom_polygon(data = NWA_coords, aes(group = region, fill = region, colour = region), alpha = 0.1) +
+  coord_cartesian(xlim = NWA_corners_sub[1:2],
+                  ylim = NWA_corners_sub[3:4], 
+                  expand = F) +
+  scale_fill_distiller(palette = &quot;BuPu&quot;, direction = -1) +
+  # scale_fill_viridis_c(option = &quot;C&quot;) +
+  # scale_colour_viridis_c(option = viridis_option) +
+  labs(x = NULL, y = NULL, fill = &quot;Proportion of events\nper region per node&quot;) +
+  facet_wrap(~node, ncol = 4) +
+  theme(legend.position = &quot;bottom&quot;)
+som_season_plot
+ggsave(som_season_plot, filename = &quot;output/som_season_plot.pdf&quot;, height = 12, width = 13)</code></pre>
+</div>
+<div id="figure-6" class="section level2">
+<h2>Figure 6</h2>
+<p>The following code is for creating meta-data visualisations of the MHW metrics for each node.</p>
+<pre class="r"><code># Calculate the season during the peak of the event
+# Join tables that have sub/region + season + node
+# Think of a way to visualise this information
+  # Or just copy Eric
+
+# Calculate mean and median per node for plotting
+node_h_lines &lt;- NAPA_MHW_meta %&gt;% 
+  group_by(node) %&gt;% 
+  summarise(mean_int_cum = mean(intensity_cumulative, na.rm = T),
+            median_int_cum = median(intensity_cumulative, na.rm = T))
+
+# Create the figure
+som_lolli_plot &lt;- ggplot(data = NAPA_MHW_meta, aes(x = date_peak, y = intensity_cumulative)) +
+  geom_lolli() +
+  geom_point(aes(colour = season_peak)) +
+  geom_label(aes(x = as.Date(&quot;2007-01-01&quot;), y = 450, label = paste0(&quot;n = &quot;, count,&quot;/&quot;,length(node))), 
+             size = 3, label.padding = unit(0.5, &quot;lines&quot;)) +
+  geom_hline(data = node_h_lines, aes(yintercept = mean_int_cum), linetype = &quot;dashed&quot;) +
+  # geom_hline(data = node_h_lines, aes(yintercept = median_int_cum), linetype = &quot;dotted&quot;) +
+  facet_wrap(~node) +
+  labs(x = &quot;&quot;, y = &quot;Cummulative intensity (°Cxdays)&quot;, colour = &quot;Season&quot;) #+
+  # theme_grey() +
+  # scale_y_continuous(expand = c(0, 100)) +
+  # theme(strip.background = element_rect(fill = NA),
+  #       panel.border = element_rect(fill = NA, colour = &quot;black&quot;, size = 1),
+  #       axis.text = element_text(size = 12, colour = &quot;black&quot;),
+  #       axis.ticks = element_line(colour = &quot;black&quot;))
+# som_lolli_plot
+ggsave(som_lolli_plot, filename = &quot;output/som_lolli_plot.pdf&quot;, height = 9, width = 10)</code></pre>
+</div>
+<div id="figure-7" class="section level2">
+<h2>Figure 7</h2>
+<p>This figure should summarise what all of the other figures have shown by using arrows going form one direction to the other across the 12 panels of the SOM. It may make sense to put the bullet points that would make up Table 1 into the panels of this figure.</p>
+</div>
+<div id="table-1" class="section level2">
+<h2>Table 1</h2>
+<p>This table will show a synopsis of what each node appears to portray. It will be primarily modelled after Table 4 of <span class="citation">Oliver et al. (2018)</span>.</p>
+<pre class="r"><code># Node 1: Warm pulse of GS near NS coast. Shallowing mixed layer, low wind stress, and strong negative heat flux. Mostly gm and ss, almost no nfs. Almost entirely summer and autumn from 2013 - 2016. Mostly smaller evets but a few are massive.
+
+# Node 2: Cold GS with warm LC caused by positive heat flux, low wind stress, and shallow mixed layer. Mostly cbs with some gsl and no mab. Occurred in only 199 in two pulses in spring and summer (June - October). Normal intensity but short duration.
+
+# Node 3: Calm sea state with some positive heatflux into the LC causing events. Shallower mixed layer everywhere. Mostly nfs with progressively fewer events in regions down the coast. Almost none in ls. Smaller events with a couple of large ones. All seasons from 1999 - 2014.
+
+# Node 4: Extremely shallow mixed layer with a strong positive heatflux and low wind stress. Mostly nfs with progressively fewer events further away. Smaller events. Autumn, Winter, and Spring from 1999 - 2014.
+
+# Node 5: Slightly shallow slightly fast push of the GS into the coast becoming slightly deeper near WHOI before coming back away from the coast and chilling out. The core of the pulse has negative heatflux but the surrounding GS has a strong positive heatflux and snall wind stress. Almost exclusively occurs in mab with only a bit everywhere else. Smallish events with a few massive ones. All seasons from 2003 - 2015.
+
+# Node 6: Slightly warmer LS and LC with cooler GS. Minor poitive heat flux into LS and large positive heat flux into GS. Normal mixed layer with low wind stress over the LS and high over the GS. Mostly in the ls with a bit in the mab with almost none elsewhere. Occurred over 1999 - 2010 in spring and summer. Smaller events that have not been increasing over time.
+
+# Node 7: Warm waters from LS to LC to GSL and a cold GS. Strong downward heat flux over northern waters and negative flux over GS. Shallow northern waters with low wind stress while high stress over GS. Equally high in ls and nfs. A bit in cbs but almost none elsewhere. Spring - Autumn from 2000 - 2014. 2006 was a particularly strong year. Events are overall not particularly large.
+
+# Node 8: Warm northern waters with a cold GS. Strong positive flux over LS with weaker positive flux over GSL and negative over GS. Very shallow LS and very deep GS. Affects all northern waters but highest in gsl and ls. No events in mab and almost none in gm. Almost always Autumn and Winter from 2006 - 2013. Some more intense events later on with 2010/11 being a larger year.
+
+# Node 9: Similar to node 5. Strong nearshore GS pulse. Strong negative flux over LS and GS but positive over the rest of the Atlantic. Very strong wind stress over LS and eastern part of Atlantic, weak over the warm heat flux area of the Atlantic. Extremely deep LS and shallow GS. Occurred over 2002 - 2016 for winter and spring, events began occurring in Autumn from 2013. Evens becoming rather intense as time progresses with some massive ones. Increasing in intensity in most regions. 
+
+# Node 10: Very unstable mostly cold GS with warm GM and SS waters. Negative heat flux into shelf waters and positive into GS. High wind stress over LS and low over shelf waters. Deep GS and GM waters but shallow over SS. Spread out over most regions with fewest events in mab and nfs. A few tiny events from 2009 - 2011 but really got going from 2012 - 2013. Spring of 2013 was small while Autumn/WInter of 2012/13 was noteworthy.
+
+# Node 11: Energetic but normal temperature GS with warm inshore waters and slightly warm LS. Positive heat flux into GS and LS but negative into inshore waters. High wind stress above LS and a bit over central AO, but negative everywhere else. Very deep mixed layer next to coast in MAB but relatively normal everywhere else. Relatively equivalent occurrence in all regions. Occurred only from July - October, 2012. A few decent sized events. Mean max intensity is decent.
+
+# Node 12: Warm inshore and LS waters with cold GS and AO. GS is moving fast and consistent. Negative heatflux into GS and inshore waters, slightly positive into LS and AO. High wind stress over GS and AO, negative over inshore waters and LS. Very deep mixed layer along coast in mab and very shallow along coast in ls. Mostly events occurring in gsl, but also in other northern areas. Occurred every even year from 2008 to 2014 from ~June - September. Relatively small (short) events but with decent max intensities.</code></pre>
+</div>
+<div id="appendix" class="section level2">
+<h2>Appendix</h2>
+<div id="figures" class="section level3">
+<h3>Figures</h3>
+<p>It may be good to create a reference multi-panel figure for each event, as seen in <span class="citation">Schlegel et al. (2017)</span>. But given that there are nearly 700 events being considered, this is likely too much. Perhaps showing the top 100 or some sort of meaningful reduction</p>
+<pre class="r"><code># Create synoptic figure for each event
 
 # Load SACTN data
 load(&quot;~/data/SACTN/AHW/SACTN_clims.Rdata&quot;)
@@ -574,370 +1197,7 @@ event_idx &lt;- data.frame(event = dir(&quot;data/SOM&quot;, full.names = TRUE),
                         x = length(dir(&quot;data/SOM&quot;)))
 
 # Create a synoptic atlas figure for each MHW
-system.time(plyr::ddply(event_idx, c(&quot;event&quot;), synoptic.fig, .progress = &quot;text&quot;)) # 539 seconds
-
-
-# 3. Create synoptic figure showing SOM nodes -----------------------------
-
-load(&quot;data/node_means.Rdata&quot;)
-load(&quot;data/node_all_anom.Rdata&quot;)
-all.panels(node_means, node_all_anom)
-
-
-# 4. Create lolliplots for the SOM nodes ----------------------------------
-
-# Load data for figure
-load(&quot;data/SACTN/SACTN_events.Rdata&quot;)
-load(&quot;data/node_all_anom.Rdata&quot;)
-
-# Merge into one dataframe
-node_all &lt;- merge(node_all_anom, SACTN_events, by = c(&quot;event&quot;, &quot;site&quot;, &quot;season&quot;, &quot;event_no&quot;))
-
-# Calculate mean and median per node for plotting
-node_h_lines &lt;- node_all %&gt;% 
-  group_by(node) %&gt;% 
-  summarise(mean_int_cum = mean(int_cum, na.rm = T),
-            median_int_cum = median(int_cum, na.rm = T))
-
-# Create the figure
-ggplot(data = node_all, aes(x = date_start, y = int_cum)) +
-  geom_lolli() +
-  geom_point(aes(colour = season)) +
-  geom_label(aes(x = as.Date(&quot;2005-01-01&quot;), y = 580, label = paste0(&quot;n = &quot;, count,&quot;/&quot;,length(node))), 
-             size = 3, label.padding = unit(0.5, &quot;lines&quot;)) +
-  geom_hline(data = node_h_lines, aes(yintercept = mean_int_cum), linetype = &quot;dashed&quot;) +
-  geom_hline(data = node_h_lines, aes(yintercept = median_int_cum), linetype = &quot;dotted&quot;) +
-  facet_wrap(~node) +
-  labs(x = &quot;&quot;, y = &quot;Cummulative intensity (°C·days)&quot;, colour = &quot;Season&quot;) +
-  theme_grey() +
-  # scale_y_continuous(expand = c(0, 100)) +
-  theme(strip.background = element_rect(fill = NA),
-        panel.border = element_rect(fill = NA, colour = &quot;black&quot;, size = 1),
-        axis.text = element_text(size = 12, colour = &quot;black&quot;),
-        axis.ticks = element_line(colour = &quot;black&quot;))
-ggsave(&quot;graph/SOM_lolli.pdf&quot;, height = 9, width = 10)
-
-
-# 5. Create dendrogram for HCA results ------------------------------------
-
-# Load data
-load(&quot;data/all_anom_hclust.Rdata&quot;)
-load(&quot;data/all_anom_env.Rdata&quot;)
-
-# Prep dendrogram
-dhc &lt;- as.dendrogram(all_anom_hclust)
-ddata &lt;- dendro_data(dhc, type = &quot;rectangle&quot;)
-label_data &lt;- label(ddata)
-label_data$season &lt;- all_anom_env$season[as.numeric(as.character(label_data$label))]
-label_data$type &lt;- all_anom_env$type[as.numeric(as.character(label_data$label))]
-
-# Plot the dendrogram
-ggplot(segment(ddata)) + 
-  geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) +
-  geom_point(data = label_data, aes(x = x, y = y, shape = type, colour = season)) +
-  scale_shape_manual(values = c(1, 16)) +
-  theme_grey() +
-  theme(panel.border = element_rect(fill = NA, colour = &quot;black&quot;, size = 1),
-        axis.text = element_text(size = 12, colour = &quot;black&quot;),
-        axis.ticks = element_line(colour = &quot;black&quot;))
-ggsave(&quot;graph/HCA.pdf&quot;, height = 9, width = 9)
-
-
-# 6. Create ordiplot for MDS results --------------------------------------
-
-# Load data
-load(&quot;data/all_anom_MDS.Rdata&quot;)
-load(&quot;data/all_anom_env.Rdata&quot;)
-load(&quot;data/SACTN/SACTN_events.Rdata&quot;)
-SACTN_events$type &lt;- NULL
-# load(&quot;data/node_means.Rdata&quot;)
-# load(&quot;data/node_all_anom.Rdata&quot;)
-
-## Fit environmental variables
-ord_fit &lt;- envfit(all_anom_MDS ~ season + type, data = all_anom_env)
-# ord_fit
-ord_fit_df &lt;- as.data.frame(ord_fit$factors$centroids)
-ord_fit_df$factors &lt;- c(&quot;autumn&quot;, &quot;spring&quot;, &quot;summer&quot;, &quot;winter&quot;, &quot;clim&quot;, &quot;MHW&quot;)
-
-# Merge event values
-# SACTN_events_sub &lt;- SACTN_events[,c(1,2)]
-all_anom_env &lt;- left_join(all_anom_env, SACTN_events, by = c(&quot;event&quot;, &quot;season&quot;))
-
-# Create MDS dataframe
-# mds_df &lt;- data.frame(all_anom_MDS$points, type = all_anom_env$type, 
-#                      event = all_anom_env$event, season = all_anom_env$season)
-mds_df &lt;- data.frame(all_anom_MDS$points, all_anom_env)
-mds_df$duration[is.na(mds_df$duration)] &lt;- mean(mds_df$duration, na.rm = T)
-
-# Plot the fits
-ggplot(data = mds_df, aes(x = MDS1, y = MDS2)) +
-  geom_point(aes(colour = season, shape = type, size = duration)) +
-  geom_segment(data = ord_fit_df, aes(x = 0, y = 0, xend = NMDS1, yend = NMDS2),
-               arrow = arrow(angle = 40, length = unit(0.2, &quot;cm&quot;), type = &quot;open&quot;), 
-               alpha = 1, colour = &quot;black&quot;, size = 0.5)  +
-  geom_text(data = ord_fit_df, aes(label = factors, x = NMDS1, y = NMDS2), size = 8) +
-  scale_shape_manual(name = &quot;State&quot;, values = c(19, 15), labels = c(&quot;clim&quot;, &quot;MHW&quot;)) +
-  scale_colour_discrete(name = &quot;Season&quot;) +
-  scale_size_continuous(name = &quot;Duration\n(days)&quot;, breaks = c(20, 70, 120, 170, 220)) +
-  guides(colour = guide_legend(order = 1),
-         shape = guide_legend(order = 2),
-         size = guide_legend(override.aes = list(shape = 15), order = 3)) +
-  # labs(size = &quot;Duration&quot;) +
-  theme_grey() +
-  theme(strip.background = element_rect(fill = NA),
-        panel.border = element_rect(fill = NA, colour = &quot;black&quot;, size = 1),
-        axis.text = element_text(size = 12, colour = &quot;black&quot;),
-        axis.ticks = element_line(colour = &quot;black&quot;))
-ggsave(&quot;graph/MDS.pdf&quot;, height = 9, width = 12)
-
-# Linear model: duration vs. ordination from centre point
-lm_all_results &lt;- mds_df %&gt;%
-  na.omit() %&gt;%
-  mutate(MDS2 = abs(MDS2)) %&gt;% 
-  select(-MDS1, -event, -season, -type, -coast, -site) %&gt;%
-  gather(key = group, 
-         value = measurement,
-         -MDS2) %&gt;%
-  group_by(group) %&gt;% 
-  nest() %&gt;%
-  mutate(model = purrr::map(data, ~lm(measurement ~ MDS2, data = .))) %&gt;% 
-  unnest(model %&gt;% purrr::map(glance)) %&gt;% 
-  select(-data, -model)
-lm_all_results[lm_all_results$adj.r.squared == max(lm_all_results$adj.r.squared, na.rm = T),]
-
-# Visualization of the best linear model
-ggplot(data = mds_df) +
-  geom_smooth(aes(x = duration, y = abs(MDS2)), method = &quot;lm&quot;, se = F) +
-  theme_grey()
-
-
-# 7. Create map of study area ---------------------------------------------
-
-## Load data
-# International borders
-load(&quot;graph/africa_borders.Rdata&quot;)
-
-# Hi-res bathy
-load(&quot;graph/bathy.Rdata&quot;)
-
-# Reanalysis data
-load(&quot;data/ERA/ERA_temp_clim.Rdata&quot;)
-load(&quot;data/ERA/ERA_u_clim.Rdata&quot;)
-colnames(ERA_u_clim)[4] &lt;- &quot;val&quot;
-ERA_u_clim$variable &lt;- &quot;u&quot;
-load(&quot;data/ERA/ERA_v_clim.Rdata&quot;)
-colnames(ERA_v_clim)[4] &lt;- &quot;val&quot;
-ERA_v_clim$variable &lt;- &quot;v&quot;
-
-# Remote data
-load(&quot;data/OISST/OISST_temp_clim.Rdata&quot;)
-load(&quot;data/AVISO/AVISO_u_clim.Rdata&quot;)
-colnames(AVISO_u_clim)[4] &lt;- &quot;val&quot;
-AVISO_u_clim$variable &lt;- &quot;u&quot;
-load(&quot;data/AVISO/AVISO_v_clim.Rdata&quot;)
-colnames(AVISO_v_clim)[4] &lt;- &quot;val&quot;
-AVISO_v_clim$variable &lt;- &quot;v&quot;
-
-# In situ time series locations
-load(&quot;setupParams/SACTN_site_list.Rdata&quot;)
-SACTN_site_list$order &lt;- 1:nrow(SACTN_site_list)
-
-# Create annual mean air-sea state
-# sea_temp &lt;- filter(OISST_temp_clim, date == &quot;01-15&quot;) %&gt;% 
-sea_temp &lt;- data.table::data.table(OISST_temp_clim)
-sea_temp &lt;- sea_temp[, .(temp = mean(temp, na.rm = TRUE)),
-           by = .(x, y)] %&gt;% 
-  rename(lon = x, lat = y)
-currents &lt;- data.table::data.table(rbind(AVISO_u_clim, AVISO_v_clim))
-currents &lt;- currents[, .(val = mean(val, na.rm = TRUE)),
-                     by = .(x, y, variable)] %&gt;% 
-  spread(key = variable, value = val) %&gt;% 
-  rename(lon = x, lat = y) %&gt;% 
-  mutate(arrow_size = ((abs(u*v)/ max(abs(u*v)))+0.2)/6)
-air_temp &lt;- data.table::data.table(ERA_temp_clim)
-air_temp &lt;- air_temp[, .(temp = mean(temp, na.rm = TRUE)),
-                     by = .(x, y)] %&gt;% 
-  rename(lon = x, lat = y)
-winds &lt;- data.table::data.table(rbind(ERA_u_clim, ERA_v_clim))
-winds &lt;- winds[, .(val = mean(val, na.rm = TRUE)),
-                     by = .(x, y, variable)] %&gt;% 
-  spread(key = variable, value = val) %&gt;% 
-  rename(lon = x, lat = y) %&gt;% 
-  mutate(arrow_size = ((abs(u*v)/ max(abs(u*v)))+0.3)/6)
-
-# Reduce wind/ current vectors
-lon_sub &lt;- seq(10, 40, by = 1)
-lat_sub &lt;- seq(-40, -15, by = 1)
-# currents &lt;- currents[(currents$lon %in% lon_sub &amp; currents$lat %in% lat_sub),]
-winds &lt;- winds[(winds$lon %in% lon_sub &amp; winds$lat %in% lat_sub),]
-
-# Establish the vector scalar for the currents
-current_uv_scalar &lt;- 2
-
-# Establish the vector scalar for the wind
-wind_uv_scalar &lt;- 0.5
-
-# Wind feature vector coordinates
-cyc_atlantic &lt;- data.frame(x = c(14.0, 16.1, 16.0), y = c(-36.0, -34.4, -32.1), xend = c(16.0, 16.1, 14.0), yend = c(-34.5, -32.2, -30.6))
-cyc_indian &lt;- data.frame(x = c(36.0, 33.9, 34.0), y = c(-31.5, -33.1, -35.4), xend = c(34.0, 33.9, 36.0), yend = c(-33.0, -35.3, -36.9))
-westerlies &lt;- data.frame(x = c(18.0, 21.1, 24.2), y = c(-38.0, -37.8, -37.8), xend = c(21.0, 24.1, 27.2), yend = c(-37.8, -37.8, -38.0))
-
-# The top figure (sea)
-fig_1_top &lt;- ggplot(data = southern_africa_coast, aes(x = lon, y = lat)) +
-  # The ocean temperature
-  geom_raster(data = sea_temp, aes(fill = temp)) +
-  # The bathymetry
-  stat_contour(data = bathy[bathy$depth &lt; -100 &amp; bathy$depth &gt; -300,], 
-               aes(x = lon, y = lat, z = depth), alpha = 0.5,
-               colour = &quot;ivory&quot;, size = 0.5, binwidth = 200, na.rm = TRUE, show.legend = FALSE) +
-  # The current vectors
-  geom_segment(data = currents, aes(xend = lon + u * current_uv_scalar, yend = lat + v * current_uv_scalar),
-               arrow = arrow(angle = 40, length = unit(currents$arrow_size, &quot;cm&quot;), type = &quot;open&quot;),
-                             linejoin = &quot;mitre&quot;, size = 0.4) +
-  # The land mass
-  geom_polygon(aes(group = group), fill = &quot;grey70&quot;, colour = &quot;black&quot;, size = 0.5, show.legend = FALSE) +
-  geom_path(data = africa_borders, aes(group = group)) +
-  # The legend for the vector length
-  geom_label(aes(x = 37.0, y = -38.0, label = &quot;1.0 m/s\n&quot;), size = 3, label.padding = unit(0.5, &quot;lines&quot;)) +
-  geom_segment(aes(x = 36.0, y = -38.3, xend = 38.0, yend = -38.3), linejoin = &quot;mitre&quot;,
-               arrow = arrow(angle = 40, length = unit(0.2, &quot;cm&quot;), type = &quot;open&quot;)) +
-  # The in situ sites
-  geom_point(data = SACTN_site_list, shape = 19,  size = 2.8, colour = &quot;ivory&quot;) +
-  geom_text(data = SACTN_site_list[-c(3,4,7:9,18,21,23:24),], aes(label = order), size = 1.9, colour = &quot;red&quot;) +
-  # Oceans
-  annotate(&quot;text&quot;, label = &quot;INDIAN\nOCEAN&quot;, x = 37.00, y = -34.0, size = 4.0, angle = 0, colour = &quot;ivory&quot;) +
-  
-  annotate(&quot;text&quot;, label = &quot;ATLANTIC\nOCEAN&quot;, x = 13.10, y = -34.0, size = 4.0, angle = 0, colour = &quot;ivory&quot;) +
-  # Benguela
-  geom_segment(aes(x = 17.2, y = -32.6, xend = 15.2, yend = -29.5),
-               arrow = arrow(length = unit(0.3, &quot;cm&quot;)), size = 0.5, colour = &quot;ivory&quot;) +
-  annotate(&quot;text&quot;, label = &quot;Benguela&quot;, x = 16.0, y = -31.8, size = 3.5, angle = 298, colour = &quot;ivory&quot;) +
-  # Agulhas
-  geom_segment(aes(x = 33, y = -29.5, xend = 29.8, yend = -33.0),
-               arrow = arrow(length = unit(0.3, &quot;cm&quot;)), size = 0.5, colour = &quot;ivory&quot;) +
-  annotate(&quot;text&quot;, label = &quot;Agulhas&quot;, x = 31.7, y = -31.7, size = 3.5, angle = 53, colour = &quot;ivory&quot;) +
-  # Agulhas Bank
-  annotate(&quot;text&quot;, label = &quot;Agulhas\nBank&quot;, x = 22.5, y = -35.5, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
-  # Cape Peninsula
-  annotate(&quot;text&quot;, label = &quot;Cape\nPeninsula&quot;, x = 17.2, y = -35, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
-  # Improve on the x and y axis labels
-  scale_x_continuous(breaks = seq(15, 35, 5),
-                     labels = scales::unit_format(&quot;°E&quot;, sep = &quot;&quot;),
-                     position = &quot;top&quot;) +
-  scale_y_continuous(breaks = seq(-35, -30, 5),
-                     labels = c(&quot;35°S&quot;, &quot;30°S&quot;)) +
-  labs(x = NULL, y = NULL) +
-  # Slightly shrink the plotting area
-  coord_cartesian(xlim = c(10.5, 39.5), ylim = c(-39.5, -25.5), expand = F) +
-  # Use viridis colour scheme
-  scale_fill_viridis(name = &quot;Temp.\n(°C)&quot;, option = &quot;D&quot;, breaks = c(24, 20, 16)) +
-  # Adjust the theme
-  theme_bw() +
-  theme(panel.border = element_rect(fill = NA, colour = &quot;black&quot;, size = 1),
-        axis.text = element_text(size = 12, colour = &quot;black&quot;),
-        axis.ticks = element_line(colour = &quot;black&quot;))
-# fig_1_top
-
-# False Bay inset
-fb_inset &lt;- ggplot(data = sa_shore, aes(x = lon, y = lat)) +
-  # The land mass
-  geom_polygon(aes(group = PID),
-               fill = &quot;grey70&quot;, colour = NA, size = 0.5, show.legend = FALSE) +
-  # The in situ sites
-  geom_point(data = SACTN_site_list, shape = 1,  size = 3, colour = &quot;black&quot;) +
-  geom_text(data = SACTN_site_list[-6,], aes(label = order), size = 2.0, colour = &quot;red&quot;) +
-  # Text label
-  geom_text(aes(x = 18.65, y = -34.25, label = &quot;False\nBay&quot;), size = 2.7) +
-  # Control the x and y axes
-  coord_cartesian(xlim = c(18.2, 19), ylim = c(-34.5, -33.8), expand = F) +
-  scale_x_continuous(breaks = c(18.5), label = &quot;18.5°E&quot;) +
-  scale_y_continuous(breaks = c(-34.1), label = &quot;34.1°S&quot;) +
-  labs(x = NULL, y = NULL) +
-  # Change the theme for cleaner over-plotting
-  theme_bw() +
-  theme(plot.background = element_blank(),
-        axis.text = element_text(colour = &quot;ivory&quot;),
-        axis.text.y = element_text(angle = 90, hjust = 0.5),
-        axis.ticks = element_line(colour = &quot;ivory&quot;),
-        panel.border = element_rect(colour = &quot;ivory&quot;),
-        panel.grid = element_blank())
-# fb_inset
-
-# The bottom figure (air)
-fig_1_bottom &lt;- ggplot(data = southern_africa_coast, aes(x = lon, y = lat)) +
-  # The ocean temperature
-  geom_raster(data = air_temp, aes(fill = temp)) +
-  # The land mass
-  geom_polygon(aes(group = group), fill = NA, colour = &quot;black&quot;, size = 0.5, show.legend = FALSE) +
-  geom_path(data = africa_borders, aes(group = group)) +
-  # The current vectors
-  geom_segment(data = winds, aes(xend = lon + u * wind_uv_scalar, yend = lat + v * wind_uv_scalar),
-               arrow = arrow(angle = 40, length = unit(winds$arrow_size, &quot;cm&quot;), type = &quot;open&quot;),
-               linejoin = &quot;mitre&quot;, size = 0.4) +
-  # The legend for the vector length
-  geom_label(aes(x = 37.0, y = -38.0, label = &quot;4.0 m/s\n&quot;), size = 3, label.padding = unit(0.5, &quot;lines&quot;)) +
-  geom_segment(aes(x = 36.0, y = -38.3, xend = 38.0, yend = -38.3), linejoin = &quot;mitre&quot;,
-               arrow = arrow(angle = 40, length = unit(0.2, &quot;cm&quot;), type = &quot;open&quot;)) +
-  # The coastal sections
-  geom_spoke(aes(x = 18.46520, y = -34.31050, angle = 180, radius = -2), linetype = &quot;dotted&quot;, colour = &quot;ivory&quot;) +
-  geom_spoke(aes(x = 18.46520, y = -34.31050, angle = 180, radius = 2), linetype = &quot;dotted&quot;, colour = &quot;ivory&quot;) +
-  geom_spoke(aes(x = 27.48889, y = -33.28611, angle = 40, radius = -2), linetype = &quot;dotted&quot;, colour = &quot;ivory&quot;) +
-  geom_spoke(aes(x = 27.48889, y = -33.28611, angle = 40, radius = 2), linetype = &quot;dotted&quot;, colour = &quot;ivory&quot;) +
-  annotate(&quot;text&quot;, label = &quot;West\nCoast&quot;, x = 19.5, y = -31.2, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
-  annotate(&quot;text&quot;, label = &quot;South\nCoast&quot;, x = 23, y = -33.0, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
-  annotate(&quot;text&quot;, label = &quot;East\nCoast&quot;, x = 28, y = -31, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
-  # South Atlantic Anticyclone
-  annotate(&quot;text&quot;, label = &quot;SOUTH\nATLANTIC\nANTICYCLONE&quot;, x = 13.5, y = -33.5, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
-  geom_curve(data = cyc_atlantic, aes(x = x, y = y, xend = xend, yend = yend), curvature = 0.2, colour = &quot;ivory&quot;,
-             arrow = arrow(angle = 40, type = &quot;open&quot;, length = unit(0.25,&quot;cm&quot;))) +
-  # South Indian Anticyclone
-  annotate(&quot;text&quot;, label = &quot;SOUTH\nINDIAN\nANTICYCLONE&quot;, x = 36.5, y = -34.0, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
-  geom_curve(data = cyc_indian, aes(x = x, y = y, xend = xend, yend = yend), curvature = 0.2, colour = &quot;ivory&quot;,
-             arrow = arrow(angle = 40, type = &quot;open&quot;, length = unit(0.25,&quot;cm&quot;))) +
-  # Westerlies
-  annotate(&quot;text&quot;, label = &quot;WESTERLIES&quot;, x = 22.5, y = -37.0, size = 3.0, angle = 0, colour = &quot;ivory&quot;) +
-  geom_curve(data = westerlies, aes(x = x, y = y, xend = xend, yend = yend), colour = &quot;ivory&quot;,
-             arrow = arrow(angle = 40, type = &quot;open&quot;, length = unit(0.25,&quot;cm&quot;)), curvature = -0.01) +
-  # Improve on the x and y axis labels
-  scale_x_continuous(breaks = seq(15, 35, 5),
-                     labels = scales::unit_format(&quot;°E&quot;, sep = &quot;&quot;)) +
-  scale_y_continuous(breaks = seq(-35, -30, 5),
-                     labels = c(&quot;35°S&quot;, &quot;30°S&quot;)) +
-  labs(x = NULL, y = NULL) +
-  # Scale bar
-  scaleBar(lon = 22.0, lat = -29.5, distanceLon = 200, distanceLat = 50, distanceLegend = 90, dist.unit = &quot;km&quot;,
-           arrow.length = 100, arrow.distance = 130, arrow.North.size = 3, 
-           legend.colour = &quot;ivory&quot;, arrow.colour = &quot;ivory&quot;, N.colour = &quot;ivory&quot;) +
-  # Slightly shrink the plotting area
-  coord_cartesian(xlim = c(10.5, 39.5), ylim = c(-39.5, -25.5), expand = F) +
-  # Use viridis colour scheme
-  scale_fill_viridis(name = &quot;Temp.\n(°C)&quot;, option = &quot;A&quot;, breaks = c(24, 20, 16)) +
-  # Adjust the theme
-  theme_bw() +
-  theme(panel.border = element_rect(fill = NA, colour = &quot;black&quot;, size = 1),
-        axis.text = element_text(size = 12, colour = &quot;black&quot;),
-        axis.ticks = element_line(colour = &quot;black&quot;))
-# fig_1_bottom
-
-# Convert the figures to grobs
-fig_1_top_grob &lt;- ggplotGrob(fig_1_top)
-fb_inset_grob &lt;- ggplotGrob(fb_inset)
-fig_1_bottom_grob &lt;- ggplotGrob(fig_1_bottom)
-
-# Stick them together
-fig_1 &lt;- ggplot() +
-  # First set the x and y axis values so we know what the ranges are
-  # in order to make it easier to place our facets
-  coord_equal(xlim = c(1, 10), ylim = c(1, 10), expand = F) +
-  # Then we place our facetsover one another using the coordinates we created
-  annotation_custom(fig_1_top_grob,
-                    xmin = 1, xmax = 10, ymin = 5.5, ymax = 10) +
-  annotation_custom(fb_inset_grob,
-                    xmin = 3.5, xmax = 5.5, ymin = 7.2, ymax = 8.8) +
-  annotation_custom(fig_1_bottom_grob,
-                    xmin = 1, xmax = 10, ymin = 1, ymax = 5.5)
-# save
-ggsave(plot = fig_1, filename = &quot;graph/fig_1.pdf&quot;, height = 8, width = 8)</code></pre>
+system.time(plyr::ddply(event_idx, c(&quot;event&quot;), synoptic.fig, .progress = &quot;text&quot;)) # 539 seconds</code></pre>
 <div id="refs">
 <div id="ref-Oliver2018tasmania">
 <p>Oliver, E. C., Lago, V., Hobday, A. J., Holbrook, N. J., Ling, S. D., and Mundy, C. N. (2018). Marine heatwaves off eastern tasmania: Trends, interannual variability, and predictability. <em>Progress in oceanography</em> 161, 116–130.</p>
@@ -947,10 +1207,11 @@ ggsave(plot = fig_1, filename = &quot;graph/fig_1.pdf&quot;, height = 8, width =
 </div>
 </div>
 </div>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.6.0 (2019-04-26)
+<pre><code>R version 3.6.1 (2019-07-05)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 16.04.5 LTS
 
@@ -970,33 +1231,36 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] bindrcpp_0.2.2    data.table_1.11.6 yasomi_0.3       
- [4] proxy_0.4-22      e1071_1.7-0       lubridate_1.7.4  
- [7] ncdf4_1.16        forcats_0.3.0     stringr_1.3.1    
-[10] dplyr_0.7.6       purrr_0.2.5       readr_1.1.1      
-[13] tidyr_0.8.1       tibble_1.4.2      ggplot2_3.0.0    
-[16] tidyverse_1.2.1   jsonlite_1.6     
+ [1] bindrcpp_0.2.2       FNN_1.1.2.1          akima_0.6-2         
+ [4] tidync_0.2.1         heatwaveR_0.3.6.9004 data.table_1.11.6   
+ [7] yasomi_0.3           proxy_0.4-22         e1071_1.7-0         
+[10] lubridate_1.7.4      ncdf4_1.16           forcats_0.3.0       
+[13] stringr_1.3.1        dplyr_0.7.6          purrr_0.2.5         
+[16] readr_1.1.1          tidyr_0.8.1          tibble_1.4.2        
+[19] ggplot2_3.0.0        tidyverse_1.2.1      jsonlite_1.6        
 
 loaded via a namespace (and not attached):
- [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
- [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
- [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
-[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
-[13] doMC_1.3.5        modelr_0.1.2      readxl_1.1.0     
-[16] foreach_1.4.4     bindr_0.1.1       plyr_1.8.4       
-[19] munsell_0.5.0     gtable_0.2.0      workflowr_1.1.1  
-[22] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
-[25] codetools_0.2-15  evaluate_0.11     knitr_1.20       
-[28] parallel_3.6.0    class_7.3-14      broom_0.5.0      
-[31] Rcpp_0.12.18      backports_1.1.2   scales_1.0.0     
-[34] hms_0.4.2         digest_0.6.16     stringi_1.2.4    
-[37] grid_3.6.0        rprojroot_1.3-2   cli_1.0.0        
-[40] tools_3.6.0       maps_3.3.0        magrittr_1.5     
-[43] lazyeval_0.2.1    crayon_1.3.4      whisker_0.3-2    
-[46] pkgconfig_2.0.2   xml2_1.2.0        iterators_1.0.10 
-[49] assertthat_0.2.0  rmarkdown_1.10    httr_1.3.1       
-[52] rstudioapi_0.7    R6_2.2.2          nlme_3.1-137     
-[55] git2r_0.23.0      compiler_3.6.0   </code></pre>
+ [1] Rcpp_0.12.18      lattice_0.20-35   class_7.3-14     
+ [4] foreach_1.4.4     assertthat_0.2.0  rprojroot_1.3-2  
+ [7] digest_0.6.16     R6_2.2.2          cellranger_1.1.0 
+[10] plyr_1.8.4        backports_1.1.2   evaluate_0.11    
+[13] httr_1.3.1        pillar_1.3.0      rlang_0.2.2      
+[16] lazyeval_0.2.1    readxl_1.1.0      ncmeta_0.0.4     
+[19] rstudioapi_0.7    whisker_0.3-2     R.utils_2.7.0    
+[22] R.oo_1.22.0       rmarkdown_1.10    htmlwidgets_1.3  
+[25] munsell_0.5.0     broom_0.5.0       compiler_3.6.1   
+[28] modelr_0.1.2      pkgconfig_2.0.2   htmltools_0.3.6  
+[31] tidyselect_0.2.4  workflowr_1.1.1   codetools_0.2-15 
+[34] doMC_1.3.5        viridisLite_0.3.0 crayon_1.3.4     
+[37] withr_2.1.2       R.methodsS3_1.7.1 grid_3.6.1       
+[40] nlme_3.1-137      gtable_0.2.0      git2r_0.23.0     
+[43] magrittr_1.5      scales_1.0.0      cli_1.0.0        
+[46] stringi_1.2.4     sp_1.3-1          xml2_1.2.0       
+[49] iterators_1.0.10  tools_3.6.1       glue_1.3.0       
+[52] RNetCDF_1.9-1     maps_3.3.0        hms_0.4.2        
+[55] parallel_3.6.1    yaml_2.2.0        colorspace_1.3-2 
+[58] rvest_0.3.2       plotly_4.9.0      knitr_1.20       
+[61] bindr_0.1.1       haven_1.1.2      </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using

@@ -116,7 +116,7 @@ knitr::include_graphics("~/MHWNWA/output/node_11_panels.png")
 
 ## Node 12
 
-```{r node-11, out.width='100%', fig.align='center', fig.cap='Warm inshore and LS waters with cold GS and AO. GS is moving fast and consistent. Negative heatflux into GS and inshore waters, slightly positive into LS and AO. High wind stress over GS and AO, negative over inshore waters and LS. Very deep mixed layer along coast in mab and very shallow along coast in ls. Mostly events occurring in gsl, but also in other northern areas. Occurred every even year from 2008 to 2014 from ~June - September. Relatively small (short) events but with decent max intensities.'}
+```{r node-12, out.width='100%', fig.align='center', fig.cap='Warm inshore and LS waters with cold GS and AO. GS is moving fast and consistent. Negative heatflux into GS and inshore waters, slightly positive into LS and AO. High wind stress over GS and AO, negative over inshore waters and LS. Very deep mixed layer along coast in mab and very shallow along coast in ls. Mostly events occurring in gsl, but also in other northern areas. Occurred every even year from 2008 to 2014 from ~June - September. Relatively small (short) events but with decent max intensities.'}
 knitr::include_graphics("~/MHWNWA/output/node_12_panels.png")
 ```
 
