@@ -72,7 +72,7 @@ options(knitr.table.format = "html")
 # What are known drivers of past MHWs?
 
 Advection, heat flux, and intrinsic ocean modes are the primary drivers of sea surface temperature (SST) [@Deser2010].  
-Different regions of the world show different primary drivers for anomolously warm SST.  
+Different regions of the world show different primary drivers for anomalously warm SST.  
 MHWs in the coastal oceans are primarily driven by abnormal movement of warm currents onto the coast [@Schlegel2017predominant; @Oliver2018tasmania].  
 For large seas like the Mediterranean, heat flux is dominant [@Garrabou2009].  
 Events in the open oceans tend to be driven by a combination of factors [@Bond2015a].
@@ -80,7 +80,7 @@ Events in the open oceans tend to be driven by a combination of factors [@Bond20
 # Why use a new method to determine drivers?
 
 The current standard is to analyse the drivers of one large MHW at a time.  
-MHWs are occurring too rapidly to spend a year understanding the drivers of an indivudual event.  
+MHWs are occurring too rapidly to spend a year understanding the drivers of an individual event.  
 Smaller events that would normally escape our notice may also be important.  
 Machine learning may be a better choice moving forwards.  
 
@@ -108,7 +108,6 @@ No overall seasonality, but more recent events occurring in spring and increasin
 
 The SOM technique functions as expected in the Northwest Atlantic.  
 Each node tells a different complex story.  
-Anomalous Gulf Stream activity caused the most intense MHWs.  
 Many of the nodes show drivers that occurred over a few years or less.  
 Most of the nodes show drivers that occur during specific seasons.  
 Drivers usually affected multiple regions concurrently.  
@@ -122,23 +121,15 @@ Test these drivers (node synoptic states) as predictors for events in different 
 Rank the drivers by their predictive accuracy.  
 Create operational prediction data layer for public use/consumption.  
 
-<!-- ```{r fig-1, out.width='70%', fig.align='center', fig.cap='The top panel shows the overall average SST and surface currents for the study area. The bottom panel shows the overall aveage net downward heatflux.'} -->
-<!-- knitr::include_graphics("~/MHWNWA/talk/graph/fig_1.png") -->
-<!-- ``` -->
-
 ```{r fig-1, out.width='70%', fig.align='center', fig.cap='The regions of the coast were divided up by their temperature and salinity regimes based on work by @Richaud2016. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. The regions were furthered divided into sub-regions based on their depth.'}
 knitr::include_graphics("~/MHWNWA/talk/graph/fig_2.png")
 ```
 
-```{r fig-2, out.width='70%', fig.align='center', fig.cap='An overview of the information contained in one MHW data packet. The region of the focus event is shown in black. A) The focus MHW is shown in red and other MHWs occurring within the same year are shown in salmon; the start and end dates of the focus event are marked in light green while the peak date is marked with dark green. B) The SST and surface current anomalies during the MHW. C) The anomalous net downward heat flux. D) The wind stress and relative mixed layer depth anomalies.'}
+```{r fig-2, out.width='90%', fig.align='center', fig.cap='An overview of the information contained in one MHW data packet. The region of the focus event is shown in black. A) The focus MHW is shown in red and other MHWs occurring within the same year are shown in salmon; the start and end dates of the focus event are marked in light green while the peak date is marked with dark green. B) The SST and surface current anomalies during the MHW. C) The anomalous net downward heat flux. D) The wind stress and relative mixed layer depth anomalies.'}
 knitr::include_graphics("~/MHWNWA/talk/graph/fig_3.png")
 ```
 
-<!-- ```{r sst-panel-all, out.width='70%', fig.align='center', fig.cap='The resultant 12 nodes for SST only. Note how there are rarely any occurrences of a warm anomaly for the entire study area.'} -->
-<!-- knitr::include_graphics("~/MHWNWA/output/som_plot_sst_anom.png") -->
-<!-- ``` -->
-
-```{r fig-3, out.width='70%', fig.align='center', fig.cap='Summary visuals for the results from node 5. A) The SST and surface current anomalies. B) The net downward heat flux anomaly. C) The wind stress and mixed layer depth anomalies. D) The proportion of events that occurred in each region. E) The cumulative intensity and season of occurrence for each MHW. F) The max intensity and region of occurrence for each MHW.'}
+```{r fig-3, out.width='90%', fig.align='center', fig.cap='Summary visuals for the results from node 5. A) The SST and surface current anomalies. B) The net downward heat flux anomaly. C) The wind stress and mixed layer depth anomalies. D) The proportion of events that occurred in each region. E) The cumulative intensity and season of occurrence for each MHW. F) The max intensity and region of occurrence for each MHW.'}
 knitr::include_graphics("~/MHWNWA/output/node_5_panels.png")
 ```
 

@@ -300,7 +300,7 @@ Having a more thorough go at the text-->
 <div id="what-are-known-drivers-of-past-mhws" class="section level1">
 <h1>What are known drivers of past MHWs?</h1>
 <p>Advection, heat flux, and intrinsic ocean modes are the primary drivers of sea surface temperature (SST) <span class="citation">(Deser et al. <a href="#ref-Deser2010">2010</a>)</span>.<br />
-Different regions of the world show different primary drivers for anomolously warm SST.<br />
+Different regions of the world show different primary drivers for anomalously warm SST.<br />
 MHWs in the coastal oceans are primarily driven by abnormal movement of warm currents onto the coast <span class="citation">(Schlegel et al. <a href="#ref-Schlegel2017predominant">2017</a>; Oliver et al. <a href="#ref-Oliver2018tasmania">2018</a>)</span>.<br />
 For large seas like the Mediterranean, heat flux is dominant <span class="citation">(Garrabou et al. <a href="#ref-Garrabou2009">2009</a>)</span>.<br />
 Events in the open oceans tend to be driven by a combination of factors <span class="citation">(Bond et al. <a href="#ref-Bond2015a">2015</a>)</span>.</p>
@@ -308,7 +308,7 @@ Events in the open oceans tend to be driven by a combination of factors <span cl
 <div id="why-use-a-new-method-to-determine-drivers" class="section level1">
 <h1>Why use a new method to determine drivers?</h1>
 <p>The current standard is to analyse the drivers of one large MHW at a time.<br />
-MHWs are occurring too rapidly to spend a year understanding the drivers of an indivudual event.<br />
+MHWs are occurring too rapidly to spend a year understanding the drivers of an individual event.<br />
 Smaller events that would normally escape our notice may also be important.<br />
 Machine learning may be a better choice moving forwards.</p>
 </div>
@@ -336,7 +336,6 @@ No overall seasonality, but more recent events occurring in spring and increasin
 <h1>Conclusions</h1>
 <p>The SOM technique functions as expected in the Northwest Atlantic.<br />
 Each node tells a different complex story.<br />
-Anomalous Gulf Stream activity caused the most intense MHWs.<br />
 Many of the nodes show drivers that occurred over a few years or less.<br />
 Most of the nodes show drivers that occur during specific seasons.<br />
 Drivers usually affected multiple regions concurrently.<br />
@@ -349,9 +348,6 @@ Run this same analysis 1, 2, 3, etc. months prior to the MHWs to see how well it
 Test these drivers (node synoptic states) as predictors for events in different data products.<br />
 Rank the drivers by their predictive accuracy.<br />
 Create operational prediction data layer for public use/consumption.</p>
-<!-- ```{r fig-1, out.width='70%', fig.align='center', fig.cap='The top panel shows the overall average SST and surface currents for the study area. The bottom panel shows the overall aveage net downward heatflux.'} -->
-<!-- knitr::include_graphics("~/MHWNWA/talk/graph/fig_1.png") -->
-<!-- ``` -->
 <div class="figure" style="text-align: center"><span id="fig:fig-1"></span>
 <img src="/home/rws/MHWNWA/talk/graph/fig_2.png" alt="The regions of the coast were divided up by their temperature and salinity regimes based on work by @Richaud2016. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. The regions were furthered divided into sub-regions based on their depth." width="70%" />
 <p class="caption">
@@ -359,16 +355,13 @@ Figure 1: The regions of the coast were divided up by their temperature and sali
 </p>
 </div>
 <div class="figure" style="text-align: center"><span id="fig:fig-2"></span>
-<img src="/home/rws/MHWNWA/talk/graph/fig_3.png" alt="An overview of the information contained in one MHW data packet. The region of the focus event is shown in black. A) The focus MHW is shown in red and other MHWs occurring within the same year are shown in salmon; the start and end dates of the focus event are marked in light green while the peak date is marked with dark green. B) The SST and surface current anomalies during the MHW. C) The anomalous net downward heat flux. D) The wind stress and relative mixed layer depth anomalies." width="70%" />
+<img src="/home/rws/MHWNWA/talk/graph/fig_3.png" alt="An overview of the information contained in one MHW data packet. The region of the focus event is shown in black. A) The focus MHW is shown in red and other MHWs occurring within the same year are shown in salmon; the start and end dates of the focus event are marked in light green while the peak date is marked with dark green. B) The SST and surface current anomalies during the MHW. C) The anomalous net downward heat flux. D) The wind stress and relative mixed layer depth anomalies." width="90%" />
 <p class="caption">
 Figure 2: An overview of the information contained in one MHW data packet. The region of the focus event is shown in black. A) The focus MHW is shown in red and other MHWs occurring within the same year are shown in salmon; the start and end dates of the focus event are marked in light green while the peak date is marked with dark green. B) The SST and surface current anomalies during the MHW. C) The anomalous net downward heat flux. D) The wind stress and relative mixed layer depth anomalies.
 </p>
 </div>
-<!-- ```{r sst-panel-all, out.width='70%', fig.align='center', fig.cap='The resultant 12 nodes for SST only. Note how there are rarely any occurrences of a warm anomaly for the entire study area.'} -->
-<!-- knitr::include_graphics("~/MHWNWA/output/som_plot_sst_anom.png") -->
-<!-- ``` -->
 <div class="figure" style="text-align: center"><span id="fig:fig-3"></span>
-<img src="/home/rws/MHWNWA/output/node_5_panels.png" alt="Summary visuals for the results from node 5. A) The SST and surface current anomalies. B) The net downward heat flux anomaly. C) The wind stress and mixed layer depth anomalies. D) The proportion of events that occurred in each region. E) The cumulative intensity and season of occurrence for each MHW. F) The max intensity and region of occurrence for each MHW." width="70%" />
+<img src="/home/rws/MHWNWA/output/node_5_panels.png" alt="Summary visuals for the results from node 5. A) The SST and surface current anomalies. B) The net downward heat flux anomaly. C) The wind stress and mixed layer depth anomalies. D) The proportion of events that occurred in each region. E) The cumulative intensity and season of occurrence for each MHW. F) The max intensity and region of occurrence for each MHW." width="90%" />
 <p class="caption">
 Figure 3: Summary visuals for the results from node 5. A) The SST and surface current anomalies. B) The net downward heat flux anomaly. C) The wind stress and mixed layer depth anomalies. D) The proportion of events that occurred in each region. E) The cumulative intensity and season of occurrence for each MHW. F) The max intensity and region of occurrence for each MHW.
 </p>
@@ -384,7 +377,7 @@ Figure 3: Summary visuals for the results from node 5. A) The SST and surface cu
 <p>Deser, C, M A Alexander, S P Xie, and A S Phillips. 2010. “Sea surface temperature variability: patterns and mechanisms.” <em>Annual Review of Marine Science</em> 2: 115–43. <a href="https://doi.org/10.1146/annurev-marine-120408-151453">https://doi.org/10.1146/annurev-marine-120408-151453</a>.</p>
 </div>
 <div id="ref-Garrabou2009">
-<p>Garrabou, J., R. Coma, N. Bensoussan, M. Bally, P. Chevaldonné, M. Cigliano, D. Diaz, et al. 2009. “Mass mortality in Northwestern Mediterranean rocky benthic communities: effects of the 2003 heat wave.” <em>Global Change Biology</em> 15 (5): 1090–1103. <a href="https://doi.org/10.1111/j.1365-2486.2008.01823.x">https://doi.org/10.1111/j.1365-2486.2008.01823.x</a>.</p>
+<p>Garrabou, J, R Coma, N Bensoussan, M Bally, P Chevaldonné, M Cigliano, D Diaz, et al. 2009. “Mass mortality in Northwestern Mediterranean rocky benthic communities: effects of the 2003 heat wave.” <em>Global Change Biology</em> 15 (5): 1090–1103. <a href="https://doi.org/10.1111/j.1365-2486.2008.01823.x">https://doi.org/10.1111/j.1365-2486.2008.01823.x</a>.</p>
 </div>
 <div id="ref-Oliver2018tasmania">
 <p>Oliver, Eric CJ, Véronique Lago, Alistair J Hobday, Neil J Holbrook, Scott D Ling, and Craig N Mundy. 2018. “Marine Heatwaves Off Eastern Tasmania: Trends, Interannual Variability, and Predictability.” <em>Progress in Oceanography</em> 161. Elsevier: 116–30.</p>
