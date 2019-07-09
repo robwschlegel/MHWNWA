@@ -87,7 +87,7 @@ lon_lat_NAPA_OISST <- lon_lat_NAPA_OISST %>%
 
 "Finally, Shearman and Lentz (2010) showed that century-long ocean warming trends observed along the entire northeast U.S. coast are not related to local atmospheric forcing but driven by atmospheric warming of source waters in the Labrador Sea and the Arctic, which are advected into the region." [@Richaud2016]
 
-Downelling
+Downwelling
 
 Net heatflux (OAFlux) doesn't line up perfectly with seasonal SST signal, but is very close, with heat flux tending to lead SST by 2 -- 3 months.s [@Richaud2016]. It is therefore likely one of the primary drivers of SST and should therefore be strongly considered when constructing SOMs.
 
@@ -95,7 +95,11 @@ There is almost no seasonal cycle for slope waters in any of the regions [@Richa
 
 ## More ideas
 
-It would be interesting to see if the SOM outputs differ in any meaningful wayss when only data from the first half of the study time period are used compared against the second half.
+It would be interesting to see if the SOM outputs differ in any meaningful ways when only data from the first half of the study time period are used compared against the second half.
+
+The output of the SOMs could likely be more meaningfully conveyed from the point of view of the regions. What I mean by this is to take the summary of the nodes, convey them into a table, and then use that table to inform a series of information bits that is focused around each region. Some sort of interactive visual may be useful for this. Showing the percentage that each region has in each node would be a good start. This would allow for a more meaningful further explanation for which drivers affect which regions during which seasons and over which years. 
+
+Once this summary is worked out it would then follow that the same analysis be run 1, 2, 3 etc. months in the past and see what the same information format provides w.r.t. a sort of predictive capacity. All of this can then be used to check other data products with a more focused lens in order to maximise the utility of the output.
 
 ## Tailored data packets
 
@@ -135,7 +139,7 @@ synoptic_vec_states_unnest <- synoptic_vec_states %>%
 
 ### Quality control anomalies
 
-Here we select the most relavant anomaly values and correct for a couple of issues.
+Here we select the most relevant anomaly values and correct for a couple of issues.
 
 ```{r extract-anomaly, eval=FALSE}
 # NB: The range of values for mixed layer depth anomalies is muuuuch greater
@@ -168,9 +172,9 @@ synoptic_vec_states_anom_fix <- synoptic_vec_states_unnest %>%
 ```
 
 
-### Constrain to a cartesian grid
+### Constrain to a Cartesian grid
 
-The last step before creating the final packets is to constrain the tri-polar grid data to cartesian coordinates. This is important as it prevents the denser sampled areas from being over-represented in the SOM analysis.
+The last step before creating the final packets is to constrain the tri-polar grid data to Cartesian coordinates. This is important as it prevents the denser sampled areas from being over-represented in the SOM analysis.
 
 ```{r constrain-synoptic, eval=FALSE}
 # Constrain variables
