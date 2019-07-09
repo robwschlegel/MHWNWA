@@ -356,7 +356,8 @@ div.section {
 <ul>
 <li>
 <details>
-<p><summary> <strong style="color:red;">✖</strong> <strong>R Markdown file:</strong> uncommitted changes </summary> The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
 </details>
 </li>
 <li>
@@ -379,7 +380,7 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/2edffcb89c7ac325280ca6e1680c7a62acb72b8b" target="_blank">2edffcb</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/c8a5a1a49d1cd5469d7bbe9fd000078f0c3966b3" target="_blank">c8a5a1a</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -411,12 +412,6 @@ Ignored files:
     Ignored:    data/synoptic_states.Rda
     Ignored:    data/synoptic_vec_states.Rda
 
-Untracked files:
-    Untracked:  docs/assets/
-
-Unstaged changes:
-    Modified:   analysis/node-summary.Rmd
-
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
 </details>
@@ -446,6 +441,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/c8a5a1a49d1cd5469d7bbe9fd000078f0c3966b3/analysis/node-summary.Rmd" target="_blank">c8a5a1a</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+<td style="text-align:left;">
+Fixing figure display in vignette.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/3a740c2ef6d0475de8ee80709efc1c40c7c6243e/analysis/node-summary.Rmd" target="_blank">3a740c2</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+<td style="text-align:left;">
+Creating assets folder for displaying figures created in other vignettes in new vignettes etc.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/3a740c2ef6d0475de8ee80709efc1c40c7c6243e/docs/node-summary.html" target="_blank">3a740c2</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+<td style="text-align:left;">
+Creating assets folder for displaying figures created in other vignettes in new vignettes etc.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -508,13 +554,55 @@ Frame of node summary vignette worked out
 <div id="figure-caption-key" class="section level3">
 <h3>Figure caption key</h3>
 <p>The captions for the figures below have a lot of acronyms in them but they are consistently used and I will provide a list of what they are here. Whenever one sees an acronym in lower case letters it is refering to one of the regions of the study area as seen in the following figure.</p>
-<pre class="r"><code>knitr::include_graphics(&quot;assets/study_regions.png&quot;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="assets/study_regions.png" alt="The regions of the coast were devided up by their temperature and salinity regimes based on work by @Richaud2016. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. The regions were furthered divided into sub-regions based on their depth." width="100%" />
+<img src="assets/study_regions.png" alt="The regions of the coast were devided up by their temperature and salinity regimes based on work by @Richaud2016. The regions were furthered divided into sub-regions based on their depth." width="100%" />
 <p class="caption">
-The regions of the coast were devided up by their temperature and salinity regimes based on work by <span class="citation">Richaud et al. (2016)</span>. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. The regions were furthered divided into sub-regions based on their depth.
+The regions of the coast were devided up by their temperature and salinity regimes based on work by <span class="citation">Richaud et al. (2016)</span>. The regions were furthered divided into sub-regions based on their depth.
 </p>
 </div>
+<details>
+<summary><em>Expand here to see past versions of study_regions.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/3a740c2ef6d0475de8ee80709efc1c40c7c6243e/docs/assets/study_regions.png" target="_blank">3a740c2</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+</tr>
+</tbody>
+</table>
+</details>
+<p>The region abbreviations are:</p>
+<ul>
+<li>gm = Gulf of Maine</li>
+<li>gls = Gulf of St. Lawrence<br />
+</li>
+<li>ls = Labrador Shelf<br />
+</li>
+<li>mab = Mid-Atlantic Bight</li>
+<li>nfs = Newfoundland Shelf<br />
+</li>
+<li>ss = Scotian Shelf</li>
+</ul>
 <p>The upper case acronyms used in the following figure captions are as follows:</p>
 <ul>
 <li>SST = Sea surface temperature</li>
@@ -531,133 +619,526 @@ The regions of the coast were devided up by their temperature and salinity regim
 <div id="sst-overview" class="section level2">
 <h2>SST overview</h2>
 <p>The figure below shows the SST anomaly per node as a means of providing a very general overview of what each node looks like so as to make navigating between them more convenient.</p>
-<div class="figure">
-<img src="/data/home/rschlegel/MHWNWA/output/som_plot_sst_anom.png" alt="The SST anomaly per node of the SOM. Note that the SST patterns are calculated in conjunction with the several other variables and are not the only variable taken into account. They are shown here by themselves as I think they provide the most convenient single snap shot of the results." />
-<p class="caption">The SST anomaly per node of the SOM. Note that the SST patterns are calculated in conjunction with the several other variables and are not the only variable taken into account. They are shown here by themselves as I think they provide the most convenient single snap shot of the results.</p>
+<div class="figure" style="text-align: center">
+<img src="assets/som_plot_sst_anom.png" alt="The SST anomaly per node of the SOM. Note that the SST patterns are calculated in conjunction with the several other variables and are not the only variable taken into account. They are shown here by themselves as I think they provide the most convenient single snap shot of the results." width="100%" />
+<p class="caption">
+The SST anomaly per node of the SOM. Note that the SST patterns are calculated in conjunction with the several other variables and are not the only variable taken into account. They are shown here by themselves as I think they provide the most convenient single snap shot of the results.
+</p>
 </div>
-<!-- ```{r sst-summary, out.width='100%', fig.align='center', fig.cap='The SST anomaly per node of the SOM. Note that the SST patterns are calculated in conjunction with the several other variables and are not the only variable taken into account. They are shown here by themselves as I think they provide the most convenient single snap shot of the results.'} -->
-<!-- knitr::include_graphics("~/MHWNWA/output/som_plot_sst_anom.png") -->
-<!-- ``` -->
+<details>
+<summary><em>Expand here to see past versions of som_plot_sst_anom.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/69e8001a437ab7e4b3c62df85b7ddba9573e48d9/docs/assets/som_plot_sst_anom.png" target="_blank">69e8001</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="node-1" class="section level2">
 <h2>Node 1</h2>
-<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_1_panels.png&quot;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="/data/home/rschlegel/MHWNWA/output/node_1_panels.png" alt="Warm pulse of GS near the NS coast. Shallowing mixed layer, low wind stress, and strong negative heat flux. Mostly gm and ss, almost no nfs. Almost entirely summer and autumn from 2013 - 2016. Mostly smaller evets but a few are massive." width="100%" />
+<img src="assets/node_1_panels.png" alt="Warm pulse of GS near the NS coast. Shallowing mixed layer, low wind stress, and strong negative heat flux. Mostly gm and ss, almost no nfs. Almost entirely summer and autumn from 2013 - 2016. Mostly smaller evets but a few are massive." width="100%" />
 <p class="caption">
 Warm pulse of GS near the NS coast. Shallowing mixed layer, low wind stress, and strong negative heat flux. Mostly gm and ss, almost no nfs. Almost entirely summer and autumn from 2013 - 2016. Mostly smaller evets but a few are massive.
 </p>
 </div>
+<details>
+<summary><em>Expand here to see past versions of node_1_panels.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/69e8001a437ab7e4b3c62df85b7ddba9573e48d9/docs/assets/node_1_panels.png" target="_blank">69e8001</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="node-2" class="section level2">
 <h2>Node 2</h2>
-<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_2_panels.png&quot;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="/data/home/rschlegel/MHWNWA/output/node_2_panels.png" alt="Cold GS with warm LC caused by positive heat flux, low wind stress, and shallow mixed layer. Mostly cbs with some gsl and no mab. Occurred in only one year in two pulses in spring and summer. Normal intensity but short duration." width="100%" />
+<img src="assets/node_2_panels.png" alt="Cold GS with warm LC caused by positive heat flux, low wind stress, and shallow mixed layer. Mostly cbs with some gsl and no mab. Occurred in only one year in two pulses in spring and summer. Normal intensity but short duration." width="100%" />
 <p class="caption">
 Cold GS with warm LC caused by positive heat flux, low wind stress, and shallow mixed layer. Mostly cbs with some gsl and no mab. Occurred in only one year in two pulses in spring and summer. Normal intensity but short duration.
 </p>
 </div>
+<details>
+<summary><em>Expand here to see past versions of node_2_panels.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/69e8001a437ab7e4b3c62df85b7ddba9573e48d9/docs/assets/node_2_panels.png" target="_blank">69e8001</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="node-3" class="section level2">
 <h2>Node 3</h2>
-<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_3_panels.png&quot;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="/data/home/rschlegel/MHWNWA/output/node_3_panels.png" alt="Calm sea state with some positive heatflux into the LC causing events. Shallower mixed layer everywhere. Mostly nfs with progressively fewer events in regions down the coast. Almost none in ls. Smaller events with a couple of large ones. All seasons from 1999 - 2014." width="100%" />
+<img src="assets/node_3_panels.png" alt="Calm sea state with some positive heatflux into the LC causing events. Shallower mixed layer everywhere. Mostly nfs with progressively fewer events in regions down the coast. Almost none in ls. Smaller events with a couple of large ones. All seasons from 1999 - 2014." width="100%" />
 <p class="caption">
 Calm sea state with some positive heatflux into the LC causing events. Shallower mixed layer everywhere. Mostly nfs with progressively fewer events in regions down the coast. Almost none in ls. Smaller events with a couple of large ones. All seasons from 1999 - 2014.
 </p>
 </div>
+<details>
+<summary><em>Expand here to see past versions of node_3_panels.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/69e8001a437ab7e4b3c62df85b7ddba9573e48d9/docs/assets/node_3_panels.png" target="_blank">69e8001</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="node-4" class="section level2">
 <h2>Node 4</h2>
-<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_4_panels.png&quot;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="/data/home/rschlegel/MHWNWA/output/node_4_panels.png" alt="Extremely shallow mixed layer with a strong positive heatflux and low wind stress. Mostly nfs with progressively fewer events further away. Smaller events. Autumn, Winter, and Spring from 1999 - 2014." width="100%" />
+<img src="assets/node_4_panels.png" alt="Extremely shallow mixed layer with a strong positive heatflux and low wind stress. Mostly nfs with progressively fewer events further away. Smaller events. Autumn, Winter, and Spring from 1999 - 2014." width="100%" />
 <p class="caption">
 Extremely shallow mixed layer with a strong positive heatflux and low wind stress. Mostly nfs with progressively fewer events further away. Smaller events. Autumn, Winter, and Spring from 1999 - 2014.
 </p>
 </div>
+<details>
+<summary><em>Expand here to see past versions of node_4_panels.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/69e8001a437ab7e4b3c62df85b7ddba9573e48d9/docs/assets/node_4_panels.png" target="_blank">69e8001</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="node-5" class="section level2">
 <h2>Node 5</h2>
-<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_5_panels.png&quot;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="/data/home/rschlegel/MHWNWA/output/node_5_panels.png" alt="Slightly shallow slightly fast push of the GS into the coast becoming slightly deeper near WHOI before coming back away from the coast and chilling out. The core of the pulse has negative heatflux but the surrounding GS has a strong positive heatflux and snall wind stress. Almost exclusively occurs in mab with only a bit everywhere else. Smallish events with a few massive ones. All seasons from 2003 - 2015." width="100%" />
+<img src="assets/node_5_panels.png" alt="Slightly shallow slightly fast push of the GS into the coast becoming slightly deeper near WHOI before coming back away from the coast and chilling out. The core of the pulse has negative heatflux but the surrounding GS has a strong positive heatflux and snall wind stress. Almost exclusively occurs in mab with only a bit everywhere else. Smallish events with a few massive ones. All seasons from 2003 - 2015." width="100%" />
 <p class="caption">
 Slightly shallow slightly fast push of the GS into the coast becoming slightly deeper near WHOI before coming back away from the coast and chilling out. The core of the pulse has negative heatflux but the surrounding GS has a strong positive heatflux and snall wind stress. Almost exclusively occurs in mab with only a bit everywhere else. Smallish events with a few massive ones. All seasons from 2003 - 2015.
 </p>
 </div>
+<details>
+<summary><em>Expand here to see past versions of node_5_panels.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/69e8001a437ab7e4b3c62df85b7ddba9573e48d9/docs/assets/node_5_panels.png" target="_blank">69e8001</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="node-6" class="section level2">
 <h2>Node 6</h2>
-<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_6_panels.png&quot;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="/data/home/rschlegel/MHWNWA/output/node_6_panels.png" alt="Slightly warmer LS and LC with cooler GS. Minor poitive heat flux into LS and large positive heat flux into GS. Normal mixed layer with low wind stress over the LS and high over the GS. Mostly in the ls with a bit in the mab with almost none elsewhere. Occurred over 1999 - 2010 in spring and summer. Smaller events that have not been increasing over time." width="100%" />
+<img src="assets/node_6_panels.png" alt="Slightly warmer LS and LC with cooler GS. Minor poitive heat flux into LS and large positive heat flux into GS. Normal mixed layer with low wind stress over the LS and high over the GS. Mostly in the ls with a bit in the mab with almost none elsewhere. Occurred over 1999 - 2010 in spring and summer. Smaller events that have not been increasing over time." width="100%" />
 <p class="caption">
 Slightly warmer LS and LC with cooler GS. Minor poitive heat flux into LS and large positive heat flux into GS. Normal mixed layer with low wind stress over the LS and high over the GS. Mostly in the ls with a bit in the mab with almost none elsewhere. Occurred over 1999 - 2010 in spring and summer. Smaller events that have not been increasing over time.
 </p>
 </div>
+<details>
+<summary><em>Expand here to see past versions of node_6_panels.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/69e8001a437ab7e4b3c62df85b7ddba9573e48d9/docs/assets/node_6_panels.png" target="_blank">69e8001</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="node-7" class="section level2">
 <h2>Node 7</h2>
-<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_7_panels.png&quot;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="/data/home/rschlegel/MHWNWA/output/node_7_panels.png" alt="Warm waters from LS to LC to GSL and a cold GS. Strong downward heat flux over northern waters and negative flux over GS. Shallow northern waters with low wind stress while high stress over GS. Equally high in ls and nfs. A bit in cbs but almost none elsewhere. Spring - Autumn from 2000 - 2014. 2006 was a particularly strong year. Events are overall not particularly large." width="100%" />
+<img src="assets/node_7_panels.png" alt="Warm waters from LS to LC to GSL and a cold GS. Strong downward heat flux over northern waters and negative flux over GS. Shallow northern waters with low wind stress while high stress over GS. Equally high in ls and nfs. A bit in cbs but almost none elsewhere. Spring - Autumn from 2000 - 2014. 2006 was a particularly strong year. Events are overall not particularly large." width="100%" />
 <p class="caption">
 Warm waters from LS to LC to GSL and a cold GS. Strong downward heat flux over northern waters and negative flux over GS. Shallow northern waters with low wind stress while high stress over GS. Equally high in ls and nfs. A bit in cbs but almost none elsewhere. Spring - Autumn from 2000 - 2014. 2006 was a particularly strong year. Events are overall not particularly large.
 </p>
 </div>
+<details>
+<summary><em>Expand here to see past versions of node_7_panels.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/69e8001a437ab7e4b3c62df85b7ddba9573e48d9/docs/assets/node_7_panels.png" target="_blank">69e8001</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="node-8" class="section level2">
 <h2>Node 8</h2>
-<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_8_panels.png&quot;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="/data/home/rschlegel/MHWNWA/output/node_8_panels.png" alt="Warm northern waters with a cold GS. Strong positive flux over LS with weaker positive flux over GSL and negative over GS. Very shallow LS and very deep GS. Affects all northern waters but highest in gsl and ls. No events in mab and almost none in gm. Almost always Autumn and Winter from 2006 - 2013. Some more intense events later on with 2010/11 being a larger year." width="100%" />
+<img src="assets/node_8_panels.png" alt="Warm northern waters with a cold GS. Strong positive flux over LS with weaker positive flux over GSL and negative over GS. Very shallow LS and very deep GS. Affects all northern waters but highest in gsl and ls. No events in mab and almost none in gm. Almost always Autumn and Winter from 2006 - 2013. Some more intense events later on with 2010/11 being a larger year." width="100%" />
 <p class="caption">
 Warm northern waters with a cold GS. Strong positive flux over LS with weaker positive flux over GSL and negative over GS. Very shallow LS and very deep GS. Affects all northern waters but highest in gsl and ls. No events in mab and almost none in gm. Almost always Autumn and Winter from 2006 - 2013. Some more intense events later on with 2010/11 being a larger year.
 </p>
 </div>
+<details>
+<summary><em>Expand here to see past versions of node_8_panels.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/69e8001a437ab7e4b3c62df85b7ddba9573e48d9/docs/assets/node_8_panels.png" target="_blank">69e8001</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="node-9" class="section level2">
 <h2>Node 9</h2>
-<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_9_panels.png&quot;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="/data/home/rschlegel/MHWNWA/output/node_9_panels.png" alt="Similar to node 5. Strong nearshore GS pulse. Strong negative flux over LS and GS but positive over the rest of the Atlantic. Very strong wind stress over LS and eastern part of Atlantic, weak over the warm heat flux area of the Atlantic. Extremely deep LS and shallow GS. Occurred over 2002 - 2016 for winter and spring, events began occurring in Autumn from 2013. Evens becoming rather intense as time progresses with some massive ones. Increasing in intensity in most regions." width="100%" />
+<img src="assets/node_9_panels.png" alt="Similar to node 5. Strong nearshore GS pulse. Strong negative flux over LS and GS but positive over the rest of the Atlantic. Very strong wind stress over LS and eastern part of Atlantic, weak over the warm heat flux area of the Atlantic. Extremely deep LS and shallow GS. Occurred over 2002 - 2016 for winter and spring, events began occurring in Autumn from 2013. Evens becoming rather intense as time progresses with some massive ones. Increasing in intensity in most regions." width="100%" />
 <p class="caption">
 Similar to node 5. Strong nearshore GS pulse. Strong negative flux over LS and GS but positive over the rest of the Atlantic. Very strong wind stress over LS and eastern part of Atlantic, weak over the warm heat flux area of the Atlantic. Extremely deep LS and shallow GS. Occurred over 2002 - 2016 for winter and spring, events began occurring in Autumn from 2013. Evens becoming rather intense as time progresses with some massive ones. Increasing in intensity in most regions.
 </p>
 </div>
+<details>
+<summary><em>Expand here to see past versions of node_9_panels.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/69e8001a437ab7e4b3c62df85b7ddba9573e48d9/docs/assets/node_9_panels.png" target="_blank">69e8001</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="node-10" class="section level2">
 <h2>Node 10</h2>
-<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_10_panels.png&quot;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="/data/home/rschlegel/MHWNWA/output/node_10_panels.png" alt="Very unstable mostly cold GS with warm GM and SS waters. Negative heat flux into shelf waters and positive into GS. High wind stress over LS and low over shelf waters. Deep GS and GM waters but shallow over SS. Spread out over most regions with fewest events in mab and nfs. A few tiny events from 2009 - 2011 but really got going from 2012 - 2013. Spring of 2013 was small while Autumn/WInter of 2012/13 was noteworthy." width="100%" />
+<img src="assets/node_10_panels.png" alt="Very unstable mostly cold GS with warm GM and SS waters. Negative heat flux into shelf waters and positive into GS. High wind stress over LS and low over shelf waters. Deep GS and GM waters but shallow over SS. Spread out over most regions with fewest events in mab and nfs. A few tiny events from 2009 - 2011 but really got going from 2012 - 2013. Spring of 2013 was small while Autumn/WInter of 2012/13 was noteworthy." width="100%" />
 <p class="caption">
 Very unstable mostly cold GS with warm GM and SS waters. Negative heat flux into shelf waters and positive into GS. High wind stress over LS and low over shelf waters. Deep GS and GM waters but shallow over SS. Spread out over most regions with fewest events in mab and nfs. A few tiny events from 2009 - 2011 but really got going from 2012 - 2013. Spring of 2013 was small while Autumn/WInter of 2012/13 was noteworthy.
 </p>
 </div>
+<details>
+<summary><em>Expand here to see past versions of node_10_panels.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/69e8001a437ab7e4b3c62df85b7ddba9573e48d9/docs/assets/node_10_panels.png" target="_blank">69e8001</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="node-11" class="section level2">
 <h2>Node 11</h2>
-<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_11_panels.png&quot;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="/data/home/rschlegel/MHWNWA/output/node_11_panels.png" alt="Energetic but normal temperature GS with warm inshore waters and slightly warm LS. Positive heat flux into GS and LS but negative into inshore waters. High wind stress above LS and a bit over central AO, but negative everywhere else. Very deep mixed layer next to coast in MAB but relatively normal everywhere else. Relatively equivalent occurrence in all regions. Occurred only from July - October, 2012. A few decent sized events. Mean max intensity is decent." width="100%" />
+<img src="assets/node_11_panels.png" alt="Energetic but normal temperature GS with warm inshore waters and slightly warm LS. Positive heat flux into GS and LS but negative into inshore waters. High wind stress above LS and a bit over central AO, but negative everywhere else. Very deep mixed layer next to coast in MAB but relatively normal everywhere else. Relatively equivalent occurrence in all regions. Occurred only from July - October, 2012. A few decent sized events. Mean max intensity is decent." width="100%" />
 <p class="caption">
 Energetic but normal temperature GS with warm inshore waters and slightly warm LS. Positive heat flux into GS and LS but negative into inshore waters. High wind stress above LS and a bit over central AO, but negative everywhere else. Very deep mixed layer next to coast in MAB but relatively normal everywhere else. Relatively equivalent occurrence in all regions. Occurred only from July - October, 2012. A few decent sized events. Mean max intensity is decent.
 </p>
 </div>
+<details>
+<summary><em>Expand here to see past versions of node_11_panels.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/69e8001a437ab7e4b3c62df85b7ddba9573e48d9/docs/assets/node_11_panels.png" target="_blank">69e8001</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="node-12" class="section level2">
 <h2>Node 12</h2>
-<pre class="r"><code>knitr::include_graphics(&quot;~/MHWNWA/output/node_12_panels.png&quot;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="/data/home/rschlegel/MHWNWA/output/node_12_panels.png" alt="Warm inshore and LS waters with cold GS and AO. GS is moving fast and consistent. Negative heatflux into GS and inshore waters, slightly positive into LS and AO. High wind stress over GS and AO, negative over inshore waters and LS. Very deep mixed layer along coast in mab and very shallow along coast in ls. Mostly events occurring in gsl, but also in other northern areas. Occurred every even year from 2008 to 2014 from ~June - September. Relatively small (short) events but with decent max intensities." width="100%" />
+<img src="assets/node_12_panels.png" alt="Warm inshore and LS waters with cold GS and AO. GS is moving fast and consistent. Negative heatflux into GS and inshore waters, slightly positive into LS and AO. High wind stress over GS and AO, negative over inshore waters and LS. Very deep mixed layer along coast in mab and very shallow along coast in ls. Mostly events occurring in gsl, but also in other northern areas. Occurred every even year from 2008 to 2014 from ~June - September. Relatively small (short) events but with decent max intensities." width="100%" />
 <p class="caption">
 Warm inshore and LS waters with cold GS and AO. GS is moving fast and consistent. Negative heatflux into GS and inshore waters, slightly positive into LS and AO. High wind stress over GS and AO, negative over inshore waters and LS. Very deep mixed layer along coast in mab and very shallow along coast in ls. Mostly events occurring in gsl, but also in other northern areas. Occurred every even year from 2008 to 2014 from ~June - September. Relatively small (short) events but with decent max intensities.
 </p>
 </div>
+<details>
+<summary><em>Expand here to see past versions of node_12_panels.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/69e8001a437ab7e4b3c62df85b7ddba9573e48d9/docs/assets/node_12_panels.png" target="_blank">69e8001</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-09
+</td>
+</tr>
+</tbody>
+</table>
+</details>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
 <div id="refs">
 <div id="ref-Richaud2016">
 <p>Richaud, B., Kwon, Y.-O., Joyce, T. M., Fratantoni, P. S., and Lentz, S. J. (2016). Surface and bottom temperature and salinity climatology along the continental shelf off the canadian and us east coasts. <em>Continental Shelf Research</em> 124, 165–181.</p>
@@ -666,7 +1147,6 @@ Warm inshore and LS waters with cold GS and AO. GS is moving fast and consistent
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
-<pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.6.1 (2019-07-05)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 16.04.5 LTS
