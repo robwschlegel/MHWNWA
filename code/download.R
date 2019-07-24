@@ -53,30 +53,49 @@ dl_years <- data.frame(date_index = 1:4,
 
 # Function for consistent access to the various OAFlux products
 # testers...
+# product_id <- "hawaii_soest_82a2_f4b4_d15c"
+# chosen_fields <- "tmp2m"
 # product_id <- "hawaii_soest_33b7_e2df_ef2b"
-# chosen_fields <- c("lhtfl", "err")
+# chosen_fields <- "lhtfl"
 # time_range <- dl_years[1,]
 OAFlux_dl_func <- function(time_range, product_id, chosen_fields){
-  res <- griddap(x = product_id,
-                 url = "http://apdrc.soest.hawaii.edu/erddap/",
-                 time = c(time_range$start, time_range$end),
-                 latitude = NWA_corners_sub_1_degree[3:4],
-                 longitude = (NWA_corners_sub_1_degree[1:2]+360),
-                 fields = chosen_fields)$data %>%
+  # Annoyingly, the dimension names are not consistent for this product
+  if(chosen_fields[1] == "tmp2m"){
+    res1 <- griddap(x = "hawaii_soest_82a2_f4b4_d15c",
+                   url = "http://apdrc.soest.hawaii.edu/erddap/",
+                   # time2 = c(time_range$start, time_range$end),
+                   time2 = c("1985-01-01T00:00:00Z", "1985-01-01T00:00:00Z"),
+                   # latitude = NWA_corners_sub_1_degree[3:4],
+                   latitude = c(-89.5, 89.5),
+                   # longitude = (NWA_corners_sub_1_degree[1:2]+360),
+                   longitude = c(0.5, 359.5),
+                   # fields = chosen_fields)$data
+                   fields = "tmp2m")
+  } else {
+    res1 <- griddap(x = product_id,
+                   url = "http://apdrc.soest.hawaii.edu/erddap/",
+                   time = c(time_range$start, time_range$end),
+                   latitude = NWA_corners_sub_1_degree[3:4],
+                   longitude = (NWA_corners_sub_1_degree[1:2]+360),
+                   fields = chosen_fields)$data
+  }
+  res2 <- res1 %>%
     mutate(time = as.Date(str_remove(time, "T00:00:00Z"))) %>%
     dplyr::rename(t = time) %>%
     select(lon, lat, t, everything()) %>%
     na.omit()
+return(res2)
 }
 
+
 # Wrapper convenience function for the above function
-OAFlux_dl_wrap <- function(product_id, chosen_fields){
+OAFlux_dl_wrap <- function(product_id_wrap, chosen_fields_wrap){
   res <- dl_years %>%
     group_by(date_index) %>%
     nest() %>%
     mutate(dl_data = map(data, OAFlux_dl_func,
-                         product_id = product_id,
-                         chosen_fields = chosen_fields)) %>%
+                         product_id = product_id_wrap,
+                         chosen_fields = chosen_fields_wrap)) %>%
     ungroup() %>%
     select(-date_index, -data) %>%
     unnest()
@@ -84,53 +103,24 @@ OAFlux_dl_wrap <- function(product_id, chosen_fields){
 
 # daily mean surface latent heat flux, positive upward [w/m/m]
 system.time(OAFlux_lhtfl <- OAFlux_dl_wrap("hawaii_soest_33b7_e2df_ef2b", "lhtfl")) # 104 seconds
-system.time(
-  OAFlux_lhtfl <- dl_years %>%
-    group_by(date_index) %>%
-    nest() %>%
-    mutate(dl_data = map(data, OAFlux_dl_func,
-                         product_id = "hawaii_soest_33b7_e2df_ef2b",
-                         chosen_fields = "lhtfl")) %>%
-    ungroup() %>%
-    select(-date_index, -data) %>%
-    unnest()
-) # 55 seconds
+
+# daily mean surface sensible heat flux, positive upward [w/m/m]
+system.time(OAFlux_shtfl <- OAFlux_dl_wrap("hawaii_soest_b6e0_963a_b40f", "shtfl")) # 82 seconds
 
 # daily mean specific humidity at 2m [g/kg]
-system.time(
-  OAFlux_hum2m <- dl_years %>%
-    group_by(date_index) %>%
-    nest() %>%
-    mutate(dl_data = map(data, OAFlux_dl_func,
-                         product_id = "hawaii_soest_38c8_5dc2_a69b",
-                         chosen_fields = "hum2m")) %>%
-    ungroup() %>%
-    select(-date_index, -data) %>%
-    unnest()
-) # 89 seconds
+system.time(OAFlux_hum2m <- OAFlux_dl_wrap("hawaii_soest_38c8_5dc2_a69b", "hum2m")) # 82 seconds
 
-# daily mean surface sensible heat flux, positive upward [w/m/m]
-system.time(
-  OAFlux_shtfl <- dl_years %>%
-    group_by(date_index) %>%
-    nest() %>%
-    mutate(dl_data = map(data, OAFlux_dl_func,
-                         product_id = "hawaii_soest_b6e0_963a_b40f",
-                         chosen_fields = "shtfl")) %>%
-    ungroup() %>%
-    select(-date_index, -data) %>%
-    unnest()
-) # xxx seconds
+# daily mean neutral wind speed at 10m [m/s]
+system.time(OAFlux_wnd10 <- OAFlux_dl_wrap("hawaii_soest_26fa_a77c_2ce7", "wnd10")) # 75 seconds
 
-# daily mean surface sensible heat flux, positive upward [w/m/m]
-system.time(
-  OAFlux_shtfl <- dl_years %>%
-    group_by(date_index) %>%
-    nest() %>%
-    mutate(dl_data = map(data, OAFlux_dl_func,
-                         product_id = "hawaii_soest_b6e0_963a_b40f",
-                         chosen_fields = "shtfl")) %>%
-    ungroup() %>%
-    select(-date_index, -data) %>%
-    unnest()
-) # xxx seconds
+# daily mean air temperature at 2m [degc]
+# system.time(OAFlux_tmp2m <- OAFlux_dl_wrap("hawaii_soest_82a2_f4b4_d15c", "tmp2m")) # xxx seconds
+
+# Join all of the data
+OAFlux <- left_join(OAFlux_lhtfl, OAFlux_shtfl, by = c("lon", "lat", "t")) %>%
+  left_join(OAFlux_hum2m, by = c("lon", "lat", "t")) %>%
+  left_join(OAFlux_wnd10, by = c("lon", "lat", "t"))
+
+# Save
+write_rds(OAFlux, "data/OAFlux.Rda")
+
