@@ -4,6 +4,8 @@
 
 # Required bits -----------------------------------------------------------
 
+# .libPaths(c("~/R-packages", .libPaths()))
+
 # Packages used in this script
 # library(rlang)
 library(jsonlite, lib.loc = "../R-packages/")
@@ -815,3 +817,24 @@ node_figure <- function(node_number){
   ggsave(fig_all_title, filename = paste0("output/node_",node_number,"_panels.png"), height = 12, width = 16)
   ggsave(fig_all_title, filename = paste0("output/node_",node_number,"_panels.pdf"), height = 12, width = 16)
 }
+
+
+# Extract data from GLORYS NetCDF -----------------------------------------
+
+file_name <- "../data/GLORYS/CMEMS_global-reanalysis-phy-001-030-daily_1993-01.nc"
+
+test <- tidync(file_name) %>%
+  activate() %>%
+  # hyper_tbl_cube()
+  hyper_tibble() %>%
+  mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1950-01-01', tz = "GMT")))
+
+test_date <- as.POSIXct(3600 * (test$dims$time), origin = '1950-01-01', tz = "GMT")
+head(test_date)
+length(unique(test_date))
+
+# Test visuals
+test %>%
+  filter(time == "1993-01-31") %>%
+  ggplot(aes(x = longitude, y = latitude, fill = mlotst)) +
+  geom_raster()
