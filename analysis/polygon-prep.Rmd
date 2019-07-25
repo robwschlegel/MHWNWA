@@ -17,25 +17,25 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
 
 ## Introduction
 
-This markdown file contains all of the code used to prepare the polygons that are used to define the different regions in the Northwest Atlantic. These different regions will then have their SST pixels spatially averaged to create a single time series per region. This is done so that the MHW detection algorithm may then be run on these individual time series to represent a general representation of the SST in those regions, rather than running the algorithm on each pixel individually, which would introduce a host of problems.
+This markdown file contains all of the code that prepares the polygons used to define the different regions in the Northwest Atlantic. These different regions then have their SST pixels spatially averaged to create a single time series per region. This is done so that the MHW detection algorithm may then be run on these individual time series as a general representation of the SST in those regions, rather than running the algorithm on each pixel individually, which would introduce a host of problems.
 
 ```{r libraries}
 # Packages used in this vignette
 library(jsonlite, lib.loc = "../R-packages/")
 library(tidyverse) # Base suite of functions
 library(R.matlab) # For dealing with MATLAB files
-library(marmap) # For bathymetry
-library(maptools) # Contour tools
-library(rgeos) # For intersections
+# library(marmap) # For bathymetry
+# library(maptools) # Contour tools
+# library(rgeos) # For intersections
 ```
 
 ## Coastal region polygons
 
-The first step in this analysis is to broadly define the coastal regions based on previous research into thermally relevant boundaries. We have chosen to use a paper by Richaud et al 2016 to do this (https://www.sciencedirect.com/science/article/pii/S0278434316303181#f0010). Being the kind-hearted man that he is, Benjamin forwarded us the polygons (Richaud et al. 2016; Figure 2) from this work as a MATLAB file so we must first open that up and convert it to an R format for further use. It should be noted that these areas were designed to not encompass depths deeper than 600 m as the investigators were itnerested in characterising the climatolgoies for the shelf and upper slope regions of the north east coast of North America.
+The first step in this analysis is to broadly define the coastal regions based on previous research into thermally relevant boundaries. We have chosen to use a paper by @Richaud2016 to do this (https://www.sciencedirect.com/science/article/pii/S0278434316303181#f0010). Being the kind-hearted man that he is, Benjamin forwarded us the polygons [@Richaud2016; Figure 2] from this work as a MATLAB file. In order to use this here we must first open the file and convert it to an R format. It should be noted that these areas were designed to not encompass depths deeper than 600 m as the investigators were itnerested in characterising the climatolgoies for the shelf and upper slope regions of the north east coast of North America.
 
-```{r mat-R, eval=FALSE}
+```{r mat-R}
 # Load the file
-NWA_polygons <- R.matlab::readMat("data/boundaries.mat")
+NWA_polygons <- readMat("data/boundaries.mat")
 
 # Remove index list items and attributes
 NWA_polygons[grepl("[.]",names(NWA_polygons))] <- NULL
@@ -65,7 +65,7 @@ colnames(NWA_coords) <- c("region", "lon", "lat")
 # saveRDS(NWA_coords, "data/NWA_coords.Rda")
 ```
 
-With our polygons now switched over from MATLAB to R we now want to visualise them to ensure that everything has gone smoothly.
+With our polygons switched over from MATLAB to R we now want to visualise them to ensure that everything has gone smoothly.
 
 ```{r poly-vis}
 # Load polygon coordinates
@@ -80,10 +80,10 @@ map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE
 
 # Quick map
 NWA_coords_plot <- ggplot(data = NWA_coords, aes(x = lon, y = lat)) +
-  geom_polygon(data = map_base, aes(group = group), show.legend = F) +
   geom_polygon(aes(colour = region, fill = region), size = 1.5, alpha = 0.2) +
-  coord_cartesian(xlim = c(min(NWA_coords$lon)-10, max(NWA_coords$lon)+10),
-                  ylim = c(min(NWA_coords$lat)-10, max(NWA_coords$lat)+10)) +
+  geom_polygon(data = map_base, aes(group = group), show.legend = F) +
+  coord_cartesian(xlim = c(min(NWA_coords$lon)-2, max(NWA_coords$lon)+2),
+                  ylim = c(min(NWA_coords$lat)-2, max(NWA_coords$lat)+2)) +
   labs(x = NULL, y = NULL, colour = "Region", fill = "Region") +
   theme(legend.position = "bottom")
 # ggsave(NWA_coords_plot, filename = "output/NWA_coords_plot.pdf", height = 5, width = 6)
@@ -94,20 +94,19 @@ NWA_coords_plot
 
 The region abbreviations are: "gm" for Gulf of Maine, "gls" for Gulf of St. Lawrence, "ls" for Labrador Shelf, "mab" for Mid-Atlantic Bight, "nfs" for Newfoundland Shelf and "ss" for Scotian Shelf.
 
-Before we move on, we'll do a bit of house keeping to establish a consistent study area for this project based on our polygons. We'll simply extend the study area by 10 degrees of longitude and latitude from the furthest edges of the polygons, as seen in the figure above. This will encompass broad synoptic scale variables that may be driving MHWs in our study regions, but should not be so broad as to begin to account for teleconnections, which are currently beyond the scope of this project.
+Before we move on, we'll do a bit of house keeping to establish a consistent study area for this project based on our polygons. We'll simply extend the study area by 2 degrees of longitude and latitude from the furthest edges of the polygons, as seen in the figure above. This will encompass broad synoptic scale variables that may be driving MHWs in our study regions, but should not be so broad as to begin to account for teleconnections, which are currently beyond the scope of this project.
 
-```{r study-area-coords, eval=FALSE}
+```{r study-area-coords}
 # Set the max/min lon/at values
-lon_min <- round(min(NWA_coords$lon)-10, 2)
-lon_max <- round(max(NWA_coords$lon)+10, 2)
-lat_min <- round(min(NWA_coords$lat)-10, 2)
-lat_max <- round(max(NWA_coords$lat)+10, 2)
+lon_min <- round(min(NWA_coords$lon)-2, 2)
+lon_max <- round(max(NWA_coords$lon)+2, 2)
+lat_min <- round(min(NWA_coords$lat)-2, 2)
+lat_max <- round(max(NWA_coords$lat)+2, 2)
 
 # Combine and save
 NWA_corners <- c(lon_min, lon_max, lat_min, lat_max)
 # saveRDS(NWA_corners, file = "data/NWA_corners.Rda")
 ```
-
 
 ### Cabot Strait
 
@@ -129,9 +128,6 @@ ggplot(data = gsl_sub, aes(x = lon, y = lat)) +
 It appears from the crude figure above that we should pinch the polygon off into two separate shapes at row 6 and 10.
 
 ```{r cabot-strait-2}
-# Load the corners of the study area
-NWA_corners <- readRDS("data/NWA_corners.Rda")
-
 # Create smaller gsl polygon
 gsl_new <- NWA_coords[NWA_coords$region == "gsl",] %>% 
   slice(-c(7:9))
@@ -149,8 +145,8 @@ NWA_coords_cabot <- NWA_coords %>%
 
 # Plot the new areas to ensure everything worked
 NWA_coords_cabot_plot <- ggplot(data = NWA_coords_cabot, aes(x = lon, y = lat)) +
-  geom_polygon(data = map_base, aes(group = group), show.legend = F) +
   geom_polygon(aes(colour = region, fill = region), size = 1.5, alpha = 0.2) +
+  geom_polygon(data = map_base, aes(group = group), show.legend = F) +
   coord_cartesian(xlim = NWA_corners[1:2],
                   ylim = NWA_corners[3:4]) +
   labs(x = NULL, y = NULL, colour = "Region", fill = "Region") +
@@ -163,133 +159,132 @@ NWA_coords_cabot_plot
 
 Everything is looking good, but we may want to divide the Gulf of Maine (gm) into two polygons as well. This would make the Bay of Fundy in it's own region. For now however we will move on to the next step, which is dividing the current polygons by bathymetry.
 
+<!-- ## Bathymetry polygons -->
 
-## Bathymetry polygons
-
-These regions are an excellent start, but because the aim of this research project is to determine the primary drivers of MHWs in the Northwest Atlantic we want to subset the regions not only by their thermal characteristics, but also by their geophysical characteristics, which in this instance is most immediately available as bathymetry. The rationale for this is that surface forcing as a driver of anomalously warm seawater is likely to be more prevalent in shallow waters than in shelf waters or deeper. To this end we will divide the regions into three sub-regions each: 0 -- 50 m depth, 51 -- 200 m depth, 201+ m depth. 
-<!-- Unless otherwise specified we will not be looking at waters further than the continental shelf. This is because the usefulness of this work will largely be constrained by it's applications to coastal ecosystems and fisheries. Therefore we are less interested in understanding the drivers of synoptic scale and greater open ocean events. -->
-
-
-### Downloading data
-
-Before we can divide up our polygons by bathymetry, we must first download said bathymetry data. We will use here the NOAA data as it is (to my knowledge) the most convenient bathymetry data available directly through R.
-
-```{r bathy-download, eval=FALSE}
-# Donwload NOAA bathy data at highest available resolution
-NWA_bathy_hires <- as.xyz(getNOAA.bathy(lon1 = NWA_corners[1]+9, lon2 = NWA_corners[2]-9,
-                                        lat1 = NWA_corners[3]+9, lat2 = NWA_corners[4]-9, resolution = 1))
-colnames(NWA_bathy_hires) <- c("lon", "lat", "depth")
-NWA_bathy_hires <- NWA_bathy_hires %>% 
-  filter(depth <= 0) %>% 
-  mutate(lon = round(lon, 4),
-         lat = round(lat, 4))
-# saveRDS(NWA_bathy_hires, file = "data/NWA_bathy_hires.Rda")
-
-# Donwload NOAA bathy data at a courser resolution
-NWA_bathy_lowres <- as.xyz(getNOAA.bathy(lon1 = NWA_corners[1]+9, lon2 = NWA_corners[2]-9,
-                                         lat1 = NWA_corners[3]+9, lat2 = NWA_corners[4]-9, resolution = 6))
-colnames(NWA_bathy_lowres) <- c("lon", "lat", "depth")
-NWA_bathy_lowres <- NWA_bathy_lowres %>% 
-  filter(depth <= 0) %>% 
-  mutate(lon = round(lon, 4),
-         lat = round(lat, 4))
-# saveRDS(NWA_bathy_lowres, file = "data/NWA_bathy_lowres.Rda")
-```
-
-With our high res bathymetry data downloaded we will now go about finding the 50 and 200 metre isobaths. These lines will be used to define the edges of our sub-regions. The naming conventions we will use will be
-
-```{r isobath-hires-plot}
-# Load hires bathymetry data
-NWA_bathy_hires <- readRDS("data/NWA_bathy_hires.Rda")
-
-# Plot to see what we've got
-bathy_hires_plot <- ggplot(NWA_coords_cabot, aes(x = lon, y = lat)) +
-  geom_polygon(data = map_base, aes(group = group), show.legend = F) +
-  geom_polygon(aes(group = region, fill = region, colour = region), alpha = 0.2) +
-  geom_contour(data = NWA_bathy_hires, aes(z = depth),
-               breaks = c(-50),  size = c(0.3),  colour = "grey70") +
-    geom_contour(data = NWA_bathy_hires, aes(z = depth),
-               breaks = c(-200),  size = c(0.3),  colour = "grey30") +
-  coord_cartesian(xlim = NWA_corners[1:2],
-                  ylim = NWA_corners[3:4]) +
-  labs(x = NULL, y = NULL)
-
-# Visualise
-bathy_hires_plot
-```
-
-The resolution on the figure above is fantastic, but perhaps a bit more than what we need as the desire is to create functional polygons for dividing our regions. The level of detail present in the figure above will likely lead to issues later on. Let's look at the lowres bathymetry data and see if that works better.
-
-```{r isobath-lowres-plot}
-# Load hires bathymetry data
-NWA_bathy_lowres <- readRDS("data/NWA_bathy_lowres.Rda")
-
-# Plot to see what we've got
-bathy_lowres_plot <- ggplot(NWA_coords_cabot, aes(x = lon, y = lat)) +
-  geom_polygon(data = map_base, aes(group = group), show.legend = F) +
-  geom_polygon(aes(group = region, fill = region, colour = region), alpha = 0.2) +
-  geom_contour(data = NWA_bathy_lowres, aes(z = depth),
-               breaks = c(-50),  size = c(0.3),  colour = "grey70") +
-  geom_contour(data = NWA_bathy_lowres, aes(z = depth),
-               breaks = c(-200),  size = c(0.3),  colour = "grey30") +
-  coord_cartesian(xlim = NWA_corners[1:2],
-                  ylim = NWA_corners[3:4]) +
-  labs(x = NULL, y = NULL)
-
-# Visualise
-bathy_lowres_plot
-```
-
-The above plot shows the NOAA bathymetry data downloaded with a resolution of 6. I tried these data at all resolutions from 2 -- 8 and visually this looks to be the best balance between removing unnecessary convolutions without loosing the broader features.
+<!-- These regions are an excellent start, but because the aim of this research project is to determine the primary drivers of MHWs in the Northwest Atlantic we want to subset the regions not only by their thermal characteristics, but also by their geophysical characteristics, which in this instance is most immediately available as bathymetry. The rationale for this is that surface forcing as a driver of anomalously warm seawater is likely to be more prevalent in shallow waters than in shelf waters or deeper. To this end we will divide the regions into three sub-regions each: 0 -- 50 m depth, 51 -- 200 m depth, 201+ m depth.  -->
+<!-- <!-- Unless otherwise specified we will not be looking at waters further than the continental shelf. This is because the usefulness of this work will largely be constrained by it's applications to coastal ecosystems and fisheries. Therefore we are less interested in understanding the drivers of synoptic scale and greater open ocean events. -->
 
 
-### Isobath contour based polygons
+<!-- ### Downloading data -->
 
-With a decent resolution picked out for our bathymetry data we now nee to create polygons from the desired isobaths. These will then be used as custom bounding boxes with which we will filter and combine the SST pixels for the next vignette.
+<!-- Before we can divide up our polygons by bathymetry, we must first download said bathymetry data. We will use here the NOAA data as it is (to my knowledge) the most convenient bathymetry data available directly through R. -->
 
-```{r isobath-1}
-# Spread bathy dataframe to matrix to play nice with shapefiles
-NWA_bathy_matrix <- NWA_bathy_lowres %>% 
-  mutate(depth = round(depth, -1)) %>% 
-  reshape2::acast( lon~lat, value.var = "depth")
+<!-- ```{r bathy-download, eval=FALSE} -->
+<!-- # Donwload NOAA bathy data at highest available resolution -->
+<!-- NWA_bathy_hires <- as.xyz(getNOAA.bathy(lon1 = NWA_corners[1]+9, lon2 = NWA_corners[2]-9, -->
+<!--                                         lat1 = NWA_corners[3]+9, lat2 = NWA_corners[4]-9, resolution = 1)) -->
+<!-- colnames(NWA_bathy_hires) <- c("lon", "lat", "depth") -->
+<!-- NWA_bathy_hires <- NWA_bathy_hires %>%  -->
+<!--   filter(depth <= 0) %>%  -->
+<!--   mutate(lon = round(lon, 4), -->
+<!--          lat = round(lat, 4)) -->
+<!-- # saveRDS(NWA_bathy_hires, file = "data/NWA_bathy_hires.Rda") -->
 
-# Generate contours
-cont <- contourLines(x = as.numeric(row.names(NWA_bathy_matrix)), y = as.numeric(colnames(NWA_bathy_matrix)), 
-                     z = NWA_bathy_matrix, levels = c(-50, -200))
-cont_lines <- ContourLines2SLDF(cont, proj4string = CRS("+proj=longlat +datum=WGS84")) # create SpatialLines DF
+<!-- # Donwload NOAA bathy data at a courser resolution -->
+<!-- NWA_bathy_lowres <- as.xyz(getNOAA.bathy(lon1 = NWA_corners[1]+9, lon2 = NWA_corners[2]-9, -->
+<!--                                          lat1 = NWA_corners[3]+9, lat2 = NWA_corners[4]-9, resolution = 6)) -->
+<!-- colnames(NWA_bathy_lowres) <- c("lon", "lat", "depth") -->
+<!-- NWA_bathy_lowres <- NWA_bathy_lowres %>%  -->
+<!--   filter(depth <= 0) %>%  -->
+<!--   mutate(lon = round(lon, 4), -->
+<!--          lat = round(lat, 4)) -->
+<!-- # saveRDS(NWA_bathy_lowres, file = "data/NWA_bathy_lowres.Rda") -->
+<!-- ``` -->
 
-# Have a look
-plot(cont_lines)
-```
+<!-- With our high res bathymetry data downloaded we will now go about finding the 50 and 200 metre isobaths. These lines will be used to define the edges of our sub-regions. The naming conventions we will use will be -->
 
-With the isobath contours now convert to a `spatial` class object we will need to do the same for our study area polygons so they can play nice with one another.
+<!-- ```{r isobath-hires-plot} -->
+<!-- # Load hires bathymetry data -->
+<!-- NWA_bathy_hires <- readRDS("data/NWA_bathy_hires.Rda") -->
 
-```{r isobath-2}
-# First convert the dataframe of different areas to a list
-poly_list <- split(NWA_coords_cabot, NWA_coords_cabot$region)
+<!-- # Plot to see what we've got -->
+<!-- bathy_hires_plot <- ggplot(NWA_coords_cabot, aes(x = lon, y = lat)) + -->
+<!--   geom_polygon(data = map_base, aes(group = group), show.legend = F) + -->
+<!--   geom_polygon(aes(group = region, fill = region, colour = region), alpha = 0.2) + -->
+<!--   geom_contour(data = NWA_bathy_hires, aes(z = depth), -->
+<!--                breaks = c(-50),  size = c(0.3),  colour = "grey70") + -->
+<!--     geom_contour(data = NWA_bathy_hires, aes(z = depth), -->
+<!--                breaks = c(-200),  size = c(0.3),  colour = "grey30") + -->
+<!--   coord_cartesian(xlim = NWA_corners[1:2], -->
+<!--                   ylim = NWA_corners[3:4]) + -->
+<!--   labs(x = NULL, y = NULL) -->
 
-# We then only want lon/lat in the list, not the names
-poly_list <- lapply(poly_list, function(x) { x["region"] <- NULL; x })
+<!-- # Visualise -->
+<!-- bathy_hires_plot -->
+<!-- ``` -->
 
-# Convert coords to polygon type
-poly_poly <- sapply(poly_list, Polygon)
+<!-- The resolution on the figure above is fantastic, but perhaps a bit more than what we need as the desire is to create functional polygons for dividing our regions. The level of detail present in the figure above will likely lead to issues later on. Let's look at the lowres bathymetry data and see if that works better. -->
 
-# Add id variables back in
-poly_poly <- lapply(seq_along(poly_poly), function(i) Polygons(list(poly_poly[[i]]), 
-                                            ID = names(poly_list)[i]))
+<!-- ```{r isobath-lowres-plot} -->
+<!-- # Load hires bathymetry data -->
+<!-- NWA_bathy_lowres <- readRDS("data/NWA_bathy_lowres.Rda") -->
 
-# Create SpatialPolygons object
-spatial_poly <- SpatialPolygons(poly_poly, proj4string = CRS("+proj=longlat +datum=WGS84"))
+<!-- # Plot to see what we've got -->
+<!-- bathy_lowres_plot <- ggplot(NWA_coords_cabot, aes(x = lon, y = lat)) + -->
+<!--   geom_polygon(data = map_base, aes(group = group), show.legend = F) + -->
+<!--   geom_polygon(aes(group = region, fill = region, colour = region), alpha = 0.2) + -->
+<!--   geom_contour(data = NWA_bathy_lowres, aes(z = depth), -->
+<!--                breaks = c(-50),  size = c(0.3),  colour = "grey70") + -->
+<!--   geom_contour(data = NWA_bathy_lowres, aes(z = depth), -->
+<!--                breaks = c(-200),  size = c(0.3),  colour = "grey30") + -->
+<!--   coord_cartesian(xlim = NWA_corners[1:2], -->
+<!--                   ylim = NWA_corners[3:4]) + -->
+<!--   labs(x = NULL, y = NULL) -->
 
-# Clip the contour lines to the study area polygons
-spatial_poly_lines <- gIntersection(cont_lines, spatial_poly) # clip the contours to subarea0
+<!-- # Visualise -->
+<!-- bathy_lowres_plot -->
+<!-- ``` -->
 
-# Visualise
-plot(spatial_poly)
-lines(spatial_poly_lines)
-```
+<!-- The above plot shows the NOAA bathymetry data downloaded with a resolution of 6. I tried these data at all resolutions from 2 -- 8 and visually this looks to be the best balance between removing unnecessary convolutions without loosing the broader features. -->
 
-After going through all of this shape file nonsense it dawned on me that I could much more easily just have used the bathymetry data already present in the NAPA model and then clumped the SST pixels based on which of the depth categories they fall within.
+<!-- ### Isobath contour based polygons -->
 
-We will now go about creating SST time series for each of the depth sub-regions. This work is continued in the [SST preparation](https://robwschlegel.github.io/MHWNWA/sst-prep.html) vignette.
+<!-- With a decent resolution picked out for our bathymetry data we now nee to create polygons from the desired isobaths. These will then be used as custom bounding boxes with which we will filter and combine the SST pixels for the next vignette. -->
 
+<!-- ```{r isobath-1} -->
+<!-- # Spread bathy dataframe to matrix to play nice with shapefiles -->
+<!-- NWA_bathy_matrix <- NWA_bathy_lowres %>%  -->
+<!--   mutate(depth = round(depth, -1)) %>%  -->
+<!--   reshape2::acast( lon~lat, value.var = "depth") -->
+
+<!-- # Generate contours -->
+<!-- cont <- contourLines(x = as.numeric(row.names(NWA_bathy_matrix)), y = as.numeric(colnames(NWA_bathy_matrix)),  -->
+<!--                      z = NWA_bathy_matrix, levels = c(-50, -200)) -->
+<!-- cont_lines <- ContourLines2SLDF(cont, proj4string = CRS("+proj=longlat +datum=WGS84")) # create SpatialLines DF -->
+
+<!-- # Have a look -->
+<!-- plot(cont_lines) -->
+<!-- ``` -->
+
+<!-- With the isobath contours now convert to a `spatial` class object we will need to do the same for our study area polygons so they can play nice with one another. -->
+
+<!-- ```{r isobath-2} -->
+<!-- # First convert the dataframe of different areas to a list -->
+<!-- poly_list <- split(NWA_coords_cabot, NWA_coords_cabot$region) -->
+
+<!-- # We then only want lon/lat in the list, not the names -->
+<!-- poly_list <- lapply(poly_list, function(x) { x["region"] <- NULL; x }) -->
+
+<!-- # Convert coords to polygon type -->
+<!-- poly_poly <- sapply(poly_list, Polygon) -->
+
+<!-- # Add id variables back in -->
+<!-- poly_poly <- lapply(seq_along(poly_poly), function(i) Polygons(list(poly_poly[[i]]),  -->
+<!--                                             ID = names(poly_list)[i])) -->
+
+<!-- # Create SpatialPolygons object -->
+<!-- spatial_poly <- SpatialPolygons(poly_poly, proj4string = CRS("+proj=longlat +datum=WGS84")) -->
+
+<!-- # Clip the contour lines to the study area polygons -->
+<!-- spatial_poly_lines <- gIntersection(cont_lines, spatial_poly) # clip the contours to subarea0 -->
+
+<!-- # Visualise -->
+<!-- plot(spatial_poly) -->
+<!-- lines(spatial_poly_lines) -->
+<!-- ``` -->
+
+<!-- After going through all of this shape file nonsense it dawned on me that I could much more easily just have used the bathymetry data already present in the NAPA model and then clumped the SST pixels based on which of the depth categories they fall within. -->
+
+We will now go about creating SST time series for each of the regions. This work is continued in the [SST preparation](https://robwschlegel.github.io/MHWNWA/sst-prep.html) vignette.
+
+## References
