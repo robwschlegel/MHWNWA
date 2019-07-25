@@ -148,9 +148,9 @@ NWA_info <- plyr::ldply(unique(NWA_coords$region), pnts_in_region)
 
 # Visualise to ensure success
 ggplot(NWA_coords, aes(x = lon, y = lat)) +
-  geom_polygon(data = map_base, aes(group = group), show.legend = F) +
   geom_polygon(aes(fill = region), alpha = 0.2) +
   geom_point(data = NWA_info, aes(colour = region)) +
+  geom_polygon(data = map_base, aes(group = group), show.legend = F) +
     coord_cartesian(xlim = NWA_corners[1:2],
                   ylim = NWA_corners[3:4]) +
   labs(x = NULL, y = NULL)
