@@ -29,65 +29,21 @@ options(scipen = 999)
 # Corners of the study area
 NWA_corners <- readRDS("data/NWA_corners.Rda")
 
-# Sub-region coordinates
-NWA_NAPA_info <- readRDS("data/NWA_NAPA_info.Rda")
-
-# Create smaller corners to use less RAM
-  # This also better matches the previous South African work
-  # The Tasmania work had corners of roughly 2 degrees greater than the study area
-# NWA_corners_sub <- c(NWA_corners[1]+8, NWA_corners[2]-8, NWA_corners[3]+8, NWA_corners[4]-8)
-
 # Individual regions
 NWA_coords <- readRDS("data/NWA_coords_cabot.Rda")
 
-# The NAPA data location
-NAPA_files <- dir("../../data/NAPA025/1d_grid_T_2D", full.names = T)
+# The pixels in each region
+NWA_info <- readRDS("data/NWA_info.Rda")
 
-# Load NAPA file date index
-NAPA_files_dates <- readRDS("data/NAPA_files_dates.Rda")
-
-# Load full variable climatology file
-NAPA_clim_vars <- readRDS("data/NAPA_clim_vars.Rda")
-
-# The NAPA 5 day U vector data location
-NAPA_U_files <- dir("../../data/NAPA025/5d_grid_U", full.names = T)
-
-# The NAPA 5 day V vector data location
-NAPA_V_files <- dir("../../data/NAPA025/5d_grid_V", full.names = T)
-
-# The NAPA 5 day W vector data location
-NAPA_W_files <- dir("../../data/NAPA025/5d_grid_W", full.names = T)
-
-# The NAPA vector file dates
-NAPA_vector_files_dates <- readRDS("data/NAPA_vector_files_dates.Rda")
-
-# The NAPA model lon/lat values
-NAPA_coords <- readRDS("data/NAPA_coords.Rda")
-
-# The NAPA model lon/lat values for the study area
-NAPA_coords_sub <- readRDS("data/NAPA_coords_sub.Rda")
-
-# Load NAPA bathymetry/lon/lat
-NAPA_bathy <- readRDS("data/NAPA_bathy.Rda")
-
-# Load NAPA bathymetry/lon/lat for study area only
-NAPA_bathy_sub <- readRDS("data/NAPA_bathy_sub.Rda")
-
-# Load MHW results
-NAPA_MHW_sub <- readRDS("data/NAPA_MHW_sub.Rda")
-
-# Load the NAPA clim vector files
-NAPA_clim_vecs <- readRDS("data/NAPA_clim_vecs.Rda")
+# MHW results
+OISST_region_MHW <- readRDS("data/OISST_region_MHW.Rda")
 
 # MHW Events
-NAPA_MHW_event <- NAPA_MHW_sub %>%
-  select(-clims, -cats) %>%
+OISST_MHW_event <- OISST_region_MHW %>%
+  select(-cats) %>%
   unnest(events) %>%
   filter(row_number() %% 2 == 0) %>%
   unnest(events)
-
-# Load NAPA variables
-NAPA_vars <- readRDS("data/NAPA_vars.Rda")
 
 # The base map
 map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE)) %>%
@@ -101,23 +57,23 @@ land_mask_OISST <- readRDS("data/land_mask_OISST.Rda")
 
 # Filter it to the smaller domain only
 land_mask_OISST_sub <- land_mask_OISST%>%
-  filter(lon >= NWA_corners_sub[1], lon <= NWA_corners_sub[2],
-         lat >= NWA_corners_sub[3], lat <= NWA_corners_sub[4])
+  filter(lon >= NWA_corners[1], lon <= NWA_corners[2],
+         lat >= NWA_corners[3], lat <= NWA_corners[4])
 
 # Create a subsetted water only mask
 land_mask_OISST_sub_water <- land_mask_OISST_sub %>%
   filter(lsmask == 1)
 
 # Load grid for converting NAPA to OISST coordinates
-load("data/lon_lat_NAPA_OISST.Rdata")
+# load("data/lon_lat_NAPA_OISST.Rdata")
 
 # Change to fit with this project
-lon_lat_NAPA_OISST <- lon_lat_NAPA_OISST %>%
-  dplyr::select(-lon, -lat, -dist, -nav_lon_corrected) %>%
-  dplyr::rename(lon = nav_lon, lat = nav_lat) %>%
-  mutate(lon = round(lon, 4),
-         lat = round(lat, 4)) %>%
-  mutate(lon_O = ifelse(lon_O > 180, lon_O-360, lon_O))
+# lon_lat_NAPA_OISST <- lon_lat_NAPA_OISST %>%
+#   dplyr::select(-lon, -lat, -dist, -nav_lon_corrected) %>%
+#   dplyr::rename(lon = nav_lon, lat = nav_lat) %>%
+#   mutate(lon = round(lon, 4),
+#          lat = round(lat, 4)) %>%
+#   mutate(lon_O = ifelse(lon_O > 180, lon_O-360, lon_O))
 
 
 # Extract one variable ----------------------------------------------------
@@ -371,6 +327,7 @@ data_packet <- function(event_sub){
   # Exit
   return(packet_res)
 }
+
 
 # Function to extract all vectors at a file step --------------------------
 
@@ -821,47 +778,88 @@ node_figure <- function(node_number){
 
 # Extract data from NOAA OISST NetCDF -------------------------------------
 
+# file_name <- "../data/OISST/avhrr-only-v2.ts.0001.nc"
+load_OISST <- function(file_name){
+  res <- tidync(file_name) %>%
+    hyper_filter(lat = dplyr::between(lat, 31.5-0.125, 63.5-0.125),
+                 time = dplyr::between(time, as.integer(as.Date("1993-01-01")),
+                                       as.integer(as.Date("2018-12-31")))) %>%
+    hyper_tibble() %>%
+    mutate(time = as.Date(time, origin = "1970-01-01")) %>%
+    dplyr::rename(temp = sst, t = time) %>%
+    select(lon, lat, t, temp)
+  return(res)
+}
+
+load_all_OISST <- function(file_names){
+  system.time(
+  res_all <- plyr::ldply(file_names, load_OISST, .parallel = T)
+  ) # 0.5 seconds for one slice, 34 seconds for all
+}
 
 
 # Extract data from ERA 5 NetCDF ------------------------------------------
 
-file_name <- "../../oliver/data/ERA/ERA5/LWR/ERA5_LWR_1993.nc"
+# Function for loading a single ERA 5 NetCDF file
+file_name <- "../../oliver/data/ERA/ERA5/T2M/ERA5_T2M_1979.nc"
+load_ERA5 <- function(file_name){
+  res <- tidync(file_name) %>%
+    hyper_filter(latitude = dplyr::between(latitude, 31.5, 63.5),
+                 longitude = dplyr::between(longitude, -80.5+360, -40.5+360)) %>%
+    hyper_tibble() %>%
+    mutate(time = as.POSIXct(time * 3600, origin = '1900-01-01', tz = "GMT")) %>%
+    dplyr::rename(lon = longitude, lat = latitude, t = time) %>%
+    group_by(lon, lat, t) %>%
+    # Rather use data.table here
+    summarise_if(is.numeric, mean) %>%
+    ungroup() #%>%
+    # select(lon, lat, t, everything())
+}
 
-test <- tidync(file_name) %>%
-  # activate() %>%
-  # hyper_tbl_cube()
-  hyper_filter(latitude = dplyr::between(latitude, 31.5, 63.5),
-               longitude = dplyr::between(longitude, -80.5+360, -40.5+360)) %>%
-  hyper_tibble() %>%
-  mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1900-01-01', tz = "GMT")))
-# test$time2 <- as.Date(as.POSIXct(test$time * 3600, origin = '1900-01-01', tz = "GMT"))
-unique(test$time)
-unique(test$longitude)
-unique(test$latitude)
+# Function to load all of the NetCDF files for one ERA 5 variable
+load_all_ERA5 <- function(file_names){
+  system.time(
+  res_all <- plyr::ldply(ERA5_t2m_files[1:2], load_ERA5, .parallel = T)
+  ) # 44 seconds for one year, 116 seconds for two
+}
+# test <- load_all_ERA5()
+# unique(res$lon)
+# unique(res$lat)
+# unique(res$t)
 
-test %>%
-  filter(time == "1993-01-31") %>%
-  ggplot(aes(x = longitude, y = latitude, fill = msnlwrf)) +
-  geom_raster() +
-  scale_fill_gradient2()
+# res_u <- unique(res)
+
+# res_f <- res %>%
+#   # filter(lon <= -40.5+360, lon >= -80.5+360)
+#   filter(lon == -40.5+360, lat == 31.5)
+
+# head(res)
 
 
 # Extract data from GLORYS NetCDF -----------------------------------------
 
-file_name <- "../data/GLORYS/MHWNWA_GLORYS_quarter_degree_daily_1993-01.nc"
-
-test <- tidync(file_name) %>%
-  activate(mlp) %>% # Need to explicitly grab MLD as it doesn't use the depth dimension
-  # hyper_tbl_cube()
-  hyper_tibble() %>%
-  mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1950-01-01', tz = "GMT")))
-
-test_date <- as.POSIXct(3600 * (test$dims$time), origin = '1950-01-01', tz = "GMT")
-head(test_date)
-length(unique(test_date))
+# file_name <- "../data/GLORYS/MHWNWA_GLORYS_quarter_degree_daily_1993-01.nc"
+load_GLORYS <- function(file_name){
+  res_uv <- tidync(file_name) %>%
+    hyper_tibble() %>%
+    mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1950-01-01', tz = "GMT"))) %>%
+    select(-depth)
+  res_mld <- tidync(file_name) %>%
+    activate(mlp) %>% # Need to explicitly grab MLD as it doesn't use the depth dimension
+    hyper_tibble() %>%
+    mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1950-01-01', tz = "GMT")))
+  res_all <- left_join(res_uv, res_mld, by = c("longitude", "latitude", "time")) %>%
+    dplyr::rename(lon = longitude, lat = latitude, t = time) %>%
+    select(lon, lat, t, everything())
+  if("mlp" %in% colnames(res_all)) res_all <- dplyr::rename(res_all, mld = mlp)
+  res_all <- res_all %>%
+    mutate(mld = round(mld),
+           u = round(u, 4), v = round(v, 4))
+  return(res_all)
+}
 
 # Test visuals
-test %>%
-  filter(time == "1993-01-31") %>%
-  ggplot(aes(x = longitude, y = latitude, fill = mlp)) +
-  geom_raster()
+# res_all %>%
+#   filter(t == "1993-01-31") %>%
+#   ggplot(aes(x = lon, y = lat, fill = mld)) +
+#   geom_raster()

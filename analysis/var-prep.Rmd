@@ -26,7 +26,9 @@ After first going through this entire process with NAPA model output it has beco
 - OAflux: Latent & sensible heat flux
 - ERA 5: shortwave and longwave radiation, U & V wind vectors (10m),  air temperature (2m)
 
-ALl of these variables have a daily resolution from at least 1993 -- 2018. The spatial resolution varies from course (1 degree) OAFlux data to hi-res (1/12 degree) GLORYS data. The OISST, ERA 5, and GLORUS (1993 -- 2015) data are natively at 1/4 degree, though the corrdinates are slightly off between OISST and ERA 5 + GLORYS. In order to trade between efficiency and accuracy we will be converting everything to the 1/4 degree grid of the OISST data. This will be accomplished with the newly published __`grainchanger`__ package.
+ALl of these variables have a daily resolution from at least 1993 -- 2018. The spatial resolution varies from course (1 degree) OAFlux data to hi-res (1/12 degree) GLORYS data. The OISST, ERA 5, and GLORUS (1993 -- 2015) data are natively at 1/4 degree, though the corrdinates are slightly off between OISST and ERA 5 + GLORYS. The ERA5 data are also hourly, so will need to be binned into mean daily values. In order to trade between efficiency and accuracy we will be converting everything to the 1/4 degree grid of the OISST data. This will be accomplished with the newly published __`grainchanger`__ package.
+
+In order to compare the OISST dataset to the other 1/4 degree products the lat values for OISST will have 0.125 added to them, and the longitude values will have 0.125 subtracted from them. This is because the OISST coordinates give the centre value of each pixel, whereas the other coordinate system gives the top left corner (north-west corner).
 
 ```{r startup}
 # Packages used in this vignette
@@ -79,87 +81,140 @@ OISST_grid_study <- OISST_grid %>%
 # saveRDS(OISST_grid_study, "data/OISST_grid_study.Rda")
 ```
 
+## Variable datasets
+
+Rather than go about performing all of the calculations below on piecemeal bits of data, it should be possible to load the entire datasets for each variable into memory at once. So in this section we will create functions that load each of the variables for the different data products. We will then create and save these complete datasets for ease of use later on.
+
+```{r variable-datasets, eval=FALSE}
+# Load the functions used below
+  # I've chosen to house a lot of code here to keep this vignette tidier
+source("code/functions.R")
+
+## SST
+# The files with data in the study area
+OISST_sst_files <- data.frame(files = dir("../../data/OISST", full.names = T),
+                              lon = c(seq(0.125, 179.875, by = 0.25), seq(-179.875, -0.125, by = 0.25))) %>% 
+  filter(lon >= NWA_corners[1]+0.125, lon <= NWA_corners[2]+0.125) %>% 
+  mutate(files = as.character(files))
+OISST_sst_files <- as.vector(OISST_sst_files$files)
+# Aggregate data
+system.time(
+OISST_sst <- load_all_OISST(OISST_sst_files)
+) # xxx seconds
+# save
+saveRDS(OISST_sst, "data/OISST_sst.Rda")
+
+## Air temperature at 2 metres
+# Grab file location
+ERA5_t2m_files <- dir("../../oliver/data/ERA/ERA5/T2M", full.names = T, pattern = "ERA5")[15:40]
+# Aggregate data
+system.time(
+ERA5_t2m <- load_all_ERA5(ERA5_t2m_files)
+) # xxx seconds
+# save
+saveRDS(ERA5_t2m, "data/ERA5_t2m.Rda")
+
+```
+
+### Net heat flux
+
+This is the one variable I was not able to source. The OAFlux product does have a net heat flux layer, but it ends in 2009. This is not long enough so we are going to create our own net heat flux layer by adding together the latent & sensible heat flux layers with the short & long wave radiation layers all from the ERA 5 product. When doing so we must ensure that the directions of the terms are matched correctly (i.e. that they all represent positive downward flux). 
+
 ## Variable climatologies
 
-In the data packets we need to create for the SOMs (see below) we will need to include anomaly values. In order to do this we need to first create daily climatology values for each variable for each pixel. In order to create a climatology of values we will need to load all of the files and then pixel-wise go about getting the seasonal (daily) climatologies. This will be done with the same function (`ts2clm()`) that is used for the MHW climatologies. We will first create functions that load each of the different data products. One-by-one we will then load an entire dataset into memory so that we can perform the necessary calculations. Hold onto your hats, this is going to be RAM heavy...
+In the data packets we need to create for the SOMs (see below) we will need to include anomaly values. In order to do this we need to first create daily climatology values for each variable for each pixel. In order to create a climatology of values we will need to load all of the files and then pixel-wise go about getting the seasonal (daily) climatologies. This will be done with the same function (`ts2clm()`) that is used for the MHW climatologies. One-by-one we will load an entire dataset (created above) into memory so that we can perform the necessary calculations. Hold onto your hats, this is going to be RAM heavy...
 
-```{r clim-var-all, eval=FALSE}
+```{r variable-climatologies, eval=FALSE}
 # Load functions required below
 source("code/functions.R")
 
-# NB: The creation of a clim for one variable is too large to run via ldply
-# Rather they must be run one at a time via a for loop and the memmory dumped after each
-for(i in 1:nrow(NAPA_vars)){
-  clim_one_var(NAPA_vars$name[i])
-  gc()
-}
+## SST
+# Load
+OISST_sst <- readRDS("data/OISST_sst.Rda")
+# Calculate clims
+system.time(
+OISST_sst_clim <- OISST_sst %>% 
+  group_by(lon, lat) %>% 
+  nest() %>% 
+  mutate(clims = map(data, ts2clm,
+                     climatologyPeriod = c("1993-01-01", "2018-12-31"),
+                     clmOnly = T, roundClm = FALSE)) %>% 
+  select(-data) %>% 
+  unnest()
+) # 1139 seconds
+OISST_sst_clim$thresh <- NULL
+# Save
+saveRDS(OISST_sst_clim, "data/OISST_sst_clim.Rda")
+
+## Surface temperature at 2 metres
+ERA5_t2m_clim <- ERA5_t2m %>% 
+  dplyr::rename(temp = `2t`)
+  group_by(lon, lat)
 ```
 
-With that large hurdle jumped, let's double down and join all of these data together for ease of loading in the future.
+<!-- With that large hurdle jumped, let's double down and join all of these data together for ease of loading in the future. -->
 
-```{r clim-var-all-join, eval=FALSE}
-# Load all variable climatologies and join variables with a for loop
-  # NB: This should be optimised...
-NAPA_clim_vars <- data.frame()
-# system.time(
-for(i in 1:length(NAPA_vars$name)){
-  var_one <- readRDS(file = paste0("data/NAPA_clim_",NAPA_vars$name[i],".Rda"))
-  if(nrow(NAPA_clim_vars) == 0){
-    NAPA_clim_vars <- rbind(var_one, NAPA_clim_vars)
-  } else {
-    NAPA_clim_vars <- left_join(NAPA_clim_vars, var_one, 
-                                by = c("lon", "lat", "doy"))
-  }
-}
-# ) # 115 seconds for all
-rm(var_one, i); gc()
+<!-- ```{r clim-var-all-join, eval=FALSE} -->
+<!-- # Load all variable climatologies and join variables with a for loop -->
+<!--   # NB: This should be optimised... -->
+<!-- NAPA_clim_vars <- data.frame() -->
+<!-- # system.time( -->
+<!-- for(i in 1:length(NAPA_vars$name)){ -->
+<!--   var_one <- readRDS(file = paste0("data/NAPA_clim_",NAPA_vars$name[i],".Rda")) -->
+<!--   if(nrow(NAPA_clim_vars) == 0){ -->
+<!--     NAPA_clim_vars <- rbind(var_one, NAPA_clim_vars) -->
+<!--   } else { -->
+<!--     NAPA_clim_vars <- left_join(NAPA_clim_vars, var_one,  -->
+<!--                                 by = c("lon", "lat", "doy")) -->
+<!--   } -->
+<!-- } -->
+<!-- # ) # 115 seconds for all -->
+<!-- rm(var_one, i); gc() -->
 
-# Convert DOY to MM-DD for joining to daily data below
-NAPA_clim_vars$doy <- format(as.Date(NAPA_clim_vars$doy, origin = "2015-12-31"), "%m-%d")
+<!-- # Convert DOY to MM-DD for joining to daily data below -->
+<!-- NAPA_clim_vars$doy <- format(as.Date(NAPA_clim_vars$doy, origin = "2015-12-31"), "%m-%d") -->
 
-# Change column names to highlight that these are climatology values
-colnames(NAPA_clim_vars)[-c(1:3)] <- paste0(colnames(NAPA_clim_vars)[-c(1:3)],"_clim")
+<!-- # Change column names to highlight that these are climatology values -->
+<!-- colnames(NAPA_clim_vars)[-c(1:3)] <- paste0(colnames(NAPA_clim_vars)[-c(1:3)],"_clim") -->
 
-# Reorder columns
-# NAPA_clim_vars <- dplyr::select(NAPA_clim_vars, lon, lat, doy, everything())
+<!-- # Reorder columns -->
+<!-- # NAPA_clim_vars <- dplyr::select(NAPA_clim_vars, lon, lat, doy, everything()) -->
 
-# saveRDS(NAPA_clim_vars, "data/NAPA_clim_vars.Rda")
+<!-- # saveRDS(NAPA_clim_vars, "data/NAPA_clim_vars.Rda") -->
+<!-- ``` -->
+
+## Variable anomalies
+
+The last step before we can begin creating our data packets is to now subtract our climatology data from our base data for each of the variables used in this study. We will then save this large anomaly cubes to allow for easy synoptic state creation.
+
+```{r variable-anomalies, eval=FALSE}
+# Easy join for DOY values
+doy_index <- data.frame(doy_int = 1:366,
+                        doy = format(seq(as.Date("2016-01-01"), 
+                                         as.Date("2016-12-31"), 
+                                                 by = "day"), "%m-%d"),
+                        stringsAsFactors = F)
+## SST
+# Load
+OISST_sst <- readRDS("data/OISST_sst.Rda") %>% 
+  mutate(doy = format(t, "%m-%d"))
+OISST_sst_clim <- readRDS("data/OISST_sst_clim.Rda") %>% 
+  left_join(doy_index, by = c("doy" = "doy_int")) %>% 
+  select(-doy) %>% 
+  dplyr::rename(doy = doy.y)
+# Join and calculate anomalies
+system.time(
+OISST_sst_anom <- left_join(OISST_sst, OISST_sst_clim, by = c("lon", "lat", "doy")) %>% 
+  mutate(sst_anom = round(temp-seas, 2)) %>% 
+  select(lon, lat, t, sst_anom)
+) # 43 seconds
+# Save
+saveRDS(OISST_sst_anom, "data/OISST_sst_anom.Rda")
 ```
-
 
 ## Synoptic states
 
 With the variables chosen from a few different data products, the next step is to create mean synoptic states for each variable during each of the MHWs detected in each region. In order to make that process go more smoothly we will first create time (date) and space (lon/lat) indexes for each data product/layer. Unfortunately this means that from here out the code in this vignette will only run on the server I am working from. The data output of this vignette will however be publicly available [here](https://github.com/robwschlegel/MHWNWA/tree/master/data), in as much as the data hosting limits for GitHub allows. For much larger datasets please contact me directly and we can make a plan.
-
-### Time and space indexes for data products
-
-Because we are dealing with a few dfferent data products we will need to prep for their use differently. Besides creating a code chunk tailored to accessing and procesing each data type, this also means that we need to create an index for each file that let's us quickly now what the spatial or temporal ID is for each. Following is a quick bullet list on how that will play out:
-
-- NOAA OISST: NetCDF files by longitude slice; _requires spatial index_
-- GLORYS: NetCDF files by month slice; _requires temporal index_
-- OAflux: Downloaded directly into R format in one cube; _requires no index_
-- ERA 5:  NetCDF files by year slice; _requires temporal index_
-
-<!-- To create the index of dates to be found within each of the thousands of NAPA surface NetCDF files we will use a simple for loop to crawl through the files and write down for us in one long spreadsheet which dates are to be found in which files. While this could be done on the fly in the following steps, it will just be easier to have a stable index prepared. -->
-
-```{r date-index, eval=FALSE}
-# Pull out the dates
-NAPA_files_dates <- data.frame()
-for(i in 1:length(NAPA_files)){
-  file_name <- NAPA_files[i]
-  date_start <- ymd(str_sub(basename(as.character(file_name)), start = 29, end = 36))
-  date_end <- ymd(str_sub(basename(as.character(file_name)), start = 38, end = 45))
-  date_seq <- seq(date_start, date_end, by = "day")
-  date_info <- data.frame(file = file_name, date = date_seq)
-  NAPA_files_dates <- rbind(date_info, NAPA_files_dates)
-}
-
-# Order by date, just for tidiness
-NAPA_files_dates <- dplyr::arrange(NAPA_files_dates, date)
-
-# Save
-# saveRDS(NAPA_files_dates, "data/NAPA_files_dates.Rda")
-```
 
 ### Variable extractor
 

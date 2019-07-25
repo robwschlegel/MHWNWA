@@ -36,9 +36,7 @@ source("code/functions.R")
 # Data prep ---------------------------------------------------------------
 
 # Create net heat flux (qnet) variable
-  # This requires combining two variables from OAFlux and two from ERA 5
-
-
+  # This requires combining four full variables from the ERA 5 data
 
 # Variable climatologies --------------------------------------------------
 

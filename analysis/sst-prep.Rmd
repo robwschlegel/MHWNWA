@@ -52,66 +52,7 @@ map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE
   select(-region, -subregion)
 ```
 
-<!-- Before we access the SST data from the NAPA (3-Oceans) model, let's load all of the polygons and bathymetry data we will need to create our grouped time series. -->
-
 ## Pixel prep
-
-<!-- ### NAPA bathymetry -->
-
-<!-- We will now extract the bathymetry data from the NAPA model to use as our guide for how to assign depth values to the different SST pixels. -->
-
-<!-- ```{r NAPA-bathy, eval=FALSE} -->
-<!-- # Open bathymetry NetCDF file -->
-<!-- nc_bathy <- nc_open("../../data/NAPA025/mesh_grid/bathy_creg025_extended_5m.nc") -->
-
-<!-- # Extract and combine lon/lat/bathy -->
-<!-- lon <- as.data.frame(ncvar_get(nc_bathy, varid = "nav_lon")) %>%  -->
-<!--   setNames(., as.numeric(nc_bathy$dim$y$vals)) %>% -->
-<!--   mutate(lon = as.numeric(nc_bathy$dim$x$vals)) %>%  -->
-<!--   gather(-lon, key = lat, value = nav_lon) %>%  -->
-<!--   mutate(lat = as.numeric(lat)) -->
-<!-- lat <- as.data.frame(ncvar_get(nc_bathy, varid = "nav_lat")) %>%  -->
-<!--   setNames(., as.numeric(nc_bathy$dim$y$vals)) %>% -->
-<!--   mutate(lon = as.numeric(nc_bathy$dim$x$vals)) %>%  -->
-<!--   gather(-lon, key = lat, value = nav_lat) %>%  -->
-<!--   mutate(lat = as.numeric(lat))  -->
-<!-- bathy <- as.data.frame(ncvar_get(nc_bathy, varid = "Bathymetry")) %>%  -->
-<!--   mutate(lon = as.numeric(nc$dim$x$vals)) %>%  -->
-<!--   gather(-lon, key = lat, value = bathy) %>%  -->
-<!--   mutate(lat = rep(as.numeric(nc_bathy$dim$y$vals), each = 528), -->
-<!--          bathy = ifelse(bathy == 0, NA, bathy), -->
-<!--          bathy = round(bathy, 2)) %>% -->
-<!--   na.omit() %>%  -->
-<!--   left_join(lon, by = c("lon", "lat")) %>%  -->
-<!--   left_join(lat, by = c("lon", "lat")) %>%  -->
-<!--   dplyr::rename(lon_index = lon, lat_index = lat, -->
-<!--                 lon = nav_lon, lat = nav_lat) %>%  -->
-<!--   mutate(lon = round(lon, 4), -->
-<!--          lat = round(lat, 4)) -->
-<!-- nc_close(nc_bathy) -->
-
-<!-- # Save bathymetry -->
-<!-- # saveRDS(bathy, "data/NAPA_bathy.Rda") -->
-
-<!-- # Save base lon/lat values -->
-<!-- NAPA_coords <- left_join(lon, lat, by = c("lon", "lat")) %>%  -->
-<!--     dplyr::rename(lon_index = lon, lat_index = lat, -->
-<!--                 lon = nav_lon, lat = nav_lat) %>%  -->
-<!--   mutate(lon = round(lon, 4), -->
-<!--          lat = round(lat, 4)) -->
-<!-- # saveRDS(NAPA_coords, "data/NAPA_coords.Rda") -->
-
-<!-- # Save bathymetry subsetted to study area -->
-<!--   # This functions as an effective mask for water only pixels -->
-
-
-<!-- # Clean up -->
-<!-- rm(nc_bathy, bathy, lon, lat) -->
-<!-- ``` -->
-
-<!-- ### Assign pixels to regions -->
-
-<!-- With the depths for the model pixels worked out we may now assign them within one of the seven regions. -->
 
 Up first we take the lon/lat grid from the 1/4 degree daily NOAA OISST product and find which points fall within each region. We will save this information to allow us to then easily pull out the desired pixels from the cube of OISST data.
 
@@ -156,35 +97,6 @@ ggplot(NWA_coords, aes(x = lon, y = lat)) +
                   ylim = NWA_corners[3:4]) +
   labs(x = NULL, y = NULL)
 ```
-
-<!-- ### Assign pixels to sub-regions -->
-
-<!-- The `pnt.in.poly` function was remarkably convenient. Our points have now very easily been placed within their respective regions. The last step now before we move on to creating our clumped time series is to cut the regions up into three groups each based on depth: 0 -- 50 m, 51 -- 200 m, 201+ m. -->
-
-<!-- ```{r depth-sub-regions} -->
-<!-- # Cut the depth strata into sub-regions as desired -->
-<!-- NWA_NAPA_info <- NWA_NAPA_info %>%  -->
-<!--   mutate(sub_region = cut(bathy, breaks = c(0, 50, 200, ceiling(max(bathy))), dig.lab = 4))#, -->
-<!--          # mutate(sub_region = fct_recode(., sub_region, "(200+]" = "(200,3881]"))) -->
-<!-- NWA_NAPA_info <- mutate(NWA_NAPA_info, sub_region = fct_recode(sub_region, "(200+]" = "(200,3881]")) -->
-<!-- # saveRDS(NWA_NAPA_info, "data/NWA_NAPA_info.Rda") -->
-
-<!-- # Visualise to ensure success -->
-<!-- sub_region_map <- ggplot(NWA_coords, aes(x = lon, y = lat)) + -->
-<!--   geom_polygon(data = map_base, aes(group = group), show.legend = F) + -->
-<!--   # geom_polygon(aes(fill = region), alpha = 0.2) + -->
-<!--   geom_point(data = NWA_NAPA_info, aes(colour = region, alpha = sub_region),  -->
-<!--              shape = 15, size = 0.5) + -->
-<!--   guides(colour = guide_legend(override.aes = list(size = 5))) + -->
-<!--   scale_alpha_manual(values = c(0.4, 0.7, 1)) + -->
-<!--   coord_cartesian(xlim = NWA_corners_sub[1:2], -->
-<!--                   ylim = NWA_corners_sub[3:4]) + -->
-<!--   labs(x = NULL, y = NULL, colour = "Region", alpha = "Sub-region") -->
-<!-- # ggsave(plot = sub_region_map, filename = "output/sub_region_map.pdf", height = 5, width = 6) -->
-
-<!-- # Visualise -->
-<!-- sub_region_map -->
-<!-- ``` -->
 
 ## SST prep
 
