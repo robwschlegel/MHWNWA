@@ -10,7 +10,7 @@
 # library(rlang)
 library(jsonlite, lib.loc = "../R-packages/")
 library(tidyverse) # Base suite of functions
-library(ncdf4) # For opening and working with NetCDF files
+# library(ncdf4) # For opening and working with NetCDF files
 library(lubridate) # For convenient date manipulation
 library(heatwaveR, lib.loc = "../R-packages/")
 # cat(paste0("heatwaveR version = ", packageDescription("heatwaveR")$Version))
@@ -823,12 +823,35 @@ node_figure <- function(node_number){
 
 
 
-# Extract data from GLORYS NetCDF -----------------------------------------
+# Extract data from ERA 5 NetCDF ------------------------------------------
 
-file_name <- "../data/GLORYS/CMEMS_global-reanalysis-phy-001-030-daily_1993-01.nc"
+file_name <- "../../oliver/data/ERA/ERA5/LWR/ERA5_LWR_1993.nc"
 
 test <- tidync(file_name) %>%
-  activate() %>%
+  # activate() %>%
+  # hyper_tbl_cube()
+  hyper_filter(latitude = dplyr::between(latitude, 31.5, 63.5),
+               longitude = dplyr::between(longitude, -80.5+360, -40.5+360)) %>%
+  hyper_tibble() %>%
+  mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1900-01-01', tz = "GMT")))
+# test$time2 <- as.Date(as.POSIXct(test$time * 3600, origin = '1900-01-01', tz = "GMT"))
+unique(test$time)
+unique(test$longitude)
+unique(test$latitude)
+
+test %>%
+  filter(time == "1993-01-31") %>%
+  ggplot(aes(x = longitude, y = latitude, fill = msnlwrf)) +
+  geom_raster() +
+  scale_fill_gradient2()
+
+
+# Extract data from GLORYS NetCDF -----------------------------------------
+
+file_name <- "../data/GLORYS/MHWNWA_GLORYS_quarter_degree_daily_1993-01.nc"
+
+test <- tidync(file_name) %>%
+  activate(mlp) %>% # Need to explicitly grab MLD as it doesn't use the depth dimension
   # hyper_tbl_cube()
   hyper_tibble() %>%
   mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1950-01-01', tz = "GMT")))
@@ -840,5 +863,5 @@ length(unique(test_date))
 # Test visuals
 test %>%
   filter(time == "1993-01-31") %>%
-  ggplot(aes(x = longitude, y = latitude, fill = mlotst)) +
+  ggplot(aes(x = longitude, y = latitude, fill = mlp)) +
   geom_raster()

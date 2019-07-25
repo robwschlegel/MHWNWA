@@ -13,8 +13,6 @@ navbar:
       href: sst-prep.html
     - text: "Variable preparation"
       href: var-prep.html
-    - text: "Vector preparation"
-      href: vec-prep.html
     - text: "SOM analysis"
       href: som.html
     - text: "Figure creation"

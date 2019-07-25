@@ -1,7 +1,7 @@
 ---
 title: "SST preparation"
 author: "Robert Schlegel"
-date: "2019-05-23"
+date: "2019-07-24"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
@@ -15,10 +15,9 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
                       eval = TRUE, tidy = FALSE)
 ```
 
-
 ## Introduction
 
-Building on the work performed in the [Polygon preparation](https://robwschlegel.github.io/MHWNWA/polygon-prep.html) vignette, we will now create grouped SST time series for the regions in our study area. We will do this by finding which NOAA OISST pixels fall within each of the region polygons.
+Building on the work performed in the [Polygon preparation](https://robwschlegel.github.io/MHWNWA/polygon-prep.html) vignette, we will now create grouped SST time series for the regions in our study area. We will do this by finding which NOAA OISST pixels fall within each of the region polygons. Also note that throughout this vignette (and this entire project) we will use the climatology period of 1993 -- 2018 as this is the shortest time limiting us by the data products used for the various abiotic variables needed for the SOM.
 
 ```{r libraries}
 # Packages used in this vignette
@@ -126,17 +125,18 @@ colnames(OISST_grid) <- c("lon", "lat")
 # saveRDS(OISST_grid, "data/OISST_grid.Rda")
 
 # Trim down OISST grid for faster processing
-OISST_grid_trim <- OISST_grid %>% 
+OISST_grid_region <- OISST_grid %>% 
   filter(lon >= min(NWA_coords$lon),
          lon <= max(NWA_coords$lon),
          lat >= min(NWA_coords$lat),
          lat <= max(NWA_coords$lat))
+# saveRDS(OISST_grid_region, "data/OISST_grid_region.Rda")
 
 # Function for finding and cleaning up points within a given region polygon
 pnts_in_region <- function(region_in){
   region_sub <- NWA_coords %>% 
     filter(region == region_in)
-  coords_in <- pnt.in.poly(pnts = OISST_grid_trim[1:2], poly.pnts = region_sub[2:3]) %>% 
+  coords_in <- pnt.in.poly(pnts = OISST_grid_region[1:2], poly.pnts = region_sub[2:3]) %>% 
     filter(pip == 1) %>% 
     dplyr::select(-pip) %>% 
     mutate(region = region_in)
@@ -145,6 +145,7 @@ pnts_in_region <- function(region_in){
 
 # Run the function
 NWA_info <- plyr::ldply(unique(NWA_coords$region), pnts_in_region)
+# saveRDS(NWA_info, "data/NWA_info.Rda")
 
 # Visualise to ensure success
 ggplot(NWA_coords, aes(x = lon, y = lat)) +
@@ -184,7 +185,6 @@ ggplot(NWA_coords, aes(x = lon, y = lat)) +
 <!-- # Visualise -->
 <!-- sub_region_map -->
 <!-- ``` -->
-
 
 ## SST prep
 
@@ -240,14 +240,9 @@ OISST_region <- readRDS("data/OISST_region.Rda")
 # Calculate base results
 system.time(
 OISST_region_MHW <- OISST_region %>%
-  # NB: Should not use data before 1998-01-01 as this is model spin-up
-  # filter(t >= "1998-01-01") %>% 
   group_by(region) %>%
   nest() %>%
   mutate(clims = map(data, ts2clm,
-                     # NB: I've chosen here to use as much of the 2015 data as exists,
-                     # rather than to use none of it as I think it will create a better climatology
-                     # even though the last two days of the year are missing
                      climatologyPeriod = c("1993-01-01", "2018-12-31")),
          events = map(clims, detect_event),
          cats = map(events, category)) %>%

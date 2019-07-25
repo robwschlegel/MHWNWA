@@ -1,7 +1,7 @@
 ---
 title: "Polygon preparation"
 author: "Robert Schlegel"
-date: "2019-05-23"
+date: "2019-07-24"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console

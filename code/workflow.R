@@ -11,9 +11,8 @@
 # Run this to re-compile the entire project
 system.time(
 workflowr::wflow_publish(files = c("analysis/index.Rmd", "analysis/polygon-prep.Rmd",
-                                   "analysis/sst-prep.Rmd", "analysis/var-prep.Rmd",
-                                   "analysis/vec-prep.Rmd", "analysis/som.Rmd",
-                                   "analysis/figures.Rmd", "analysis/node-summary.Rmd"),
+                                   "analysis/sst-prep.Rmd", "analysis/var-prep.Rmd"),#,
+                                   #"analysis/som.Rmd", "analysis/figures.Rmd", "analysis/node-summary.Rmd"),
                          message = "Re-publish entire site.")
 ) # 223 seconds
 
@@ -26,16 +25,25 @@ source("code/functions.R")
 
 # Study area --------------------------------------------------------------
 
+# See the "Polygon preparation" vignette
 
 
 # MHW calculations --------------------------------------------------------
+
+# See the "SST preparation" vignette
+
+
+# Data prep ---------------------------------------------------------------
+
+# Create net heat flux (qnet) variable
+  # This requires combining two variables from OAFlux and two from ERA 5
 
 
 
 # Variable climatologies --------------------------------------------------
 
 # NB: The creation of a clim for one variable is too large to run via ldply
-# Rather they must be run one at a time via a for loop and the memmory dumped after each
+# Rather they must be run one at a time via a for loop and the memory dumped after each
 # for(i in 1:nrow(NAPA_vars)){
 #   clim_one_var(NAPA_vars$name[i])
 #   gc()

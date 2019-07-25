@@ -88,23 +88,23 @@ system.time(OAFlux_lhtfl <- OAFlux_dl_wrap("hawaii_soest_33b7_e2df_ef2b", "lhtfl
 system.time(OAFlux_shtfl <- OAFlux_dl_wrap("hawaii_soest_b6e0_963a_b40f", "shtfl")) # 82 seconds
 
 # daily mean specific humidity at 2m [g/kg]
-system.time(OAFlux_hum2m <- OAFlux_dl_wrap("hawaii_soest_38c8_5dc2_a69b", "hum2m")) # 82 seconds
+# system.time(OAFlux_hum2m <- OAFlux_dl_wrap("hawaii_soest_38c8_5dc2_a69b", "hum2m")) # 82 seconds
 
 # daily mean neutral wind speed at 10m [m/s]
-system.time(OAFlux_wnd10 <- OAFlux_dl_wrap("hawaii_soest_26fa_a77c_2ce7", "wnd10")) # 75 seconds
+# system.time(OAFlux_wnd10 <- OAFlux_dl_wrap("hawaii_soest_26fa_a77c_2ce7", "wnd10")) # 75 seconds
 
 # daily mean air temperature at 2m [degc]
-system.time(OAFlux_tmp2m <- OAFlux_dl_wrap("hawaii_soest_d793_5e03_0ec1", "tmp2m")) # 78 seconds
+# system.time(OAFlux_tmp2m <- OAFlux_dl_wrap("hawaii_soest_d793_5e03_0ec1", "tmp2m")) # 78 seconds
 
 # daily mean evaporation rate [cm/yr]
-system.time(OAFlux_evapr <- OAFlux_dl_wrap("hawaii_soest_077e_c6b6_2484", "evapr")) # 77 seconds
+# system.time(OAFlux_evapr <- OAFlux_dl_wrap("hawaii_soest_077e_c6b6_2484", "evapr")) # 77 seconds
 
 # Join all of the data
-OAFlux <- left_join(OAFlux_lhtfl, OAFlux_shtfl, by = c("lon", "lat", "t")) %>%
-  left_join(OAFlux_hum2m, by = c("lon", "lat", "t")) %>%
-  left_join(OAFlux_wnd10, by = c("lon", "lat", "t")) %>%
-  left_join(OAFlux_tmp2m, by = c("lon", "lat", "t")) %>%
-  left_join(OAFlux_evapr, by = c("lon", "lat", "t"))
+OAFlux <- left_join(OAFlux_lhtfl, OAFlux_shtfl, by = c("lon", "lat", "t")) #%>%
+  # left_join(OAFlux_hum2m, by = c("lon", "lat", "t")) %>%
+  # left_join(OAFlux_wnd10, by = c("lon", "lat", "t")) %>%
+  # left_join(OAFlux_tmp2m, by = c("lon", "lat", "t")) %>%
+  # left_join(OAFlux_evapr, by = c("lon", "lat", "t"))
 
 # Save
 write_rds(OAFlux, "data/OAFlux.Rda")
