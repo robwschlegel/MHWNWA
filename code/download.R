@@ -28,15 +28,10 @@ NWA_corners <- readRDS("data/NWA_corners.Rda")
 # Sub-region coordinates
 NWA_NAPA_info <- readRDS("data/NWA_NAPA_info.Rda")
 
-# Create smaller corners to use less RAM
-# This also better matches the previous South African work
-# The Tasmania work had corners of roughly 2 degrees greater than the study area
-NWA_corners_sub <- c(NWA_corners[1]+8, NWA_corners[2]-8, NWA_corners[3]+8, NWA_corners[4]-8)
-
 # Round the corners for 1 degree grid use
-NWA_corners_sub_1_degree <- round(NWA_corners_sub)
-NWA_corners_sub_1_degree <- c(NWA_corners_sub_1_degree[1]-0.5, NWA_corners_sub_1_degree[2]+0.5,
-                              NWA_corners_sub_1_degree[3]-0.5, NWA_corners_sub_1_degree[4]+0.5)
+NWA_corners_1_degree <- round(NWA_corners)
+NWA_corners_1_degree <- c(NWA_corners_1_degree[1]-0.5, NWA_corners_1_degree[2]+0.5,
+                              NWA_corners_1_degree[3]-0.5, NWA_corners_1_degree[4]+0.5)
 
 # Individual regions
 NWA_coords <- readRDS("data/NWA_coords_cabot.Rda")
@@ -60,33 +55,18 @@ dl_years <- data.frame(date_index = 1:4,
 # time_range <- dl_years[1,]
 OAFlux_dl_func <- function(time_range, product_id, chosen_fields){
   # Annoyingly, the dimension names are not consistent for this product
-  if(chosen_fields[1] == "tmp2m"){
-    res1 <- griddap(x = "hawaii_soest_82a2_f4b4_d15c",
-                   url = "http://apdrc.soest.hawaii.edu/erddap/",
-                   # time2 = c(time_range$start, time_range$end),
-                   time2 = c("1985-01-01T00:00:00Z", "1985-01-01T00:00:00Z"),
-                   # latitude = NWA_corners_sub_1_degree[3:4],
-                   latitude = c(-89.5, 89.5),
-                   # longitude = (NWA_corners_sub_1_degree[1:2]+360),
-                   longitude = c(0.5, 359.5),
-                   # fields = chosen_fields)$data
-                   fields = "tmp2m")
-  } else {
-    res1 <- griddap(x = product_id,
+  res <- griddap(x = product_id,
                    url = "http://apdrc.soest.hawaii.edu/erddap/",
                    time = c(time_range$start, time_range$end),
-                   latitude = NWA_corners_sub_1_degree[3:4],
-                   longitude = (NWA_corners_sub_1_degree[1:2]+360),
-                   fields = chosen_fields)$data
-  }
-  res2 <- res1 %>%
+                   latitude = NWA_corners_1_degree[3:4],
+                   longitude = (NWA_corners_1_degree[1:2]+360),
+                   fields = chosen_fields)$data %>%
     mutate(time = as.Date(str_remove(time, "T00:00:00Z"))) %>%
     dplyr::rename(t = time) %>%
     select(lon, lat, t, everything()) %>%
     na.omit()
-return(res2)
+return(res)
 }
-
 
 # Wrapper convenience function for the above function
 OAFlux_dl_wrap <- function(product_id_wrap, chosen_fields_wrap){
@@ -114,12 +94,17 @@ system.time(OAFlux_hum2m <- OAFlux_dl_wrap("hawaii_soest_38c8_5dc2_a69b", "hum2m
 system.time(OAFlux_wnd10 <- OAFlux_dl_wrap("hawaii_soest_26fa_a77c_2ce7", "wnd10")) # 75 seconds
 
 # daily mean air temperature at 2m [degc]
-# system.time(OAFlux_tmp2m <- OAFlux_dl_wrap("hawaii_soest_82a2_f4b4_d15c", "tmp2m")) # xxx seconds
+system.time(OAFlux_tmp2m <- OAFlux_dl_wrap("hawaii_soest_d793_5e03_0ec1", "tmp2m")) # 78 seconds
+
+# daily mean evaporation rate [cm/yr]
+system.time(OAFlux_evapr <- OAFlux_dl_wrap("hawaii_soest_077e_c6b6_2484", "evapr")) # 77 seconds
 
 # Join all of the data
 OAFlux <- left_join(OAFlux_lhtfl, OAFlux_shtfl, by = c("lon", "lat", "t")) %>%
   left_join(OAFlux_hum2m, by = c("lon", "lat", "t")) %>%
-  left_join(OAFlux_wnd10, by = c("lon", "lat", "t"))
+  left_join(OAFlux_wnd10, by = c("lon", "lat", "t")) %>%
+  left_join(OAFlux_tmp2m, by = c("lon", "lat", "t")) %>%
+  left_join(OAFlux_evapr, by = c("lon", "lat", "t"))
 
 # Save
 write_rds(OAFlux, "data/OAFlux.Rda")

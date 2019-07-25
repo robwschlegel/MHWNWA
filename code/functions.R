@@ -35,7 +35,7 @@ NWA_NAPA_info <- readRDS("data/NWA_NAPA_info.Rda")
 # Create smaller corners to use less RAM
   # This also better matches the previous South African work
   # The Tasmania work had corners of roughly 2 degrees greater than the study area
-NWA_corners_sub <- c(NWA_corners[1]+8, NWA_corners[2]-8, NWA_corners[3]+8, NWA_corners[4]-8)
+# NWA_corners_sub <- c(NWA_corners[1]+8, NWA_corners[2]-8, NWA_corners[3]+8, NWA_corners[4]-8)
 
 # Individual regions
 NWA_coords <- readRDS("data/NWA_coords_cabot.Rda")
@@ -817,6 +817,10 @@ node_figure <- function(node_number){
   ggsave(fig_all_title, filename = paste0("output/node_",node_number,"_panels.png"), height = 12, width = 16)
   ggsave(fig_all_title, filename = paste0("output/node_",node_number,"_panels.pdf"), height = 12, width = 16)
 }
+
+
+# Extract data from NOAA OISST NetCDF -------------------------------------
+
 
 
 # Extract data from GLORYS NetCDF -----------------------------------------
