@@ -12,6 +12,7 @@ library(jsonlite, lib.loc = "../R-packages/")
 library(tidyverse) # Base suite of functions
 # library(ncdf4) # For opening and working with NetCDF files
 library(lubridate) # For convenient date manipulation
+library(data.table) # For faster mean values
 library(heatwaveR, lib.loc = "../R-packages/")
 # cat(paste0("heatwaveR version = ", packageDescription("heatwaveR")$Version))
 library(tidync, lib.loc = "../R-packages/")
@@ -53,16 +54,16 @@ map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE
   select(-region, -subregion)
 
 # The OISST land mask
-land_mask_OISST <- readRDS("data/land_mask_OISST.Rda")
+# land_mask_OISST <- readRDS("data/land_mask_OISST.Rda")
 
 # Filter it to the smaller domain only
-land_mask_OISST_sub <- land_mask_OISST%>%
-  filter(lon >= NWA_corners[1], lon <= NWA_corners[2],
-         lat >= NWA_corners[3], lat <= NWA_corners[4])
+# land_mask_OISST_sub <- land_mask_OISST%>%
+#   filter(lon >= NWA_corners[1], lon <= NWA_corners[2],
+#          lat >= NWA_corners[3], lat <= NWA_corners[4])
 
 # Create a subsetted water only mask
-land_mask_OISST_sub_water <- land_mask_OISST_sub %>%
-  filter(lsmask == 1)
+# land_mask_OISST_sub_water <- land_mask_OISST_sub %>%
+#   filter(lsmask == 1)
 
 # Load grid for converting NAPA to OISST coordinates
 # load("data/lon_lat_NAPA_OISST.Rdata")
@@ -801,20 +802,33 @@ load_all_OISST <- function(file_names){
 # Extract data from ERA 5 NetCDF ------------------------------------------
 
 # Function for loading a single ERA 5 NetCDF file
-file_name <- "../../oliver/data/ERA/ERA5/T2M/ERA5_T2M_1979.nc"
-load_ERA5 <- function(file_name){
+# Cycles through one lon slice at a time as the hourly data are too cumbersome otherwise
+# file_name <- "../../oliver/data/ERA/ERA5/T2M/ERA5_T2M_1993.nc"
+# lon_slice <- -80.5
+load_ERA5 <- function(lon_slice, file_name){
   res <- tidync(file_name) %>%
     hyper_filter(latitude = dplyr::between(latitude, 31.5, 63.5),
-                 longitude = dplyr::between(longitude, -80.5+360, -40.5+360)) %>%
+                 longitude = longitude == lon_slice+360) %>%
     hyper_tibble() %>%
-    mutate(time = as.POSIXct(time * 3600, origin = '1900-01-01', tz = "GMT")) %>%
-    dplyr::rename(lon = longitude, lat = latitude, t = time) %>%
-    group_by(lon, lat, t) %>%
+    mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1900-01-01', tz = "GMT"))) %>%
+    dplyr::rename(lon = longitude, lat = latitude, t = time) #%>%
+  var_name <- colnames(res)[1]
+  res_dt <- data.table(res)
+  colnames(res_dt)[1] <- "big_var"
+  # select_cols = c("arr_delay", "dep_delay")
+  # flights[ , ..select_cols]
+  setkey(res_dt, lon, lat, t)
+  # res_dt[, .(mean_var = mean(big_var, na.rm = TRUE)), by = c(lon, lat, t)]
+  # res_dt[, .(mean_var = mean(big_var)), .(lon, lat, t)]
+  res_mean <- res_dt[, lapply(.SD, mean), by = list(lon, lat, t)]
+
+  group_by(lon, lat, t) %>%
     # Rather use data.table here
     summarise_if(is.numeric, mean) %>%
     ungroup() #%>%
     # select(lon, lat, t, everything())
 }
+# Lon range: -80.5 to -40.5
 
 # Function to load all of the NetCDF files for one ERA 5 variable
 load_all_ERA5 <- function(file_names){
