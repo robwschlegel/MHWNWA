@@ -53,6 +53,13 @@ map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE
          lon = ifelse(lon > 180, lon-360, lon)) %>%
   select(-region, -subregion)
 
+# Easy join for DOY values
+doy_index <- data.frame(doy_int = 1:366,
+                        doy = format(seq(as.Date("2016-01-01"),
+                                         as.Date("2016-12-31"),
+                                         by = "day"), "%m-%d"),
+                        stringsAsFactors = F)
+
 # The OISST land mask
 # land_mask_OISST <- readRDS("data/land_mask_OISST.Rda")
 
@@ -811,43 +818,29 @@ load_ERA5 <- function(lon_slice, file_name){
                  longitude = longitude == lon_slice+360) %>%
     hyper_tibble() %>%
     mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1900-01-01', tz = "GMT"))) %>%
-    dplyr::rename(lon = longitude, lat = latitude, t = time) #%>%
-  var_name <- colnames(res)[1]
+    dplyr::rename(lon = longitude, lat = latitude, t = time)
+  # Switch to data.table for faster means
   res_dt <- data.table(res)
-  colnames(res_dt)[1] <- "big_var"
-  # select_cols = c("arr_delay", "dep_delay")
-  # flights[ , ..select_cols]
   setkey(res_dt, lon, lat, t)
-  # res_dt[, .(mean_var = mean(big_var, na.rm = TRUE)), by = c(lon, lat, t)]
-  # res_dt[, .(mean_var = mean(big_var)), .(lon, lat, t)]
   res_mean <- res_dt[, lapply(.SD, mean), by = list(lon, lat, t)]
-
-  group_by(lon, lat, t) %>%
-    # Rather use data.table here
-    summarise_if(is.numeric, mean) %>%
-    ungroup() #%>%
-    # select(lon, lat, t, everything())
+  return(res_mean)
 }
+
 # Lon range: -80.5 to -40.5
+load_one_ERA5 <- function(file_name){
+  # system.time(
+    res_one <- plyr::ldply(seq(-80.5, -40.5, by = 0.5), load_ERA5,
+                           .parallel = T, file_name = file_name)
+  # ) # 117 seconds
+}
 
 # Function to load all of the NetCDF files for one ERA 5 variable
 load_all_ERA5 <- function(file_names){
-  system.time(
-  res_all <- plyr::ldply(ERA5_t2m_files[1:2], load_ERA5, .parallel = T)
-  ) # 44 seconds for one year, 116 seconds for two
+  # system.time(
+  res_all <- plyr::ldply(file_names, load_one_ERA5,
+                         .parallel = F, .progress = "text")
+  # ) # 116 seconds for one year, 222 seconds for two
 }
-# test <- load_all_ERA5()
-# unique(res$lon)
-# unique(res$lat)
-# unique(res$t)
-
-# res_u <- unique(res)
-
-# res_f <- res %>%
-#   # filter(lon <= -40.5+360, lon >= -80.5+360)
-#   filter(lon == -40.5+360, lat == 31.5)
-
-# head(res)
 
 
 # Extract data from GLORYS NetCDF -----------------------------------------
@@ -877,3 +870,44 @@ load_GLORYS <- function(file_name){
 #   filter(t == "1993-01-31") %>%
 #   ggplot(aes(x = lon, y = lat, fill = mld)) +
 #   geom_raster()
+
+
+# Calculate climatologies from single variable data.frame -----------------
+
+ts2clm_one <- function(df){
+  if(ncol(df) > 4) stop("Too many columns")
+  colnames(df)[4] <- "temp"
+  # system.time(
+    res <- df %>%
+      group_by(lon, lat) %>%
+      nest() %>%
+      mutate(clims = map(data, ts2clm,
+                         climatologyPeriod = c("1993-01-01", "2018-12-31"),
+                         clmOnly = T, roundClm = FALSE)) %>%
+      select(-data) %>%
+      unnest() %>%
+      left_join(doy_index, by = c("doy" = "doy_int")) %>%
+      select(-doy) %>%
+      dplyr::rename(doy = doy.y)
+  # ) # 1139 seconds
+  res$thresh <- NULL
+  return(res)
+}
+
+
+# Calculate anomalies for single variable ---------------------------------
+
+anom_one <- function(df, df_clim, point_accuracy){
+  if(ncol(df) > 4) stop("Too many columns")
+  var_name <- colnames(df)[4]
+  colnames(df)[4] <- "temp"
+  # point_accuracy <- max(nchar(strsplit(as.character(df$temp)[1:10], "\\.")[[1]][2]))
+  res <- df %>%
+    mutate(doy = format(t, "%m-%d")) %>%
+    left_join(df_clim, by = c("lon", "lat", "doy")) %>%
+    mutate(anom = round(temp-seas, point_accuracy)) %>%
+    ungroup() %>%
+    select(lon, lat, t, anom)
+  colnames(res)[4] <- paste0(var_name,"_anom")
+  return(res)
+}

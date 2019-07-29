@@ -9,12 +9,12 @@
 # dir("analysis", pattern = ".Rmd", full.names = T)
 
 # Run this to re-compile the entire project
-system.time(
-workflowr::wflow_publish(files = c("analysis/index.Rmd", "analysis/polygon-prep.Rmd",
-                                   "analysis/sst-prep.Rmd", "analysis/var-prep.Rmd"),#,
-                                   #"analysis/som.Rmd", "analysis/figures.Rmd", "analysis/node-summary.Rmd"),
-                         message = "Re-publish entire site.")
-) # 223 seconds
+# system.time(
+# workflowr::wflow_publish(files = c("analysis/index.Rmd", "analysis/polygon-prep.Rmd",
+#                                    "analysis/sst-prep.Rmd", "analysis/var-prep.Rmd"),#,
+#                                    #"analysis/som.Rmd", "analysis/figures.Rmd", "analysis/node-summary.Rmd"),
+#                          message = "Re-publish entire site.")
+# ) # 223 seconds
 
 
 # Startup -----------------------------------------------------------------
@@ -38,26 +38,84 @@ source("code/functions.R")
 # Create net heat flux (qnet) variable
   # This requires combining four full variables from the ERA 5 data
 
+# nc_info <- ncdump::NetCDF(ERA5_shf_files[1])$variable$name
+
+## Long wave radiation
+# "msnlwrf"
+# ERA5_lwr_files <- dir("../../oliver/data/ERA/ERA5/LWR", full.names = T, pattern = "ERA5")
+# ERA5_lwr <- load_all_ERA5(ERA5_lwr_files)
+# saveRDS(ERA5_lwr, "data/ERA5_lwr.Rda")
+# ERA5_lwr_clim <- ts2clm_one(ERA5_lwr)
+# saveRDS(ERA5_lwr_clim, "data/ERA5_lwr_clim.Rda")
+# ERA5_lwr_anom <- anom_one(ERA5_lwr, ERA5_lwr_clim, 10)
+# saveRDS(ERA5_lwr_anom, "data/ERA5_lwr_anom.Rda")
+
+## Short wave radiation
+# "msnswrf"
+# ERA5_swr_files <- dir("../../oliver/data/ERA/ERA5/SWR", full.names = T, pattern = "ERA5")
+# ERA5_swr <- load_all_ERA5(ERA5_swr_files)
+# saveRDS(ERA5_swr, "data/ERA5_swr.Rda")
+# ERA5_swr_clim <- ts2clm_one(ERA5_swr)
+# saveRDS(ERA5_swr_clim, "data/ERA5_swr_clim.Rda")
+# ERA5_swr_anom <- anom_one(ERA5_swr, ERA5_swr_clim, 10)
+# saveRDS(ERA5_swr_anom, "data/ERA5_swr_anom.Rda")
+
+## Latent heat flux
+# "mslhf"
+# ERA5_lhf_files <- dir("../../oliver/data/ERA/ERA5/SLHF", full.names = T, pattern = "ERA5")
+# ERA5_lhf <- load_all_ERA5(ERA5_lhf_files)
+# saveRDS(ERA5_lhf, "data/ERA5_lhf.Rda")
+# ERA5_lhf_clim <- ts2clm_one(ERA5_lhf)
+# saveRDS(ERA5_lhf_clim, "data/ERA5_lhf_clim.Rda")
+# ERA5_lhf_anom <- anom_one(ERA5_lhf, ERA5_lhf_clim, 10)
+# saveRDS(ERA5_lhf_anom, "data/ERA5_lhf_anom.Rda")
+
+## Sensible heat flux
+# "msshf"
+# ERA5_shf_files <- dir("../../oliver/data/ERA/ERA5/SSHF", full.names = T, pattern = "ERA5")
+# ERA5_shf <- load_all_ERA5(ERA5_shf_files)
+# saveRDS(ERA5_shf, "data/ERA5_shf.Rda")
+# ERA5_shf_clim <- ts2clm_one(ERA5_shf)
+# saveRDS(ERA5_shf_clim, "data/ERA5_shf_clim.Rda")
+# ERA5_shf_anom <- anom_one(ERA5_shf, ERA5_shf_clim, 10)
+# saveRDS(ERA5_shf_anom, "data/ERA5_shf_anom.Rda")
+
+## Net heat flux
+# ERA5_qnet <- left_join(ERA5_lwr, ERA5_swr, by = c("lon", "lat", "t")) %>%
+#   left_join(ERA5_lhf, by = c("lon", "lat", "t")) %>%
+#   left_join(ERA5_shf, by = c("lon", "lat", "t")) %>%
+#   mutate(qnet = msnlwrf+msnswrf+mslhf+msshf) %>%
+#   select(lon, lat, t, qnet)
+# saveRDS(ERA5_qnet, "data/ERA5_qnet.Rda")
+# ERA5_qnet_clim <- ts2clm_one(ERA5_qnet)
+# saveRDS(ERA5_qnet_clim, "data/ERA5_qnet_clim.Rda")
+# ERA5_qnet_anom <- anom_one(ERA5_qnet, ERA5_qnet_clim, 10)
+# saveRDS(ERA5_qnet_anom, "data/ERA5_qnet_anom.Rda")
+
+
 # Variable climatologies --------------------------------------------------
 
-# NB: The creation of a clim for one variable is too large to run via ldply
-# Rather they must be run one at a time via a for loop and the memory dumped after each
-# for(i in 1:nrow(NAPA_vars)){
-#   clim_one_var(NAPA_vars$name[i])
-#   gc()
-# }
+# nc_info <- ncdump::NetCDF(ERA5_u_files[1])$variable$name
 
+## Surface winds U component
+# "u10"
+# ERA5_u_files <- dir("../../oliver/data/ERA/ERA5/U10", full.names = T, pattern = "ERA5")
+# ERA5_u <- load_all_ERA5(ERA5_u_files)
+# saveRDS(ERA5_u, "data/ERA5_u.Rda")
+# ERA5_u_clim <- ts2clm_one(ERA5_u)
+# saveRDS(ERA5_u_clim, "data/ERA5_u_clim.Rda")
+# ERA5_u_anom <- anom_one(ERA5_u, ERA5_u_clim, 6)
+# saveRDS(ERA5_u_anom, "data/ERA5_u_anom.Rda")
 
-# Vector climatologies ----------------------------------------------------
-
-# clim_one_vec(NAPA_U_files)
-# gc()
-
-# clim_one_vec(NAPA_V_files)
-# gc()
-
-# clim_one_vec(NAPA_W_files)
-# gc()
+## Surface winds U component
+# "v10"
+# ERA5_v_files <- dir("../../oliver/data/ERA/ERA5/V10", full.names = T, pattern = "ERA5")
+# ERA5_v <- load_all_ERA5(ERA5_v_files)
+# saveRDS(ERA5_v, "data/ERA5_v.Rda")
+# ERA5_v_clim <- ts2clm_one(ERA5_v)
+# saveRDS(ERA5_v_clim, "data/ERA5_v_clim.Rda")
+# ERA5_v_anom <- anom_one(ERA5_v, ERA5_v_clim, 6)
+# saveRDS(ERA5_v_anom, "data/ERA5_v_anom.Rda")
 
 
 # Variable data packets ---------------------------------------------------
@@ -73,21 +131,6 @@ source("code/functions.R")
 
 # Save
 # saveRDS(synoptic_states, "data/synoptic_states.Rda")
-
-
-# Vector data packets -----------------------------------------------------
-
-# Set number of cores
-# NB: Was set to 25 as someone else was using the server at the time
-# doMC::registerDoMC(cores = 50)
-
-# Create one big packet
-# system.time(
-# synoptic_vec_states <- plyr::ddply(NAPA_MHW_event, c("region", "sub_region", "event_no"), data_vec_packet, .parallel = T)
-# ) # xxx seconds
-
-# Save
-# saveRDS(synoptic_vec_states, "data/synoptic_vec_states.Rda")
 
 
 # SOM analysis ------------------------------------------------------------
