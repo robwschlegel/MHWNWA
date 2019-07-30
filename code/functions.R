@@ -16,8 +16,8 @@ library(data.table) # For faster mean values
 library(heatwaveR, lib.loc = "../R-packages/")
 # cat(paste0("heatwaveR version = ", packageDescription("heatwaveR")$Version))
 library(tidync, lib.loc = "../R-packages/")
-library(akima) # For finding pixels next to missing pixels
-library(FNN) # For finding pixels next to missing pixels
+# library(akima) # For finding pixels next to missing pixels
+# library(FNN) # For finding pixels next to missing pixels
 # library(cowplot) # For gridding multiple figures together
 
 # Set number of cores
@@ -60,6 +60,36 @@ doy_index <- data.frame(doy_int = 1:366,
                                          by = "day"), "%m-%d"),
                         stringsAsFactors = F)
 
+## Load the anomaly data.frames if necessary
+# OISST
+# if(!exists("OISST_sst_anom")) OISST_sst_anom <- readRDS("data/OISST_sst_anom.Rda") %>%
+#   mutate(lon = lon-0.125,
+#          lat = lat+0.125)
+# GLORYS
+# if(!exists("GLORYS_u_anom")) GLORYS_u_anom <- readRDS("data/GLORYS_u_anom.Rda")
+# if(!exists("GLORYS_v_anom")) GLORYS_v_anom <- readRDS("data/GLORYS_v_anom.Rda")
+# if(!exists("GLORYS_mld_anom")) GLORYS_mld_anom <- readRDS("data/GLORYS_mld_anom.Rda")
+# ERA 5
+# if(!exists("ERA5_u_anom")) ERA5_u_anom <- readRDS("data/ERA5_u_anom.Rda")
+# if(!exists("ERA5_v_anom")) ERA5_v_anom <- readRDS("data/ERA5_v_anom.Rda")
+# if(!exists("ERA5_t2m_anom")) ERA5_t2m_anom <- readRDS("data/ERA5_t2m_anom.Rda")
+# if(!exists("ERA5_qnet_anom")) ERA5_qnet_anom <- readRDS("data/ERA5_qnet_anom.Rda")
+# All together now
+# ALL_anom <- left_join(ERA5_qnet_anom, ERA5_t2m_anom, by = c("lon", "lat", "t")) %>%
+#   left_join(ERA5_v_anom, by = c("lon", "lat", "t")) %>%
+#   left_join(ERA5_u_anom, by = c("lon", "lat", "t")) %>%
+#   mutate(lon = ifelse(lon > 180, lon-360, lon)) %>%
+#   left_join(GLORYS_mld_anom, by = c("lon", "lat", "t")) %>%
+#   left_join(GLORYS_v_anom, by = c("lon", "lat", "t")) %>%
+#   left_join(GLORYS_u_anom, by = c("lon", "lat", "t")) %>%
+#   left_join(OISST_sst_anom, by = c("lon", "lat", "t"))
+
+# Keep RAM happy
+if(exists("ERA5_qnet_anom")){
+  rm(ERA5_qnet_anom, ERA5_t2m_anom, ERA5_v_anom, ERA5_u_anom,
+     GLORYS_mld_anom, GLORYS_v_anom, GLORYS_u_anom); gc()
+}
+
 # The OISST land mask
 # land_mask_OISST <- readRDS("data/land_mask_OISST.Rda")
 
@@ -68,254 +98,219 @@ doy_index <- data.frame(doy_int = 1:366,
 #   filter(lon >= NWA_corners[1], lon <= NWA_corners[2],
 #          lat >= NWA_corners[3], lat <= NWA_corners[4])
 
-# Create a subsetted water only mask
-# land_mask_OISST_sub_water <- land_mask_OISST_sub %>%
-#   filter(lsmask == 1)
 
-# Load grid for converting NAPA to OISST coordinates
-# load("data/lon_lat_NAPA_OISST.Rdata")
+# Function to create the OISST landmask -----------------------------------
 
-# Change to fit with this project
-# lon_lat_NAPA_OISST <- lon_lat_NAPA_OISST %>%
-#   dplyr::select(-lon, -lat, -dist, -nav_lon_corrected) %>%
-#   dplyr::rename(lon = nav_lon, lat = nav_lat) %>%
-#   mutate(lon = round(lon, 4),
-#          lat = round(lat, 4)) %>%
-#   mutate(lon_O = ifelse(lon_O > 180, lon_O-360, lon_O))
-
-
-# Extract one variable ----------------------------------------------------
-
-# testers...
-# nc_var <- "sst"
-# nc_var <- "taum"
-# nc_var <- "qla_oce"
-# file_name <- NAPA_files[1]
-extract_one_var <- function(file_name, nc_var, coords = NAPA_bathy_sub){
-  # Open connection
-  nc <- nc_open(as.character(file_name))
-
-  # Extract dates from file name
-  date_start <- ymd(str_sub(basename(as.character(file_name)), start = 29, end = 36))
-  date_end <- ymd(str_sub(basename(as.character(file_name)), start = 38, end = 45))
-  date_seq <- seq(date_start, date_end, by = "day")
-
-  # Extract and process data
-  want_var <- as.data.frame(ncvar_get(nc, varid = nc_var)) %>%
-    mutate(lon_index = as.numeric(nc$dim$x$vals)) %>%
-    gather(-lon_index, key = lat_index, value = var) %>%
-    mutate(t = rep(date_seq, each = 388080),
-           lat_index = rep(rep(as.numeric(nc$dim$y$vals), each = 528), times = 5)) %>%
-    select(lon_index, lat_index, t, var) %>%
-    right_join(coords, by = c("lon_index", "lat_index")) %>%
-    na.omit()
-  colnames(want_var)[4] <- nc_var
-
-
-  # test <- filter(want_var, t == date_end)
-  # ggplot(NAPA_coords, aes(x = lon, y = lat)) +
-  #   # geom_polygon(data = map_base, aes(group = group), show.legend = F) +
-  #   geom_point(data = test, aes(colour = sst),
-  #              shape = 15, size = 0.5) +
-  #   coord_cartesian(xlim = NWA_corners[1:2],
-  #                   ylim = NWA_corners[3:4])
-
-  # Close connection and exit
-  nc_close(nc)
-  return(want_var)
-}
-
-
-# Calculate clims for one variable ----------------------------------------
-
-# testers...
-# one_var <- "sst"
-clim_one_var <- function(one_var, chosen_files = NAPA_files){
-
-  print(paste0("Began run on ",one_var," at ",Sys.time()))
-  # Load all of the data within the study area for one variable
-  # system.time(
-  all_one_var <- plyr::ldply(chosen_files, extract_one_var, nc_var = one_var, .parallel = T)
-  # ) # 200 seconds
-  print(paste0("Finished loading ",one_var," at ",Sys.time()))
-
-  # Calculate climatologies
-    # Change variable column name to 'temp' for ease of use
-  colnames(all_one_var)[4] <- "temp"
-  # system.time(
-  all_one_clim <- plyr::ddply(all_one_var, c("lon", "lat"), ts2clm, .parallel = T,
-                              clmOnly = T,  roundClm = FALSE,
-                              climatologyPeriod = c("1998-01-01", "2015-12-29"))
-  # ) # 230 seconds
-  colnames(all_one_clim)[4] <- one_var
-  all_one_clim$thresh <- NULL
-  print(paste0("Finished calculating ",one_var," clims at ",Sys.time()))
-
-  # Save, clean-up and exit
-  saveRDS(all_one_clim, paste0("data/NAPA_clim_",one_var,".Rda"))
-  rm(all_one_var, all_one_clim); gc()
-  print(paste0("Finished run on ",one_var," at ",Sys.time()))
-}
-
-
-# Extract one vector ------------------------------------------------------
-
-# testers...
-# nc_vec <- "depthu"
-# nc_vec <- "depthv"
-# nc_vec <- "depthw"
-# file_name <- NAPA_U_files[1]
-# file_name <- NAPA_V_files[1]
-# file_name <- NAPA_W_files[276]
-extract_one_vec <- function(file_name, coords = NAPA_bathy_sub){
-
-  # List of names of various unwanted columns
-  bad_col <- c("avt", "e3v", "e3u", "bathy", "depthu", "depthv", "depthw")
-
-  # Find the name of the depth variable
-  depth_var <- tidync(file_name) %>% hyper_dims()
-  depth_var <- depth_var$name[grepl(pattern = "depth", depth_var$name)]
-
-  # Extract data
-  # ncdump::NetCDF(file_name)
-  want_vec <- tidync(file_name) %>%
-    activate() %>%
-    hyper_filter(!!sym(depth_var) := !!sym(depth_var) < 1,
-                 x = between(x, min(coords$lon_index), max(coords$lon_index)),
-                 y = between(y, min(coords$lat_index), max(coords$lat_index))) %>%
+# The land mask NetCDF file is downloaded here:
+# https://www.esrl.noaa.gov/psd/data/gridded/data.noaa.oisst.v2.highres.html
+OISST_land_mask_func <- function(){
+  lmask <- want_vec <- tidync("data/lsmask.oisst.v2.nc") %>%
     hyper_tibble() %>%
-    dplyr::rename(lon_index = x, lat_index = y, t = time_counter) %>%
-    right_join(coords, by = c("lon_index", "lat_index")) %>%
-    mutate(t = as.Date(as.POSIXct(t, origin = "1900-01-01", tz = "UTC"))) %>%
-    select(colnames(.)[!colnames(.) %in% bad_col]) %>%
-    select(lon_index, lat_index, lon, lat, t, everything())
-
-  # Test visuals
-  # ggplot(NAPA_coords, aes(x = lon, y = lat)) +
-  #   # geom_polygon(data = map_base, aes(group = group), show.legend = F) +
-  #   geom_point(data = want_vec, aes(colour = voce),
-  #              shape = 15, size = 0.5) +
-  #   coord_cartesian(xlim = NWA_corners[1:2],
-  #                   ylim = NWA_corners[3:4])
-
-  # Exit
-  return(want_vec)
+    dplyr::select(-time) %>%
+    mutate(lon = ifelse(lon > 180, lon-360, lon))
+  saveRDS(lmask, "data/land_mask_OISST.Rda")
 }
 
-# test <- extract_one_vec(NAPA_U_files[1])
+# Test visuals
+# ggplot(lmask, aes(x = lon, y = lat)) +
+# geom_raster(aes(fill = lsmask))
 
 
-# Calculate clims for one vector ------------------------------------------
+# Extract data from NOAA OISST NetCDF -------------------------------------
 
-# testers...
-# chosen_files <- NAPA_W_files
-clim_one_vec <- function(chosen_files){
+# file_name <- "../data/OISST/avhrr-only-v2.ts.0001.nc"
+load_OISST <- function(file_name){
+  res <- tidync(file_name) %>%
+    hyper_filter(lat = dplyr::between(lat, 31.5-0.125, 63.5-0.125),
+                 time = dplyr::between(time, as.integer(as.Date("1993-01-01")),
+                                       as.integer(as.Date("2018-12-31")))) %>%
+    hyper_tibble() %>%
+    mutate(time = as.Date(time, origin = "1970-01-01")) %>%
+    dplyr::rename(temp = sst, t = time) %>%
+    select(lon, lat, t, temp)
+  return(res)
+}
 
-  # Find variable being processed
-  var_ref <- sapply(str_split(basename(chosen_files[1]), "_"), "[[", 4)
-
-  # Load all of the data within the study area for one variable
-  print(paste0("Began run on ",var_ref," at ",Sys.time()))
+load_all_OISST <- function(file_names){
   # system.time(
-  all_one_vec <- plyr::ldply(chosen_files, extract_one_vec, .parallel = T)
-  # ) # 156 seconds
-  print(paste0("Finished loading ",var_ref," at ",Sys.time()))
-
-  # Calculate climatologies
-  # Change variable column name to 'temp' for ease of use
-  name_hold <- colnames(all_one_vec)[6]
-  colnames(all_one_vec)[6] <- "temp"
-  # system.time(
-  all_one_clim <- plyr::ddply(all_one_vec, c("lon", "lat"), ts2clm, .parallel = T,
-                              clmOnly = T,  roundClm = FALSE, maxPadLength = 6,
-                              climatologyPeriod = c("1998-01-01", "2015-12-27"))
-  # ) # 147 seconds
-  colnames(all_one_clim)[4] <- name_hold
-  all_one_clim$thresh <- NULL
-  print(paste0("Finished calculating ",var_ref," clims at ",Sys.time()))
-
-  # Save, clean-up and exit
-  saveRDS(all_one_clim, paste0("data/NAPA_clim_",var_ref,".Rda"))
-  rm(all_one_vec, all_one_clim); gc()
-  print(paste0("Finished run on ",var_ref," at ",Sys.time()))
+  res_all <- plyr::ldply(file_names, load_OISST, .parallel = T)
+  # ) # 0.5 seconds for one slice, 34 seconds for all
 }
 
 
-# Extract the desired variables from a given NetCDF file ------------------
+# Extract data from GLORYS NetCDF -----------------------------------------
 
-# testers...
-# file_name <- NAPA_files[1]
-extract_all_var <- function(file_name){
+# 1/4 degree data from 1993 to 2015
+# file_name <- "../data/GLORYS/MHWNWA_GLORYS_quarter_degree_daily_1993-01.nc"
+load_GLORYS <- function(file_name){
+  res_uv <- tidync(file_name) %>%
+    hyper_tibble() %>%
+    mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1950-01-01', tz = "GMT"))) %>%
+    select(-depth)
+  res_mld <- tidync(file_name) %>%
+    activate(mlp) %>% # Need to explicitly grab MLD as it doesn't use the depth dimension
+    hyper_tibble() %>%
+    mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1950-01-01', tz = "GMT")))
+  res_all <- left_join(res_uv, res_mld, by = c("longitude", "latitude", "time")) %>%
+    dplyr::rename(lon = longitude, lat = latitude, t = time) %>%
+    select(lon, lat, t, everything()) %>%
+    dplyr::rename(mld = mlp)
+  res_round <- res_all %>%
+    mutate(mld = round(mld),
+           u = round(u, 6), v = round(v, 6))
+  return(res_round)
+}
 
-  # Extract and join variables with a for loop
-  # NB: This should be optimised...
-  NAPA_vars_extracted <- data.frame()
-  system.time(
-    for(i in 1:length(NAPA_vars$name)){
-      extract_one <- extract_one_var(NAPA_vars$name[i], file_name = file_name)
-      if(nrow(NAPA_vars_extracted) == 0){
-        NAPA_vars_extracted <- rbind(extract_one, NAPA_vars_extracted)
-      } else {
-        NAPA_vars_extracted <- left_join(NAPA_vars_extracted, extract_one,
-                                         by = c("lon_index", "lat_index", "lon", "lat", "bathy", "t"))
-      }
-    }
-  ) # 18 seconds for one
-  NAPA_vars_extracted <- dplyr::select(NAPA_vars_extracted,
-                                       lon_index, lat_index, lon, lat, t, bathy, everything())
+load_all_GLORYS <- function(file_names){
+  # system.time(
+  res_all <- plyr::ldply(file_names, load_GLORYS, .parallel = T)
+  # ) # 0.8 seconds for one slice, 45 seconds for all
+}
 
-  # Exit
-  return(NAPA_vars_extracted)
+# 1/12 degree data from 2016 to 2018
+# file_name <- "../data/GLORYS/MHWNWA_GLORYS_twelfth_degree_daily_2016-01.nc"
+load_GLORYS_hires <- function(file_name){
+  # Process U and V
+  res_uv <- tidync(file_name) %>%
+    hyper_tibble() %>%
+    mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1950-01-01', tz = "GMT"))) %>%
+    select(-depth) %>%
+    mutate(longitude = plyr::round_any(longitude, 0.25),
+           latitude = plyr::round_any(latitude, 0.25))
+  # Switch to data.table for faster means
+  res_uv <- data.table(res_uv)
+  setkey(res_uv, longitude, latitude, time)
+  res_uv <- res_uv[, lapply(.SD, mean), by = list(longitude, latitude, time)]
+  # Process MLD
+  res_mld <- tidync(file_name) %>%
+    activate(mlotst) %>% # Need to explicitly grab MLD as it doesn't use the depth dimension
+    hyper_tibble() %>%
+    mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1950-01-01', tz = "GMT"))) %>%
+    mutate(longitude = plyr::round_any(longitude, 0.25),
+           latitude = plyr::round_any(latitude, 0.25))
+  res_mld <- data.table(res_mld)
+  setkey(res_mld, longitude, latitude, time)
+  res_mld <- res_mld[, lapply(.SD, mean), by = list(longitude, latitude, time)]
+  # Combine
+  res_all <- left_join(res_uv, res_mld, by = c("longitude", "latitude", "time")) %>%
+    dplyr::rename(lon = longitude, lat = latitude, t = time, u = uo, v = vo) %>%
+    select(lon, lat, t, everything()) %>%
+    dplyr::rename(mld = mlotst)
+  res_round <- res_all %>%
+    mutate(mld = round(mld),
+           u = round(u, 6), v = round(v, 6))
+  return(res_round)
+}
+
+load_all_GLORYS_hires <- function(file_names){
+  # system.time(
+  res_all <- plyr::ldply(file_names, load_GLORYS_hires, .parallel = T)
+  # ) # 3.5 seconds for one slice, 19 seconds for all
+}
+
+# Test visuals
+# res_all %>%
+#   filter(t == "1993-01-31") %>%
+#   ggplot(aes(x = lon, y = lat, fill = mld)) +
+#   geom_raster()
+
+
+# Extract data from ERA 5 NetCDF ------------------------------------------
+
+# Function for loading a single ERA 5 NetCDF file
+# Cycles through one lon slice at a time as the hourly data are too cumbersome otherwise
+# file_name <- "../../oliver/data/ERA/ERA5/T2M/ERA5_T2M_1993.nc"
+# lon_slice <- -80.5
+load_ERA5 <- function(lon_slice, file_name){
+  res <- tidync(file_name) %>%
+    hyper_filter(latitude = dplyr::between(latitude, 31.5, 63.5),
+                 longitude = longitude == lon_slice+360) %>%
+    hyper_tibble() %>%
+    mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1900-01-01', tz = "GMT"))) %>%
+    dplyr::rename(lon = longitude, lat = latitude, t = time)
+  # Switch to data.table for faster means
+  res_dt <- data.table(res)
+  setkey(res_dt, lon, lat, t)
+  res_mean <- res_dt[, lapply(.SD, mean), by = list(lon, lat, t)]
+  return(res_mean)
+}
+
+# Lon range: -80.5 to -40.5
+load_one_ERA5 <- function(file_name){
+  # system.time(
+  res_one <- plyr::ldply(seq(-80.5, -40.5, by = 0.25), load_ERA5,
+                         .parallel = T, file_name = file_name)
+  # ) # 117 seconds
+}
+
+# Function to load all of the NetCDF files for one ERA 5 variable
+load_all_ERA5 <- function(file_names){
+  # system.time(
+  res_all <- plyr::ldply(file_names, load_one_ERA5,
+                         .parallel = F, .progress = "text")
+  # ) # 116 seconds for one year, 222 seconds for two
+}
+
+
+# Calculate climatologies from single variable data.frame -----------------
+
+ts2clm_one <- function(df, GLORYS = F){
+  if(ncol(df) > 4) stop("Too many columns")
+  if(GLORYS){
+    clim_end <- "2018-12-25"
+  } else{
+    clim_end <- "2018-12-31"
+  }
+  colnames(df)[4] <- "temp"
+  # system.time(
+  res <- df %>%
+    group_by(lon, lat) %>%
+    nest() %>%
+    mutate(clims = map(data, ts2clm,
+                       climatologyPeriod = c("1993-01-01", clim_end),
+                       clmOnly = T, roundClm = FALSE)) %>%
+    select(-data) %>%
+    unnest() %>%
+    left_join(doy_index, by = c("doy" = "doy_int")) %>%
+    select(-doy) %>%
+    dplyr::rename(doy = doy.y)
+  # ) # 1139 seconds
+  res$thresh <- NULL
+  return(res)
+}
+
+
+# Calculate anomalies for single variable ---------------------------------
+
+anom_one <- function(df, df_clim, point_accuracy){
+  if(ncol(df) > 4) stop("Too many columns")
+  var_name <- colnames(df)[4]
+  colnames(df)[4] <- "temp"
+  # point_accuracy <- max(nchar(strsplit(as.character(df$temp)[1:10], "\\.")[[1]][2]))
+  res <- df %>%
+    mutate(doy = format(t, "%m-%d")) %>%
+    left_join(df_clim, by = c("lon", "lat", "doy")) %>%
+    mutate(anom = round(temp-seas, point_accuracy)) %>%
+    ungroup() %>%
+    select(lon, lat, t, anom)
+  colnames(res)[4] <- paste0(var_name,"_anom")
+  return(res)
 }
 
 
 # Build variable data packets ---------------------------------------------
 
 # testers...
-# event_sub <- NAPA_MHW_event[1,]
+# event_sub <- OISST_MHW_event[1,]
 data_packet <- function(event_sub){
 
-  # Create date and file index for loading
-  date_idx <- seq(event_sub$date_start, event_sub$date_end, by = "day")
-  file_idx <- filter(NAPA_files_dates, date %in% date_idx) %>%
-    mutate(file = as.character(file)) %>%
-    select(file) %>%
-    unique()
-
-  # Load required base data
-  # system.time(
-  packet_base <- plyr::ldply(file_idx$file, extract_all_var) %>%
-    filter(t %in% date_idx) %>%
-    mutate(doy = format(t, "%m-%d"))
-  # ) # 125 seconds for seven files
-
-  # Join to climatologies
-  packet_join <- left_join(packet_base, NAPA_clim_vars, by = c("lon", "lat", "doy"))
-
-  # Create anomaly values and remove clim columns
-  packet_anom <- packet_join %>%
-    mutate(emp_oce_anom = emp_oce - emp_oce_clim,
-           fmmflx_anom = fmmflx - fmmflx_clim,
-           mldkz5_anom = mldkz5 - mldkz5_clim,
-           mldr10_1_anom = mldr10_1 - mldr10_1_clim,
-           qemp_oce_anom = qemp_oce - qemp_oce_clim,
-           qns_anom = qns - qns_clim,
-           qt_anom = qt - qt_clim,
-           ssh_anom = ssh - ssh_clim,
-           sss_anom = sss - sss_clim,
-           sst_anom = sst - sst_clim,
-           taum_anom = taum - taum_clim) %>%
-    dplyr::select(lon, lat, doy, emp_oce:taum_anom,
-                  -c(colnames(NAPA_clim_vars)[-c(1:3)]))
-  # dplyr::select(-c(colnames(packet_base)[-c(3,4,ncol(packet_base))]),
-  #               -c(colnames(NAPA_clim_vars)[-c(1:3)]))
+  # Filter base anomally range
+  packet_base <- ALL_anom %>%
+    filter(t >= event_sub$date_start, t <= event_sub$date_end)
 
   # Create mean synoptic values
-  packet_mean <- packet_anom %>%
-    select(-doy) %>%
-    # NB: The lowest pixels are a forcing edge and shouldn't be included
-    # We can catch these out by filtering pixels whose SST is exactly 0
-    filter(sst != 0) %>%
+  packet_mean <- packet_base %>%
+    # select(-doy) %>%
     group_by(lon, lat) %>%
     summarise_all(mean, na.rm = T) %>%
     arrange(lon, lat) %>%
@@ -335,172 +330,6 @@ data_packet <- function(event_sub){
   # Exit
   return(packet_res)
 }
-
-
-# Function to extract all vectors at a file step --------------------------
-
-# testers...
-# file_number <- 1376
-extract_all_vec <- function(file_number){
-
-  # Extract and join variables with a for loop
-  # NB: This should be optimised...
-  u_vecs <- extract_one_vec(NAPA_U_files[file_number])
-  v_vecs <- extract_one_vec(NAPA_V_files[file_number])
-  w_vecs <- extract_one_vec(NAPA_W_files[file_number])
-
-  NAPA_vecs_extracted <- left_join(u_vecs, v_vecs, by = colnames(u_vecs)[1:5]) %>%
-    left_join(w_vecs, by = colnames(u_vecs)[1:5])
-
-  # Exit
-  return(NAPA_vecs_extracted)
-}
-
-
-# Build vector data packets -----------------------------------------------
-
-# testers...
-# event_sub <- NAPA_MHW_event[23,]
-data_vec_packet <- function(event_sub){
-
-  # Create date and file index for loading
-  date_idx <- seq(event_sub$date_start, event_sub$date_end, by = "day")
-  file_idx <- which(NAPA_vector_files_dates$date %in% date_idx)
-
-  # Load required base data
-  # system.time(
-  packet_base <- plyr::ldply(file_idx, extract_all_vec) %>%
-    filter(t %in% date_idx) %>%
-    mutate(doy = format(t, "%m-%d"))
-  # ) # 16 seconds for seven files
-
-  # Join to climatologies
-  packet_join <- left_join(packet_base, NAPA_clim_vecs, by = c("lon", "lat", "doy"))
-
-  # Create anomaly values and remove clim columns
-  packet_anom <- packet_join %>%
-    mutate(uoce_anom = uoce - uoce_clim,
-           voce_anom = voce - voce_clim,
-           wo_anom = wo - wo_clim) %>%
-    dplyr::select(lon, lat, doy, uoce:wo_anom,
-                  -c(colnames(NAPA_clim_vecs)[-c(1:3)]))
-
-  # Create mean synoptic values
-  packet_mean <- packet_anom %>%
-    select(-doy) %>%
-    group_by(lon, lat) %>%
-    summarise_all(mean, na.rm = T) %>%
-    arrange(lon, lat) %>%
-    ungroup() %>%
-    nest(.key = "synoptic")
-
-  # Combine results with MHW dataframe
-  packet_res <- cbind(event_sub, packet_mean)
-
-  # Test visuals
-  # ggplot(packet_mean, aes(x = lon, y = lat)) +
-  #   geom_point(aes(colour = uoce_anom)) +
-  #   scale_colour_gradient2(low = "blue", high = "red") +
-  #   coord_cartesian(xlim = NWA_corners[1:2],
-  #                   ylim = NWA_corners[3:4])
-
-  # Exit
-  return(packet_res)
-}
-
-
-# Function to create the OISST landmask -----------------------------------
-
-# The land mask NetCDF file is downloaded here:
-# https://www.esrl.noaa.gov/psd/data/gridded/data.noaa.oisst.v2.highres.html
-OISST_land_mask_func <- function(){
-  lmask <- want_vec <- tidync("data/lsmask.oisst.v2.nc") %>%
-    activate() %>%
-    hyper_tibble() %>%
-    dplyr::select(-time) %>%
-    mutate(lon = ifelse(lon > 180, lon-360, lon))
-
-  # Test visuals
-  # ggplot(lmask, aes(x = lon, y = lat)) +
-  # geom_raster(aes(fill = lsmask))
-
-  saveRDS(lmask, "data/land_mask_OISST.Rda")
-}
-
-
-# Functions for fillling in missing pixels --------------------------------
-
-# Find nearest neighbours and take average
-  # NB: For some reason this does not work well
-#testers...
-# df <- synoptic_states_anom_cartesian %>%
-#   ungroup() %>%
-#   filter(region == "cbs", sub_region == "(0,50]", event_no == 1) %>%
-#   select(-region, -sub_region, -event_no)
-# Order by lon/lat and exit
-fill_grid_func <- function(df){
-
-  # Create base dataframe
-  df_base <- left_join(land_mask_OISST_sub_water, df, by = c("lon", "lat")) %>%
-    mutate(row_index = 1:n()) %>%
-    select(row_index, everything())
-
-  # Par it down for later
-  df_bare <- df_base %>%
-    dplyr::select(-lon, -lat, -lsmask)
-
-  # Take only rows with missing pixels
-  df_NA <- df_base[!complete.cases(df_base),]
-  # Find their nine nearest neighbours
-    # We intentionally use the land mask with land pixels for merging to feel the coastline
-  pixel_index <- FNN::knnx.index(data = as.matrix(land_mask_OISST_sub[,c("lon", "lat")]),
-                                 query = as.matrix(df_NA[,c("lon", "lat")]), k = 9)
-
-  # Create the means of the nearest pixels
-  merge_index <- cbind(df_NA[,c("lon", "lat", "lsmask")], pixel_index) %>%
-    gather(key = "pixel", value = "row_index", -lon, -lat, -lsmask) %>%
-    dplyr::select(-lsmask) %>%
-    left_join(mutate(land_mask_OISST_sub, row_index = 1:n()), by = "row_index") %>%
-    filter(lsmask == 1) %>%  # Remove land pixels
-    left_join(df_bare, by = "row_index") %>%
-    dplyr::select(-pixel, -row_index, -lsmask, -lon.y, -lat.y) %>%
-    dplyr::rename(lon = lon.x, lat = lat.x) %>%
-    group_by(lon, lat) %>%
-    summarise_all(.funs = "mean", na.rm = T) %>%
-    ungroup() %>%
-    na.omit()
-
-  # Combine and exit
-  df_res <- df %>%
-    na.omit() %>%
-    bind_rows(merge_index) %>%
-    group_by(lon, lat) #%>%
-    # summarise_all(.funs = "mean", na.rm = T) %>%
-    # ungroup()
-
-  # Check
-  # length(unique(paste(df_res$lon, df_res$lat)))
-}
-
-
-# Function for interpolating with kima
-# testers...
-# interpp_stat <- "sst_anom"
-interpp_data <- function(df_base, df_grid, interpp_stat){
-  df_base <- data.frame(df_base)
-  suppressWarnings(
-    res <- as.data.frame(interpp(x = as.vector(df_base$lon), y = as.vector(df_base$lat),
-                                 as.vector(df_base[,colnames(df_base) == interpp_stat]),
-                                 xo = as.vector(df_grid$lon), yo = as.vector(df_grid$lat), linear = T,
-                                 extrap = FALSE, duplicate = "mean"))
-  )
-  colnames(res) <- c("lon_O_corrected", "lat_O", "interp")
-  suppressMessages(
-    df_res <- right_join(df_base, res)
-  )
-  return(df_res)
-}
-
 
 
 # Determine node indexes --------------------------------------------------
@@ -781,133 +610,4 @@ node_figure <- function(node_number){
   # fig_all_title
   ggsave(fig_all_title, filename = paste0("output/node_",node_number,"_panels.png"), height = 12, width = 16)
   ggsave(fig_all_title, filename = paste0("output/node_",node_number,"_panels.pdf"), height = 12, width = 16)
-}
-
-
-# Extract data from NOAA OISST NetCDF -------------------------------------
-
-# file_name <- "../data/OISST/avhrr-only-v2.ts.0001.nc"
-load_OISST <- function(file_name){
-  res <- tidync(file_name) %>%
-    hyper_filter(lat = dplyr::between(lat, 31.5-0.125, 63.5-0.125),
-                 time = dplyr::between(time, as.integer(as.Date("1993-01-01")),
-                                       as.integer(as.Date("2018-12-31")))) %>%
-    hyper_tibble() %>%
-    mutate(time = as.Date(time, origin = "1970-01-01")) %>%
-    dplyr::rename(temp = sst, t = time) %>%
-    select(lon, lat, t, temp)
-  return(res)
-}
-
-load_all_OISST <- function(file_names){
-  system.time(
-  res_all <- plyr::ldply(file_names, load_OISST, .parallel = T)
-  ) # 0.5 seconds for one slice, 34 seconds for all
-}
-
-
-# Extract data from ERA 5 NetCDF ------------------------------------------
-
-# Function for loading a single ERA 5 NetCDF file
-# Cycles through one lon slice at a time as the hourly data are too cumbersome otherwise
-# file_name <- "../../oliver/data/ERA/ERA5/T2M/ERA5_T2M_1993.nc"
-# lon_slice <- -80.5
-load_ERA5 <- function(lon_slice, file_name){
-  res <- tidync(file_name) %>%
-    hyper_filter(latitude = dplyr::between(latitude, 31.5, 63.5),
-                 longitude = longitude == lon_slice+360) %>%
-    hyper_tibble() %>%
-    mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1900-01-01', tz = "GMT"))) %>%
-    dplyr::rename(lon = longitude, lat = latitude, t = time)
-  # Switch to data.table for faster means
-  res_dt <- data.table(res)
-  setkey(res_dt, lon, lat, t)
-  res_mean <- res_dt[, lapply(.SD, mean), by = list(lon, lat, t)]
-  return(res_mean)
-}
-
-# Lon range: -80.5 to -40.5
-load_one_ERA5 <- function(file_name){
-  # system.time(
-    res_one <- plyr::ldply(seq(-80.5, -40.5, by = 0.5), load_ERA5,
-                           .parallel = T, file_name = file_name)
-  # ) # 117 seconds
-}
-
-# Function to load all of the NetCDF files for one ERA 5 variable
-load_all_ERA5 <- function(file_names){
-  # system.time(
-  res_all <- plyr::ldply(file_names, load_one_ERA5,
-                         .parallel = F, .progress = "text")
-  # ) # 116 seconds for one year, 222 seconds for two
-}
-
-
-# Extract data from GLORYS NetCDF -----------------------------------------
-
-# file_name <- "../data/GLORYS/MHWNWA_GLORYS_quarter_degree_daily_1993-01.nc"
-load_GLORYS <- function(file_name){
-  res_uv <- tidync(file_name) %>%
-    hyper_tibble() %>%
-    mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1950-01-01', tz = "GMT"))) %>%
-    select(-depth)
-  res_mld <- tidync(file_name) %>%
-    activate(mlp) %>% # Need to explicitly grab MLD as it doesn't use the depth dimension
-    hyper_tibble() %>%
-    mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1950-01-01', tz = "GMT")))
-  res_all <- left_join(res_uv, res_mld, by = c("longitude", "latitude", "time")) %>%
-    dplyr::rename(lon = longitude, lat = latitude, t = time) %>%
-    select(lon, lat, t, everything())
-  if("mlp" %in% colnames(res_all)) res_all <- dplyr::rename(res_all, mld = mlp)
-  res_all <- res_all %>%
-    mutate(mld = round(mld),
-           u = round(u, 4), v = round(v, 4))
-  return(res_all)
-}
-
-# Test visuals
-# res_all %>%
-#   filter(t == "1993-01-31") %>%
-#   ggplot(aes(x = lon, y = lat, fill = mld)) +
-#   geom_raster()
-
-
-# Calculate climatologies from single variable data.frame -----------------
-
-ts2clm_one <- function(df){
-  if(ncol(df) > 4) stop("Too many columns")
-  colnames(df)[4] <- "temp"
-  # system.time(
-    res <- df %>%
-      group_by(lon, lat) %>%
-      nest() %>%
-      mutate(clims = map(data, ts2clm,
-                         climatologyPeriod = c("1993-01-01", "2018-12-31"),
-                         clmOnly = T, roundClm = FALSE)) %>%
-      select(-data) %>%
-      unnest() %>%
-      left_join(doy_index, by = c("doy" = "doy_int")) %>%
-      select(-doy) %>%
-      dplyr::rename(doy = doy.y)
-  # ) # 1139 seconds
-  res$thresh <- NULL
-  return(res)
-}
-
-
-# Calculate anomalies for single variable ---------------------------------
-
-anom_one <- function(df, df_clim, point_accuracy){
-  if(ncol(df) > 4) stop("Too many columns")
-  var_name <- colnames(df)[4]
-  colnames(df)[4] <- "temp"
-  # point_accuracy <- max(nchar(strsplit(as.character(df$temp)[1:10], "\\.")[[1]][2]))
-  res <- df %>%
-    mutate(doy = format(t, "%m-%d")) %>%
-    left_join(df_clim, by = c("lon", "lat", "doy")) %>%
-    mutate(anom = round(temp-seas, point_accuracy)) %>%
-    ungroup() %>%
-    select(lon, lat, t, anom)
-  colnames(res)[4] <- paste0(var_name,"_anom")
-  return(res)
 }

@@ -23,7 +23,8 @@ After first going through this entire process with NAPA model output it has beco
 
 - NOAA OISST: SST
 - GLORYS: Mixed layer depth, U & V current vectors (1m)
-- ERA 5: Latent & sensible heat flux, shortwave and longwave radiation, U & V wind vectors (10m),  air temperature (2m)
+- ERA 5: U & V wind vectors (10m),  air temperature (2m)
+    - Net heat flux term: Latent & sensible heat flux, shortwave and longwave radiation
 
 ALl of these variables have a daily resolution from at least 1993 -- 2018. The spatial resolution varies from course (1 degree) OAFlux data to hi-res (1/12 degree) GLORYS data. The OISST, ERA 5, and GLORUS (1993 -- 2015) data are natively at 1/4 degree, though the corrdinates are slightly off between OISST and ERA 5 + GLORYS. The ERA5 data are also hourly, so will need to be binned into mean daily values. In order to trade between efficiency and accuracy we will be converting everything to the 1/4 degree grid of the OISST data. This will be accomplished with the newly published __`grainchanger`__ package.
 
