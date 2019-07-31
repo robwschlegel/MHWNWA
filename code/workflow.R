@@ -11,10 +11,11 @@
 # Run this to re-compile the entire project
 # system.time(
 # workflowr::wflow_publish(files = c("analysis/index.Rmd", "analysis/polygon-prep.Rmd",
-#                                    "analysis/sst-prep.Rmd", "analysis/var-prep.Rmd"),#,
-#                                    #"analysis/som.Rmd", "analysis/figures.Rmd", "analysis/node-summary.Rmd"),
+#                                    "analysis/sst-prep.Rmd", "analysis/var-prep.Rmd",
+#                                    "analysis/som.Rmd"),#,
+#                                    #"analysis/figures.Rmd", "analysis/node-summary.Rmd"),
 #                          message = "Re-publish entire site.")
-# ) # 223 seconds
+# ) # 82 seconds
 
 
 # Startup -----------------------------------------------------------------
@@ -186,95 +187,61 @@ source("code/functions.R")
 
 
 # Combine clims into one data.frame ---------------------------------------
+# Loading all of the anomaly data.frames at once doesn't use up too much RAM,
+# but the combining of them hangs really badly
+# For that reason we are going to load and combine them one at a time,
+# purging the memory as we go
 
-## Load the anomaly data.frames if necessary
-# OISST
-if(!exists("OISST_sst_anom")) OISST_sst_anom <- load_anom("data/OISST_sst_anom.Rda") %>%
-    mutate(lon = lon-0.125,
-           lat = lat+0.125) %>%
-    filter(lon >= -80, lon <= -41,
-           lat >= 32, lat <= 63)
-setkey(data.table(OISST_sst_anom, key = c("lon", "lat", "t")))
-# GLORYS
-if(!exists("GLORYS_u_anom")) GLORYS_u_anom <- readRDS("data/GLORYS_u_anom.Rda") %>%
-  filter(lon >= -80, lon <= -41,
-         lat >= 32, lat <= 63)
-setkey(data.table(GLORYS_u_anom, key = c("lon", "lat", "t")))
-if(!exists("GLORYS_v_anom")) GLORYS_v_anom <- readRDS("data/GLORYS_v_anom.Rda") %>%
-  filter(lon >= -80, lon <= -41,
-         lat >= 32, lat <= 63)
-setkey(data.table(GLORYS_v_anom, key = c("lon", "lat", "t")))
-if(!exists("GLORYS_mld_anom")) GLORYS_mld_anom <- readRDS("data/GLORYS_mld_anom.Rda") %>%
-  filter(lon >= -80, lon <= -41,
-         lat >= 32, lat <= 63)
-setkey(data.table(GLORYS_mld_anom, key = c("lon", "lat", "t")))
-# ERA 5
-if(!exists("ERA5_u_anom")) ERA5_u_anom <- readRDS("data/ERA5_u_anom.Rda") %>%
-  mutate(lon = ifelse(lon > 180, lon-360, lon)) %>%
-  filter(lon >= -80, lon <= -41,
-         lat >= 32, lat <= 63)
-setkey(data.table(ERA5_u_anom, key = c("lon", "lat", "t")))
-if(!exists("ERA5_v_anom")) ERA5_v_anom <- readRDS("data/ERA5_v_anom.Rda") %>%
-  mutate(lon = ifelse(lon > 180, lon-360, lon)) %>%
-  filter(lon >= -80, lon <= -41,
-         lat >= 32, lat <= 63)
-setkey(data.table(ERA5_v_anom, key = c("lon", "lat", "t")))
-if(!exists("ERA5_t2m_anom")) ERA5_t2m_anom <- readRDS("data/ERA5_t2m_anom.Rda") %>%
-  mutate(lon = ifelse(lon > 180, lon-360, lon)) %>%
-  filter(lon >= -80, lon <= -41,
-         lat >= 32, lat <= 63)
-setkey(data.table(ERA5_t2m_anom, key = c("lon", "lat", "t")))
-if(!exists("ERA5_qnet_anom")) ERA5_qnet_anom <- readRDS("data/ERA5_qnet_anom.Rda") %>%
-  mutate(lon = ifelse(lon > 180, lon-360, lon)) %>%
-  filter(lon >= -80, lon <= -41,
-         lat >= 32, lat <= 63)
-setkey(data.table(ERA5_qnet_anom, key = c("lon", "lat", "t")))
-## All together now
-# First merge ERA 5 data as they have 0 to 360 longitude values
+## ERA 5
+# NB: We start with ERA 5 as it has the most pixels due to it being atmospheric
+# system.time(ERA5_u_anom <- load_anom("data/ERA5_u_anom.Rda")) # 67 seconds
+# system.time(ERA5_v_anom <- load_anom("data/ERA5_v_anom.Rda")) # 69 seconds
+# system.time(ALL_anom <- merge(ERA5_u_anom, ERA5_v_anom,
+#                               by = c("lon", "lat", "t"), all.x = T)) # 33 seconds
+# rm(ERA5_u_anom, ERA5_v_anom); gc()
+# system.time(ERA5_t2m_anom <- load_anom("data/ERA5_t2m_anom.Rda")) # 61 seconds
+# system.time(ALL_anom <- merge(ALL_anom, ERA5_t2m_anom,
+#                               by = c("lon", "lat", "t"), all.x = T)) # 33 seconds
+# rm(ERA5_t2m_anom); gc()
+# system.time(ERA5_qnet_anom <- load_anom("data/ERA5_qnet_anom.Rda")) # 68 seconds
+# system.time( ALL_anom <- merge(ALL_anom, ERA5_qnet_anom,
+#                                by = c("lon", "lat", "t"), all.x = T)) # 33 seconds
+# rm(ERA5_qnet_anom); gc()
+## GLORYS
+# system.time(GLORYS_u_anom <- load_anom("data/GLORYS_u_anom.Rda")) # 59 seconds
+# system.time(ALL_anom <- merge(ALL_anom, GLORYS_u_anom,
+#                               by = c("lon", "lat", "t"), all.x = T)) # 33 seconds
+# rm(GLORYS_u_anom); gc()
+# system.time(GLORYS_v_anom <- load_anom("data/GLORYS_v_anom.Rda")) # 58 seconds
+# system.time(ALL_anom <- merge(ALL_anom, GLORYS_v_anom,
+#                               by = c("lon", "lat", "t"), all.x = T)) # 33 seconds
+# rm(GLORYS_v_anom); gc()
+# system.time(GLORYS_mld_anom <- readRDS("data/GLORYS_mld_anom.Rda")) # 16 seconds
+# system.time(ALL_anom <- merge(ALL_anom, GLORYS_mld_anom,
+#                               by = c("lon", "lat", "t"), all.x = T)) # 33 seconds
+# rm(GLORYS_mld_anom); gc()
+## OISST
+# system.time(OISST_sst_anom <- load_anom("data/OISST_sst_anom.Rda", OISST = T)) # 35 seconds
+# system.time(ALL_anom <- merge(ALL_anom, OISST_sst_anom,
+#                               by = c("lon", "lat", "t"), all.x = T)) # 36 seconds
+# rm(OISST_sst_anom); gc()
+## Save
+# NB: This causes RStudio server to hang, but it still works
+# saveRDS(ALL_anom, "data/ALL_anom.Rda")
+## Load
 # system.time(
-#   ALL_anom <- merge(ERA5_qnet_anom, ERA5_t2m_anom, by = c("lon", "lat", "t"), all.x = T)
-# ) # xxx seconds
-# system.time(
-#   ERA5_all_anom <- reduce(list(ERA5_qnet_anom, ERA5_t2m_anom, ERA5_v_anom, ERA5_u_anom),
-#                           full_join, by = c("lon", "lat", "t")) %>%
-#     mutate(lon = ifelse(lon > 180, lon-360, lon))
-# ) # xxx seconds
-# Then merge everything and shave the edges
-system.time(
-  ALL_anom <- reduce(list(ERA5_qnet_anom, ERA5_t2m_anom, ERA5_v_anom, ERA5_u_anom,
-                          GLORYS_mld_anom, GLORYS_v_anom, GLORYS_u_anom, OISST_sst_anom),
-                     full_join, by = c("lon", "lat", "t")) %>%
-    filter(lon >= -80, lon <= -40,
-           lat >= 32, lat <= 63)
-) # xxx seconds
-system.time(
-# ALL_anom <- left_join(ERA5_qnet_anom, ERA5_t2m_anom, by = c("lon", "lat", "t")) %>%
-#   left_join(ERA5_v_anom, by = c("lon", "lat", "t")) %>%
-#   left_join(ERA5_u_anom, by = c("lon", "lat", "t")) %>%
-#   mutate(lon = ifelse(lon > 180, lon-360, lon)) %>%
-#   left_join(GLORYS_mld_anom, by = c("lon", "lat", "t")) %>%
-#   left_join(GLORYS_v_anom, by = c("lon", "lat", "t")) %>%
-#   left_join(GLORYS_u_anom, by = c("lon", "lat", "t")) %>%
-#   left_join(OISST_sst_anom, by = c("lon", "lat", "t"))
-) # xxx seconds
-saveRda(ALL_anom, "data/ALL_anom.Rda")
+# ALL_anom <- readRDS("data/ALL_anom.Rda")
+# ) # 78 seconds
 
-# Keep RAM happy
-if(exists("ERA5_qnet_anom")){
-  rm(ERA5_qnet_anom, ERA5_t2m_anom, ERA5_v_anom, ERA5_u_anom,
-     GLORYS_mld_anom, GLORYS_v_anom, GLORYS_u_anom); gc()
-}
-
-test <- left_join(OISST_sst_anom, GLORYS_mld_anom, by = c("lon", "lat", "t"))
-
-test %>%
-  filter(t == "2000-01-01") %>%
-  ggplot(aes(x = lon, y = lat)) +
-  geom_raster(aes(fill = sst_anom)) +
-  geom_point(aes(colour = mld_anom))
+## Test visuals
+# ALL_anom %>%
+#   filter(t == "2000-01-01") %>%
+#   ggplot(aes(x = lon, y = lat)) +
+#   geom_raster(aes(fill = sst_anom))
 
 
-# Variable data packets ---------------------------------------------------
+# Data packets ------------------------------------------------------------
+
 
 # Set number of cores
 # doMC::registerDoMC(cores = 50)
@@ -282,7 +249,7 @@ test %>%
 # Create one big packet
 # system.time(
 # synoptic_states <- plyr::ddply(OISST_MHW_event, c("region", "event_no"), data_packet, .parallel = T)
-# ) # 82 seconds for first event, 2,6125 seconds (102 minutes) for all events
+# ) # 3 seconds for first event, 50 for all events
 
 # Save
 # saveRDS(synoptic_states, "data/synoptic_states.Rda")
@@ -290,9 +257,15 @@ test %>%
 
 # SOM analysis ------------------------------------------------------------
 
-# all_anom <- readRDS("data/packet_all_anom.Rda")
-# system.time(som_all_anom <- som_model_PCI(all_anom)) # 122 seconds
-# saveRDS(som_all_anom, file = "data/som_all_anom.Rda")
+# The SOM excluding the Labrador Sea region
+# packet_nolab <- readRDS("data/packet_nolab.Rda")
+# system.time(som_nolab <- som_model_PCI(packet_nolab)) # 78 seconds
+# saveRDS(som_nolab, file = "data/som_nolab.Rda")
+
+# The SOM excluding the Labrador Sea and Gulf of St Lawrence regions
+# packet_nolabgsl <- readRDS("data/packet_nolabgsl.Rda")
+# system.time(som_nolabgsl <- som_model_PCI(packet_nolabgsl)) # 75 seconds
+# saveRDS(som_nolabgsl, file = "data/som_nolabgsl.Rda")
 
 
 # Visuals -----------------------------------------------------------------

@@ -269,7 +269,8 @@ som_unpack_mean <- function(data_packet, som_output){
     separate(variable, into = c("lon", "lat", "var"), sep = "BBB") %>%
     dplyr::arrange(node, var, lon, lat) %>% 
     mutate(lon = as.numeric(lon),
-           lat = as.numeric(lat))
+           lat = as.numeric(lat),
+           val = round(val, 4))
   return(var_unscaled)
 }
 ```

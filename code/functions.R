@@ -60,8 +60,14 @@ doy_index <- data.frame(doy_int = 1:366,
                                          by = "day"), "%m-%d"),
                         stringsAsFactors = F)
 
-# The anomalies
-# if(!exists("ALL_anom")) ALL_anom <- readRDS("data/ALL_anom.Rda")
+# Load anomaly data as necessary
+# This also scales each MLD pixel to 1
+system.time(
+  if(!exists("ALL_anom")) ALL_anom <- readRDS("data/ALL_anom.Rda") %>%
+    group_by(lon, lat) %>%
+    mutate(mld_anom = mld_anom/max(abs(mld_anom), na.rm = T)) %>%
+    ungroup()
+) # 99 seconds
 
 # The OISST land mask
 # land_mask_OISST <- readRDS("data/land_mask_OISST.Rda")
@@ -272,19 +278,25 @@ anom_one <- function(df, df_clim, point_accuracy){
 
 
 # Load anomaly data -------------------------------------------------------
+
 # This function loads and filters the anomaly data.frames
 # This just exists to reduce redundancy and keep the code/workflow.R script tidy
-load_anom <- function(file_name){
-  res <- readRDS(file_name) %>%
-    mutate(lon = ifelse(lon > 180, lon-360, lon)) %>%
-    filter(lon >= -80, lon <= -41,
-           lat >= 32, lat <= 63)
-  setkey(data.table(res, key = c("lon", "lat", "t")))
+load_anom <- function(file_name, OISST = F){
+  if(OISST){
+    res <- readRDS(file_name) %>%
+      mutate(lon = lon-0.125, lat = lat+0.125)
+  } else{
+    res <- readRDS(file_name) %>%
+      mutate(lon = ifelse(lon > 180, lon-360, lon))
+  }
+  res <- res %>% filter(lon >= -80, lon <= -41,
+                        lat >= 32, lat <= 63)
+  res <- setkey(data.table(res, key = c("lon", "lat", "t")))
   return(res)
 }
 
 
-# Build variable data packets ---------------------------------------------
+# Build data packets ------------------------------------------------------
 
 # testers...
 # event_sub <- OISST_MHW_event[1,]
@@ -300,8 +312,9 @@ data_packet <- function(event_sub){
     group_by(lon, lat) %>%
     summarise_all(mean, na.rm = T) %>%
     arrange(lon, lat) %>%
-    ungroup() %>%
-    nest(.key = "synoptic")
+    ungroup()
+  packet_mean[is.na(packet_mean)] <- NA
+  packet_mean <- nest(packet_mean, .key = "synoptic")
 
   # Combine results with MHW dataframe
   packet_res <- cbind(event_sub, packet_mean)
