@@ -15,10 +15,9 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
                       eval = TRUE, tidy = FALSE)
 ```
 
-
 ## Introduction
 
-This markdown file will contain the code used to perform the self-organising map (SOM) analysis on the prepared variable data as seen in the [Variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette and on the prepared vectors seen in the [Vector preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette.
+This vignette contains the code used to perform the self-organising map (SOM) analysis on the mean synoptic states created in the [Variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette. We'll start by creating custom packets that meet certain experimental criteria before then feeding them into a SOM. We will finish up by creating some cursory visuals of the results. The full summary of the results may be seen in the [Node summary vignette](https://robwschlegel.github.io/MHWNWA/node-summary.html).
 
 ```{r libraries}
 # Insatll from GitHub
@@ -60,7 +59,7 @@ NWA_corners <- readRDS("data/NWA_corners.Rda")
 # Create smaller corners to use less RAM
   # This also better matches the previous South African work
   # The Tasmania work had corners of roughly 2 degrees greater than the study area
-NWA_corners_sub <- c(NWA_corners[1]+8, NWA_corners[2]-8, NWA_corners[3]+8, NWA_corners[4]-8)
+# NWA_corners_sub <- c(NWA_corners[1]+8, NWA_corners[2]-8, NWA_corners[3]+8, NWA_corners[4]-8)
 
 # The base map
 map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE)) %>%
@@ -71,40 +70,20 @@ map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE
 
 # The grid that will convert the tri-polar coordinates to cartesian
   # NB: This file was created in the 'tikoraluk' project
-load("data/lon_lat_NAPA_OISST.Rdata")
+# load("data/lon_lat_NAPA_OISST.Rdata")
 
 # Change to fit with this project
-lon_lat_NAPA_OISST <- lon_lat_NAPA_OISST %>% 
-  dplyr::select(-lon, -lat, -dist, -nav_lon_corrected) %>% 
-  dplyr::rename(lon = nav_lon, lat = nav_lat) %>% 
-  mutate(lon = round(lon, 4),
-         lat = round(lat, 4)) %>% 
-  mutate(lon_O = ifelse(lon_O > 180, lon_O-360, lon_O))
+# lon_lat_NAPA_OISST <- lon_lat_NAPA_OISST %>% 
+#   dplyr::select(-lon, -lat, -dist, -nav_lon_corrected) %>% 
+#   dplyr::rename(lon = nav_lon, lat = nav_lat) %>% 
+#   mutate(lon = round(lon, 4),
+#          lat = round(lat, 4)) %>% 
+#   mutate(lon_O = ifelse(lon_O > 180, lon_O-360, lon_O))
 ```
-
-
-## Possible mechanisms
-
-"Finally, Shearman and Lentz (2010) showed that century-long ocean warming trends observed along the entire northeast U.S. coast are not related to local atmospheric forcing but driven by atmospheric warming of source waters in the Labrador Sea and the Arctic, which are advected into the region." [@Richaud2016]
-
-Downwelling
-
-Net heatflux (OAFlux) doesn't line up perfectly with seasonal SST signal, but is very close, with heat flux tending to lead SST by 2 -- 3 months.s [@Richaud2016]. It is therefore likely one of the primary drivers of SST and should therefore be strongly considered when constructing SOMs.
-
-There is almost no seasonal cycle for slope waters in any of the regions [@Richaud2016].
-
-## More ideas
-
-It would be interesting to see if the SOM outputs differ in any meaningful ways when only data from the first half of the study time period are used compared against the second half.
-
-The output of the SOMs could likely be more meaningfully conveyed from the point of view of the regions. What I mean by this is to take the summary of the nodes, convey them into a table, and then use that table to inform a series of information bits that is focused around each region. Some sort of interactive visual may be useful for this. Showing the percentage that each region has in each node would be a good start. This would allow for a more meaningful further explanation for which drivers affect which regions during which seasons and over which years. 
-
-Once this summary is worked out it would then follow that the same analysis be run 1, 2, 3 etc. months in the past and see what the same information format provides w.r.t. a sort of predictive capacity. All of this can then be used to check other data products with a more focused lens in order to maximise the utility of the output.
 
 ## Tailored data packets
 
-In this last stage before running our SOM analyses we want to create equally weighted and quality controlled data packets that can be fed directly into the SOM algorithm. At the moment we will just create a packet for a few choice anomaly variables. This is because not only has using all of the anomaly variables at once proven to be too large a task, it also wouldn't be appropriate because not all of this information should be considered at the same time. The creation of these packets will be split into four steps below.
-<!-- Specifically what we mean her is that we are going to filter the `synoptic_states` data created in the [Variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette to match some pre-designed hypotheses. Foremost of these at the moment is that we want to create individual packets for each of the regions. While creating whatever packets we desire we will also be converting them into the super-wide matrix format that the SOM model desires. -->
+In this last stage before running our SOM analyses we will create data packets that can be fed directly into the SOM algorithm. These data packets will vary based on the exclusion of certain regions in the study area. In the first run of this analysis on the NAPA model data it was found that the inclusion of the Labrador Sea complicated the results quite a bit. It is also unclear whether or not the Gulf of St Lawrence region should be included in the analysis. While creating whatever packets we desire we will also be converting them into the super-wide matrix format that the SOM model desires.
 
 ### Unnest synoptic state packets
 
@@ -114,135 +93,81 @@ Up first we must simply load and unnest the synoptic state packets made previous
 # Load the synoptic states data packet
 system.time(
 synoptic_states <- readRDS("data/synoptic_states.Rda")
-) # 30 seconds
+) # 3 seconds
 
 # Unnest the synoptic data
 system.time(
 synoptic_states_unnest <- synoptic_states %>% 
-  select(region, sub_region, event_no, synoptic) %>% 
+  select(region, event_no, synoptic) %>% 
   unnest()
-) # 30 seconds
-
-# Load the synoptic vector states data packet
-system.time(
-synoptic_vec_states <- readRDS("data/synoptic_vec_states.Rda")
-) # 10 seconds
-
-# Unnest the synoptic vector data
-system.time(
-synoptic_vec_states_unnest <- synoptic_vec_states %>% 
-  select(region, sub_region, event_no, synoptic) %>% 
-  unnest()
-) # 27 seconds
-```
-
-
-### Quality control anomalies
-
-Here we select the most relevant anomaly values and correct for a couple of issues.
-
-```{r extract-anomaly, eval=FALSE}
-# NB: The range of values for mixed layer depth anomalies is muuuuch greater
-# in the Labrador sea than elsewhere in the study area.
-# So we scale it here first before feeding it into the SOM to be scaled again
-system.time(
-synoptic_states_anom_fix <- synoptic_states_unnest %>% 
-  select(region:lat, sst_anom, taum_anom, qt_anom, mldr10_1_anom) %>% 
-  filter(lon >= NWA_corners_sub[1], lon <= NWA_corners_sub[2],
-         lat >= NWA_corners_sub[3], lat <= NWA_corners_sub[4]) %>% 
-  group_by(lon, lat) %>% 
-  mutate(mldr10_1_anom = mldr10_1_anom/max(abs(mldr10_1_anom), na.rm = T)) %>% 
-  # na.omit() %>% 
-  ungroup()
-) # 3 seconds
-
-# NB: There is an issue downstream with one or more of the vector pixels always having a value of 0
-  # This needs to be accounted for here before joining the data further
-system.time(
-synoptic_vec_states_anom_fix <- synoptic_vec_states_unnest %>% 
-  select(region:lat, uoce_anom:voce_anom) %>% 
-  filter(lon >= NWA_corners_sub[1], lon <= NWA_corners_sub[2],
-         lat >= NWA_corners_sub[3], lat <= NWA_corners_sub[4]) %>% 
-  group_by(lon, lat) %>% 
-  mutate(uoce_anom = case_when(min(uoce_anom, na.rm = T) != 0 & max(uoce_anom, na.rm = T) != 0 ~ uoce_anom),
-         voce_anom = case_when(min(voce_anom, na.rm = T) != 0 & max(voce_anom, na.rm = T) != 0 ~ voce_anom)) %>% 
-  # na.omit() %>% 
-  ungroup()
 ) # 8 seconds
 ```
 
+### Custom packets
 
-### Constrain to a Cartesian grid
-
-The last step before creating the final packets is to constrain the tri-polar grid data to Cartesian coordinates. This is important as it prevents the denser sampled areas from being over-represented in the SOM analysis.
-
-```{r constrain-synoptic, eval=FALSE}
-# Constrain variables
-system.time(
-synoptic_states_anom_cartesian <- synoptic_states_anom_fix %>% 
-  # First create means based on the nearest NAPA pixel to OISST pixel
-  left_join(lon_lat_NAPA_OISST, by = c("lon", "lat")) %>% 
-  dplyr::select(-lon, -lat) %>% 
-  dplyr::rename(lon = lon_O, lat = lat_O) %>% 
-  group_by(region, sub_region, event_no, lon, lat) %>% 
-  summarise_all(.funs = "mean", na.rm = T) #%>% 
-  # Then interpolate the few pixels that aren't filled
-    # NB: After spending a day working on interpolation techniques 
-    # I decided to leave it as this creates more artefacts than it removes
-  # group_by(region, sub_region, event_no)
-) # 34 seconds
-
-# Constrain vectors
-system.time(
-synoptic_vec_states_anom_cartesian <- synoptic_vec_states_anom_fix %>% 
-  # First create means based on the nearest NAPA pixel to OISST pixel
-  left_join(lon_lat_NAPA_OISST, by = c("lon", "lat")) %>% 
-  dplyr::select(-lon, -lat) %>% 
-  dplyr::rename(lon = lon_O, lat = lat_O) %>% 
-  group_by(region, sub_region, event_no, lon, lat) %>% 
-  summarise_all(.funs = "mean", na.rm = T)
-) # 32 seconds
-
-# Test visuals
-# test <- synoptic_states_anom_cartesian %>%
-#   filter(region == "cbs", sub_region == "(0,50]", event_no == 1)
-# ggplot(test, aes(x = lon, y = lat)) +
-#   geom_raster(aes(fill = sst_anom)) +
-#   scale_fill_gradient2(low = "blue", high = "red") +
-#   coord_cartesian(xlim = NWA_corners_sub[1:2],
-#                   ylim = NWA_corners_sub[3:4])
-```
-
-
-### Merge and save
-
-With all of our data ready we may now stick them together and save the packet for SOM use.
+With all of our data ready we may now trim them as we see fit before saving them for the SOM.
 
 ```{r create-SOM-packet, eval=FALSE}
-# Packet for all synoptic anomaly data for all regions etc.
+# The study area size when the Labrador region is excluded
+NWA_coords_nolab <- NWA_coords %>% 
+  filter(region != "ls")
+
+# The study area size when the Labrador and GSL regions are excluded
+NWA_coords_nolabgsl <- NWA_coords %>% 
+  filter(!region %in% c("ls", "gsl"))
+
+# Test visuals of reduced study areas
+synoptic_states[1,] %>% 
+  unnest() %>% 
+  filter(lat <= round(max(NWA_coords_nolabgsl$lat))+0.5) %>% 
+  ggplot(aes(x = lon, y = lat)) +
+  geom_raster(aes(fill = sst_anom)) +
+  geom_polygon(data = NWA_coords_nolabgsl, aes(colour = region), fill = NA)
+
+# Function for casting wide the custom packets
+create_packet <- function(df){
+  # Cast the data to a single row
+  res <- data.table::data.table(df) %>% 
+    reshape2::melt(id = c("region", "event_no", "lon", "lat"),
+                   measure = c(colnames(.)[-c(1:4)]), 
+                   variable.name = "var", value.name = "val") %>% 
+    dplyr::arrange(var, lon, lat) %>%
+    unite(coords, c(lon, lat, var), sep = "BBB") %>%
+    unite(event_ID, c(region, event_no), sep = "BBB") %>%
+    reshape2::dcast(event_ID ~ coords, value.var = "val")
+  # Remove columns (pixels) with missing data
+  res_fix <- res[,colSums(is.na(res))<1]
+  return(res_fix)
+}
+
+# Packet for entire study region
 system.time(
-packet_all_anom <- left_join(synoptic_states_anom_fix, 
-                             synoptic_vec_states_anom_fix,
-                             by = c("region", "sub_region", "event_no", "lon", "lat")) %>% 
-  data.table::data.table() %>% 
-  reshape2::melt(id = c("region", "sub_region", "event_no", "lon", "lat"),
-                 measure = c(colnames(.)[-c(1:5)]), 
-                 variable.name = "var", value.name = "val") %>% 
-  dplyr::arrange(var, lon, lat) %>%
-  unite(coords, c(lon, lat, var), sep = "BBB") %>%
-  unite(event_ID, c(region, sub_region, event_no), sep = "BBB") %>%
-  reshape2::dcast(event_ID ~ coords, value.var = "val")
-) # 312 seconds
+  packet_all <- create_packet(synoptic_states_unnest)
+) # xxx seconds
+saveRDS(packet_all, "data/packet_all.Rda")
 
-# Remove columns (pixels) with missing data and save
-packet_all_anom_fix <- packet_all_anom[,colSums(is.na(packet_all_anom))<1]
-# saveRDS(packet_all_anom_fix, "data/packet_all_anom.Rda")
+# Exclude Labrador region
+system.time(
+  packet_nolab <- synoptic_states_unnest %>% 
+    filter(region != "ls",
+           lat <= round(max(NWA_coords_nolab$lat))+0.5) %>% 
+    create_packet()
+) # 128 seconds
+saveRDS(packet_nolab, "data/packet_nolab.Rda")
+
+# Exclude Labrador and Gulf of St Lawrence regions
+system.time(
+  packet_nolabgsl <- synoptic_states_unnest %>% 
+    filter(!region %in% c("ls", "gsl"),
+           lat <= round(max(NWA_coords_nolabgsl$lat))+0.5) %>% 
+    create_packet()
+) # xxx seconds
+saveRDS(packet_nolabgsl, "data/packet_nolabgsl.Rda")
 ```
-
 
 ## Run SOM models
 
-Now that we have our anomaly data packet to feed the SOM, we need a function that will ingest them and produce results for us.
+Now that we have our data packets to feed the SOM, we need a function that will ingest them and produce results for us.
 
 ```{r som-func}
 # Function for calculating SOMs using PCI
@@ -268,11 +193,32 @@ som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
 With the function sorted, we now feed the data.
 
 ```{r som-run, eval=FALSE}
-all_anom <- readRDS("data/packet_all_anom.Rda")
-system.time(som_all_anom <- som_model_PCI(all_anom)) # 201 seconds
-saveRDS(som_all_anom, file = "data/som_all_anom.Rda")
-```
+# The SOM on the entire study area
+   # NB: Not running for some reason...
+    # Possibly due to a column with no range in values
+    # Not too worried about it as this one isn't being used
+# packet_all <- readRDS("data/packet_all.Rda")
+# system.time(som_all <- som_model_PCI(packet_all)) # 201 seconds
+# saveRDS(som_all, file = "data/som_all.Rda")
 
+# The SOM excluding the Labrador Sea region
+packet_nolab <- readRDS("data/packet_nolab.Rda")
+system.time(som_nolab <- som_model_PCI(packet_nolab)) # 78 seconds
+saveRDS(som_nolab, file = "data/som_nolab.Rda")
+
+# The SOM excluding the Labrador Sea and Gulf of St Lawrence regions
+packet_nolabgsl <- readRDS("data/packet_nolabgsl.Rda")
+system.time(som_nolabgsl <- som_model_PCI(packet_nolabgsl)) # 75 seconds
+saveRDS(som_nolabgsl, file = "data/som_nolabgsl.Rda")
+
+# A 9 node SOM
+
+# A 16 node SOM
+system.time(som_nolab <- som_model_PCI(packet_nolab)) # 78 seconds
+saveRDS(som_nolab, file = "data/som_nolab.Rda")
+
+# A SOM without moderate events
+```
 
 ## Unpack SOM results
 
@@ -293,7 +239,7 @@ event_node_index <- function(data_packet, som_output){
   # Create a more complete data.frame of info
   event_node <- data.frame(event_ID = data_packet[,"event_ID"],
                            node = som_output$classif) %>% 
-    separate(event_ID, into = c("region", "sub_region", "event_no"), sep = "BBB") %>% 
+    separate(event_ID, into = c("region", "event_no"), sep = "BBB") %>% 
     left_join(node_count, by = "node")
   
   # NB: This is potentially where the season of the event would be inserted
@@ -301,20 +247,20 @@ event_node_index <- function(data_packet, som_output){
   return(event_node)
 }
 
-# Functions for unpacking som results
-  # Create mean results from initial data frame based on node clustering
+# Function for unpacking som results and creating 
+# mean results from initial data frame based on node clustering
 # testers...
-# data_packet <- all_anom; som_output <- som_all_anom
+# data_packet <- packet_nolab; som_output <- som_nolab
 som_unpack_mean <- function(data_packet, som_output){
   
   # Determine which event goes in which node and melt
   data_packet_long <- data.frame(event_ID = data_packet[,"event_ID"],
                            node = som_output$classif) %>% 
-    separate(event_ID, into = c("region", "sub_region", "event_no"), sep = "BBB") %>% 
+    separate(event_ID, into = c("region", "event_no"), sep = "BBB") %>% 
     cbind(data_packet[,-1]) %>% 
     data.table() %>% 
-    reshape2::melt(id = c("region", "sub_region", "event_no", "node"),
-                   measure = c(colnames(.)[-c(1:4)]), 
+    reshape2::melt(id = c("region", "event_no", "node"),
+                   measure = c(colnames(.)[-c(1:3)]), 
                    variable.name = "variable", value.name = "value")
   
   # Create the mean values that serve as the unscaled results from the SOM
@@ -331,18 +277,31 @@ som_unpack_mean <- function(data_packet, som_output){
 And now we unpack the SOM results.
 
 ```{r som-unpack, eval=TRUE}
-# Load data packet
-all_anom <- readRDS("data/packet_all_anom.Rda")
+# Load data packets
+# packet_all <- readRDS("data/packet_all.Rda")
+packet_nolab <- readRDS("data/packet_nolab.Rda")
+packet_nolabgsl <- readRDS("data/packet_nolabgsl.Rda")
 
-# Load SOM packet for anomaly data
-som_all_anom <- readRDS("data/som_all_anom.Rda")
+# Load SOM packets
+# som_all <- readRDS("data/som_all.Rda")
+som_nolab <- readRDS("data/som_nolab.Rda")
+som_nolabgsl <- readRDS("data/som_nolabgsl.Rda")
 
 # Determine node index
-node_index_all_anom <- event_node_index(all_anom, som_all_anom)
+# node_index_all <- event_node_index(packet_all, som_all)
+node_index_nolab <- event_node_index(packet_nolab, som_nolab)
+node_index_nolabgsl <- event_node_index(packet_nolabgsl, som_nolabgsl)
 
-# Create and save mean synoptic states per node
-node_mean_all_anom <- som_unpack_mean(all_anom, som_all_anom)
-# saveRDS(node_mean_all_anom, "data/node_mean_all_anom.Rda")
+## Create and save mean synoptic states per node
+# All
+# node_mean_all <- som_unpack_mean(packet_all, som_all)
+# saveRDS(node_mean_all, "data/node_mean_all.Rda")
+# No Labrador Sea
+node_mean_nolab <- som_unpack_mean(packet_nolab, som_nolab)
+# saveRDS(node_mean_nolab, "data/node_mean_nolab.Rda")
+# No Labrador Sea or Gulf of St Lawrence
+node_mean_nolabgsl <- som_unpack_mean(packet_nolabgsl, som_nolabgsl)
+# saveRDS(node_mean_nolabgsl, "data/node_mean_nolabgsl.Rda")
 ```
 
 ## Visualise SOM results
@@ -351,25 +310,23 @@ First up the functions for visualising the unpacked results.
 
 ```{r som-visualise-func}
 # Ease of life function
-som_node_visualise <- function(sub_var = "sst_anom", viridis_option = "D"){
+som_node_visualise <- function(sub_var = "sst_anom",
+                               node_data = node_mean_nolab, 
+                               node_index = node_index_nolab){
   
   # Subset data
-  node_mean_all_anom_sub <- node_mean_all_anom %>% 
-    filter(var == sub_var) %>% 
-    mutate(lon = plyr::round_any(lon, 0.25),
-           lat = plyr::round_any(lat, 0.25)) %>% 
-    group_by(node, lon, lat, var) %>% 
-    summarise(val = mean(val, na.rm = T))
+  node_data_sub <- node_data %>% 
+    filter(var == sub_var)
 
   # Create plot
-  som_panel_plot <- ggplot(node_mean_all_anom_sub, aes(x = lon, y = lat)) +
+  som_panel_plot <- ggplot(node_data_sub, aes(x = lon, y = lat)) +
     # geom_point(aes(colour = val)) +
-    geom_raster(aes(fill  = val)) +
+    geom_raster(aes(fill = val)) +
     geom_polygon(data = map_base, aes(group = group), show.legend = F) +
-    geom_label(data = node_index_all_anom, aes(x = -60, y = 35, label = paste0("n = ",count))) +
+    geom_label(data = node_index, aes(x = -60, y = 35, label = paste0("n = ",count))) +
     # geom_polygon(data = NWA_coords, aes(group = region, fill = region, colour = region), alpha = 0.1) +
-    coord_cartesian(xlim = NWA_corners_sub[1:2],
-                    ylim = NWA_corners_sub[3:4], 
+    coord_cartesian(xlim = c(max(node_data$lon), min(node_data$lon)),
+                    ylim = c(max(node_data$lat), min(node_data$lat)), 
                     expand = F) +
     scale_fill_gradient2(low = "blue", high = "red") +
     # scale_colour_viridis_c(option = viridis_option) +
@@ -384,36 +341,53 @@ And now we create a PDF for each of the 12 nodes for each variable individually.
 
 ```{r som-visualise, eval=FALSE}
 # SST
-plot_sst_anom <- som_node_visualise("sst_anom")
+  # NB: Comparing the SST anomaly results from the two restricted study areas
+plot_sst_anom <- som_node_visualise()
+plot_sst_anom_nogsl <- som_node_visualise(node_data = node_mean_nolabgsl,
+                                          node_index = node_index_nolabgsl)
 # plot_sst_anom
-ggsave(plot_sst_anom, filename = "output/som_plot_sst_anom.pdf", height = 12, width = 13)
-ggsave(plot_sst_anom, filename = "output/som_plot_sst_anom.png", height = 12, width = 13)
+# plot_sst_anom_nogsl
+ggsave(plot_sst_anom, filename = "output/som_plot_sst_anom.pdf", height = 9, width = 13)
+ggsave(plot_sst_anom, filename = "output/som_plot_sst_anom.png", height = 9, width = 13)
+ggsave(plot_sst_anom_nogsl, filename = "output/som_plot_sst_anom_nogsl.pdf", height = 9, width = 13)
 
-# Net downward heat flux (qt)
-plot_qt_anom <- som_node_visualise("qt_anom")
-# plot_qt_anom
-ggsave(plot_qt_anom, filename = "output/som_plot_qt_anom.pdf", height = 12, width = 13)
+# Air temperature (t2m)
+plot_t2m_anom <- som_node_visualise("t2m_anom")
+# plot_t2m_anom
+ggsave(plot_t2m_anom, filename = "output/som_plot_t2m_anom.pdf", height = 9, width = 13)
 
-# Mixed Layer Depth (mldr10_1)
-plot_mldr10_1_anom <- som_node_visualise("mldr10_1_anom")
-# plot_mldr10_1_anom
-ggsave(plot_mldr10_1_anom, filename = "output/som_plot_mldr10_1_anom.pdf", height = 12, width = 13)
+# Net downward heat flux (qnet)
+plot_qnet_anom <- som_node_visualise("qnet_anom")
+# plot_qnet_anom
+ggsave(plot_qnet_anom, filename = "output/som_plot_qnet_anom.pdf", height = 9, width = 13)
 
-# Wind stress (taum)
-plot_taum_anom <- som_node_visualise("taum_anom")
-# plot_taum_anom
-ggsave(plot_taum_anom, filename = "output/som_plot_taum_anom.pdf", height = 12, width = 13)
+# Surface wind U (u10)
+plot_u10_anom <- som_node_visualise("u10_anom")
+# plot_u10_anom
+ggsave(plot_u10_anom, filename = "output/som_plot_u10_anom.pdf", height = 9, width = 13)
 
-# Ocean current; U (uoce)
-plot_uoce_anom <- som_node_visualise("uoce_anom")
+# Surface wind V (v10)
+plot_v10_anom <- som_node_visualise("v10_anom")
+# plot_v10_anom
+ggsave(plot_v10_anom, filename = "output/som_plot_v10_anom.pdf", height = 9, width = 13)
+
+# Ocean current U (u)
+plot_u_anom <- som_node_visualise("u_anom")
 # plot_uoce_anom
-ggsave(plot_uoce_anom, filename = "output/som_plot_uoce_anom.pdf", height = 12, width = 13)
+ggsave(plot_u_anom, filename = "output/som_plot_u_anom.pdf", height = 9, width = 13)
 
-# Ocean current; U (uoce)
-plot_voce_anom <- som_node_visualise("voce_anom")
-# plot_voce_anom
-ggsave(plot_voce_anom, filename = "output/som_plot_voce_anom.pdf", height = 12, width = 13)
+# Ocean current V (v)
+plot_v_anom <- som_node_visualise("v_anom")
+# plot_v_anom
+ggsave(plot_v_anom, filename = "output/som_plot_v_anom.pdf", height = 9, width = 13)
+
+# Mixed Layer Depth (mld)
+plot_mld_anom <- som_node_visualise("mld_anom")
+# plot_mld_anom
+ggsave(plot_mld_anom, filename = "output/som_plot_mld_anom.pdf", height = 9, width = 13)
 ```
+
+Juggling back and forth between the SST anomaly photos with and without the Gulf of St Lawrence it first appears that they are very different, but this is mostly due to the top and bottom rows of nodes being flipped. The actual differences are much more muted and the patterns tend to hold. The patterns appear more crisp in the larger study extent (no Labrador). This is likely because the inclusion of the shallow GSL gives more power. to the atmospheric variables to compete with the Gulf Stream. For this reason we are going to proceed with the inclusion of the Gulf of St Lawrence.
 
 See the files in the `output/` folder in the GitHub repo for this project. They aren't all shown here because they take a bit too long to render. But the following shows what the SST anomaly nodes look like.
 
@@ -422,6 +396,26 @@ plot_sst_anom <- som_node_visualise("sst_anom")
 plot_sst_anom
 ```
 
-Up next in the [Figures](https://robwschlegel.github.io/MHWNWA/som.html) vignette we will show the results in more depth.
+Up next in the [Node summary vignette](https://robwschlegel.github.io/MHWNWA/node-summary.html) we will show the results in more depth. The code used to create the summary figures may be found in the [Figures vignette](https://robwschlegel.github.io/MHWNWA/node-summary.html). 
+
+## Musings
+
+### Possible mechanisms
+
+"Finally, Shearman and Lentz (2010) showed that century-long ocean warming trends observed along the entire northeast U.S. coast are not related to local atmospheric forcing but driven by atmospheric warming of source waters in the Labrador Sea and the Arctic, which are advected into the region." [@Richaud2016]
+
+Downwelling
+
+Net heatflux (OAFlux) doesn't line up perfectly with seasonal SST signal, but is very close, with heat flux tending to lead SST by 2 -- 3 months [@Richaud2016]. It is therefore likely one of the primary drivers of SST and should therefore be strongly considered when constructing SOMs.
+
+There is almost no seasonal cycle for slope waters in any of the regions [@Richaud2016].
+
+### More ideas
+
+It would be interesting to see if the SOM outputs differ in any meaningful ways when only data from the first half of the study time period are used compared against the second half.
+
+The output of the SOMs could likely be more meaningfully conveyed from the point of view of the regions. What I mean by this is to take the summary of the nodes, convey them into a table, and then use that table to inform a series of information bits that is focused around each region. Some sort of interactive visual may be useful for this. Showing the percentage that each region has in each node would be a good start. This would allow for a more meaningful further explanation for which drivers affect which regions during which seasons and over which years. 
+
+Once this summary is worked out it would then follow that the same analysis be run 1, 2, 3 etc. months in the past and see what the same information format provides w.r.t. a sort of predictive capacity. All of this can then be used to check other data products with a more focused lens in order to maximise the utility of the output.
 
 ## References

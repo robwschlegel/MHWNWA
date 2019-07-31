@@ -19,14 +19,14 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
 
 This vignette will walk through the steps needed to create mean 'whatever' states during all of the MHWs detected in the previous [SST preparation](https://robwschlegel.github.io/MHWNWA/sst-prep.html) vignette. These 'whatever' states are any of the abiotic variables that have a presence in the ocean heat budget equation and that have been deemed relevant w.r.t. forcing of extreme ocean surface temperatures.
 
-After first going through this entire process with NAPA model output it has become clear that this analysis should be run first with obs/reanaltsis data, and the NAPA model results may be compared against this as desired. To this end we will now use the following variables as found in the following data products:
+After first going through this entire process with the NAPA model output it become clear that this analysis should be run first with obs/reanalysis data, and the NAPA model results may be compared against this as desired. To this end we will now use the following variables as found in the following data products:
 
 - NOAA OISST: SST
-- GLORYS: Mixed layer depth, U & V current vectors (1m)
+- GLORYS: Mixed layer depth, U & V current vectors (~0.5m)
 - ERA 5: U & V wind vectors (10m),  air temperature (2m)
     - Net heat flux term: Latent & sensible heat flux, shortwave and longwave radiation
 
-ALl of these variables have a daily resolution from at least 1993 -- 2018. The spatial resolution varies from course (1 degree) OAFlux data to hi-res (1/12 degree) GLORYS data. The OISST, ERA 5, and GLORUS (1993 -- 2015) data are natively at 1/4 degree, though the corrdinates are slightly off between OISST and ERA 5 + GLORYS. The ERA5 data are also hourly, so will need to be binned into mean daily values. In order to trade between efficiency and accuracy we will be converting everything to the 1/4 degree grid of the OISST data. This will be accomplished with the newly published __`grainchanger`__ package.
+All of these variables have a daily resolution from at least 1993 -- 2018. The spatial resolution varies from a standard 1/4 degree data to everything except for the hi-res (1/12 degree) GLORYS data from 2016 -- 2018. The OISST, ERA 5, and GLORYS (1993 -- 2015) data are natively at 1/4 degree, though the coordinates are slightly off between OISST and ERA 5 + GLORYS. The ERA5 data are also hourly, so will need to be binned into mean daily values. In order to trade between efficiency and accuracy we will be converting everything to the 1/4 degree grid of the GLORYS/ERA 5 data.
 
 In order to compare the OISST dataset to the other 1/4 degree products the lat values for OISST will have 0.125 added to them, and the longitude values will have 0.125 subtracted from them. This is because the OISST coordinates give the centre value of each pixel, whereas the other coordinate system gives the top left corner (north-west corner).
 
@@ -36,9 +36,6 @@ library(jsonlite, lib.loc = "../R-packages/")
 library(tidyverse) # Base suite of functions
 library(tidync, lib.loc = "../R-packages/")
 library(lubridate) # For convenient date manipulation
-
-# Load functions required below
-# source("code/functions.R")
 
 # Set number of cores
 doMC::registerDoMC(cores = 50)
@@ -81,7 +78,7 @@ OISST_grid_study <- OISST_grid %>%
 # saveRDS(OISST_grid_study, "data/OISST_grid_study.Rda")
 ```
 
-## Variable datasets
+## Base datasets
 
 Rather than go about performing all of the calculations below on piecemeal bits of data, it should be possible to load the entire datasets for each variable into memory at once. So in this section we will create functions that load each of the variables for the different data products. We will then create and save these complete datasets for ease of use later on.
 
@@ -104,16 +101,7 @@ OISST_sst <- load_all_OISST(OISST_sst_files)
 # save
 saveRDS(OISST_sst, "data/OISST_sst.Rda")
 
-## Air temperature at 2 metres
-# Grab file location
-ERA5_t2m_files <- dir("../../oliver/data/ERA/ERA5/T2M", full.names = T, pattern = "ERA5")[15:40]
-# Aggregate data
-system.time(
-ERA5_t2m <- load_all_ERA5(ERA5_t2m_files)
-) # 2548 seconds
-ERA5_t2m$t2m <- round(ERA5_t2m$t2m, 2)
-# save
-saveRDS(ERA5_t2m, "data/ERA5_t2m.Rda")
+# The code used to create the rest of the base files may be seen in code/workflow.R
 ```
 
 ### Net heat flux
@@ -124,10 +112,9 @@ This is the one variable I was not able to source. The OAFlux product does have 
 # The code used to perform these steps may be seen in code/workflow.R
 ```
 
+## Climatologies
 
-## Variable climatologies
-
-In the data packets we need to create for the SOMs (see below) we will need to include anomaly values. In order to do this we need to first create daily climatology values for each variable for each pixel. In order to create a climatology of values we will need to load all of the files and then pixel-wise go about getting the seasonal (daily) climatologies. This will be done with the same function (`ts2clm()`) that is used for the MHW climatologies. One-by-one we will load an entire dataset (created above) into memory so that we can perform the necessary calculations. Hold onto your hats, this is going to be RAM heavy...
+In the data packets we need to create for the SOMs (see below) we will need to include anomaly values. In order to do this we need to first create daily climatology values for each variable for each pixel. In order to create a climatology of values we will need to load all of the files and then pixel-wise go about getting the seasonal (daily) climatologies. This will be done with the same function (`ts2clm()`) that is used for the MHW climatologies. One-by-one we will load an entire dataset (created above) into memory so that we can perform the necessary calculations. Hold on to your hats, this is going to be RAM heavy...
 
 ```{r variable-climatologies, eval=FALSE}
 # Load functions required below
@@ -154,7 +141,7 @@ saveRDS(OISST_sst_clim, "data/OISST_sst_clim.Rda")
 # The code used to create the other climatologies may be found in code/workflow.R
 ```
 
-## Variable anomalies
+## Anomalies
 
 The last step before we can begin creating our data packets is to now subtract our climatology data from our base data for each of the variables used in this study. We will then save this large anomaly cubes to allow for easy synoptic state creation.
 
@@ -181,121 +168,54 @@ saveRDS(OISST_sst_anom, "data/OISST_sst_anom.Rda")
 
 ## Synoptic states
 
-With the variables chosen from a few different data products, the next step is to create mean synoptic states for each variable during each of the MHWs detected in each region. In order to make that process go more smoothly we will first create time (date) and space (lon/lat) indexes for each data product/layer. Unfortunately this means that from here out the code in this vignette will only run on the server I am working from. The data output of this vignette will however be publicly available [here](https://github.com/robwschlegel/MHWNWA/tree/master/data), in as much as the data hosting limits for GitHub allows. For much larger datasets please contact me directly and we can make a plan.
+The next step is to create mean synoptic states for each variable during each of the MHWs detected in each region. To do this we simply load the combined anomaly dataset of all of our chosen variables and slice off only the bits we need during each of the observed MHWs. These slices are then meaned, pixel-wise, to create the synoptic states during each event.
 
-### Variable extractor
+One thing to note here is that during this process, before the slices are created, each pixel for the mixed layer depth anomaly is divided by the max value observed at that pixel, scaling these values to 1. This is done as the range of MLD can vary dramatically over the Labrador sea and we want to avoid this from influencing the results.
 
-We needed a list of the dates present in each file so that we can easily load only the NetCDF files we need to extract our desired variables. The dates we want are the range of dates during each of the MHWs detected in the [SST preparation](https://robwschlegel.github.io/MHWNWA/sst-prep.html) vignette. In the chunk below we will create a function that decides which files should have their variables loaded and a function that binds everything up into tidy data packets that our SOM can ingest.
+```{r data-packets, eval=FALSE}
+# Load anomalies and scale MLD
+system.time(
+  if(!exists("ALL_anom")) ALL_anom <- readRDS("data/ALL_anom.Rda") %>%
+    group_by(lon, lat) %>%
+    mutate(mld_anom = mld_anom/max(abs(mld_anom), na.rm = T)) %>%
+    ungroup()
+) # 99 seconds
 
-```{r extractor-funcs}
-# Function for extracting the desired variables from a given NetCDF file
-# testers...
-# file_name <- NAPA_files[1]
-# extract_all_var <- function(file_name){
-#   
-#   # Extract and join variables with a for loop
-#     # NB: This should be optimised...
-#   NAPA_vars_extracted <- data.frame()
-#   system.time(
-#   for(i in 1:length(NAPA_vars$name)){
-#     extract_one <- extract_one_var(NAPA_vars$name[i], file_name = file_name)
-#     if(nrow(NAPA_vars_extracted) == 0){
-#       NAPA_vars_extracted <- rbind(extract_one, NAPA_vars_extracted)
-#     } else {
-#       NAPA_vars_extracted <- left_join(NAPA_vars_extracted, extract_one, 
-#                                        by = c("lon_index", "lat_index", "lon", "lat", "bathy", "t"))
-#     }
-#   }
-#   ) # 18 seconds for one
-#   NAPA_vars_extracted <- dplyr::select(NAPA_vars_extracted,
-#                                        lon_index, lat_index, lon, lat, t, bathy, everything())
-#   
-#   # Exit
-#   return(NAPA_vars_extracted)
-# }
-
-# Function for extracting variables from as many files as a MHW event requires
-# testers...
-# event_sub <- NAPA_MHW_event[23,]
+# Function for creating packets
 data_packet <- function(event_sub){
-  
-  # Create date and file index for loading
-  date_idx <- seq(event_sub$date_start, event_sub$date_end, by = "day")
-  file_idx <- filter(NAPA_files_dates, date %in% date_idx) %>% 
-    mutate(file = as.character(file)) %>% 
-    select(file) %>% 
-    unique()
-  
-  # Load required base data
-  # system.time(
-  packet_base <- plyr::ldply(file_idx$file, extract_all_var) %>% 
-    filter(t %in% date_idx) %>% 
-    mutate(doy = format(t, "%m-%d"))
-  # ) # 125 seconds for seven files
-  
-  # Join to climatologies
-  packet_join <- left_join(packet_base, NAPA_clim_vars, by = c("lon", "lat", "doy"))
-  
-  # Create anomaly values and remove clim columns
-  packet_anom <- packet_join %>% 
-    mutate(emp_oce_anom = emp_oce - emp_oce_clim,
-           fmmflx_anom = fmmflx - fmmflx_clim,
-           mldkz5_anom = mldkz5 - mldkz5_clim,
-           mldr10_1_anom = mldr10_1 - mldr10_1_clim,
-           qemp_oce_anom = qemp_oce - qemp_oce_clim,
-           qns_anom = qns - qns_clim,
-           qt_anom = qt - qt_clim,
-           ssh_anom = ssh - ssh_clim,
-           sss_anom = sss - sss_clim,
-           sst_anom = sst - sst_clim,
-           taum_anom = taum - taum_clim) %>% 
-    dplyr::select(lon, lat, doy, emp_oce:taum_anom, 
-                  -c(colnames(NAPA_clim_vars)[-c(1:3)]))
-    # dplyr::select(-c(colnames(packet_base)[-c(3,4,ncol(packet_base))]), 
-    #               -c(colnames(NAPA_clim_vars)[-c(1:3)]))
-  
+
+  # Filter base anomally range
+  packet_base <- ALL_anom %>%
+    filter(t >= event_sub$date_start, t <= event_sub$date_end)
+
   # Create mean synoptic values
-  packet_mean <- packet_anom %>% 
-    select(-doy) %>% 
-    # NB: The lowest pixels are a forcing edge and shouldn't be included
-      # We can catch these out by filtering pixels whose SST is exactly 0
-    filter(sst != 0) %>% 
-    group_by(lon, lat) %>% 
-    summarise_all(mean, na.rm = T) %>% 
-    arrange(lon, lat) %>% 
-    ungroup() %>% 
-    nest(.key = "synoptic")
-  
+  packet_mean <- packet_base %>%
+    # select(-doy) %>%
+    group_by(lon, lat) %>%
+    summarise_all(mean, na.rm = T) %>%
+    arrange(lon, lat) %>%
+    ungroup()
+  packet_mean[is.na(packet_mean)] <- NA
+  packet_mean <- nest(packet_mean, .key = "synoptic")
+
   # Combine results with MHW dataframe
   packet_res <- cbind(event_sub, packet_mean)
-  
-  # Test visuals
-  # ggplot(packet_mean, aes(x = lon, y = lat)) +
-  #   geom_point(aes(colour = sst_anom)) +
-  #   scale_colour_gradient2(low = "blue", high = "red") +
-  #   coord_cartesian(xlim = NWA_corners[1:2],
-  #                   ylim = NWA_corners[3:4])
-  
+
   # Exit
   return(packet_res)
 }
-```
 
-With our functions sorted, it is now time to create our data packets.
-
-```{r synoptic-states, eval=FALSE}
 # Set number of cores
-  # NB: Was set to 25 as someone else was using the server at the time
-doMC::registerDoMC(cores = 25)
+doMC::registerDoMC(cores = 50)
 
 # Create one big packet
-# system.time(
-synoptic_states <- plyr::ddply(NAPA_MHW_event, c("region", "sub_region", "event_no"), data_packet, .parallel = T)
-# ) # 82 seconds for first 2,6125 seconds (102 minutes) for all
+system.time(
+synoptic_states <- plyr::ddply(OISST_MHW_event, c("region", "event_no"), data_packet, .parallel = T)
+) # 3 seconds for first event, 50 for all events
 
 # Save
-# saveRDS(synoptic_states, "data/synoptic_states.Rda")
+saveRDS(synoptic_states, "data/synoptic_states.Rda")
 ```
 
-With all of our synoptic snapshots for our chosen variables created it is now time to feed them to the [Self-organising map (SOM) analysis](https://robwschlegel.github.io/MHWNWA/som.html).
+With all of our mean synoptic states created it is now time to feed them to the [Self-organising map (SOM) analysis](https://robwschlegel.github.io/MHWNWA/som.html).
 
