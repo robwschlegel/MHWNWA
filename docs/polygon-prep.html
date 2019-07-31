@@ -11,7 +11,7 @@
 
 <meta name="author" content="Robert Schlegel" />
 
-<meta name="date" content="2019-05-23" />
+<meta name="date" content="2019-07-24" />
 
 <title>Polygon preparation</title>
 
@@ -303,9 +303,6 @@ div.tocify {
       <a href="var-prep.html">Variable preparation</a>
     </li>
     <li>
-      <a href="vec-prep.html">Vector preparation</a>
-    </li>
-    <li>
       <a href="som.html">SOM analysis</a>
     </li>
     <li>
@@ -346,12 +343,12 @@ div.section {
 
 <h1 class="title toc-ignore">Polygon preparation</h1>
 <h4 class="author"><em>Robert Schlegel</em></h4>
-<h4 class="date"><em>2019-05-23</em></h4>
+<h4 class="date"><em>2019-07-24</em></h4>
 
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-07-24</p>
+<p><strong>Last updated:</strong> 2019-07-31</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -380,12 +377,38 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/bcee69836e357b19e2ef396a0de9b4964bd22f07" target="_blank">bcee698</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/498909bd3a0e434b3fd5f2cf99b0dfa6622a15f2" target="_blank">498909b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    data/ALL_anom.Rda
+    Ignored:    data/ERA5_lhf.Rda
+    Ignored:    data/ERA5_lwr.Rda
+    Ignored:    data/ERA5_qnet.Rda
+    Ignored:    data/ERA5_qnet_anom.Rda
+    Ignored:    data/ERA5_qnet_clim.Rda
+    Ignored:    data/ERA5_shf.Rda
+    Ignored:    data/ERA5_swr.Rda
+    Ignored:    data/ERA5_t2m.Rda
+    Ignored:    data/ERA5_t2m_anom.Rda
+    Ignored:    data/ERA5_t2m_clim.Rda
+    Ignored:    data/ERA5_u.Rda
+    Ignored:    data/ERA5_u_anom.Rda
+    Ignored:    data/ERA5_u_clim.Rda
+    Ignored:    data/ERA5_v.Rda
+    Ignored:    data/ERA5_v_anom.Rda
+    Ignored:    data/ERA5_v_clim.Rda
+    Ignored:    data/GLORYS_mld.Rda
+    Ignored:    data/GLORYS_mld_anom.Rda
+    Ignored:    data/GLORYS_mld_clim.Rda
+    Ignored:    data/GLORYS_u.Rda
+    Ignored:    data/GLORYS_u_anom.Rda
+    Ignored:    data/GLORYS_u_clim.Rda
+    Ignored:    data/GLORYS_v.Rda
+    Ignored:    data/GLORYS_v_anom.Rda
+    Ignored:    data/GLORYS_v_clim.Rda
     Ignored:    data/NAPA_clim_U.Rda
     Ignored:    data/NAPA_clim_V.Rda
     Ignored:    data/NAPA_clim_W.Rda
@@ -407,22 +430,38 @@ Ignored files:
     Ignored:    data/NAPA_clim_vars.Rda
     Ignored:    data/NAPA_clim_vecs.Rda
     Ignored:    data/OAFlux.Rda
+    Ignored:    data/OISST_sst.Rda
+    Ignored:    data/OISST_sst_anom.Rda
+    Ignored:    data/OISST_sst_clim.Rda
     Ignored:    data/node_mean_all_anom.Rda
+    Ignored:    data/packet_all.Rda
     Ignored:    data/packet_all_anom.Rda
+    Ignored:    data/packet_nolab.Rda
+    Ignored:    data/packet_nolabgsl.Rda
     Ignored:    data/som_all_anom.Rda
+    Ignored:    data/som_nolab.Rda
+    Ignored:    data/som_nolabgsl.Rda
     Ignored:    data/synoptic_states.Rda
     Ignored:    data/synoptic_vec_states.Rda
 
 Untracked files:
-    Untracked:  data/OISST_grid.Rda
-    Untracked:  data/OISST_region.Rda
-    Untracked:  data/OISST_region_MHW.Rda
+    Untracked:  data/node_mean_nolab.Rda
+    Untracked:  data/node_mean_nolabgsl.Rda
+    Untracked:  output/som_plot_mld_anom.pdf
+    Untracked:  output/som_plot_qnet_anom.pdf
+    Untracked:  output/som_plot_sst_anom_nogsl.pdf
+    Untracked:  output/som_plot_t2m_anom.pdf
+    Untracked:  output/som_plot_u10_anom.pdf
+    Untracked:  output/som_plot_u_anom.pdf
+    Untracked:  output/som_plot_v10_anom.pdf
+    Untracked:  output/som_plot_v_anom.pdf
 
 Unstaged changes:
-    Modified:   code/download.R
     Modified:   code/functions.R
     Modified:   code/workflow.R
-    Modified:   data/NWA_corners.Rda
+    Modified:   data/.gitignore
+    Modified:   output/som_plot_sst_anom.pdf
+    Deleted:    output/som_plot_uoce_anom.pdf
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -453,6 +492,74 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/498909bd3a0e434b3fd5f2cf99b0dfa6622a15f2/analysis/polygon-prep.Rmd" target="_blank">498909b</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-31
+</td>
+<td style="text-align:left;">
+Re-publish entire site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/51ed68129cb0c4bd1a7b96e371286abb5c5c5c9e/analysis/polygon-prep.Rmd" target="_blank">51ed681</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-25
+</td>
+<td style="text-align:left;">
+Completed anoms for OISST
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/0b6f065fff7bcf1f69b59f83ad7f5383649a54b0/analysis/polygon-prep.Rmd" target="_blank">0b6f065</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-25
+</td>
+<td style="text-align:left;">
+Push before beginning to write code for loading entire obs/reanalysis products into memory for clim calculations
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/7792f2489ae2ec1a2b8ab79e3bd63e280c67f3e6/docs/polygon-prep.html" target="_blank">7792f24</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-24
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -811,7 +918,7 @@ library(R.matlab) # For dealing with MATLAB files
 </div>
 <div id="coastal-region-polygons" class="section level2">
 <h2>Coastal region polygons</h2>
-<p>The first step in this analysis is to broadly define the coastal regions based on previous research into thermally relevant boundaries. We have chosen to use a paper by <span class="citation">Richaud et al. (2016)</span> to do this (<a href="https://www.sciencedirect.com/science/article/pii/S0278434316303181#f0010" class="uri">https://www.sciencedirect.com/science/article/pii/S0278434316303181#f0010</a>). Being the kind-hearted man that he is, Benjamin forwarded us the polygons [<span class="citation">Richaud et al. (2016)</span>; Figure 2] from this work as a MATLAB file. In order to use this here we must first open the file and convert it to an R format. It should be noted that these areas were designed to not encompass depths deeper than 600 m as the investigators were itnerested in characterising the climatolgoies for the shelf and upper slope regions of the north east coast of North America.</p>
+<p>The first step in this analysis is to broadly define the coastal regions based on previous research into thermally relevant boundaries. We have chosen to use a paper by <span class="citation">Richaud et al. (2016)</span> to do this (<a href="https://www.sciencedirect.com/science/article/pii/S0278434316303181#f0010" class="uri">https://www.sciencedirect.com/science/article/pii/S0278434316303181#f0010</a>). Being the kind-hearted man that he is, Benjamin forwarded us the polygons [<span class="citation">Richaud et al. (2016)</span>; Figure 2] from this work as a MATLAB file. In order to use this here we must first open the file and convert it to an R format. It should be noted that these areas were designed to not encompass depths deeper than 600 m as the investigators were interested in characterising the climatologies for the shelf and upper slope regions of the north east coast of North America.</p>
 <pre class="r"><code># Load the file
 NWA_polygons &lt;- readMat(&quot;data/boundaries.mat&quot;)
 
@@ -930,12 +1037,12 @@ robwschlegel
 </table>
 </details>
 <p>The region abbreviations are: “gm” for Gulf of Maine, “gls” for Gulf of St. Lawrence, “ls” for Labrador Shelf, “mab” for Mid-Atlantic Bight, “nfs” for Newfoundland Shelf and “ss” for Scotian Shelf.</p>
-<p>Before we move on, we’ll do a bit of house keeping to establish a consistent study area for this project based on our polygons. We’ll simply extend the study area by 2 degrees of longitude and latitude from the furthest edges of the polygons, as seen in the figure above. This will encompass broad synoptic scale variables that may be driving MHWs in our study regions, but should not be so broad as to begin to account for teleconnections, which are currently beyond the scope of this project.</p>
+<p>Before we move on, we’ll do a bit of house keeping to establish a consistent study area for this project based on our polygons. We’ll simply extend the study area by the nearest 2 whole degrees of longitude and latitude from the furthest edges of the polygons, as seen in the figure above. This will encompass broad synoptic scale variables that may be driving MHWs in our study regions, but should not be so broad as to begin to account for teleconnections, which are currently beyond the scope of this project.</p>
 <pre class="r"><code># Set the max/min lon/at values
-lon_min &lt;- round(min(NWA_coords$lon)-2, 2)
-lon_max &lt;- round(max(NWA_coords$lon)+2, 2)
-lat_min &lt;- round(min(NWA_coords$lat)-2, 2)
-lat_max &lt;- round(max(NWA_coords$lat)+2, 2)
+lon_min &lt;- round(min(NWA_coords$lon)-2)
+lon_max &lt;- round(max(NWA_coords$lon)+2)
+lat_min &lt;- round(min(NWA_coords$lat)-2)
+lat_max &lt;- round(max(NWA_coords$lat)+2)
 
 # Combine and save
 NWA_corners &lt;- c(lon_min, lon_max, lat_min, lat_max)
@@ -1101,102 +1208,6 @@ robwschlegel
 </table>
 </details>
 <p>Everything is looking good, but we may want to divide the Gulf of Maine (gm) into two polygons as well. This would make the Bay of Fundy in it’s own region. For now however we will move on to the next step, which is dividing the current polygons by bathymetry.</p>
-<!-- ## Bathymetry polygons -->
-<!-- These regions are an excellent start, but because the aim of this research project is to determine the primary drivers of MHWs in the Northwest Atlantic we want to subset the regions not only by their thermal characteristics, but also by their geophysical characteristics, which in this instance is most immediately available as bathymetry. The rationale for this is that surface forcing as a driver of anomalously warm seawater is likely to be more prevalent in shallow waters than in shelf waters or deeper. To this end we will divide the regions into three sub-regions each: 0 -- 50 m depth, 51 -- 200 m depth, 201+ m depth.  -->
-<!-- <!-- Unless otherwise specified we will not be looking at waters further than the continental shelf. This is because the usefulness of this work will largely be constrained by it's applications to coastal ecosystems and fisheries. Therefore we are less interested in understanding the drivers of synoptic scale and greater open ocean events. -->
-<!-- ### Downloading data -->
-<!-- Before we can divide up our polygons by bathymetry, we must first download said bathymetry data. We will use here the NOAA data as it is (to my knowledge) the most convenient bathymetry data available directly through R. -->
-<!-- ```{r bathy-download, eval=FALSE} -->
-<!-- # Donwload NOAA bathy data at highest available resolution -->
-<!-- NWA_bathy_hires <- as.xyz(getNOAA.bathy(lon1 = NWA_corners[1]+9, lon2 = NWA_corners[2]-9, -->
-<!--                                         lat1 = NWA_corners[3]+9, lat2 = NWA_corners[4]-9, resolution = 1)) -->
-<!-- colnames(NWA_bathy_hires) <- c("lon", "lat", "depth") -->
-<!-- NWA_bathy_hires <- NWA_bathy_hires %>%  -->
-<!--   filter(depth <= 0) %>%  -->
-<!--   mutate(lon = round(lon, 4), -->
-<!--          lat = round(lat, 4)) -->
-<!-- # saveRDS(NWA_bathy_hires, file = "data/NWA_bathy_hires.Rda") -->
-<!-- # Donwload NOAA bathy data at a courser resolution -->
-<!-- NWA_bathy_lowres <- as.xyz(getNOAA.bathy(lon1 = NWA_corners[1]+9, lon2 = NWA_corners[2]-9, -->
-<!--                                          lat1 = NWA_corners[3]+9, lat2 = NWA_corners[4]-9, resolution = 6)) -->
-<!-- colnames(NWA_bathy_lowres) <- c("lon", "lat", "depth") -->
-<!-- NWA_bathy_lowres <- NWA_bathy_lowres %>%  -->
-<!--   filter(depth <= 0) %>%  -->
-<!--   mutate(lon = round(lon, 4), -->
-<!--          lat = round(lat, 4)) -->
-<!-- # saveRDS(NWA_bathy_lowres, file = "data/NWA_bathy_lowres.Rda") -->
-<!-- ``` -->
-<!-- With our high res bathymetry data downloaded we will now go about finding the 50 and 200 metre isobaths. These lines will be used to define the edges of our sub-regions. The naming conventions we will use will be -->
-<!-- ```{r isobath-hires-plot} -->
-<!-- # Load hires bathymetry data -->
-<!-- NWA_bathy_hires <- readRDS("data/NWA_bathy_hires.Rda") -->
-<!-- # Plot to see what we've got -->
-<!-- bathy_hires_plot <- ggplot(NWA_coords_cabot, aes(x = lon, y = lat)) + -->
-<!--   geom_polygon(data = map_base, aes(group = group), show.legend = F) + -->
-<!--   geom_polygon(aes(group = region, fill = region, colour = region), alpha = 0.2) + -->
-<!--   geom_contour(data = NWA_bathy_hires, aes(z = depth), -->
-<!--                breaks = c(-50),  size = c(0.3),  colour = "grey70") + -->
-<!--     geom_contour(data = NWA_bathy_hires, aes(z = depth), -->
-<!--                breaks = c(-200),  size = c(0.3),  colour = "grey30") + -->
-<!--   coord_cartesian(xlim = NWA_corners[1:2], -->
-<!--                   ylim = NWA_corners[3:4]) + -->
-<!--   labs(x = NULL, y = NULL) -->
-<!-- # Visualise -->
-<!-- bathy_hires_plot -->
-<!-- ``` -->
-<!-- The resolution on the figure above is fantastic, but perhaps a bit more than what we need as the desire is to create functional polygons for dividing our regions. The level of detail present in the figure above will likely lead to issues later on. Let's look at the lowres bathymetry data and see if that works better. -->
-<!-- ```{r isobath-lowres-plot} -->
-<!-- # Load hires bathymetry data -->
-<!-- NWA_bathy_lowres <- readRDS("data/NWA_bathy_lowres.Rda") -->
-<!-- # Plot to see what we've got -->
-<!-- bathy_lowres_plot <- ggplot(NWA_coords_cabot, aes(x = lon, y = lat)) + -->
-<!--   geom_polygon(data = map_base, aes(group = group), show.legend = F) + -->
-<!--   geom_polygon(aes(group = region, fill = region, colour = region), alpha = 0.2) + -->
-<!--   geom_contour(data = NWA_bathy_lowres, aes(z = depth), -->
-<!--                breaks = c(-50),  size = c(0.3),  colour = "grey70") + -->
-<!--   geom_contour(data = NWA_bathy_lowres, aes(z = depth), -->
-<!--                breaks = c(-200),  size = c(0.3),  colour = "grey30") + -->
-<!--   coord_cartesian(xlim = NWA_corners[1:2], -->
-<!--                   ylim = NWA_corners[3:4]) + -->
-<!--   labs(x = NULL, y = NULL) -->
-<!-- # Visualise -->
-<!-- bathy_lowres_plot -->
-<!-- ``` -->
-<!-- The above plot shows the NOAA bathymetry data downloaded with a resolution of 6. I tried these data at all resolutions from 2 -- 8 and visually this looks to be the best balance between removing unnecessary convolutions without loosing the broader features. -->
-<!-- ### Isobath contour based polygons -->
-<!-- With a decent resolution picked out for our bathymetry data we now nee to create polygons from the desired isobaths. These will then be used as custom bounding boxes with which we will filter and combine the SST pixels for the next vignette. -->
-<!-- ```{r isobath-1} -->
-<!-- # Spread bathy dataframe to matrix to play nice with shapefiles -->
-<!-- NWA_bathy_matrix <- NWA_bathy_lowres %>%  -->
-<!--   mutate(depth = round(depth, -1)) %>%  -->
-<!--   reshape2::acast( lon~lat, value.var = "depth") -->
-<!-- # Generate contours -->
-<!-- cont <- contourLines(x = as.numeric(row.names(NWA_bathy_matrix)), y = as.numeric(colnames(NWA_bathy_matrix)),  -->
-<!--                      z = NWA_bathy_matrix, levels = c(-50, -200)) -->
-<!-- cont_lines <- ContourLines2SLDF(cont, proj4string = CRS("+proj=longlat +datum=WGS84")) # create SpatialLines DF -->
-<!-- # Have a look -->
-<!-- plot(cont_lines) -->
-<!-- ``` -->
-<!-- With the isobath contours now convert to a `spatial` class object we will need to do the same for our study area polygons so they can play nice with one another. -->
-<!-- ```{r isobath-2} -->
-<!-- # First convert the dataframe of different areas to a list -->
-<!-- poly_list <- split(NWA_coords_cabot, NWA_coords_cabot$region) -->
-<!-- # We then only want lon/lat in the list, not the names -->
-<!-- poly_list <- lapply(poly_list, function(x) { x["region"] <- NULL; x }) -->
-<!-- # Convert coords to polygon type -->
-<!-- poly_poly <- sapply(poly_list, Polygon) -->
-<!-- # Add id variables back in -->
-<!-- poly_poly <- lapply(seq_along(poly_poly), function(i) Polygons(list(poly_poly[[i]]),  -->
-<!--                                             ID = names(poly_list)[i])) -->
-<!-- # Create SpatialPolygons object -->
-<!-- spatial_poly <- SpatialPolygons(poly_poly, proj4string = CRS("+proj=longlat +datum=WGS84")) -->
-<!-- # Clip the contour lines to the study area polygons -->
-<!-- spatial_poly_lines <- gIntersection(cont_lines, spatial_poly) # clip the contours to subarea0 -->
-<!-- # Visualise -->
-<!-- plot(spatial_poly) -->
-<!-- lines(spatial_poly_lines) -->
-<!-- ``` -->
-<!-- After going through all of this shape file nonsense it dawned on me that I could much more easily just have used the bathymetry data already present in the NAPA model and then clumped the SST pixels based on which of the depth categories they fall within. -->
 <p>We will now go about creating SST time series for each of the regions. This work is continued in the <a href="https://robwschlegel.github.io/MHWNWA/sst-prep.html">SST preparation</a> vignette.</p>
 </div>
 </div>

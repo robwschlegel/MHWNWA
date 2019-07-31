@@ -11,7 +11,7 @@
 
 <meta name="author" content="Robert Schlegel" />
 
-<meta name="date" content="2019-05-23" />
+<meta name="date" content="2019-07-24" />
 
 <title>SST preparation</title>
 
@@ -303,9 +303,6 @@ div.tocify {
       <a href="var-prep.html">Variable preparation</a>
     </li>
     <li>
-      <a href="vec-prep.html">Vector preparation</a>
-    </li>
-    <li>
       <a href="som.html">SOM analysis</a>
     </li>
     <li>
@@ -346,12 +343,12 @@ div.section {
 
 <h1 class="title toc-ignore">SST preparation</h1>
 <h4 class="author"><em>Robert Schlegel</em></h4>
-<h4 class="date"><em>2019-05-23</em></h4>
+<h4 class="date"><em>2019-07-24</em></h4>
 
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-07-24</p>
+<p><strong>Last updated:</strong> 2019-07-31</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -380,12 +377,38 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/bcee69836e357b19e2ef396a0de9b4964bd22f07" target="_blank">bcee698</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/498909bd3a0e434b3fd5f2cf99b0dfa6622a15f2" target="_blank">498909b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    data/ALL_anom.Rda
+    Ignored:    data/ERA5_lhf.Rda
+    Ignored:    data/ERA5_lwr.Rda
+    Ignored:    data/ERA5_qnet.Rda
+    Ignored:    data/ERA5_qnet_anom.Rda
+    Ignored:    data/ERA5_qnet_clim.Rda
+    Ignored:    data/ERA5_shf.Rda
+    Ignored:    data/ERA5_swr.Rda
+    Ignored:    data/ERA5_t2m.Rda
+    Ignored:    data/ERA5_t2m_anom.Rda
+    Ignored:    data/ERA5_t2m_clim.Rda
+    Ignored:    data/ERA5_u.Rda
+    Ignored:    data/ERA5_u_anom.Rda
+    Ignored:    data/ERA5_u_clim.Rda
+    Ignored:    data/ERA5_v.Rda
+    Ignored:    data/ERA5_v_anom.Rda
+    Ignored:    data/ERA5_v_clim.Rda
+    Ignored:    data/GLORYS_mld.Rda
+    Ignored:    data/GLORYS_mld_anom.Rda
+    Ignored:    data/GLORYS_mld_clim.Rda
+    Ignored:    data/GLORYS_u.Rda
+    Ignored:    data/GLORYS_u_anom.Rda
+    Ignored:    data/GLORYS_u_clim.Rda
+    Ignored:    data/GLORYS_v.Rda
+    Ignored:    data/GLORYS_v_anom.Rda
+    Ignored:    data/GLORYS_v_clim.Rda
     Ignored:    data/NAPA_clim_U.Rda
     Ignored:    data/NAPA_clim_V.Rda
     Ignored:    data/NAPA_clim_W.Rda
@@ -407,22 +430,38 @@ Ignored files:
     Ignored:    data/NAPA_clim_vars.Rda
     Ignored:    data/NAPA_clim_vecs.Rda
     Ignored:    data/OAFlux.Rda
+    Ignored:    data/OISST_sst.Rda
+    Ignored:    data/OISST_sst_anom.Rda
+    Ignored:    data/OISST_sst_clim.Rda
     Ignored:    data/node_mean_all_anom.Rda
+    Ignored:    data/packet_all.Rda
     Ignored:    data/packet_all_anom.Rda
+    Ignored:    data/packet_nolab.Rda
+    Ignored:    data/packet_nolabgsl.Rda
     Ignored:    data/som_all_anom.Rda
+    Ignored:    data/som_nolab.Rda
+    Ignored:    data/som_nolabgsl.Rda
     Ignored:    data/synoptic_states.Rda
     Ignored:    data/synoptic_vec_states.Rda
 
 Untracked files:
-    Untracked:  data/OISST_grid.Rda
-    Untracked:  data/OISST_region.Rda
-    Untracked:  data/OISST_region_MHW.Rda
+    Untracked:  data/node_mean_nolab.Rda
+    Untracked:  data/node_mean_nolabgsl.Rda
+    Untracked:  output/som_plot_mld_anom.pdf
+    Untracked:  output/som_plot_qnet_anom.pdf
+    Untracked:  output/som_plot_sst_anom_nogsl.pdf
+    Untracked:  output/som_plot_t2m_anom.pdf
+    Untracked:  output/som_plot_u10_anom.pdf
+    Untracked:  output/som_plot_u_anom.pdf
+    Untracked:  output/som_plot_v10_anom.pdf
+    Untracked:  output/som_plot_v_anom.pdf
 
 Unstaged changes:
-    Modified:   code/download.R
     Modified:   code/functions.R
     Modified:   code/workflow.R
-    Modified:   data/NWA_corners.Rda
+    Modified:   data/.gitignore
+    Modified:   output/som_plot_sst_anom.pdf
+    Deleted:    output/som_plot_uoce_anom.pdf
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -453,6 +492,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/51ed68129cb0c4bd1a7b96e371286abb5c5c5c9e/analysis/sst-prep.Rmd" target="_blank">51ed681</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-25
+</td>
+<td style="text-align:left;">
+Completed anoms for OISST
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/0b6f065fff7bcf1f69b59f83ad7f5383649a54b0/analysis/sst-prep.Rmd" target="_blank">0b6f065</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-25
+</td>
+<td style="text-align:left;">
+Push before beginning to write code for loading entire obs/reanalysis products into memory for clim calculations
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/7792f2489ae2ec1a2b8ab79e3bd63e280c67f3e6/docs/sst-prep.html" target="_blank">7792f24</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-24
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -817,7 +907,7 @@ Updating work done on the polygon prep vignette.
 <hr />
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>Building on the work performed in the <a href="https://robwschlegel.github.io/MHWNWA/polygon-prep.html">Polygon preparation</a> vignette, we will now create grouped SST time series for the regions in our study area. We will do this by finding which NOAA OISST pixels fall within each of the region polygons.</p>
+<p>Building on the work performed in the <a href="https://robwschlegel.github.io/MHWNWA/polygon-prep.html">Polygon preparation</a> vignette, we will now create grouped SST time series for the regions in our study area. We will do this by finding which NOAA OISST pixels fall within each of the region polygons. Also note that throughout this vignette (and this entire project) we will use the climatology period of 1993 – 2018 as this is the shortest time limiting us by the data products used for the various abiotic variables needed for the SOM.</p>
 <pre class="r"><code># Packages used in this vignette
 library(jsonlite, lib.loc = &quot;../R-packages/&quot;)
 library(tidyverse) # Base suite of functions
@@ -848,56 +938,9 @@ map_base &lt;- ggplot2::fortify(maps::map(fill = TRUE, col = &quot;grey80&quot;,
   mutate(group = ifelse(lon &gt; 180, group+9999, group),
          lon = ifelse(lon &gt; 180, lon-360, lon)) %&gt;% 
   select(-region, -subregion)</code></pre>
-<!-- Before we access the SST data from the NAPA (3-Oceans) model, let's load all of the polygons and bathymetry data we will need to create our grouped time series. -->
 </div>
 <div id="pixel-prep" class="section level2">
 <h2>Pixel prep</h2>
-<!-- ### NAPA bathymetry -->
-<!-- We will now extract the bathymetry data from the NAPA model to use as our guide for how to assign depth values to the different SST pixels. -->
-<!-- ```{r NAPA-bathy, eval=FALSE} -->
-<!-- # Open bathymetry NetCDF file -->
-<!-- nc_bathy <- nc_open("../../data/NAPA025/mesh_grid/bathy_creg025_extended_5m.nc") -->
-<!-- # Extract and combine lon/lat/bathy -->
-<!-- lon <- as.data.frame(ncvar_get(nc_bathy, varid = "nav_lon")) %>%  -->
-<!--   setNames(., as.numeric(nc_bathy$dim$y$vals)) %>% -->
-<!--   mutate(lon = as.numeric(nc_bathy$dim$x$vals)) %>%  -->
-<!--   gather(-lon, key = lat, value = nav_lon) %>%  -->
-<!--   mutate(lat = as.numeric(lat)) -->
-<!-- lat <- as.data.frame(ncvar_get(nc_bathy, varid = "nav_lat")) %>%  -->
-<!--   setNames(., as.numeric(nc_bathy$dim$y$vals)) %>% -->
-<!--   mutate(lon = as.numeric(nc_bathy$dim$x$vals)) %>%  -->
-<!--   gather(-lon, key = lat, value = nav_lat) %>%  -->
-<!--   mutate(lat = as.numeric(lat))  -->
-<!-- bathy <- as.data.frame(ncvar_get(nc_bathy, varid = "Bathymetry")) %>%  -->
-<!--   mutate(lon = as.numeric(nc$dim$x$vals)) %>%  -->
-<!--   gather(-lon, key = lat, value = bathy) %>%  -->
-<!--   mutate(lat = rep(as.numeric(nc_bathy$dim$y$vals), each = 528), -->
-<!--          bathy = ifelse(bathy == 0, NA, bathy), -->
-<!--          bathy = round(bathy, 2)) %>% -->
-<!--   na.omit() %>%  -->
-<!--   left_join(lon, by = c("lon", "lat")) %>%  -->
-<!--   left_join(lat, by = c("lon", "lat")) %>%  -->
-<!--   dplyr::rename(lon_index = lon, lat_index = lat, -->
-<!--                 lon = nav_lon, lat = nav_lat) %>%  -->
-<!--   mutate(lon = round(lon, 4), -->
-<!--          lat = round(lat, 4)) -->
-<!-- nc_close(nc_bathy) -->
-<!-- # Save bathymetry -->
-<!-- # saveRDS(bathy, "data/NAPA_bathy.Rda") -->
-<!-- # Save base lon/lat values -->
-<!-- NAPA_coords <- left_join(lon, lat, by = c("lon", "lat")) %>%  -->
-<!--     dplyr::rename(lon_index = lon, lat_index = lat, -->
-<!--                 lon = nav_lon, lat = nav_lat) %>%  -->
-<!--   mutate(lon = round(lon, 4), -->
-<!--          lat = round(lat, 4)) -->
-<!-- # saveRDS(NAPA_coords, "data/NAPA_coords.Rda") -->
-<!-- # Save bathymetry subsetted to study area -->
-<!--   # This functions as an effective mask for water only pixels -->
-<!-- # Clean up -->
-<!-- rm(nc_bathy, bathy, lon, lat) -->
-<!-- ``` -->
-<!-- ### Assign pixels to regions -->
-<!-- With the depths for the model pixels worked out we may now assign them within one of the seven regions. -->
 <p>Up first we take the lon/lat grid from the 1/4 degree daily NOAA OISST product and find which points fall within each region. We will save this information to allow us to then easily pull out the desired pixels from the cube of OISST data.</p>
 <pre class="r"><code># Load NAPA bathymetry
 # NAPA_bathy &lt;- readRDS(&quot;data/NAPA_bathy.Rda&quot;)# %&gt;% 
@@ -908,17 +951,18 @@ colnames(OISST_grid) &lt;- c(&quot;lon&quot;, &quot;lat&quot;)
 # saveRDS(OISST_grid, &quot;data/OISST_grid.Rda&quot;)
 
 # Trim down OISST grid for faster processing
-OISST_grid_trim &lt;- OISST_grid %&gt;% 
+OISST_grid_region &lt;- OISST_grid %&gt;% 
   filter(lon &gt;= min(NWA_coords$lon),
          lon &lt;= max(NWA_coords$lon),
          lat &gt;= min(NWA_coords$lat),
          lat &lt;= max(NWA_coords$lat))
+# saveRDS(OISST_grid_region, &quot;data/OISST_grid_region.Rda&quot;)
 
 # Function for finding and cleaning up points within a given region polygon
 pnts_in_region &lt;- function(region_in){
   region_sub &lt;- NWA_coords %&gt;% 
     filter(region == region_in)
-  coords_in &lt;- pnt.in.poly(pnts = OISST_grid_trim[1:2], poly.pnts = region_sub[2:3]) %&gt;% 
+  coords_in &lt;- pnt.in.poly(pnts = OISST_grid_region[1:2], poly.pnts = region_sub[2:3]) %&gt;% 
     filter(pip == 1) %&gt;% 
     dplyr::select(-pip) %&gt;% 
     mutate(region = region_in)
@@ -927,6 +971,7 @@ pnts_in_region &lt;- function(region_in){
 
 # Run the function
 NWA_info &lt;- plyr::ldply(unique(NWA_coords$region), pnts_in_region)
+# saveRDS(NWA_info, &quot;data/NWA_info.Rda&quot;)
 
 # Visualise to ensure success
 ggplot(NWA_coords, aes(x = lon, y = lat)) +
@@ -954,6 +999,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/7792f2489ae2ec1a2b8ab79e3bd63e280c67f3e6/docs/figure/sst-prep.Rmd/pixel-regions-1.png" target="_blank">7792f24</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-24
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/robwschlegel/MHWNWA/blob/7cc8ec3c2187c5f1b0efba9c358b1421156c6cb7/docs/figure/sst-prep.Rmd/pixel-regions-1.png" target="_blank">7cc8ec3</a>
@@ -990,30 +1046,6 @@ robwschlegel
 </tbody>
 </table>
 </details>
-<!-- ### Assign pixels to sub-regions -->
-<!-- The `pnt.in.poly` function was remarkably convenient. Our points have now very easily been placed within their respective regions. The last step now before we move on to creating our clumped time series is to cut the regions up into three groups each based on depth: 0 -- 50 m, 51 -- 200 m, 201+ m. -->
-<!-- ```{r depth-sub-regions} -->
-<!-- # Cut the depth strata into sub-regions as desired -->
-<!-- NWA_NAPA_info <- NWA_NAPA_info %>%  -->
-<!--   mutate(sub_region = cut(bathy, breaks = c(0, 50, 200, ceiling(max(bathy))), dig.lab = 4))#, -->
-<!--          # mutate(sub_region = fct_recode(., sub_region, "(200+]" = "(200,3881]"))) -->
-<!-- NWA_NAPA_info <- mutate(NWA_NAPA_info, sub_region = fct_recode(sub_region, "(200+]" = "(200,3881]")) -->
-<!-- # saveRDS(NWA_NAPA_info, "data/NWA_NAPA_info.Rda") -->
-<!-- # Visualise to ensure success -->
-<!-- sub_region_map <- ggplot(NWA_coords, aes(x = lon, y = lat)) + -->
-<!--   geom_polygon(data = map_base, aes(group = group), show.legend = F) + -->
-<!--   # geom_polygon(aes(fill = region), alpha = 0.2) + -->
-<!--   geom_point(data = NWA_NAPA_info, aes(colour = region, alpha = sub_region),  -->
-<!--              shape = 15, size = 0.5) + -->
-<!--   guides(colour = guide_legend(override.aes = list(size = 5))) + -->
-<!--   scale_alpha_manual(values = c(0.4, 0.7, 1)) + -->
-<!--   coord_cartesian(xlim = NWA_corners_sub[1:2], -->
-<!--                   ylim = NWA_corners_sub[3:4]) + -->
-<!--   labs(x = NULL, y = NULL, colour = "Region", alpha = "Sub-region") -->
-<!-- # ggsave(plot = sub_region_map, filename = "output/sub_region_map.pdf", height = 5, width = 6) -->
-<!-- # Visualise -->
-<!-- sub_region_map -->
-<!-- ``` -->
 </div>
 <div id="sst-prep" class="section level2">
 <h2>SST prep</h2>
@@ -1064,14 +1096,9 @@ OISST_region &lt;- readRDS(&quot;data/OISST_region.Rda&quot;)
 # Calculate base results
 system.time(
 OISST_region_MHW &lt;- OISST_region %&gt;%
-  # NB: Should not use data before 1998-01-01 as this is model spin-up
-  # filter(t &gt;= &quot;1998-01-01&quot;) %&gt;% 
   group_by(region) %&gt;%
   nest() %&gt;%
   mutate(clims = map(data, ts2clm,
-                     # NB: I&#39;ve chosen here to use as much of the 2015 data as exists,
-                     # rather than to use none of it as I think it will create a better climatology
-                     # even though the last two days of the year are missing
                      climatologyPeriod = c(&quot;1993-01-01&quot;, &quot;2018-12-31&quot;)),
          events = map(clims, detect_event),
          cats = map(events, category)) %&gt;%

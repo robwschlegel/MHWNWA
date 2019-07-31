@@ -203,9 +203,6 @@ $(document).ready(function () {
       <a href="var-prep.html">Variable preparation</a>
     </li>
     <li>
-      <a href="vec-prep.html">Vector preparation</a>
-    </li>
-    <li>
       <a href="som.html">SOM analysis</a>
     </li>
     <li>
@@ -249,7 +246,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-07-24</p>
+<p><strong>Last updated:</strong> 2019-07-31</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -260,12 +257,38 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/bcee69836e357b19e2ef396a0de9b4964bd22f07" target="_blank">bcee698</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/498909bd3a0e434b3fd5f2cf99b0dfa6622a15f2" target="_blank">498909b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    data/ALL_anom.Rda
+    Ignored:    data/ERA5_lhf.Rda
+    Ignored:    data/ERA5_lwr.Rda
+    Ignored:    data/ERA5_qnet.Rda
+    Ignored:    data/ERA5_qnet_anom.Rda
+    Ignored:    data/ERA5_qnet_clim.Rda
+    Ignored:    data/ERA5_shf.Rda
+    Ignored:    data/ERA5_swr.Rda
+    Ignored:    data/ERA5_t2m.Rda
+    Ignored:    data/ERA5_t2m_anom.Rda
+    Ignored:    data/ERA5_t2m_clim.Rda
+    Ignored:    data/ERA5_u.Rda
+    Ignored:    data/ERA5_u_anom.Rda
+    Ignored:    data/ERA5_u_clim.Rda
+    Ignored:    data/ERA5_v.Rda
+    Ignored:    data/ERA5_v_anom.Rda
+    Ignored:    data/ERA5_v_clim.Rda
+    Ignored:    data/GLORYS_mld.Rda
+    Ignored:    data/GLORYS_mld_anom.Rda
+    Ignored:    data/GLORYS_mld_clim.Rda
+    Ignored:    data/GLORYS_u.Rda
+    Ignored:    data/GLORYS_u_anom.Rda
+    Ignored:    data/GLORYS_u_clim.Rda
+    Ignored:    data/GLORYS_v.Rda
+    Ignored:    data/GLORYS_v_anom.Rda
+    Ignored:    data/GLORYS_v_clim.Rda
     Ignored:    data/NAPA_clim_U.Rda
     Ignored:    data/NAPA_clim_V.Rda
     Ignored:    data/NAPA_clim_W.Rda
@@ -287,22 +310,38 @@ Ignored files:
     Ignored:    data/NAPA_clim_vars.Rda
     Ignored:    data/NAPA_clim_vecs.Rda
     Ignored:    data/OAFlux.Rda
+    Ignored:    data/OISST_sst.Rda
+    Ignored:    data/OISST_sst_anom.Rda
+    Ignored:    data/OISST_sst_clim.Rda
     Ignored:    data/node_mean_all_anom.Rda
+    Ignored:    data/packet_all.Rda
     Ignored:    data/packet_all_anom.Rda
+    Ignored:    data/packet_nolab.Rda
+    Ignored:    data/packet_nolabgsl.Rda
     Ignored:    data/som_all_anom.Rda
+    Ignored:    data/som_nolab.Rda
+    Ignored:    data/som_nolabgsl.Rda
     Ignored:    data/synoptic_states.Rda
     Ignored:    data/synoptic_vec_states.Rda
 
 Untracked files:
-    Untracked:  data/OISST_grid.Rda
-    Untracked:  data/OISST_region.Rda
-    Untracked:  data/OISST_region_MHW.Rda
+    Untracked:  data/node_mean_nolab.Rda
+    Untracked:  data/node_mean_nolabgsl.Rda
+    Untracked:  output/som_plot_mld_anom.pdf
+    Untracked:  output/som_plot_qnet_anom.pdf
+    Untracked:  output/som_plot_sst_anom_nogsl.pdf
+    Untracked:  output/som_plot_t2m_anom.pdf
+    Untracked:  output/som_plot_u10_anom.pdf
+    Untracked:  output/som_plot_u_anom.pdf
+    Untracked:  output/som_plot_v10_anom.pdf
+    Untracked:  output/som_plot_v_anom.pdf
 
 Unstaged changes:
-    Modified:   code/download.R
     Modified:   code/functions.R
     Modified:   code/workflow.R
-    Modified:   data/NWA_corners.Rda
+    Modified:   data/.gitignore
+    Modified:   output/som_plot_sst_anom.pdf
+    Deleted:    output/som_plot_uoce_anom.pdf
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -333,6 +372,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/7792f2489ae2ec1a2b8ab79e3bd63e280c67f3e6/docs/index.html" target="_blank">7792f24</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-24
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
