@@ -60,35 +60,8 @@ doy_index <- data.frame(doy_int = 1:366,
                                          by = "day"), "%m-%d"),
                         stringsAsFactors = F)
 
-## Load the anomaly data.frames if necessary
-# OISST
-# if(!exists("OISST_sst_anom")) OISST_sst_anom <- readRDS("data/OISST_sst_anom.Rda") %>%
-#   mutate(lon = lon-0.125,
-#          lat = lat+0.125)
-# GLORYS
-# if(!exists("GLORYS_u_anom")) GLORYS_u_anom <- readRDS("data/GLORYS_u_anom.Rda")
-# if(!exists("GLORYS_v_anom")) GLORYS_v_anom <- readRDS("data/GLORYS_v_anom.Rda")
-# if(!exists("GLORYS_mld_anom")) GLORYS_mld_anom <- readRDS("data/GLORYS_mld_anom.Rda")
-# ERA 5
-# if(!exists("ERA5_u_anom")) ERA5_u_anom <- readRDS("data/ERA5_u_anom.Rda")
-# if(!exists("ERA5_v_anom")) ERA5_v_anom <- readRDS("data/ERA5_v_anom.Rda")
-# if(!exists("ERA5_t2m_anom")) ERA5_t2m_anom <- readRDS("data/ERA5_t2m_anom.Rda")
-# if(!exists("ERA5_qnet_anom")) ERA5_qnet_anom <- readRDS("data/ERA5_qnet_anom.Rda")
-# All together now
-# ALL_anom <- left_join(ERA5_qnet_anom, ERA5_t2m_anom, by = c("lon", "lat", "t")) %>%
-#   left_join(ERA5_v_anom, by = c("lon", "lat", "t")) %>%
-#   left_join(ERA5_u_anom, by = c("lon", "lat", "t")) %>%
-#   mutate(lon = ifelse(lon > 180, lon-360, lon)) %>%
-#   left_join(GLORYS_mld_anom, by = c("lon", "lat", "t")) %>%
-#   left_join(GLORYS_v_anom, by = c("lon", "lat", "t")) %>%
-#   left_join(GLORYS_u_anom, by = c("lon", "lat", "t")) %>%
-#   left_join(OISST_sst_anom, by = c("lon", "lat", "t"))
-
-# Keep RAM happy
-if(exists("ERA5_qnet_anom")){
-  rm(ERA5_qnet_anom, ERA5_t2m_anom, ERA5_v_anom, ERA5_u_anom,
-     GLORYS_mld_anom, GLORYS_v_anom, GLORYS_u_anom); gc()
-}
+# The anomalies
+# if(!exists("ALL_anom")) ALL_anom <- readRDS("data/ALL_anom.Rda")
 
 # The OISST land mask
 # land_mask_OISST <- readRDS("data/land_mask_OISST.Rda")
@@ -294,6 +267,19 @@ anom_one <- function(df, df_clim, point_accuracy){
     ungroup() %>%
     select(lon, lat, t, anom)
   colnames(res)[4] <- paste0(var_name,"_anom")
+  return(res)
+}
+
+
+# Load anomaly data -------------------------------------------------------
+# This function loads and filters the anomaly data.frames
+# This just exists to reduce redundancy and keep the code/workflow.R script tidy
+load_anom <- function(file_name){
+  res <- readRDS(file_name) %>%
+    mutate(lon = ifelse(lon > 180, lon-360, lon)) %>%
+    filter(lon >= -80, lon <= -41,
+           lat >= 32, lat <= 63)
+  setkey(data.table(res, key = c("lon", "lat", "t")))
   return(res)
 }
 

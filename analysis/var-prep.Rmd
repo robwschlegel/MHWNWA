@@ -176,12 +176,6 @@ OISST_sst_anom <- left_join(OISST_sst, OISST_sst_clim, by = c("lon", "lat", "doy
 # Save
 saveRDS(OISST_sst_anom, "data/OISST_sst_anom.Rda")
 
-## Air temperature
-system.time(
-ERA5_t2m_anom <- anom_one(ERA5_t2m, ERA5_t2m_clim, "t2m_anom", 2)
-) # 85 seconds
-saveRDS(ERA5_t2m_anom, "data/ERA5_t2m_anom.Rda")
-
 # The code used to create the rest of the anomalies may be found in code/workflow.R
 ```
 
