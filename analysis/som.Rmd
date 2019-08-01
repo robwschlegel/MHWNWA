@@ -404,7 +404,7 @@ som_nolab <- readRDS("data/som_nolab.Rda")
 ```
 
 ```{r plot-sst-anom, eval=TRUE}
-plot_sst_anom <- som_node_visualise("sst_anom")
+plot_sst_anom <- som_node_visualise(sub_var = "sst_anom", som_result = som_nolab)
 plot_sst_anom
 ```
 
