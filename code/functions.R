@@ -46,6 +46,13 @@ OISST_MHW_event <- OISST_region_MHW %>%
   filter(row_number() %% 2 == 0) %>%
   unnest(events)
 
+# MHW Categories
+suppressWarnings( # Don't need warning about different names for events
+  OISST_MHW_cats <- OISST_region_MHW %>%
+    select(-events) %>%
+    unnest(cats)
+)
+
 # The base map
 map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE)) %>%
   dplyr::rename(lon = long) %>%
@@ -331,80 +338,74 @@ data_packet <- function(event_sub){
 }
 
 
-# Determine node indexes --------------------------------------------------
+# Run SOM and create summary output ---------------------------------------
 
-# testers...
-# data_packet <- all_anom; som_output <- som_all_anom
-event_node_index <- function(data_packet, som_output){
+som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
+  # Create a scaled matrix for the SOM
+  # Cancel out first column as this is the reference ID of the event per row
+  data_packet_matrix <- as.matrix(scale(data_packet[,-1]))
 
-  # Count the number of events per node
-  node_count <- as.data.frame(table(som_output$classif)) %>%
-    dplyr::rename(node = Var1,
-                  count = Freq) %>%
-    mutate(node = as.numeric(as.character(node)))
+  # Create the grid that the SOM will use to determine the number of nodes
+  som_grid <- somgrid(xdim = xdim, ydim = ydim, topo = "hexagonal")
 
-  # Create a more complete data.frame of info
-  event_node <- data.frame(event_ID = data_packet[,"event_ID"],
-                           node = som_output$classif) %>%
-    separate(event_ID, into = c("region", "sub_region", "event_no"), sep = "BBB") %>%
-    left_join(node_count, by = "node")
+  # Run the SOM with PCI
+  som_model <- batchsom(data_packet_matrix,
+                        somgrid = som_grid,
+                        init = "pca",
+                        max.iter = 100)
 
-  # NB: This is potentially where the season of the event would be inserted
-
-  return(event_node)
-}
-
-
-# Unpack SOM results ------------------------------------------------------
-
-# Create mean results from initial data frame based on node clustering
-# testers...
-# data_packet <- all_anom; som_output <- som_all_anom
-som_unpack_mean <- function(data_packet, som_output){
+  # Create a data.frame of info
+  node_info <- data.frame(event_ID = data_packet[,"event_ID"],
+                          node = som_model$classif) %>%
+    separate(event_ID, into = c("region", "event_no"), sep = "BBB") %>%
+    group_by(node) %>%
+    mutate(count = n()) %>%
+    ungroup() %>%
+    mutate(event_no = as.numeric(as.character(event_no))) %>%
+    left_join(select(OISST_MHW_cats, region, event_no, category, peak_date),
+              by = c("region", "event_no")) %>%
+    mutate(month_peak = lubridate::month(peak_date, label = T),
+           season_peak = case_when(month_peak %in% c("Jan", "Feb", "Mar") ~ "Winter",
+                                   month_peak %in% c("Apr", "May", "Jun") ~ "Spring",
+                                   month_peak %in% c("Jul", "Aug", "Sep") ~ "Summer",
+                                   month_peak %in% c("Oct", "Nov", "Dec") ~ "Autumn")) %>%
+    select(-peak_date, -month_peak)
 
   # Determine which event goes in which node and melt
-  data_packet_long <- data.frame(event_ID = data_packet[,"event_ID"],
-                                 node = som_output$classif) %>%
-    separate(event_ID, into = c("region", "sub_region", "event_no"), sep = "BBB") %>%
-    cbind(data_packet[,-1]) %>%
+  data_packet_long <- cbind(node = som_model$classif, data_packet) %>%
+    separate(event_ID, into = c("region", "event_no"), sep = "BBB") %>%
     data.table() %>%
-    reshape2::melt(id = c("region", "sub_region", "event_no", "node"),
-                   measure = c(colnames(.)[-c(1:4)]),
+    reshape2::melt(id = c("node", "region", "event_no"),
+                   measure = c(colnames(.)[-c(1:3)]),
                    variable.name = "variable", value.name = "value")
 
   # Create the mean values that serve as the unscaled results from the SOM
-  var_unscaled <- data_packet_long[, .(val = mean(value, na.rm = TRUE)),
-                                   by = .(node, variable)] %>%
+  node_data <- data_packet_long[, .(val = mean(value, na.rm = TRUE)),
+                                by = .(node, variable)] %>%
     separate(variable, into = c("lon", "lat", "var"), sep = "BBB") %>%
     dplyr::arrange(node, var, lon, lat) %>%
     mutate(lon = as.numeric(lon),
-           lat = as.numeric(lat))
-  return(var_unscaled)
+           lat = as.numeric(lat),
+           val = round(val, 4))
+
+  # Combine and exit
+  res <- list(data = node_data, info = node_info)
+  return(node_data)
 }
 
 
 # Create a summary figure for a chosen node -------------------------------
 ## NB: This function contains objects created in "IMBeR_2019_figures.R"
 
-node_figure <- function(node_number){
-  sub_synoptic_var_state <- synoptic_states_anom_cartesian %>%
+node_figure <- function(node_number, node_index){
+  sub_synoptic_state <- synoptic_states %>%
     ungroup() %>%
-    left_join(node_index_all_anom, by = c("region", "sub_region", "event_no")) %>%
+    left_join(node_index, by = c("region", "event_no")) %>%
     filter(node == node_number) %>%
-    dplyr::select(-region, -sub_region, -event_no, -node, -count) %>%
+    dplyr::select(-region, -event_no, -node, -count) %>%
     group_by(lon, lat) %>%
-    summarise_all(.funs = "mean")
-  sub_synoptic_vec_state <- synoptic_vec_states_anom_cartesian %>%
-    ungroup() %>%
-    left_join(node_index_all_anom, by = c("region", "sub_region", "event_no")) %>%
-    filter(node == node_number) %>%
-    dplyr::select(-region, -sub_region, -event_no, -node, -count) %>%
-    group_by(lon, lat) %>%
-    summarise_all(.funs = "mean")
-  sub_synoptic_state <- left_join(sub_synoptic_var_state, sub_synoptic_vec_state,
-                                  by = colnames(sub_synoptic_var_state)[1:2]) %>%
-    dplyr::rename(u_anom = uoce_anom, v_anom = voce_anom) %>%
-    group_by(lon, lat) %>%
+    # dplyr::rename(u_anom = uoce_anom, v_anom = voce_anom) %>%
+    # group_by(lon, lat) %>%
     mutate(arrow_size = ((abs(u_anom*v_anom)/ max(abs(u_anom*v_anom)))+0.2)/6) %>%
     ungroup()
 

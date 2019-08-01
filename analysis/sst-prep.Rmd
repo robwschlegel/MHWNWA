@@ -157,7 +157,7 @@ OISST_region_MHW <- OISST_region %>%
   mutate(clims = map(data, ts2clm,
                      climatologyPeriod = c("1993-01-01", "2018-12-31")),
          events = map(clims, detect_event),
-         cats = map(events, category)) %>%
+         cats = map(events, category, S = FALSE)) %>%
   select(-data, -clims)
 ) # 2 seconds
 # saveRDS(OISST_region_MHW, "data/OISST_region_MHW.Rda")

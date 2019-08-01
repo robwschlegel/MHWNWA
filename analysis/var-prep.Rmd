@@ -190,7 +190,7 @@ data_packet <- function(event_sub){
 
   # Create mean synoptic values
   packet_mean <- packet_base %>%
-    # select(-doy) %>%
+    select(-t) %>%
     group_by(lon, lat) %>%
     summarise_all(mean, na.rm = T) %>%
     arrange(lon, lat) %>%
@@ -206,7 +206,7 @@ data_packet <- function(event_sub){
 }
 
 # Set number of cores
-doMC::registerDoMC(cores = 50)
+doMC::registerDoMC(cores = 25)
 
 # Create one big packet
 system.time(
