@@ -348,7 +348,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-07-31</p>
+<p><strong>Last updated:</strong> 2019-08-01</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -377,7 +377,7 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/498909bd3a0e434b3fd5f2cf99b0dfa6622a15f2" target="_blank">498909b</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/5e12d9e76d2720de9f990a4648646297296920ed" target="_blank">5e12d9e</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -437,31 +437,20 @@ Ignored files:
     Ignored:    data/packet_all.Rda
     Ignored:    data/packet_all_anom.Rda
     Ignored:    data/packet_nolab.Rda
+    Ignored:    data/packet_nolab14.Rda
     Ignored:    data/packet_nolabgsl.Rda
+    Ignored:    data/packet_nolabmod.Rda
+    Ignored:    data/som_all.Rda
     Ignored:    data/som_all_anom.Rda
     Ignored:    data/som_nolab.Rda
+    Ignored:    data/som_nolab14.Rda
+    Ignored:    data/som_nolab_16.Rda
+    Ignored:    data/som_nolab_9.Rda
     Ignored:    data/som_nolabgsl.Rda
+    Ignored:    data/som_nolabmod.Rda
     Ignored:    data/synoptic_states.Rda
     Ignored:    data/synoptic_vec_states.Rda
-
-Untracked files:
-    Untracked:  data/node_mean_nolab.Rda
-    Untracked:  data/node_mean_nolabgsl.Rda
-    Untracked:  output/som_plot_mld_anom.pdf
-    Untracked:  output/som_plot_qnet_anom.pdf
-    Untracked:  output/som_plot_sst_anom_nogsl.pdf
-    Untracked:  output/som_plot_t2m_anom.pdf
-    Untracked:  output/som_plot_u10_anom.pdf
-    Untracked:  output/som_plot_u_anom.pdf
-    Untracked:  output/som_plot_v10_anom.pdf
-    Untracked:  output/som_plot_v_anom.pdf
-
-Unstaged changes:
-    Modified:   code/functions.R
-    Modified:   code/workflow.R
-    Modified:   data/.gitignore
-    Modified:   output/som_plot_sst_anom.pdf
-    Deleted:    output/som_plot_uoce_anom.pdf
+    Ignored:    output/node_summary/
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -492,6 +481,74 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/5e12d9e76d2720de9f990a4648646297296920ed/analysis/som.Rmd" target="_blank">5e12d9e</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-01
+</td>
+<td style="text-align:left;">
+Re-publish entire site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/9a9fa7dcbb3784879c40ef4f5592c0401e0aba05/analysis/som.Rmd" target="_blank">9a9fa7d</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-01
+</td>
+<td style="text-align:left;">
+A more in depth dive into the potential criteria to meet for the SOM model
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/240a7a01df5e63ed6a0dd2f6b4920489aae3e26a/analysis/som.Rmd" target="_blank">240a7a0</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-31
+</td>
+<td style="text-align:left;">
+Ran the base SOM results
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/aa82e6e565dc2e79a3152f77684953031971619b/docs/som.html" target="_blank">aa82e6e</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-31
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1012,11 +1069,6 @@ NAPA_vars &lt;- readRDS(&quot;data/NAPA_vars.Rda&quot;)
 # Corners of the study area
 NWA_corners &lt;- readRDS(&quot;data/NWA_corners.Rda&quot;)
 
-# Create smaller corners to use less RAM
-  # This also better matches the previous South African work
-  # The Tasmania work had corners of roughly 2 degrees greater than the study area
-# NWA_corners_sub &lt;- c(NWA_corners[1]+8, NWA_corners[2]-8, NWA_corners[3]+8, NWA_corners[4]-8)
-
 # The base map
 map_base &lt;- ggplot2::fortify(maps::map(fill = TRUE, col = &quot;grey80&quot;, plot = FALSE)) %&gt;%
   dplyr::rename(lon = long) %&gt;%
@@ -1024,17 +1076,22 @@ map_base &lt;- ggplot2::fortify(maps::map(fill = TRUE, col = &quot;grey80&quot;,
          lon = ifelse(lon &gt; 180, lon-360, lon)) %&gt;% 
   select(-region, -subregion)
 
-# The grid that will convert the tri-polar coordinates to cartesian
-  # NB: This file was created in the &#39;tikoraluk&#39; project
-# load(&quot;data/lon_lat_NAPA_OISST.Rdata&quot;)
+# MHW results
+OISST_region_MHW &lt;- readRDS(&quot;data/OISST_region_MHW.Rda&quot;)
 
-# Change to fit with this project
-# lon_lat_NAPA_OISST &lt;- lon_lat_NAPA_OISST %&gt;% 
-#   dplyr::select(-lon, -lat, -dist, -nav_lon_corrected) %&gt;% 
-#   dplyr::rename(lon = nav_lon, lat = nav_lat) %&gt;% 
-#   mutate(lon = round(lon, 4),
-#          lat = round(lat, 4)) %&gt;% 
-#   mutate(lon_O = ifelse(lon_O &gt; 180, lon_O-360, lon_O))</code></pre>
+# MHW Events
+OISST_MHW_event &lt;- OISST_region_MHW %&gt;%
+  select(-cats) %&gt;%
+  unnest(events) %&gt;%
+  filter(row_number() %% 2 == 0) %&gt;%
+  unnest(events)
+
+# MHW Categories
+suppressWarnings( # Don&#39;t need warning about different names for events
+OISST_MHW_cats &lt;- OISST_region_MHW %&gt;%
+  select(-events) %&gt;%
+  unnest(cats) 
+)</code></pre>
 </div>
 <div id="tailored-data-packets" class="section level2">
 <h2>Tailored data packets</h2>
@@ -1066,12 +1123,12 @@ NWA_coords_nolabgsl &lt;- NWA_coords %&gt;%
   filter(!region %in% c(&quot;ls&quot;, &quot;gsl&quot;))
 
 # Test visuals of reduced study areas
-synoptic_states[1,] %&gt;% 
-  unnest() %&gt;% 
-  filter(lat &lt;= round(max(NWA_coords_nolabgsl$lat))+0.5) %&gt;% 
-  ggplot(aes(x = lon, y = lat)) +
-  geom_raster(aes(fill = sst_anom)) +
-  geom_polygon(data = NWA_coords_nolabgsl, aes(colour = region), fill = NA)
+# synoptic_states[1,] %&gt;% 
+#   unnest() %&gt;% 
+#   filter(lat &lt;= round(max(NWA_coords_nolabgsl$lat))+0.5) %&gt;% 
+#   ggplot(aes(x = lon, y = lat)) +
+#   geom_raster(aes(fill = sst_anom)) +
+#   geom_polygon(data = NWA_coords_nolabgsl, aes(colour = region), fill = NA)
 
 # Function for casting wide the custom packets
 create_packet &lt;- function(df){
@@ -1092,8 +1149,8 @@ create_packet &lt;- function(df){
 # Packet for entire study region
 system.time(
   packet_all &lt;- create_packet(synoptic_states_unnest)
-) # xxx seconds
-saveRDS(packet_all, &quot;data/packet_all.Rda&quot;)
+) # 185 seconds
+# saveRDS(packet_all, &quot;data/packet_all.Rda&quot;)
 
 # Exclude Labrador region
 system.time(
@@ -1101,8 +1158,8 @@ system.time(
     filter(region != &quot;ls&quot;,
            lat &lt;= round(max(NWA_coords_nolab$lat))+0.5) %&gt;% 
     create_packet()
-) # 128 seconds
-saveRDS(packet_nolab, &quot;data/packet_nolab.Rda&quot;)
+) # 142 seconds
+# saveRDS(packet_nolab, &quot;data/packet_nolab.Rda&quot;)
 
 # Exclude Labrador and Gulf of St Lawrence regions
 system.time(
@@ -1110,14 +1167,39 @@ system.time(
     filter(!region %in% c(&quot;ls&quot;, &quot;gsl&quot;),
            lat &lt;= round(max(NWA_coords_nolabgsl$lat))+0.5) %&gt;% 
     create_packet()
-) # xxx seconds
-saveRDS(packet_nolabgsl, &quot;data/packet_nolabgsl.Rda&quot;)</code></pre>
+) # 106 seconds
+# saveRDS(packet_nolabgsl, &quot;data/packet_nolabgsl.Rda&quot;)
+
+# Exclude Labrador region and moderate events
+system.time(
+  packet_nolabmod &lt;- synoptic_states_unnest %&gt;% 
+    filter(region != &quot;ls&quot;,
+           lat &lt;= round(max(NWA_coords_nolab$lat))+0.5) %&gt;% 
+    left_join(select(OISST_MHW_cats, region, event_no, category), by = c(&quot;region&quot;, &quot;event_no&quot;)) %&gt;% 
+    filter(category != &quot;I Moderate&quot;) %&gt;% 
+    select(-category) %&gt;% 
+    create_packet()
+) # 15 seconds
+# saveRDS(packet_nolabmod, &quot;data/packet_nolabmod.Rda&quot;)
+
+# Exclude Labrador region and moderate events
+system.time(
+  packet_nolab14 &lt;- synoptic_states_unnest %&gt;% 
+    filter(region != &quot;ls&quot;,
+           lat &lt;= round(max(NWA_coords_nolab$lat))+0.5) %&gt;% 
+    left_join(select(OISST_MHW_cats, region, event_no, duration), by = c(&quot;region&quot;, &quot;event_no&quot;)) %&gt;% 
+    filter(duration &gt;= 14) %&gt;% 
+    select(-duration) %&gt;% 
+    create_packet()
+) # 40 seconds
+# saveRDS(packet_nolab14, &quot;data/packet_nolab14.Rda&quot;)</code></pre>
 </div>
 </div>
 <div id="run-som-models" class="section level2">
 <h2>Run SOM models</h2>
-<p>Now that we have our data packets to feed the SOM, we need a function that will ingest them and produce results for us.</p>
+<p>Now that we have our data packets to feed the SOM, we need a function that will ingest them and produce results for us. The function below has been greatly expanded on from the previous version of this project and now performs all of the SOM related work in one go. This allowed me to remove a couple hundreds lines of code and text from this vignette.</p>
 <pre class="r"><code># Function for calculating SOMs using PCI
+# This outputs the mean values for each SOM as well
   # NB: 4x4 produced one empty cell and one cell with only one event
   # So the default size has been reduced to 4x3
 som_model_PCI &lt;- function(data_packet, xdim = 4, ydim = 3){
@@ -1133,190 +1215,173 @@ som_model_PCI &lt;- function(data_packet, xdim = 4, ydim = 3){
                         somgrid = som_grid,
                         init = &quot;pca&quot;,
                         max.iter = 100)
-  return(som_model)
-}</code></pre>
-<p>With the function sorted, we now feed the data.</p>
-<pre class="r"><code># The SOM on the entire study area
-   # NB: Not running for some reason...
-    # Possibly due to a column with no range in values
-    # Not too worried about it as this one isn&#39;t being used
-# packet_all &lt;- readRDS(&quot;data/packet_all.Rda&quot;)
-# system.time(som_all &lt;- som_model_PCI(packet_all)) # 201 seconds
-# saveRDS(som_all, file = &quot;data/som_all.Rda&quot;)
-
-# The SOM excluding the Labrador Sea region
-packet_nolab &lt;- readRDS(&quot;data/packet_nolab.Rda&quot;)
-system.time(som_nolab &lt;- som_model_PCI(packet_nolab)) # 78 seconds
-saveRDS(som_nolab, file = &quot;data/som_nolab.Rda&quot;)
-
-# The SOM excluding the Labrador Sea and Gulf of St Lawrence regions
-packet_nolabgsl &lt;- readRDS(&quot;data/packet_nolabgsl.Rda&quot;)
-system.time(som_nolabgsl &lt;- som_model_PCI(packet_nolabgsl)) # 75 seconds
-saveRDS(som_nolabgsl, file = &quot;data/som_nolabgsl.Rda&quot;)
-
-# A 9 node SOM
-
-# A 16 node SOM
-system.time(som_nolab &lt;- som_model_PCI(packet_nolab)) # 78 seconds
-saveRDS(som_nolab, file = &quot;data/som_nolab.Rda&quot;)
-
-# A SOM without moderate events</code></pre>
-</div>
-<div id="unpack-som-results" class="section level2">
-<h2>Unpack SOM results</h2>
-<p>We will create two functions below that will be useful for unpacking the SOM results.</p>
-<pre class="r"><code># Function for determining node indexes
-# testers...
-# data_packet &lt;- all_anom; som_output &lt;- som_all_anom
-event_node_index &lt;- function(data_packet, som_output){
   
-  # Count the number of events per node
-  node_count &lt;- as.data.frame(table(som_output$classif)) %&gt;% 
-    dplyr::rename(node = Var1,
-                  count = Freq) %&gt;% 
-    mutate(node = as.numeric(as.character(node)))
-  
-  # Create a more complete data.frame of info
-  event_node &lt;- data.frame(event_ID = data_packet[,&quot;event_ID&quot;],
-                           node = som_output$classif) %&gt;% 
+  # Create a data.frame of info
+  node_info &lt;- data.frame(event_ID = data_packet[,&quot;event_ID&quot;],
+                           node = som_model$classif) %&gt;% 
     separate(event_ID, into = c(&quot;region&quot;, &quot;event_no&quot;), sep = &quot;BBB&quot;) %&gt;% 
-    left_join(node_count, by = &quot;node&quot;)
-  
-  # NB: This is potentially where the season of the event would be inserted
-  
-  return(event_node)
-}
-
-# Function for unpacking som results and creating 
-# mean results from initial data frame based on node clustering
-# testers...
-# data_packet &lt;- packet_nolab; som_output &lt;- som_nolab
-som_unpack_mean &lt;- function(data_packet, som_output){
+    group_by(node) %&gt;% 
+    mutate(count = n()) %&gt;% 
+    ungroup() %&gt;% 
+    mutate(event_no = as.numeric(as.character(event_no))) %&gt;%
+    left_join(select(OISST_MHW_cats, region, event_no, category, peak_date), 
+              by = c(&quot;region&quot;, &quot;event_no&quot;)) %&gt;% 
+    mutate(month_peak = lubridate::month(peak_date, label = T),
+           season_peak = case_when(month_peak %in% c(&quot;Jan&quot;, &quot;Feb&quot;, &quot;Mar&quot;) ~ &quot;Winter&quot;,
+                                   month_peak %in% c(&quot;Apr&quot;, &quot;May&quot;, &quot;Jun&quot;) ~ &quot;Spring&quot;,
+                                   month_peak %in% c(&quot;Jul&quot;, &quot;Aug&quot;, &quot;Sep&quot;) ~ &quot;Summer&quot;,
+                                   month_peak %in% c(&quot;Oct&quot;, &quot;Nov&quot;, &quot;Dec&quot;) ~ &quot;Autumn&quot;)) %&gt;% 
+    select(-peak_date, -month_peak)
   
   # Determine which event goes in which node and melt
-  data_packet_long &lt;- data.frame(event_ID = data_packet[,&quot;event_ID&quot;],
-                           node = som_output$classif) %&gt;% 
+  data_packet_long &lt;- cbind(node = som_model$classif, data_packet) %&gt;% 
     separate(event_ID, into = c(&quot;region&quot;, &quot;event_no&quot;), sep = &quot;BBB&quot;) %&gt;% 
-    cbind(data_packet[,-1]) %&gt;% 
     data.table() %&gt;% 
-    reshape2::melt(id = c(&quot;region&quot;, &quot;event_no&quot;, &quot;node&quot;),
+    reshape2::melt(id = c(&quot;node&quot;, &quot;region&quot;, &quot;event_no&quot;),
                    measure = c(colnames(.)[-c(1:3)]), 
                    variable.name = &quot;variable&quot;, value.name = &quot;value&quot;)
   
   # Create the mean values that serve as the unscaled results from the SOM
-  var_unscaled &lt;- data_packet_long[, .(val = mean(value, na.rm = TRUE)),
+  node_data &lt;- data_packet_long[, .(val = mean(value, na.rm = TRUE)),
                                    by = .(node, variable)] %&gt;% 
     separate(variable, into = c(&quot;lon&quot;, &quot;lat&quot;, &quot;var&quot;), sep = &quot;BBB&quot;) %&gt;%
     dplyr::arrange(node, var, lon, lat) %&gt;% 
     mutate(lon = as.numeric(lon),
-           lat = as.numeric(lat))
-  return(var_unscaled)
+           lat = as.numeric(lat),
+           val = round(val, 4))
+  
+  ## ANOSIM for goodness of fit for node count
+  node_data_wide &lt;- node_data %&gt;%
+    unite(coords, c(lon, lat, var), sep = &quot;BBB&quot;) %&gt;% 
+    data.table() %&gt;% 
+    dcast(node~coords, value.var = &quot;val&quot;)
+
+  # Calculate similarity
+  som_anosim &lt;- vegan::anosim(as.matrix(node_data_wide[,-1]), 
+                              node_data_wide$node, distance = &quot;euclidean&quot;)$signif
+  
+  # Combine and exit
+  res &lt;- list(data = node_data, info = node_info, ANOSIM = paste0(&quot;p = &quot;,som_anosim))
+  return(res)
 }</code></pre>
-<p>And now we unpack the SOM results.</p>
-<pre class="r"><code># Load data packets
-# packet_all &lt;- readRDS(&quot;data/packet_all.Rda&quot;)
+<p>With the function sorted, we now feed it the data packets.</p>
+<pre class="r"><code># The SOM on the entire study area
+packet_all &lt;- readRDS(&quot;data/packet_all.Rda&quot;)
+system.time(som_all &lt;- som_model_PCI(packet_all)) # 136 seconds
+som_all$ANOSIM # p = 0.001
+saveRDS(som_all, file = &quot;data/som_all.Rda&quot;)
+
+# The SOM excluding the Labrador Sea region
 packet_nolab &lt;- readRDS(&quot;data/packet_nolab.Rda&quot;)
+system.time(som_nolab &lt;- som_model_PCI(packet_nolab)) # 72 seconds
+som_nolab$ANOSIM # p = 0.001
+saveRDS(som_nolab, file = &quot;data/som_nolab.Rda&quot;)
+
+# The SOM excluding the Labrador Sea and Gulf of St Lawrence regions
 packet_nolabgsl &lt;- readRDS(&quot;data/packet_nolabgsl.Rda&quot;)
+system.time(som_nolabgsl &lt;- som_model_PCI(packet_nolabgsl)) # 58 seconds
+som_nolabgsl$ANOSIM # p = 0.001
+saveRDS(som_nolabgsl, file = &quot;data/som_nolabgsl.Rda&quot;)
 
-# Load SOM packets
-# som_all &lt;- readRDS(&quot;data/som_all.Rda&quot;)
-som_nolab &lt;- readRDS(&quot;data/som_nolab.Rda&quot;)
-som_nolabgsl &lt;- readRDS(&quot;data/som_nolabgsl.Rda&quot;)
+# We see below that the results are crisper when we leave the Gulf of St Lawrence in,
+# so we will proceed with the rest of the experiments only excluding the Labrador Shelf
 
-# Determine node index
-# node_index_all &lt;- event_node_index(packet_all, som_all)
-node_index_nolab &lt;- event_node_index(packet_nolab, som_nolab)
-node_index_nolabgsl &lt;- event_node_index(packet_nolabgsl, som_nolabgsl)
+# A 9 node SOM
+system.time(som_nolab_9 &lt;- som_model_PCI(packet_nolab, xdim = 3,  ydim = 3)) # 56 seconds
+som_nolab_9$ANOSIM # p = 0.001
+saveRDS(som_nolab_9, file = &quot;data/som_nolab_9.Rda&quot;)
 
-## Create and save mean synoptic states per node
-# All
-# node_mean_all &lt;- som_unpack_mean(packet_all, som_all)
-# saveRDS(node_mean_all, &quot;data/node_mean_all.Rda&quot;)
-# No Labrador Sea
-node_mean_nolab &lt;- som_unpack_mean(packet_nolab, som_nolab)
-# saveRDS(node_mean_nolab, &quot;data/node_mean_nolab.Rda&quot;)
-# No Labrador Sea or Gulf of St Lawrence
-node_mean_nolabgsl &lt;- som_unpack_mean(packet_nolabgsl, som_nolabgsl)
-# saveRDS(node_mean_nolabgsl, &quot;data/node_mean_nolabgsl.Rda&quot;)</code></pre>
+# The 9 node results are perhaps easier to make sense of than 12 nodes, but it&#39;s not certain
+
+# A 16 node SOM
+system.time(som_nolab_16 &lt;- som_model_PCI(packet_nolab, xdim = 4, ydim = 4)) # 91 seconds
+som_nolab_16$ANOSIM # p = 0.001
+saveRDS(som_nolab_16, file = &quot;data/som_nolab_16.Rda&quot;)
+
+# 16 nodes seems unnecessary...
+
+# A SOM without moderate events
+system.time(som_nolabmod &lt;- som_model_PCI(packet_nolabmod, xdim = 2, ydim = 2)) # 12 seconds
+som_nolabmod$ANOSIM # p = 0.042
+saveRDS(som_nolabmod, file = &quot;data/som_nolabmod.Rda&quot;)
+
+# There are fewer than 40 category &quot;II Strong&quot; and larger MHWs so using more than 4 nodes wouldn&#39;t be appropriate
+# These results are defintely too sparse to use for a publication
+
+# A SOM without events shorter than 14 days
+system.time(som_nolab14 &lt;- som_model_PCI(packet_nolab14, xdim = 3, ydim = 3)) # 12 seconds
+som_nolab14$ANOSIM # p = 0.001
+saveRDS(som_nolab14, file = &quot;data/som_nolab14.Rda&quot;)</code></pre>
 </div>
 <div id="visualise-som-results" class="section level2">
 <h2>Visualise SOM results</h2>
 <p>First up the functions for visualising the unpacked results.</p>
 <pre class="r"><code># Ease of life function
-som_node_visualise &lt;- function(sub_var = &quot;sst_anom&quot;,
-                               node_data = node_mean_nolab, 
-                               node_index = node_index_nolab){
+som_node_visualise &lt;- function(sub_var, som_result,
+                               col_num = 4, file_suffix = &quot;&quot;,
+                               fig_height = 9, fig_width = 13){
   
   # Subset data
-  node_data_sub &lt;- node_data %&gt;% 
+  som_result_sub &lt;- som_result$data %&gt;% 
     filter(var == sub_var)
 
   # Create plot
-  som_panel_plot &lt;- ggplot(node_data_sub, aes(x = lon, y = lat)) +
+  som_panel_plot &lt;- ggplot(som_result_sub, aes(x = lon, y = lat)) +
     # geom_point(aes(colour = val)) +
     geom_raster(aes(fill = val)) +
     geom_polygon(data = map_base, aes(group = group), show.legend = F) +
-    geom_label(data = node_index, aes(x = -60, y = 35, label = paste0(&quot;n = &quot;,count))) +
+    geom_label(data = som_result$info, aes(x = -60, y = 35, label = paste0(&quot;n = &quot;,count))) +
     # geom_polygon(data = NWA_coords, aes(group = region, fill = region, colour = region), alpha = 0.1) +
-    coord_cartesian(xlim = c(max(node_data$lon), min(node_data$lon)),
-                    ylim = c(max(node_data$lat), min(node_data$lat)), 
+    coord_cartesian(xlim = c(min(som_result_sub$lon), max(som_result_sub$lon)),
+                    ylim = c(min(som_result_sub$lat), max(som_result_sub$lat)),
                     expand = F) +
     scale_fill_gradient2(low = &quot;blue&quot;, high = &quot;red&quot;) +
     # scale_colour_viridis_c(option = viridis_option) +
     labs(x = NULL, y = NULL, fill = sub_var) +
-    facet_wrap(~node, ncol = 4) +
+    facet_wrap(~node, ncol = col_num) +
     theme(legend.position = &quot;bottom&quot;)
+  
+  # Save and exit
+  ggsave(som_panel_plot, filename = paste0(&quot;output/SOM_nodes/som_plot_&quot;,sub_var,file_suffix,&quot;.pdf&quot;),
+         height = fig_height, width = fig_width)
   return(som_panel_plot)
+}
+
+# Wrapper function to run through all variables at once
+som_node_visualise_all &lt;- function(som_base,
+                                   col_num = 4, file_suffix = &quot;&quot;,
+                                   fig_height = 9, fig_width = 13){
+  var_list &lt;- unique(som_result$data$var)
+  plyr::l_ply(.data = var_list, .fun = som_node_visualise, 
+              .parallel = T, som_result = som_base,
+              col_num = col_num, file_suffix = file_suffix, 
+              fig_height = fig_height, fig_width = fig_height)
 }</code></pre>
-<p>And now we create a PDF for each of the 12 nodes for each variable individually.</p>
-<pre class="r"><code># SST
-  # NB: Comparing the SST anomaly results from the two restricted study areas
-plot_sst_anom &lt;- som_node_visualise()
-plot_sst_anom_nogsl &lt;- som_node_visualise(node_data = node_mean_nolabgsl,
-                                          node_index = node_index_nolabgsl)
-# plot_sst_anom
-# plot_sst_anom_nogsl
-ggsave(plot_sst_anom, filename = &quot;output/som_plot_sst_anom.pdf&quot;, height = 9, width = 13)
-ggsave(plot_sst_anom, filename = &quot;output/som_plot_sst_anom.png&quot;, height = 9, width = 13)
-ggsave(plot_sst_anom_nogsl, filename = &quot;output/som_plot_sst_anom_nogsl.pdf&quot;, height = 9, width = 13)
+<p>And now we create PDFs for each of the variables for each of the nodes for our different conditions.</p>
+<pre class="r"><code># No Labrador Shelf
+som_node_visualise_all(som_nolab, file_suffix = &quot;_nolab&quot;)
 
-# Air temperature (t2m)
-plot_t2m_anom &lt;- som_node_visualise(&quot;t2m_anom&quot;)
-# plot_t2m_anom
-ggsave(plot_t2m_anom, filename = &quot;output/som_plot_t2m_anom.pdf&quot;, height = 9, width = 13)
+# Na Lab or GSL
+som_node_visualise_all(som_nolabgsl, file_suffix = &quot;_nogsl&quot;)
 
-# Net downward heat flux (qnet)
-plot_qnet_anom &lt;- som_node_visualise(&quot;qnet_anom&quot;)
-# plot_qnet_anom
-ggsave(plot_qnet_anom, filename = &quot;output/som_plot_qnet_anom.pdf&quot;, height = 9, width = 13)
+# Na Lab, 9 nodes
+som_node_visualise_all(som_nolab_9, file_suffix = &quot;_9&quot;, fig_width = 10, col_num = 3)
 
-# Surface wind U (u10)
-plot_u10_anom &lt;- som_node_visualise(&quot;u10_anom&quot;)
-# plot_u10_anom
-ggsave(plot_u10_anom, filename = &quot;output/som_plot_u10_anom.pdf&quot;, height = 9, width = 13)
+# Na Lab, 16 nodes
+som_node_visualise_all(som_nolab_16, file_suffix = &quot;_16&quot;, fig_height = 12)
 
-# Surface wind V (v10)
-plot_v10_anom &lt;- som_node_visualise(&quot;v10_anom&quot;)
-# plot_v10_anom
-ggsave(plot_v10_anom, filename = &quot;output/som_plot_v10_anom.pdf&quot;, height = 9, width = 13)
+# Na Lab and no moderate events
+som_node_visualise_all(som_nolabmod, file_suffix = &quot;_nomod&quot;, fig_width = 7, fig_height = 6, col_num = 2)
 
-# Ocean current U (u)
-plot_u_anom &lt;- som_node_visualise(&quot;u_anom&quot;)
-# plot_uoce_anom
-ggsave(plot_u_anom, filename = &quot;output/som_plot_u_anom.pdf&quot;, height = 9, width = 13)
-
-# Ocean current V (v)
-plot_v_anom &lt;- som_node_visualise(&quot;v_anom&quot;)
-# plot_v_anom
-ggsave(plot_v_anom, filename = &quot;output/som_plot_v_anom.pdf&quot;, height = 9, width = 13)
-
-# Mixed Layer Depth (mld)
-plot_mld_anom &lt;- som_node_visualise(&quot;mld_anom&quot;)
-# plot_mld_anom
-ggsave(plot_mld_anom, filename = &quot;output/som_plot_mld_anom.pdf&quot;, height = 9, width = 13)</code></pre>
-<p>Juggling back and forth between the SST anomaly photos with and without the Gulf of St Lawrence it first appears that they are very different, but this is mostly due to the top and bottom rows of nodes being flipped. The actual differences are much more muted and the patterns tend to hold. The patterns appear more crisp in the larger study extent (no Labrador). This is likely because the inclusion of the shallow GSL gives more power. to the atmospheric variables to compete with the Gulf Stream. For this reason we are going to proceed with the inclusion of the Gulf of St Lawrence.</p>
-<p>See the files in the <code>output/</code> folder in the GitHub repo for this project. They aren’t all shown here because they take a bit too long to render. But the following shows what the SST anomaly nodes look like.</p>
-<pre class="r"><code>plot_sst_anom &lt;- som_node_visualise(&quot;sst_anom&quot;)
+# Na Lab and no events shorter than 14 days
+som_node_visualise_all(som_nolab14, file_suffix = &quot;_nolab14&quot;, fig_width = 10, col_num = 3)</code></pre>
+<p>Juggling back and forth between the SST anomaly photos with and without the Gulf of St Lawrence it first appears that they are very different, but this is mostly due to the top and bottom rows of nodes being flipped. The actual differences are much more muted and the patterns tend to hold. The patterns appear more crisp in the larger of the two study extents. This is likely because the inclusion of the shallow GSL gives more power to the atmospheric variables to compete with the Gulf Stream. For this reason we are going to proceed with the inclusion of the Gulf of St Lawrence.</p>
+<p>Looking at different counts of nodes it appears as though 9 is not enough. When 12 nodes are used more detail comes through. Going up to 16 nodes appear to be too much as not much more detail comes through while creating the complexity of more node results to sift through. When the moderate events are removed we are left with only 37 events (synoptic states) to feed the SOM. This means we shouldn’t use more than 4 nodes so as not to (be just shy of) at least 10 potential values binned into each node. The four nodes that are output do show the most clear difference in patterns and actually do a surprising job of ecapsulating the different potential drivers of MHWs. An ANOSIM test on the nodes show that they are different with a <em>p</em> = 0.046. All of the other results have a ANOSIM of <em>p</em> = 0.001. One issue with screening the events by category is that this part of the ocean experiences many long category I Moderate events that may still be relevant.</p>
+<p>So rather than screen by category, I also made a run on the SOM with MHW data with events shorter than 14 days removed. This left us with 103 events to work with, whcih is a good number to use with a 3x3 grid. The results tell perhaps a clearer story than with the 12 nodes and all MHWs.</p>
+<p>Just from looking at the node summaries created in this vignette it is too difficult to say conclusively which conditional produces the clearest results. We will need to proceed with the creation of the more in depth node summary figures in order to get a better idea of how well this is working out. Also unresolved in this vignette is the criticism that the methodology used for the creation of the mean synoptic states fed to the SOM is weak to long events coming through as “grey”, meaning they average out to a rather unremarkable state, even though they are likely the most important of all. One proposed fix for this is to create synoptic states using only the peak date of the event, rather than a mean over the range of the event. This should be looked into…</p>
+<p>A last point here is also that this methodology should also be useful for looking backwards and forwards through time to see what the synoptic states looked like leading up to and just after the event. This information could be more useful than the first wave of results. Before doing this however a singular methodology needs to be pinned down (i.e. which events to screen and how many nodes to use).</p>
+<p>See the files in the <code>/output/SOM_nodes/</code> folder in the GitHub repo for this project. They aren’t all shown here because they take a bit too long to render. But the following shows what the SST anomaly nodes look like.</p>
+<pre class="r"><code>plot_sst_anom &lt;- som_node_visualise(sub_var = &quot;sst_anom&quot;, som_result = som_nolab)
 plot_sst_anom</code></pre>
 <p><img src="figure/som.Rmd/plot-sst-anom-1.png" width="768" style="display: block; margin: auto;" /></p>
 <details>
@@ -1336,6 +1401,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/aa82e6e565dc2e79a3152f77684953031971619b/docs/figure/som.Rmd/plot-sst-anom-1.png" target="_blank">aa82e6e</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-07-31
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/robwschlegel/MHWNWA/blob/81e961d9f37b51867dca7c4692d68aae1349e83b/docs/figure/som.Rmd/plot-sst-anom-1.png" target="_blank">81e961d</a>
@@ -1418,26 +1494,25 @@ other attached packages:
 [16] tidyverse_1.2.1   jsonlite_1.6     
 
 loaded via a namespace (and not attached):
- [1] tidyselect_0.2.4  reshape2_1.4.3    haven_1.1.2      
- [4] lattice_0.20-35   colorspace_1.3-2  htmltools_0.3.6  
- [7] yaml_2.2.0        rlang_0.2.2       R.oo_1.22.0      
-[10] pillar_1.3.0      glue_1.3.0        withr_2.1.2      
-[13] R.utils_2.7.0     doMC_1.3.5        modelr_0.1.2     
-[16] readxl_1.1.0      foreach_1.4.4     bindr_0.1.1      
-[19] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
-[22] workflowr_1.1.1   cellranger_1.1.0  rvest_0.3.2      
-[25] R.methodsS3_1.7.1 codetools_0.2-15  evaluate_0.11    
-[28] labeling_0.3      knitr_1.20        parallel_3.6.1   
-[31] class_7.3-14      broom_0.5.0       Rcpp_0.12.18     
-[34] backports_1.1.2   scales_1.0.0      hms_0.4.2        
-[37] digest_0.6.16     stringi_1.2.4     grid_3.6.1       
-[40] rprojroot_1.3-2   cli_1.0.0         tools_3.6.1      
-[43] maps_3.3.0        magrittr_1.5      lazyeval_0.2.1   
-[46] crayon_1.3.4      whisker_0.3-2     pkgconfig_2.0.2  
-[49] xml2_1.2.0        iterators_1.0.10  assertthat_0.2.0 
-[52] rmarkdown_1.10    httr_1.3.1        rstudioapi_0.7   
-[55] R6_2.2.2          nlme_3.1-137      git2r_0.23.0     
-[58] compiler_3.6.1   </code></pre>
+ [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
+ [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
+ [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
+[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
+[13] doMC_1.3.5        modelr_0.1.2      readxl_1.1.0     
+[16] foreach_1.4.4     bindr_0.1.1       plyr_1.8.4       
+[19] munsell_0.5.0     gtable_0.2.0      workflowr_1.1.1  
+[22] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
+[25] codetools_0.2-15  evaluate_0.11     labeling_0.3     
+[28] knitr_1.20        parallel_3.6.1    class_7.3-14     
+[31] broom_0.5.0       Rcpp_0.12.18      backports_1.1.2  
+[34] scales_1.0.0      hms_0.4.2         digest_0.6.16    
+[37] stringi_1.2.4     grid_3.6.1        rprojroot_1.3-2  
+[40] cli_1.0.0         tools_3.6.1       maps_3.3.0       
+[43] magrittr_1.5      lazyeval_0.2.1    crayon_1.3.4     
+[46] whisker_0.3-2     pkgconfig_2.0.2   xml2_1.2.0       
+[49] iterators_1.0.10  assertthat_0.2.0  rmarkdown_1.10   
+[52] httr_1.3.1        rstudioapi_0.7    R6_2.2.2         
+[55] nlme_3.1-137      git2r_0.23.0      compiler_3.6.1   </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
