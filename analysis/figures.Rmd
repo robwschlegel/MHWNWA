@@ -25,24 +25,17 @@ In this final vignette we will go over the creation of the figures used in the p
 # .libPaths(c("~/R-packages", .libPaths()))
 # devtools::install_github("fabrice-rossi/yasomi")
 
-# Packages used in this vignette
-library(jsonlite, lib.loc = "../R-packages/")
-library(tidyverse) # Base suite of functions
-library(ncdf4) # For opening and working with NetCDF files
-library(lubridate) # For convenient date manipulation
-# library(scales) # For scaling data before running SOM
-library(yasomi, lib.loc = "../R-packages/") # The SOM package of choice due to PCI compliance
-library(data.table) # For working with massive dataframes
-
-# Load functions written in previous vignettes
+# Load packages and functions from the central functions script
 source("code/functions.R")
 
-# Set number of cores
-doMC::registerDoMC(cores = 50)
-
-# Disable scientific notation for numeric values
-  # I just find it annoying
-options(scipen = 999)
+# Packages used in this vignette
+# library(jsonlite, lib.loc = "../R-packages/")
+library(tidyverse) # Base suite of functions
+library(lubridate) # For convenient date manipulation
+library(data.table) # For working with massive dataframes
+# library(yasomi, lib.loc = "../R-packages/") # The SOM package of choice due to PCI compliance
+# library(ncdf4) # For opening and working with NetCDF files
+# library(scales) # For scaling data before running SOM
 
 # Set number of cores
 doMC::registerDoMC(cores = 50)
@@ -60,11 +53,6 @@ NAPA_vars <- readRDS("data/NAPA_vars.Rda")
 # Corners of the study area
 NWA_corners <- readRDS("data/NWA_corners.Rda")
 
-# Create smaller corners to use less RAM
-  # This also better matches the previous South African work
-  # The Tasmania work had corners of roughly 2 degrees greater than the study area
-NWA_corners_sub <- c(NWA_corners[1]+8, NWA_corners[2]-8, NWA_corners[3]+8, NWA_corners[4]-8)
-
 # The base map
 map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE)) %>%
   dplyr::rename(lon = long) %>%
@@ -73,30 +61,8 @@ map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE
   select(-region, -subregion)
 
 # Bathymetry data
-  # NB: Should rather use model bathymetry
+  # NB: This was created in a previous version of the polygon-prep vignette
 bathy <- readRDS("data/NWA_bathy_lowres.Rda")
-
-# The grid that will convert the tri-polar coordinates to cartesian
-  # NB: This file was created in the 'tikoraluk' project
-load("data/lon_lat_NAPA_OISST.Rdata")
-
-# Change to fit with this project
-lon_lat_NAPA_OISST <- lon_lat_NAPA_OISST %>% 
-  dplyr::select(-lon, -lat, -dist, -nav_lon_corrected) %>% 
-  dplyr::rename(lon = nav_lon, lat = nav_lat) %>% 
-  mutate(lon = round(lon, 4),
-         lat = round(lat, 4)) %>% 
-  mutate(lon_O = ifelse(lon_O > 180, lon_O-360, lon_O))
-
-# Load MHW results
-NAPA_MHW_sub <- readRDS("data/NAPA_MHW_sub.Rda")
-
-# Events only
-NAPA_MHW_event <- NAPA_MHW_sub %>%
-  select(-clims, -cats) %>%
-  unnest(events) %>%
-  filter(row_number() %% 2 == 0) %>%
-  unnest(events)
 ```
 
 ## Figure 1
@@ -109,7 +75,6 @@ The first figure we will want is that of the study area. This figure will have m
 # Halifax labelled point
 # Text "Labrador Sea"
 # Text: "Labrador Current"
-# Interpolate pixels for visual nice-ness
 # Improve bathymetry contours
   # Look into the new ggfriendly method
 # One panel should contain current vectors
@@ -295,45 +260,40 @@ fig_1
 
 In these next figures we want to show the results of the SOM. These figures will contain 12 panels each and we will need to cleverly combine certain variables so as to limit the number of figures we will create.
 
+Note that the code below does not produce the necessary figures, it serves currently as a placeholder for something that is close.
+
 ```{r som-panel-fig, eval=FALSE}
-# Load data packet
-all_anom <- readRDS("data/packet_all_anom.Rda")
-
-# Load SOM packet for anomaly data
-som_all_anom <- readRDS("data/som_all_anom.Rda")
-
-# Determine node index
-node_index_all_anom <- event_node_index(all_anom, som_all_anom)
-
-# Create and save mean synoptic states per node
-node_mean_all_anom <- som_unpack_mean(all_anom, som_all_anom)
+# Load SOM packet for labrador exclusion data
+som_nolab <- readRDS("data/som_nolab.Rda")
 
 # From the SOM vignette
-som_node_visualise <- function(sub_var = "sst_anom", viridis_option = "D"){
+som_node_visualise <- function(sub_var, som_result,
+                               col_num = 4, file_suffix = "",
+                               fig_height = 9, fig_width = 13){
   
   # Subset data
-  node_mean_all_anom_sub <- node_mean_all_anom %>% 
-    filter(var == sub_var) %>% 
-    mutate(lon = plyr::round_any(lon, 0.25),
-           lat = plyr::round_any(lat, 0.25)) %>% 
-    group_by(node, lon, lat, var) %>% 
-    summarise(val = mean(val, na.rm = T))
+  som_result_sub <- som_result$data %>% 
+    filter(var == sub_var)
 
   # Create plot
-  som_panel_plot <- ggplot(node_mean_all_anom_sub, aes(x = lon, y = lat)) +
+  som_panel_plot <- ggplot(som_result_sub, aes(x = lon, y = lat)) +
     # geom_point(aes(colour = val)) +
-    geom_raster(aes(fill  = val)) +
+    geom_raster(aes(fill = val)) +
     geom_polygon(data = map_base, aes(group = group), show.legend = F) +
-    geom_label(data = node_index_all_anom, aes(x = -60, y = 35, label = paste0("n = ",count))) +
+    geom_label(data = som_result$info, aes(x = -60, y = 35, label = paste0("n = ",count))) +
     # geom_polygon(data = NWA_coords, aes(group = region, fill = region, colour = region), alpha = 0.1) +
-    coord_cartesian(xlim = NWA_corners_sub[1:2],
-                    ylim = NWA_corners_sub[3:4], 
+    coord_cartesian(xlim = c(min(som_result_sub$lon), max(som_result_sub$lon)),
+                    ylim = c(min(som_result_sub$lat), max(som_result_sub$lat)),
                     expand = F) +
     scale_fill_gradient2(low = "blue", high = "red") +
     # scale_colour_viridis_c(option = viridis_option) +
     labs(x = NULL, y = NULL, fill = sub_var) +
-    facet_wrap(~node, ncol = 4) +
+    facet_wrap(~node, ncol = col_num) +
     theme(legend.position = "bottom")
+  
+  # Save and exit
+  ggsave(som_panel_plot, filename = paste0("output/SOM_nodes/som_plot_",sub_var,file_suffix,".pdf"),
+         height = fig_height, width = fig_width)
   return(som_panel_plot)
 }
 ```
@@ -345,58 +305,55 @@ This figure needs to provide a detailed breakdown of the meta data behind the sy
 
 ```{r seasonal-info-fig, eval=FALSE}
 ### TO DO
-# Calculate season based on peak of event
 # Left join tables for event number, sub/region, node
 # Create visuals for the nodes
 
-# Load data packet
-all_anom <- readRDS("data/packet_all_anom.Rda")
-
-# Load SOM packet for anomaly data
-som_all_anom <- readRDS("data/som_all_anom.Rda")
-
-# Determine node index
-node_index_all_anom <- event_node_index(all_anom, som_all_anom) %>% 
-  mutate(event_no = as.numeric(event_no))
+# Load SOM packet for labrador exclusion data
+som_nolab <- readRDS("data/som_nolab.Rda")
 
 # MHW season of (peak) occurrence and other meta-data
-NAPA_MHW_meta <- NAPA_MHW_event %>% 
-  mutate(month_peak = lubridate::month(date_peak, label = T),
-         season_peak = case_when(month_peak %in% c("Jan", "Feb", "Mar") ~ "Winter",
-                                 month_peak %in% c("Apr", "May", "Jun") ~ "Spring",
-                                 month_peak %in% c("Jul", "Aug", "Sep") ~ "Summer",
-                                 month_peak %in% c("Oct", "Nov", "Dec") ~ "Autumn"),
-         sub_region = as.character(sub_region)) %>% 
-  left_join(node_index_all_anom, by = c("region", "sub_region", "event_no"))
-  
+OISST_MHW_meta <- OISST_MHW_event %>% 
+  left_join(som_nolab$info, by = c("region", "event_no"))
+
+# Grid of complete node x season matrix
+node_prop_grid <- expand.grid(seq(1:12), c("Summer", "Autumn", "Winter", "Spring"), 
+                              stringsAsFactors = F) %>% 
+  dplyr::rename(node = Var1, season_peak = Var2)
+
 # Proportion of MHWs in each season in each node
-node_prop_info <- NAPA_MHW_meta %>% 
-  dplyr::select(region:event_no, month_peak:count) %>% 
+node_prop_info <- OISST_MHW_meta %>% 
+  dplyr::select(region:event_no, node:season_peak) %>% 
   group_by(node, season_peak) %>% 
   mutate(node_season_prop = round(n()/count, 2)) %>% 
-  select(season_peak:node_season_prop) %>% 
-  unique() %>% 
+  select(node, count, season_peak:node_season_prop) %>% 
+  unique() %>%
+  na.omit() %>% 
+  right_join(node_prop_grid, by = c("node", "season_peak")) %>% 
+  mutate(node_season_prop = ifelse(is.na(node_season_prop), 0, node_season_prop)) %>% 
+  # Fill holes in count column created by right_join
+  group_by(node) %>% 
+  mutate(count = max(count, na.rm = T)) %>% 
   ungroup()
 
-# Fill in the blanks
-node_prop_grid <- expand.grid(unique(node_prop_info$season_peak), 1:12) %>% 
-  dplyr::rename(season_peak = Var1, node = Var2) %>% 
-  mutate(season_peak = as.character(season_peak)) %>% 
-  # left_join(NWA_coords, by = "") %>% 
-  left_join(node_prop_info, by = c("node", "season_peak")) %>% 
-  mutate(count = replace_na(count, 0),
-         node_season_prop = replace_na(node_season_prop, 0))
+# Grid of complete node x season matrix
+region_prop_grid <- expand.grid(seq(1:12), unique(OISST_MHW_meta$region), 
+                              stringsAsFactors = F) %>% 
+  dplyr::rename(node = Var1, region = Var2)
 
 # Proportion of MHWs in each season in each region
-region_prop_info <- NAPA_MHW_meta %>% 
-  dplyr::select(region:event_no, month_peak:count) %>% 
+region_prop_info <- OISST_MHW_meta %>% 
+  dplyr::select(region:event_no, node:season_peak) %>% 
   group_by(node, region) %>% 
   mutate(region_node_prop = round(n()/count, 2)) %>% 
   select(region, node, count, region_node_prop) %>% 
   unique() %>% 
-  ungroup() #%>% 
-  # right_join(data.frame(node = 1:12), by = "node")
-  # right_join(NWA_coords, by = "region")
+  ungroup() %>% 
+  right_join(region_prop_grid, by = c("node", "region")) %>% 
+  mutate(region_node_prop = ifelse(is.na(region_node_prop), 0, region_node_prop)) %>% 
+  # Fill holes in count column created by right_join
+  group_by(node) %>% 
+  mutate(count = max(count, na.rm = T)) %>% 
+  ungroup()
 
 # Fill in the blanks
 region_prop_grid <- expand.grid(unique(region_prop_info$region), 1:12) %>% 

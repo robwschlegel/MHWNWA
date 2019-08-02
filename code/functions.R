@@ -69,12 +69,12 @@ doy_index <- data.frame(doy_int = 1:366,
 
 # Load anomaly data as necessary
 # This also scales each MLD pixel to 1
-system.time(
-  if(!exists("ALL_anom")) ALL_anom <- readRDS("data/ALL_anom.Rda") %>%
-    group_by(lon, lat) %>%
-    mutate(mld_anom = mld_anom/max(abs(mld_anom), na.rm = T)) %>%
-    ungroup()
-) # 99 seconds
+# system.time(
+#   if(!exists("ALL_anom")) ALL_anom <- readRDS("data/ALL_anom.Rda") %>%
+#     group_by(lon, lat) %>%
+#     mutate(mld_anom = mld_anom/max(abs(mld_anom), na.rm = T)) %>%
+#     ungroup()
+# ) # 99 seconds
 
 # The OISST land mask
 # land_mask_OISST <- readRDS("data/land_mask_OISST.Rda")
