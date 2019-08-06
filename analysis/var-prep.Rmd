@@ -125,16 +125,9 @@ source("code/functions.R")
 OISST_sst <- readRDS("data/OISST_sst.Rda")
 # Calculate clims
 system.time(
-OISST_sst_clim <- OISST_sst %>% 
-  group_by(lon, lat) %>% 
-  nest() %>% 
-  mutate(clims = map(data, ts2clm,
-                     climatologyPeriod = c("1993-01-01", "2018-12-31"),
-                     clmOnly = T, roundClm = FALSE)) %>% 
-  select(-data) %>% 
-  unnest()
+OISST_sst_clim <- ts2clm_one(OISST_sst)
 ) # 1139 seconds
-OISST_sst_clim$thresh <- NULL
+
 # Save
 saveRDS(OISST_sst_clim, "data/OISST_sst_clim.Rda")
 
@@ -146,20 +139,11 @@ saveRDS(OISST_sst_clim, "data/OISST_sst_clim.Rda")
 The last step before we can begin creating our data packets is to now subtract our climatology data from our base data for each of the variables used in this study. We will then save this large anomaly cubes to allow for easy synoptic state creation.
 
 ```{r variable-anomalies, eval=FALSE}
-## SST
-# Load
-OISST_sst <- readRDS("data/OISST_sst.Rda") %>% 
-  mutate(doy = format(t, "%m-%d"))
-OISST_sst_clim <- readRDS("data/OISST_sst_clim.Rda") %>% 
-  left_join(doy_index, by = c("doy" = "doy_int")) %>% 
-  select(-doy) %>% 
-  dplyr::rename(doy = doy.y)
-# Join and calculate anomalies
+# Calculate SST anomalies
 system.time(
-OISST_sst_anom <- left_join(OISST_sst, OISST_sst_clim, by = c("lon", "lat", "doy")) %>% 
-  mutate(sst_anom = round(temp-seas, 2)) %>% 
-  select(lon, lat, t, sst_anom)
+OISST_sst_anom <- anom_one(OISST_sst, OISST_sst_clim, 2)
 ) # 43 seconds
+
 # Save
 saveRDS(OISST_sst_anom, "data/OISST_sst_anom.Rda")
 

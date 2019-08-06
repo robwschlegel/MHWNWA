@@ -394,11 +394,270 @@ som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
 }
 
 
+# Figure 2 code -----------------------------------------------------------
+
+
+# Figure 3 code -----------------------------------------------------------
+
+
+# Figure 4 code -----------------------------------------------------------
+
+
+# Figure 5 code -----------------------------------------------------------
+
+
+# Create summary figures of all nodes together ----------------------------
+
+# testers...
+# som_packet <- readRDS("data/som_nolab.Rda")
+# dir_name = "no_ls"
+# col_num = 4
+# fig_height = 9
+# fig_width = 13
+som_node_visualise <- function(som_packet,
+                               col_num = 4, dir_name = "test",
+                               fig_height = 9, fig_width = 13){
+  # Check if directory exists and create it if not
+  if(!dir.exists(paste0("output/SOM/",dir_name))){
+    dir.create(paste0("output/SOM/",dir_name))
+  }
+
+  # Process data ------------------------------------------------------------
+  # Cast the data wide
+  som_data_wide <- som_packet$data %>%
+    spread(var, val) %>%
+    mutate(mld_anom_cut = cut(mld_anom, breaks = seq(-0.5, 0.5, 0.1)))
+
+  # Reduce wind/ current vectors
+  lon_sub <- seq(min(som_data_wide$lon), max(som_data_wide$lon), by = 1)
+  lat_sub <- seq(min(som_data_wide$lat), max(som_data_wide$lat), by = 1)
+
+  # currents <- currents[(currents$lon %in% lon_sub & currents$lat %in% lat_sub),]
+  som_data_sub <- som_data_wide %>%
+    filter(lon %in% lon_sub, lat %in% lat_sub) %>%
+    mutate(arrow_size = 0.1)
+  # Creating dynamic arrow sizes does not work as ggplot cannot match up the vectorscorrectly
+
+  # Establish the vector scalar for the currents
+  current_uv_scalar <- 4
+
+  # Establish the vector scalar for the wind
+  wind_uv_scalar <- 0.5
+
+  # MHW season of (peak) occurrence and other meta-data
+  OISST_MHW_meta <- OISST_MHW_event %>%
+    left_join(som_packet$info, by = c("region", "event_no"))
+
+  # Grid of complete node x season matrix
+  node_prop_grid <- expand.grid(seq(1:12), c("Summer", "Autumn", "Winter", "Spring"),
+                                stringsAsFactors = F) %>%
+    dplyr::rename(node = Var1, season_peak = Var2)
+
+  # Proportion of MHWs in each season in each node
+  node_prop_info <- OISST_MHW_meta %>%
+    dplyr::select(region:event_no, node:season_peak) %>%
+    group_by(node, season_peak) %>%
+    mutate(node_season_prop = round(n()/count, 2)) %>%
+    select(node, count, season_peak:node_season_prop) %>%
+    unique() %>%
+    na.omit() %>%
+    right_join(node_prop_grid, by = c("node", "season_peak")) %>%
+    mutate(node_season_prop = ifelse(is.na(node_season_prop), 0, node_season_prop)) %>%
+    # Fill holes in count column created by right_join
+    group_by(node) %>%
+    mutate(count = max(count, na.rm = T)) %>%
+    ungroup()
+
+  # Grid of complete node x season matrix
+  region_prop_grid <- expand.grid(seq(1:12), unique(OISST_MHW_meta$region),
+                                  stringsAsFactors = F) %>%
+    dplyr::rename(node = Var1, region = Var2)
+
+  # Proportion of MHWs in each season in each region
+  region_prop_info <- OISST_MHW_meta %>%
+    dplyr::select(region:event_no, node:season_peak) %>%
+    group_by(node, region) %>%
+    mutate(region_node_prop = round(n()/count, 2)) %>%
+    select(region, node, count, region_node_prop) %>%
+    unique() %>%
+    ungroup() %>%
+    right_join(region_prop_grid, by = c("node", "region")) %>%
+    mutate(region_node_prop = ifelse(is.na(region_node_prop), 0, region_node_prop)) %>%
+    # Fill holes in count column created by right_join
+    group_by(node) %>%
+    mutate(count = max(count, na.rm = T)) %>%
+    ungroup()
+
+  # Fill in the blanks
+  region_prop_grid <- expand.grid(unique(region_prop_info$region), 1:12) %>%
+    dplyr::rename(region = Var1, node = Var2) %>%
+    mutate(region = as.character(region)) %>%
+    left_join(NWA_coords, by = "region") %>%
+    left_join(region_prop_info, by = c("region", "node")) %>%
+    mutate(count = replace_na(count, 0),
+           region_node_prop = replace_na(region_node_prop, 0)) %>%
+    filter(region != "ls")
+
+  # Create labels for number of states per region per node
+  region_prop_label <- region_prop_grid %>%
+    group_by(region, node, count, region_node_prop) %>%
+    summarise(lon = mean(lon), lat = mean(lat)) %>%
+    mutate(count_region_node = round(count*region_node_prop))
+
+  # Create and save sst + u + v figure --------------------------------------
+  fig_2 <- ggplot(data = som_data_wide, aes(x = lon, y = lat)) +
+    # The ocean temperature
+    geom_raster(aes(fill = sst_anom)) +
+    # The bathymetry
+    # stat_contour(data = bathy[bathy$depth < -100 & bathy$depth > -300,],
+    # aes(x = lon, y = lat, z = depth), alpha = 0.5,
+    # colour = "ivory", size = 0.5, binwidth = 200, na.rm = TRUE, show.legend = FALSE) +
+    # The current vectors
+    geom_segment(data = som_data_sub, aes(xend = lon + u_anom * current_uv_scalar,
+                                          yend = lat + v_anom * current_uv_scalar),
+                 arrow = arrow(angle = 40, length = unit(som_data_sub$arrow_size, "cm"), type = "open"),
+                 linejoin = "mitre", size = 0.4, alpha = 0.8) +
+    # The land mass
+    geom_polygon(data = map_base, aes(group = group), alpha = 0.8,
+                 fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
+    # Scale labels
+    scale_x_continuous(breaks = seq(-70, -50, 10),
+                       labels = c("70°W", "60°W", "50°W"),
+                       position = "top") +
+    scale_y_continuous(breaks = c(40, 50),
+                       labels = scales::unit_format(suffix = "°N", sep = "")) +
+    labs(x = NULL, y = NULL) +
+    # Slightly shrink the plotting area
+    coord_cartesian(xlim = c(min(som_data_wide$lon), max(som_data_wide$lon)),
+                    ylim = c(min(som_data_wide$lat), max(som_data_wide$lat)),
+                    expand = F) +
+    # Use diverging gradient
+    scale_fill_gradient2(name = "SST\nanom. (°C)", low = "blue", high = "red") +
+    # Adjust the theme
+    theme_bw() +
+    theme(panel.border = element_rect(fill = NA, colour = "black", size = 1),
+          axis.text = element_text(size = 12, colour = "black"),
+          axis.ticks = element_line(colour = "black")) +
+    facet_wrap(~node, ncol = col_num)
+  # fig_2
+  ggsave(fig_2, filename = paste0("output/SOM/",dir_name,"/fig_2.pdf"),
+         height = fig_height, width = fig_width)
+
+  # Create and save air temp + u + v ----------------------------------------
+  fig_3 <- ggplot(data = som_data_wide, aes(x = lon, y = lat)) +
+    # The surface air temperature anomaly
+    geom_raster(aes(fill = t2m_anom)) +
+    # The land mass
+    geom_polygon(data = map_base, aes(group = group), alpha = 0.9,
+                 fill = NA, colour = "black", size = 0.5, show.legend = FALSE) +
+    # The wind vectors
+    geom_segment(data = som_data_sub, aes(xend = lon + u10_anom * wind_uv_scalar,
+                                          yend = lat + v10_anom * wind_uv_scalar),
+                 arrow = arrow(angle = 40, length = unit(som_data_sub$arrow_size, "cm"), type = "open"),
+                 linejoin = "mitre", size = 0.4, alpha = 0.4) +
+    # Better scale labels
+    scale_x_continuous(breaks = seq(-70, -50, 10),
+                       labels = c("70°W", "60°W", "50°W"),
+                       position = "top") +
+    scale_y_continuous(breaks = c(40, 50),
+                       labels = scales::unit_format(suffix = "°N", sep = "")) +
+    labs(x = NULL, y = NULL) +
+    # Trim plotting area
+    coord_cartesian(xlim = c(min(som_data_wide$lon), max(som_data_wide$lon)),
+                    ylim = c(min(som_data_wide$lat), max(som_data_wide$lat)),
+                    expand = F) +
+    # Use diverging gradient
+    scale_fill_gradient2(name = "Air temp.\nanom. (°C)", low = "blue", high = "red") +
+    # Adjust the theme
+    theme_bw() +
+    theme(panel.border = element_rect(fill = NA, colour = "black", size = 1),
+          axis.text = element_text(size = 12, colour = "black"),
+          axis.ticks = element_line(colour = "black")) +
+    facet_wrap(~node, ncol = col_num)
+  # fig_3
+  ggsave(fig_3, filename = paste0("output/SOM/",dir_name,"/fig_3.pdf"),
+         height = fig_height, width = fig_width)
+
+  # Create and save net downward heat flux and MLD --------------------------
+  fig_4 <- ggplot(data = som_data_wide, aes(x = lon, y = lat)) +
+    # Net downward heat flux anomaly
+    geom_raster(aes(fill = qnet_anom)) +
+    # The MLD contours
+    geom_contour(aes(z = round(mld_anom, 1), colour = ..level..), size = 1) +
+    # The land mass
+    geom_polygon(data = map_base, aes(group = group), alpha = 0.8,
+                 fill = NA, colour = "black", size = 0.5, show.legend = FALSE) +
+    # Colour scale
+    scale_fill_gradient2("Net downward\nheat flux\nanom. (W/m2)", low = "blue", high = "red") +
+    scale_colour_gradient2(low = "brown", mid = "grey", high = "yellow") +
+    # Better scale labels
+    scale_x_continuous(breaks = seq(-70, -50, 10),
+                       labels = c("70°W", "60°W", "50°W"),
+                       position = "top") +
+    scale_y_continuous(breaks = c(40, 50),
+                       labels = scales::unit_format(suffix = "°N", sep = "")) +
+    labs(x = NULL, y = NULL) +
+    # Trim plotting area
+    coord_cartesian(xlim = c(min(som_data_wide$lon), max(som_data_wide$lon)),
+                    ylim = c(min(som_data_wide$lat), max(som_data_wide$lat)),
+                    expand = F) +
+    # Adjust the theme
+    theme_bw() +
+    theme(panel.border = element_rect(fill = NA, colour = "black", size = 1),
+          axis.text = element_text(size = 12, colour = "black"),
+          axis.ticks = element_line(colour = "black")) +
+    facet_wrap(~node, ncol = col_num)
+  # fig_4
+  ggsave(fig_4, filename = paste0("output/SOM/",dir_name,"/fig_4.pdf"),
+         height = fig_height, width = fig_width)
+
+  # Create and save the events per region -----------------------------------
+  fig_5 <- ggplot(data = region_prop_grid, aes(x = lon, y = lat)) +
+    # The base map
+    geom_polygon(data = map_base, aes(group = group), show.legend = F) +
+    # The regions
+    geom_polygon(aes(group = region, fill = region_node_prop), colour = "black") +
+    # Assorted labels
+    geom_label(data = region_prop_label, aes(label = count_region_node)) +
+    geom_label(aes(x = -68, y = 35, label = paste0("n = ",count))) +
+    geom_label(data = filter(node_prop_info, season_peak == "Winter"),
+               aes(x = -58, y = 37, fill = node_season_prop, label = "Winter"), colour = "black") +
+    geom_label(data = filter(node_prop_info, season_peak == "Spring"),
+               aes(x = -48, y = 37, fill = node_season_prop, label = "Spring"), colour = "black") +
+    geom_label(data = filter(node_prop_info, season_peak == "Summer"),
+               aes(x = -58, y = 35, fill = node_season_prop, label = "Summer"), colour = "black") +
+    geom_label(data = filter(node_prop_info, season_peak == "Autumn"),
+               aes(x = -48, y = 35, fill = node_season_prop, label = "Autumn"), colour = "black") +
+    scale_fill_distiller("Proportion of events\nper region per node",
+                         palette = "BuPu", direction = 1) +
+    # Trim plotting area
+    coord_cartesian(xlim = c(min(som_data_wide$lon), max(som_data_wide$lon)),
+                    ylim = c(min(som_data_wide$lat), max(som_data_wide$lat)),
+                    expand = F) +
+    # Adjust the theme
+    theme_bw() +
+    theme(panel.border = element_rect(fill = NA, colour = "black", size = 1),
+          axis.text = element_text(size = 12, colour = "black"),
+          axis.ticks = element_line(colour = "black")) +
+    facet_wrap(~node, ncol = col_num)
+  # fig_5
+  ggsave(fig_5, filename = paste0("output/SOM/",dir_name,"/fig_5.pdf"),
+         height = fig_height, width = fig_width)
+
+  # Create individual node summaries ----------------------------------------
+
+  plyr::l_ply(1:12, .fun = node_figure, .parallel = T,
+              som_packet = som_packet, dir_name = dir_name)
+}
+
+
 # Create a summary figure for a chosen node -------------------------------
 ## NB: This function contains objects created in "IMBeR_2019_figures.R"
 
-node_figure <- function(node_number, node_index){
-  sub_synoptic_state <- synoptic_states %>%
+# testers...
+# node_number = 1
+node_figure <- function(node_number, som_packet, dir_name){
+  sub_synoptic_state <- som_packet$data %>%
     ungroup() %>%
     left_join(node_index, by = c("region", "event_no")) %>%
     filter(node == node_number) %>%

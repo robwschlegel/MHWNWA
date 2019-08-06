@@ -94,6 +94,14 @@ source("code/functions.R")
 
 # nc_info <- ncdump::NetCDF(ERA5_u_files[1])$variable$name
 
+## Sea surface temperature
+  # NB: This file was createds in the sst-prep vignette
+# OISST_sst <- readRDS("data/OISST_sst.Rda")
+# OISST_sst_clim <- ts2clm_one(OISST_sst)
+# saveRDS(OISST_sst_clim, "data/OISST_sst_clim.Rda")
+# OISST_sst_anom <- anom_one(OISST_sst, OISST_sst_clim, 2)
+# saveRDS(OISST_sst_anom, "data/OISST_sst_anom.Rda")
+
 ## Air temperature at 2 metres
 # Grab file location
 # print(paste0("Began loading t2m at ", Sys.time()))
@@ -186,7 +194,7 @@ source("code/functions.R")
 # saveRDS(GLORYS_mld_anom, "data/GLORYS_mld_anom.Rda")
 
 
-# Combine clims into one data.frame ---------------------------------------
+# Combine anomalies into one data.frame -----------------------------------
 # Loading all of the anomaly data.frames at once doesn't use up too much RAM,
 # but the combining of them hangs really badly
 # For that reason we are going to load and combine them one at a time,
