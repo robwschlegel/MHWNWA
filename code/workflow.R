@@ -278,5 +278,9 @@ source("code/functions.R")
 
 # Visuals -----------------------------------------------------------------
 
+# No Labrador Sea SOM visuals
+som_no_ls <- readRDS("data/som_nolab.Rda")
+som_node_visualise(som_no_ls, dir_name = "no_ls")
+
 # Create a four panel summary figure for each node result
 # plyr::l_ply(1:12, .fun = node_figure, .parallel = T)
