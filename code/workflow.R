@@ -34,12 +34,10 @@ source("code/functions.R")
 # See the "SST preparation" vignette
 
 
-# Data prep ---------------------------------------------------------------
+# Create net heat flux (qnet) variable ------------------------------------
+# This requires combining four full variables from the ERA 5 data
 
-# Create net heat flux (qnet) variable
-  # This requires combining four full variables from the ERA 5 data
-
-# nc_info <- ncdump::NetCDF(ERA5_shf_files[1])$variable$name
+# nc_info <- ncdump::NetCDF(ERA5_lhf_files[1])$variable$name
 
 ## Long wave radiation
 # "msnlwrf"
@@ -130,7 +128,7 @@ source("code/functions.R")
 # ERA5_u_anom <- anom_one(ERA5_u, ERA5_u_clim, 6)
 # saveRDS(ERA5_u_anom, "data/ERA5_u_anom.Rda")
 
-## Surface winds U component
+## Surface winds V component
 # "v10"
 # print(paste0("Began loading v10 at ", Sys.time()))
 # ERA5_v_files <- dir("../../oliver/data/ERA/ERA5/V10", full.names = T, pattern = "ERA5")[15:40]
@@ -161,7 +159,7 @@ source("code/functions.R")
 #          # This line of code removes xxx rows of data
 #          min(t, na.rm = T) == "1993-01-01") %>%
 #   ungroup()
-# test visuals
+## test visuals
 # ggplot(filter(GLORYS_all, t == "2013-06-01"), aes(x = lon, y = lat, fill = mld)) +
 #   geom_raster() +
 #   scale_fill_gradient2()
@@ -194,6 +192,44 @@ source("code/functions.R")
 # saveRDS(GLORYS_mld_anom, "data/GLORYS_mld_anom.Rda")
 
 
+# Combine all clims into one data.frame -----------------------------------
+
+# Load all climatology files
+  # NB: There are three slightly different coordinate schemes at play
+# OISST_sst_clim <- readRDS("data/OISST_sst_clim.Rda") %>%
+#   mutate(lon = lon-0.125, lat = lat+0.125) %>%
+#   dplyr::rename(sst_clim = seas)
+# GLORYS_mld_clim <- readRDS("data/GLORYS_mld_clim.Rda") %>%
+#   dplyr::rename(mld_clim = seas)
+# GLORYS_u_clim <- readRDS("data/GLORYS_u_clim.Rda") %>%
+#   dplyr::rename(u_clim = seas)
+# GLORYS_v_clim <- readRDS("data/GLORYS_v_clim.Rda") %>%
+#   dplyr::rename(v_clim = seas)
+# ERA5_qnet_clim <- readRDS("data/ERA5_qnet_clim.Rda") %>%
+#   mutate(lon = ifelse(lon > 180, lon-360, lon)) %>%
+#   dplyr::rename(qnet_clim = seas)
+# ERA5_t2m_clim <- readRDS("data/ERA5_t2m_clim.Rda") %>%
+#   mutate(lon = ifelse(lon > 180, lon-360, lon)) %>%
+#   dplyr::rename(t2m_clim = seas)
+# ERA5_u_clim <- readRDS("data/ERA5_u_clim.Rda") %>%
+#   mutate(lon = ifelse(lon > 180, lon-360, lon)) %>%
+#   dplyr::rename(u10_clim = seas)
+# ERA5_v_clim <- readRDS("data/ERA5_v_clim.Rda") %>%
+#   mutate(lon = ifelse(lon > 180, lon-360, lon)) %>%
+#   dplyr::rename(v10_clim = seas)
+
+# Combine into one object
+# system.time(
+#   ALL_clim <- purrr::reduce(list(ERA5_qnet_clim, ERA5_t2m_clim,
+#                                  ERA5_v_clim, ERA5_u_clim,
+#                                  GLORYS_mld_clim, GLORYS_v_clim,
+#                                  GLORYS_u_clim, OISST_sst_clim), left_join, by = c("lon", "lat", "doy"))
+# ) # 64 seconds
+
+# Save
+# saveRDS(ALL_clim, "data/ALL_clim.Rda")
+
+
 # Combine anomalies into one data.frame -----------------------------------
 # Loading all of the anomaly data.frames at once doesn't use up too much RAM,
 # but the combining of them hangs really badly
@@ -201,7 +237,7 @@ source("code/functions.R")
 # purging the memory as we go
 
 ## ERA 5
-# NB: We start with ERA 5 as it has the most pixels due to it being atmospheric
+## NB: We start with ERA 5 as it has the most pixels due to it being atmospheric
 # system.time(ERA5_u_anom <- load_anom("data/ERA5_u_anom.Rda")) # 67 seconds
 # system.time(ERA5_v_anom <- load_anom("data/ERA5_v_anom.Rda")) # 69 seconds
 # system.time(ALL_anom <- merge(ERA5_u_anom, ERA5_v_anom,
@@ -234,8 +270,10 @@ source("code/functions.R")
 #                               by = c("lon", "lat", "t"), all.x = T)) # 36 seconds
 # rm(OISST_sst_anom); gc()
 ## Save
-# NB: This causes RStudio server to hang, but it still works
+## NB: This causes RStudio server to hang, but it still works
+# system.time(
 # saveRDS(ALL_anom, "data/ALL_anom.Rda")
+# ) # xxx seconds
 ## Load
 # system.time(
 # ALL_anom <- readRDS("data/ALL_anom.Rda")
@@ -250,9 +288,9 @@ source("code/functions.R")
 
 # Data packets ------------------------------------------------------------
 
-
 # Set number of cores
-# doMC::registerDoMC(cores = 50)
+  # NB: 50 cores can be too much for the RAM
+# doMC::registerDoMC(cores = 25)
 
 # Create one big packet
 # system.time(
@@ -275,12 +313,37 @@ source("code/functions.R")
 # system.time(som_nolabgsl <- som_model_PCI(packet_nolabgsl)) # 75 seconds
 # saveRDS(som_nolabgsl, file = "data/som_nolabgsl.Rda")
 
+## See the som vignette for more variations
+
 
 # Visuals -----------------------------------------------------------------
 
-# No Labrador Sea SOM visuals
-som_no_ls <- readRDS("data/som_nolab.Rda")
-som_node_visualise(som_no_ls, dir_name = "no_ls")
+# No Labrador Shelf SOM visuals
+# som_no_ls <- readRDS("data/som_nolab.Rda")
+# som_node_visualise(som_no_ls, dir_name = "no_ls")
 
-# Create a four panel summary figure for each node result
-# plyr::l_ply(1:12, .fun = node_figure, .parallel = T)
+# No Labrador Sea or Gulf of St Lawrence SOM visuals
+# som_no_ls_gsl <- readRDS("data/som_nolabgsl.Rda")
+# som_node_visualise(som_no_ls_gsl, dir_name = "no_ls_gsl")
+
+# No Labrador Sea SOM visuals with 4x4 nodes
+# som_no_ls_4x4 <- readRDS("data/som_nolab_16.Rda")
+# som_node_visualise(som_no_ls_4x4, dir_name = "no_ls_4x4", col_num = 4)
+
+# No Labrador Sea SOM visuals with 3x3 nodes
+# som_no_ls_3x3 <- readRDS("data/som_nolab_9.Rda")
+# som_node_visualise(som_no_ls_3x3, dir_name = "no_ls_3x3", col_num = 3)
+
+# No Labrador Sea and no moderate event SOM visuals
+# som_no_ls_mod <- readRDS("data/som_nolabmod.Rda")
+# som_node_visualise(som_no_ls_mod, dir_name = "no_ls_mod", col_num = 2)
+
+# No Labrador Sea and no events shorter than 2 weeks SOM visuals
+# som_no_ls_14 <- readRDS("data/som_nolab14.Rda")
+# som_node_visualise(som_no_ls_14, dir_name = "no_ls_14", col_num = 3)
+
+# SOM visuals with all data
+  # NB: The visuals are framed to the no ls area
+  # so the figures created here have the top bit cut off
+# som_all <- readRDS("data/som_all.Rda")
+# som_node_visualise(som_all, dir_name = "all")
