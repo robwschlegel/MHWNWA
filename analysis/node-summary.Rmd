@@ -70,7 +70,7 @@ The table below contains a concise summary of the nodes from the more promising 
 The captions for the figures below have a lot of acronyms in them but they are consistently used and I will provide a list of what they are here. Whenever one sees an acronym in lower case letters it is refering to one of the regions of the study area as seen in the following figure.
 
 ```{r study-regions, out.width='100%', fig.align='center', fig.cap='The regions of the coast were devided up by their temperature and salinity regimes based on work by @Richaud2016. The regions were furthered divided into sub-regions based on their depth.'}
-knitr::include_graphics("assets/study_regions.png")
+# knitr::include_graphics("assets/study_regions.png")
 ```
 
 The region abbreviations are:  
