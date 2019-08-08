@@ -142,47 +142,41 @@ source("code/functions.R")
 # saveRDS(ERA5_v_anom, "data/ERA5_v_anom.Rda")
 
 ### GLORYS data processing
-## Load low-res GLORYS data
-# GLORYS_low_res_files <- dir("../data/GLORYS", full.names = T, pattern = "quarter")
-# GLORYS_low_res <- load_all_GLORYS(GLORYS_low_res_files)
 ## Load high-res GLORYS data
-  # NB: This is aitomatically constrained to the same 1/4 degree grid as the low-res data
+  # NB: This automatically constrains the data to the same 1/4 degree grid as the low-res data
 # GLORYS_high_res_files <- dir("../data/GLORYS", full.names = T, pattern = "twelfth")
-# GLORYS_high_res <- load_all_GLORYS_hires(GLORYS_high_res_files)
-## Combine GLORYS low and high-res
-  # NB: Some of the newer high-res pixels don't continue on from the low-res pixels
-# GLORYS_all <- rbind(GLORYS_low_res, GLORYS_high_res) %>%
-#   group_by(lon, lat) %>%
-#   # This line of code removes 67184 rows of data
-#   filter(max(t, na.rm = T) == "2018-12-25",
-#          # This line of code removes xxx rows of data
-#          min(t, na.rm = T) == "1993-01-01") %>%
-#   ungroup()
+# system.time(
+# GLORYS_all <- load_all_GLORYS_hires(GLORYS_high_res_files)
+# ) # 83 seconds
 ## test visuals
-# ggplot(filter(GLORYS_all, t == "2013-06-01"), aes(x = lon, y = lat, fill = mld)) +
+# ggplot(filter(GLORYS_all, t == "1998-01-01"), aes(x = lon, y = lat, fill = mld)) +
 #   geom_raster() +
 #   scale_fill_gradient2()
-## Separate into three variables
-# Surface currents U
+### Separate into three variables
+## Surface currents U
 # GLORYS_u <- select(GLORYS_all, lon, lat, t, u)
 # saveRDS(GLORYS_u, "data/GLORYS_u.Rda")
-# Surface currents V
+## Surface currents V
 # GLORYS_v <- select(GLORYS_all, lon, lat, t, v)
 # saveRDS(GLORYS_v, "data/GLORYS_v.Rda")
-# Mixed layer depth
+## Mixed layer depth
 # GLORYS_mld <- select(GLORYS_all, lon, lat, t, mld)
 # saveRDS(GLORYS_mld, "data/GLORYS_mld.Rda")
 ## Calculate climatologies
+# print(paste0("Began u clims at ", Sys.time()))
 # GLORYS_u <- readRDS("data/GLORYS_u.Rda")
 # GLORYS_u_clim <- ts2clm_one(GLORYS_u, GLORYS = T)
 # saveRDS(GLORYS_u_clim, "data/GLORYS_u_clim.Rda")
+# print(paste0("Began v clims at ", Sys.time()))
 # GLORYS_v <- readRDS("data/GLORYS_v.Rda")
 # GLORYS_v_clim <- ts2clm_one(GLORYS_v, GLORYS = T)
 # saveRDS(GLORYS_v_clim, "data/GLORYS_v_clim.Rda")
+# print(paste0("Began mld clims at ", Sys.time()))
 # GLORYS_mld <- readRDS("data/GLORYS_mld.Rda")
 # GLORYS_mld_clim <- ts2clm_one(GLORYS_mld, GLORYS = T)
 # saveRDS(GLORYS_mld_clim, "data/GLORYS_mld_clim.Rda")
 ## Calculate anomalies
+# print(paste0("Began GLORYS anoms at ", Sys.time()))
 # GLORYS_u_anom <- anom_one(GLORYS_u, GLORYS_u_clim, 6)
 # saveRDS(GLORYS_u_anom, "data/GLORYS_u_anom.Rda")
 # GLORYS_v_anom <- anom_one(GLORYS_v, GLORYS_v_clim, 6)
@@ -195,6 +189,7 @@ source("code/functions.R")
 
 # Load all climatology files
   # NB: There are three slightly different coordinate schemes at play
+# print(paste0("Began loading all clims at ", Sys.time()))
 # OISST_sst_clim <- readRDS("data/OISST_sst_clim.Rda") %>%
 #   mutate(lon = lon-0.125, lat = lat+0.125) %>%
 #   dplyr::rename(sst_clim = seas)
@@ -218,11 +213,12 @@ source("code/functions.R")
 #   dplyr::rename(v10_clim = seas)
 
 # Combine into one object
+# print(paste0("Began combining all clims at ", Sys.time()))
 # system.time(
-#   ALL_clim <- purrr::reduce(list(ERA5_qnet_clim, ERA5_t2m_clim,
-#                                  ERA5_v_clim, ERA5_u_clim,
-#                                  GLORYS_mld_clim, GLORYS_v_clim,
-#                                  GLORYS_u_clim, OISST_sst_clim), left_join, by = c("lon", "lat", "doy"))
+# ALL_clim <- purrr::reduce(list(ERA5_qnet_clim, ERA5_t2m_clim,
+#                                ERA5_v_clim, ERA5_u_clim,
+#                                GLORYS_mld_clim, GLORYS_v_clim,
+#                                GLORYS_u_clim, OISST_sst_clim), left_join, by = c("lon", "lat", "doy"))
 # ) # 64 seconds
 
 # Save
@@ -235,8 +231,10 @@ source("code/functions.R")
 # For that reason we are going to load and combine them one at a time,
 # purging the memory as we go
 
-## ERA 5
-## NB: We start with ERA 5 as it has the most pixels due to it being atmospheric
+# print(paste0("Began combining all anoms at ", Sys.time()))
+
+# ERA 5
+# NB: We start with ERA 5 as it has the most pixels due to it being atmospheric
 # system.time(ERA5_u_anom <- load_anom("data/ERA5_u_anom.Rda")) # 67 seconds
 # system.time(ERA5_v_anom <- load_anom("data/ERA5_v_anom.Rda")) # 69 seconds
 # system.time(ALL_anom <- merge(ERA5_u_anom, ERA5_v_anom,
@@ -250,7 +248,8 @@ source("code/functions.R")
 # system.time( ALL_anom <- merge(ALL_anom, ERA5_qnet_anom,
 #                                by = c("lon", "lat", "t"), all.x = T)) # 33 seconds
 # rm(ERA5_qnet_anom); gc()
-## GLORYS
+
+# GLORYS
 # system.time(GLORYS_u_anom <- load_anom("data/GLORYS_u_anom.Rda")) # 59 seconds
 # system.time(ALL_anom <- merge(ALL_anom, GLORYS_u_anom,
 #                               by = c("lon", "lat", "t"), all.x = T)) # 33 seconds
@@ -263,17 +262,21 @@ source("code/functions.R")
 # system.time(ALL_anom <- merge(ALL_anom, GLORYS_mld_anom,
 #                               by = c("lon", "lat", "t"), all.x = T)) # 33 seconds
 # rm(GLORYS_mld_anom); gc()
-## OISST
+
+# OISST
 # system.time(OISST_sst_anom <- load_anom("data/OISST_sst_anom.Rda", OISST = T)) # 35 seconds
 # system.time(ALL_anom <- merge(ALL_anom, OISST_sst_anom,
 #                               by = c("lon", "lat", "t"), all.x = T)) # 36 seconds
 # rm(OISST_sst_anom); gc()
-## Save
-## NB: This causes RStudio server to hang, but it still works
+
+# Save
+# NB: This causes RStudio server to hang, but it still works
+# print(paste0("Began saving all anoms at ", Sys.time()))
 # system.time(
 # saveRDS(ALL_anom, "data/ALL_anom.Rda")
-# ) # xxx seconds
-## Load
+# ) # 514 seconds
+
+# Load
 # system.time(
 # ALL_anom <- readRDS("data/ALL_anom.Rda")
 # ) # 78 seconds
@@ -289,15 +292,16 @@ source("code/functions.R")
 
 # Set number of cores
   # NB: 50 cores can be too much for the RAM
-# doMC::registerDoMC(cores = 25)
+doMC::registerDoMC(cores = 25)
 
 # Create one big packet
+print(paste0("Began creating data packets at ", Sys.time()))
 # system.time(
 # synoptic_states <- plyr::ddply(OISST_MHW_event, c("region", "event_no"), data_packet, .parallel = T)
 # ) # 3 seconds for first event, 50 for all events
 
 # Save
-# saveRDS(synoptic_states, "data/synoptic_states.Rda")
+saveRDS(synoptic_states, "data/synoptic_states.Rda")
 
 
 # SOM analysis ------------------------------------------------------------

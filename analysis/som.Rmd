@@ -120,9 +120,11 @@ NWA_coords_nolabgsl <- NWA_coords %>%
 #   geom_polygon(data = NWA_coords_nolabgsl, aes(colour = region), fill = NA)
 
 # Function for casting wide the custom packets
-create_packet <- function(df){
+wide_packet <- function(df){
+  
   # Cast the data to a single row
   res <- data.table::data.table(df) %>% 
+    select(-t) %>% 
     reshape2::melt(id = c("region", "event_no", "lon", "lat"),
                    measure = c(colnames(.)[-c(1:4)]), 
                    variable.name = "var", value.name = "val") %>% 
@@ -130,34 +132,45 @@ create_packet <- function(df){
     unite(coords, c(lon, lat, var), sep = "BBB") %>%
     unite(event_ID, c(region, event_no), sep = "BBB") %>%
     reshape2::dcast(event_ID ~ coords, value.var = "val")
+  
   # Remove columns (pixels) with missing data
   res_fix <- res[,colSums(is.na(res))<1]
-  return(res_fix)
+  
+  # Remove columns (pixels) with no variance
+  # This may occur in pixels where there is no variance in MLD anomaly
+  no_var <- data.frame(min = sapply(res_fix[,-1], min),
+                       max = sapply(res_fix[,-1],max)) %>% 
+    mutate(col_name = row.names(.)) %>% 
+    filter(min == max)
+  res_filter <- res_fix[,!(colnames(res_fix) %in% no_var$col_name)]
+  
+  # Exit
+  return(res_filter)
 }
 
 # Packet for entire study region
 system.time(
-  packet_all <- create_packet(synoptic_states_unnest)
-) # 185 seconds
-# saveRDS(packet_all, "data/packet_all.Rda")
+  packet_all <- wide_packet(synoptic_states_unnest)
+) # 182 seconds
+saveRDS(packet_all, "data/packet_all.Rda")
 
 # Exclude Labrador region
 system.time(
   packet_nolab <- synoptic_states_unnest %>% 
     filter(region != "ls",
            lat <= round(max(NWA_coords_nolab$lat))+0.5) %>% 
-    create_packet()
-) # 142 seconds
-# saveRDS(packet_nolab, "data/packet_nolab.Rda")
+    wide_packet()
+) # 103 seconds
+saveRDS(packet_nolab, "data/packet_nolab.Rda")
 
 # Exclude Labrador and Gulf of St Lawrence regions
 system.time(
   packet_nolabgsl <- synoptic_states_unnest %>% 
     filter(!region %in% c("ls", "gsl"),
            lat <= round(max(NWA_coords_nolabgsl$lat))+0.5) %>% 
-    create_packet()
-) # 106 seconds
-# saveRDS(packet_nolabgsl, "data/packet_nolabgsl.Rda")
+    wide_packet()
+) # 82 seconds
+saveRDS(packet_nolabgsl, "data/packet_nolabgsl.Rda")
 
 # Exclude Labrador region and moderate events
 system.time(
@@ -167,9 +180,9 @@ system.time(
     left_join(select(OISST_MHW_cats, region, event_no, category), by = c("region", "event_no")) %>% 
     filter(category != "I Moderate") %>% 
     select(-category) %>% 
-    create_packet()
-) # 15 seconds
-# saveRDS(packet_nolabmod, "data/packet_nolabmod.Rda")
+    wide_packet()
+) # 14 seconds
+saveRDS(packet_nolabmod, "data/packet_nolabmod.Rda")
 
 # Exclude Labrador region and moderate events
 system.time(
@@ -179,9 +192,9 @@ system.time(
     left_join(select(OISST_MHW_cats, region, event_no, duration), by = c("region", "event_no")) %>% 
     filter(duration >= 14) %>% 
     select(-duration) %>% 
-    create_packet()
+    wide_packet()
 ) # 40 seconds
-# saveRDS(packet_nolab14, "data/packet_nolab14.Rda")
+saveRDS(packet_nolab14, "data/packet_nolab14.Rda")
 ```
 
 ## Run SOM models
@@ -191,8 +204,6 @@ Now that we have our data packets to feed the SOM, we need a function that will 
 ```{r som-func}
 # Function for calculating SOMs using PCI
 # This outputs the mean values for each SOM as well
-  # NB: 4x4 produced one empty cell and one cell with only one event
-  # So the default size has been reduced to 4x3
 som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
   # Create a scaled matrix for the SOM
   # Cancel out first column as this is the reference ID of the event per row
@@ -252,7 +263,7 @@ som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
                               node_data_wide$node, distance = "euclidean")$signif
   
   # Combine and exit
-  res <- list(data = node_data, info = node_info, ANOSIM = paste0("p = ",som_anosim))
+  res <- list(data = node_data, info = node_info, ANOSIM = paste0("p = ",round(som_anosim, 4)))
   return(res)
 }
 ```
@@ -262,19 +273,19 @@ With the function sorted, we now feed it the data packets.
 ```{r som-run, eval=FALSE}
 # The SOM on the entire study area
 packet_all <- readRDS("data/packet_all.Rda")
-system.time(som_all <- som_model_PCI(packet_all)) # 136 seconds
+system.time(som_all <- som_model_PCI(packet_all)) # 132 seconds
 # som_all$ANOSIM # p = 0.001
 saveRDS(som_all, file = "data/som_all.Rda")
 
 # The SOM excluding the Labrador Sea region
 packet_nolab <- readRDS("data/packet_nolab.Rda")
-system.time(som_nolab <- som_model_PCI(packet_nolab)) # 72 seconds
+system.time(som_nolab <- som_model_PCI(packet_nolab)) # 63 seconds
 # som_nolab$ANOSIM # p = 0.001
 saveRDS(som_nolab, file = "data/som_nolab.Rda")
 
 # The SOM excluding the Labrador Sea and Gulf of St Lawrence regions
 packet_nolabgsl <- readRDS("data/packet_nolabgsl.Rda")
-system.time(som_nolabgsl <- som_model_PCI(packet_nolabgsl)) # 58 seconds
+system.time(som_nolabgsl <- som_model_PCI(packet_nolabgsl)) # 52 seconds
 # som_nolabgsl$ANOSIM # p = 0.001
 saveRDS(som_nolabgsl, file = "data/som_nolabgsl.Rda")
 
@@ -282,33 +293,36 @@ saveRDS(som_nolabgsl, file = "data/som_nolabgsl.Rda")
 # so we will proceed with the rest of the experiments only excluding the Labrador Shelf
 
 # A 9 node SOM
-system.time(som_nolab_9 <- som_model_PCI(packet_nolab, xdim = 3,  ydim = 3)) # 56 seconds
+system.time(som_nolab_9 <- som_model_PCI(packet_nolab, xdim = 3,  ydim = 3)) # 53 seconds
 # som_nolab_9$ANOSIM # p = 0.001
 saveRDS(som_nolab_9, file = "data/som_nolab_9.Rda")
 
 # The 9 node results are perhaps easier to make sense of than 12 nodes, but it's not certain
 
 # A 16 node SOM
-system.time(som_nolab_16 <- som_model_PCI(packet_nolab, xdim = 4, ydim = 4)) # 91 seconds
+system.time(som_nolab_16 <- som_model_PCI(packet_nolab, xdim = 4, ydim = 4)) # 86 seconds
 # som_nolab_16$ANOSIM # p = 0.001
 saveRDS(som_nolab_16, file = "data/som_nolab_16.Rda")
 
 # 16 nodes seems unnecessary...
 
 # A SOM without moderate events
+packet_nolabmod <- readRDS("data/packet_nolabmod.Rda")
 system.time(som_nolabmod <- som_model_PCI(packet_nolabmod, xdim = 2, ydim = 2)) # 12 seconds
-# som_nolabmod$ANOSIM # p = 0.042
+# som_nolabmod$ANOSIM # p = 0.0417
 saveRDS(som_nolabmod, file = "data/som_nolabmod.Rda")
 
 # There are fewer than 40 category "II Strong" and larger MHWs so using more than 4 nodes wouldn't be appropriate
 # These results are defintely too sparse to use for a publication
 
 # A SOM without events shorter than 14 days
+packet_nolab14 <- readRDS("data/packet_nolab14.Rda")
 system.time(som_nolab14 <- som_model_PCI(packet_nolab14, xdim = 3, ydim = 3)) # 12 seconds
 # som_nolab14$ANOSIM # p = 0.001
 saveRDS(som_nolab14, file = "data/som_nolab14.Rda")
 ```
-As simpleas that we now have a range of results from our SOM experiments. Up next in the [Node summary vignette](https://robwschlegel.github.io/MHWNWA/node-summary.html) we will show the results with a range of visuals.
+
+As simple as that we now have a range of results from our SOM experiments. Up next in the [Node summary vignette](https://robwschlegel.github.io/MHWNWA/node-summary.html) we will show the results with a range of visuals.
 
 ## Musings
 

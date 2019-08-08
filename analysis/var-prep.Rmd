@@ -94,10 +94,13 @@ OISST_sst_files <- data.frame(files = dir("../../data/OISST", full.names = T),
   filter(lon >= NWA_corners[1]+0.125, lon <= NWA_corners[2]+0.125) %>% 
   mutate(files = as.character(files))
 OISST_sst_files <- as.vector(OISST_sst_files$files)
+
 # Aggregate data
 system.time(
-OISST_sst <- load_all_OISST(OISST_sst_files)
-) # xxx seconds
+OISST_sst <- load_all_OISST(OISST_sst_files) %>% 
+  dplyr::rename(sst = temp)
+) # 41 seconds
+
 # save
 saveRDS(OISST_sst, "data/OISST_sst.Rda")
 
@@ -142,7 +145,7 @@ The last step before we can begin creating our data packets is to now subtract o
 # Calculate SST anomalies
 system.time(
 OISST_sst_anom <- anom_one(OISST_sst, OISST_sst_clim, 2)
-) # 43 seconds
+) # 83 seconds
 
 # Save
 saveRDS(OISST_sst_anom, "data/OISST_sst_anom.Rda")

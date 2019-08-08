@@ -25,23 +25,37 @@ This vignette will show the summary figures for the various SOM experiments. The
 With the following lines of code we create PDFs for each of the variables for each of the nodes for our different conditions. These PDFs may be seen at `output/SOM/*`, where `*` is the code name denoting which SOM experiment was conducted.
 
 ```{r som-visualise, eval=FALSE}
+# Load all functions etc.
+source("code/functions.R")
+
+# All data
+  # Note that this will be cropped to the same study area as the no LS run
+som_all <- readRDS("data/som_all.Rda")
+som_node_visualise(som_all, dir_name = "all")
+
 # No Labrador Shelf
-som_node_visualise(som_nolab, file_suffix = "_no_ls")
+som_nolab <- readRDS("data/som_nolab.Rda")
+som_node_visualise(som_nolab, dir_name = "no_ls")
 
 # Na Lab or GSL
-som_node_visualise(som_nolabgsl, file_suffix = "_no_ls_gsl")
+som_nolabgsl <- readRDS("data/som_nolabgsl.Rda")
+som_node_visualise(som_nolabgsl, dir_name = "no_ls_gsl")
 
 # Na Lab, 9 nodes
-som_node_visualise(som_nolab_9, file_suffix = "_no_ls_3x3", fig_width = 10, col_num = 3)
+som_nolab_9 <- readRDS("data/som_nolab_9.Rda")
+som_node_visualise(som_nolab_9, dir_name = "no_ls_3x3", col_num = 3)
 
 # Na Lab, 16 nodes
-som_node_visualise(som_nolab_16, file_suffix = "_no_ls_4x4", fig_height = 12)
+som_nolab_16 <- readRDS("data/som_nolab_16.Rda")
+som_node_visualise(som_nolab_16, dir_name = "no_ls_4x4")
 
 # Na Lab and no moderate events
-som_node_visualise(som_nolabmod, file_suffix = "_no_ls_mod", fig_width = 7, fig_height = 6, col_num = 2)
+som_nolabmod <- readRDS("data/som_nolabmod.Rda")
+som_node_visualise(som_nolabmod, dir_name = "no_ls_mod", col_num = 2)
 
-# Na Lab and no events shorter than 14 days
-som_node_visualise(som_nolab14, file_suffix = "_no_ls_14", fig_width = 10, col_num = 3)
+# No Lab and no events shorter than 14 days
+som_nolab14 <- readRDS("data/som_nolab14.Rda")
+som_node_visualise(som_nolab14, dir_name = "no_ls_14", col_num = 3)
 ```
 
 Juggling back and forth between the SST anomaly photos with and without the Gulf of St Lawrence it first appears that they are very different, but this is mostly due to the top and bottom rows of nodes being flipped. The actual differences are much more muted and the patterns tend to hold. The patterns appear more crisp in the larger of the two study extents. This is likely because the inclusion of the shallow GSL gives more power to the atmospheric variables to compete with the Gulf Stream. For this reason we are going to proceed with the inclusion of the Gulf of St Lawrence.

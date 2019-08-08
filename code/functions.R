@@ -360,6 +360,22 @@ data_packet <- function(event_sub){
   return(packet_res)
 }
 
+# Function for casting wide the data packets
+wide_packet <- function(df){
+  # Cast the data to a single row
+  res <- data.table::data.table(df) %>%
+    select(-t) %>%
+    reshape2::melt(id = c("region", "event_no", "lon", "lat"),
+                   measure = c(colnames(.)[-c(1:4)]),
+                   variable.name = "var", value.name = "val") %>%
+    dplyr::arrange(var, lon, lat) %>%
+    unite(coords, c(lon, lat, var), sep = "BBB") %>%
+    unite(event_ID, c(region, event_no), sep = "BBB") %>%
+    reshape2::dcast(event_ID ~ coords, value.var = "val")
+  # Remove columns (pixels) with missing data
+  res_fix <- res[,colSums(is.na(res))<1]
+  return(res_fix)
+}
 
 # Run SOM and create summary output ---------------------------------------
 
@@ -411,9 +427,19 @@ som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
            lat = as.numeric(lat),
            val = round(val, 4))
 
+  ## ANOSIM for goodness of fit for node count
+  node_data_wide <- node_data %>%
+    unite(coords, c(lon, lat, var), sep = "BBB") %>%
+    data.table() %>%
+    dcast(node~coords, value.var = "val")
+
+  # Calculate similarity
+  som_anosim <- vegan::anosim(as.matrix(node_data_wide[,-1]),
+                              node_data_wide$node, distance = "euclidean")$signif
+
   # Combine and exit
-  res <- list(data = node_data, info = node_info)
-  return(node_data)
+  res <- list(data = node_data, info = node_info, ANOSIM = paste0("p = ",som_anosim))
+  return(res)
 }
 
 
@@ -649,8 +675,8 @@ fig_6_func <- function(fig_data, col_num){
 # Lollis showing season and cum.int.
 
 fig_7_func <- function(fig_data, col_num){
-  fig_7 <-ggplot(data = fig_data$OISST_MHW_meta,
-                 aes(x = date_peak, y = intensity_max)) +
+  fig_7 <- ggplot(data = fig_data$OISST_MHW_meta,
+                  aes(x = date_peak, y = intensity_max)) +
     geom_lolli() +
     geom_point(aes(colour = region)) +
     geom_smooth(method = "lm", se = F, aes(colour = region)) +
