@@ -204,4 +204,180 @@ knitr::include_graphics("assets/no_ls/node_11_panels.png")
 knitr::include_graphics("assets/no_ls/node_12_panels.png")
 ```
 
+## SOM experiment: Default, 3x3 nodes
+
+### Node summary table
+
+The table below contains a concise summary of the nodes following Table 4 in @Oliver2018tasmania. The following sub-sections provide more in-depth explanations.
+
+|Node|Region    |Season    |MHW Properties    |Conditions       |
+|----|----------|----------|------------------|-----------------|
+|1   | | | | |
+
+### Season + region
+
+```{r no-ls-3x3-season-summary, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_3x3/fig_5.png")
+```
+
+### SST + U + V
+
+```{r no-ls-3x3-sst-summary, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_3x3/fig_2.png")
+```
+
+### Air temp + U + V
+
+```{r no-ls-3x3-t2m-summary, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_3x3/fig_3.png")
+```
+
+### MLD + Net downward heatflux
+
+```{r no-ls-3x3-mld-summary, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_3x3/fig_4.png")
+```
+
+### Node 1
+
+```{r no-ls-3x3-node-1, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_3x3/node_1_panels.png")
+```
+
+### Node 2
+
+```{r no-ls-3x3-node-2, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_3x3/node_2_panels.png")
+```
+
+### Node 3
+
+```{r no-ls-3x3-node-3, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_3x3/node_3_panels.png")
+```
+
+### Node 4
+
+```{r no-ls-3x3-node-4, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_3x3/node_4_panels.png")
+```
+
+### Node 5
+
+```{r no-ls-3x3-node-5, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_3x3/node_5_panels.png")
+```
+
+### Node 6
+
+```{r no-ls-3x3-node-6, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_3x3/node_6_panels.png")
+```
+
+### Node 7
+
+```{r no-ls-3x3-node-7, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_3x3/node_7_panels.png")
+```
+
+### Node 8
+
+```{r no-ls-3x3-node-8, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_3x3/node_8_panels.png")
+```
+
+### Node 9
+
+```{r no-ls-3x3-node-9, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_3x3/node_9_panels.png")
+```
+
+## SOM experiment: Default, no events under 14 days, 3x3 nodes
+
+### Node summary table
+
+The table below contains a concise summary of the nodes following Table 4 in @Oliver2018tasmania. The following sub-sections provide more in-depth explanations.
+
+|Node|Region    |Season    |MHW Properties    |Conditions       |
+|----|----------|----------|------------------|-----------------|
+|1   | | | | |
+
+### Season + region
+
+```{r no-ls-14-season-summary, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_14/fig_5.png")
+```
+
+### SST + U + V
+
+```{r no-ls-14-sst-summary, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_14/fig_2.png")
+```
+
+### Air temp + U + V
+
+```{r no-ls-14-t2m-summary, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_14/fig_3.png")
+```
+
+### MLD + Net downward heatflux
+
+```{r no-ls-14-mld-summary, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_14/fig_4.png")
+```
+
+### Node 1
+
+```{r no-ls-14-node-1, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_14/node_1_panels.png")
+```
+
+### Node 2
+
+```{r no-ls-14-node-2, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_14/node_2_panels.png")
+```
+
+### Node 3
+
+```{r no-ls-14-node-3, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_14/node_3_panels.png")
+```
+
+### Node 4
+
+```{r no-ls-14-node-4, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_14/node_4_panels.png")
+```
+
+### Node 5
+
+```{r no-ls-14-node-5, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_14/node_5_panels.png")
+```
+
+### Node 6
+
+```{r no-ls-14-node-6, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_14/node_6_panels.png")
+```
+
+### Node 7
+
+```{r no-ls-14-node-7, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_14/node_7_panels.png")
+```
+
+### Node 8
+
+```{r no-ls-14-node-8, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_14/node_8_panels.png")
+```
+
+### Node 9
+
+```{r no-ls-14-node-9, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/no_ls_14/node_9_panels.png")
+```
+
 ## References
