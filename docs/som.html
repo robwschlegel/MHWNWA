@@ -306,10 +306,10 @@ div.tocify {
       <a href="som.html">SOM analysis</a>
     </li>
     <li>
-      <a href="figures.html">Figure creation</a>
+      <a href="node-summary.html">Node summary</a>
     </li>
     <li>
-      <a href="node-summary.html">Node summary</a>
+      <a href="figures.html">Figure creation</a>
     </li>
   </ul>
 </li>
@@ -348,7 +348,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-08-07</p>
+<p><strong>Last updated:</strong> 2019-08-11</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -377,7 +377,7 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/9d817225c856d81f3581b7c8311c0e1fa2670e6b" target="_blank">9d81722</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/75c138c3be5c272e77e1fb5f82a457a72411ba64" target="_blank">75c138c</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -452,6 +452,12 @@ Ignored files:
     Ignored:    data/synoptic_states.Rda
     Ignored:    data/synoptic_vec_states.Rda
 
+Untracked files:
+    Untracked:  docs/assets/NAPA/
+    Untracked:  docs/assets/no_ls/
+    Untracked:  docs/assets/no_ls_14/
+    Untracked:  docs/assets/no_ls_3x3/
+
 Unstaged changes:
     Modified:   code/workflow.R
 
@@ -484,6 +490,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/adc762ba64e5b8090e28d13e48b8505397178bd8/analysis/som.Rmd" target="_blank">adc762b</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-08
+</td>
+<td style="text-align:left;">
+Re-worked the GLORYS data and propogated update through to SOM analysis figures for all experiments
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/f0d2efbfe728e6bf57bd2d81f4653dbbe953b62c/docs/som.html" target="_blank">f0d2efb</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-07
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1163,9 +1203,11 @@ NWA_coords_nolabgsl &lt;- NWA_coords %&gt;%
 #   geom_polygon(data = NWA_coords_nolabgsl, aes(colour = region), fill = NA)
 
 # Function for casting wide the custom packets
-create_packet &lt;- function(df){
+wide_packet &lt;- function(df){
+  
   # Cast the data to a single row
   res &lt;- data.table::data.table(df) %&gt;% 
+    select(-t) %&gt;% 
     reshape2::melt(id = c(&quot;region&quot;, &quot;event_no&quot;, &quot;lon&quot;, &quot;lat&quot;),
                    measure = c(colnames(.)[-c(1:4)]), 
                    variable.name = &quot;var&quot;, value.name = &quot;val&quot;) %&gt;% 
@@ -1173,34 +1215,45 @@ create_packet &lt;- function(df){
     unite(coords, c(lon, lat, var), sep = &quot;BBB&quot;) %&gt;%
     unite(event_ID, c(region, event_no), sep = &quot;BBB&quot;) %&gt;%
     reshape2::dcast(event_ID ~ coords, value.var = &quot;val&quot;)
+  
   # Remove columns (pixels) with missing data
   res_fix &lt;- res[,colSums(is.na(res))&lt;1]
-  return(res_fix)
+  
+  # Remove columns (pixels) with no variance
+  # This may occur in pixels where there is no variance in MLD anomaly
+  no_var &lt;- data.frame(min = sapply(res_fix[,-1], min),
+                       max = sapply(res_fix[,-1],max)) %&gt;% 
+    mutate(col_name = row.names(.)) %&gt;% 
+    filter(min == max)
+  res_filter &lt;- res_fix[,!(colnames(res_fix) %in% no_var$col_name)]
+  
+  # Exit
+  return(res_filter)
 }
 
 # Packet for entire study region
 system.time(
-  packet_all &lt;- create_packet(synoptic_states_unnest)
-) # 185 seconds
-# saveRDS(packet_all, &quot;data/packet_all.Rda&quot;)
+  packet_all &lt;- wide_packet(synoptic_states_unnest)
+) # 182 seconds
+saveRDS(packet_all, &quot;data/packet_all.Rda&quot;)
 
 # Exclude Labrador region
 system.time(
   packet_nolab &lt;- synoptic_states_unnest %&gt;% 
     filter(region != &quot;ls&quot;,
            lat &lt;= round(max(NWA_coords_nolab$lat))+0.5) %&gt;% 
-    create_packet()
-) # 142 seconds
-# saveRDS(packet_nolab, &quot;data/packet_nolab.Rda&quot;)
+    wide_packet()
+) # 103 seconds
+saveRDS(packet_nolab, &quot;data/packet_nolab.Rda&quot;)
 
 # Exclude Labrador and Gulf of St Lawrence regions
 system.time(
   packet_nolabgsl &lt;- synoptic_states_unnest %&gt;% 
     filter(!region %in% c(&quot;ls&quot;, &quot;gsl&quot;),
            lat &lt;= round(max(NWA_coords_nolabgsl$lat))+0.5) %&gt;% 
-    create_packet()
-) # 106 seconds
-# saveRDS(packet_nolabgsl, &quot;data/packet_nolabgsl.Rda&quot;)
+    wide_packet()
+) # 82 seconds
+saveRDS(packet_nolabgsl, &quot;data/packet_nolabgsl.Rda&quot;)
 
 # Exclude Labrador region and moderate events
 system.time(
@@ -1210,9 +1263,9 @@ system.time(
     left_join(select(OISST_MHW_cats, region, event_no, category), by = c(&quot;region&quot;, &quot;event_no&quot;)) %&gt;% 
     filter(category != &quot;I Moderate&quot;) %&gt;% 
     select(-category) %&gt;% 
-    create_packet()
-) # 15 seconds
-# saveRDS(packet_nolabmod, &quot;data/packet_nolabmod.Rda&quot;)
+    wide_packet()
+) # 14 seconds
+saveRDS(packet_nolabmod, &quot;data/packet_nolabmod.Rda&quot;)
 
 # Exclude Labrador region and moderate events
 system.time(
@@ -1222,9 +1275,9 @@ system.time(
     left_join(select(OISST_MHW_cats, region, event_no, duration), by = c(&quot;region&quot;, &quot;event_no&quot;)) %&gt;% 
     filter(duration &gt;= 14) %&gt;% 
     select(-duration) %&gt;% 
-    create_packet()
+    wide_packet()
 ) # 40 seconds
-# saveRDS(packet_nolab14, &quot;data/packet_nolab14.Rda&quot;)</code></pre>
+saveRDS(packet_nolab14, &quot;data/packet_nolab14.Rda&quot;)</code></pre>
 </div>
 </div>
 <div id="run-som-models" class="section level2">
@@ -1232,8 +1285,6 @@ system.time(
 <p>Now that we have our data packets to feed the SOM, we need a function that will ingest them and produce results for us. The function below has been greatly expanded on from the previous version of this project and now performs all of the SOM related work in one go. This allowed me to remove a couple hundreds lines of code and text from this vignette.</p>
 <pre class="r"><code># Function for calculating SOMs using PCI
 # This outputs the mean values for each SOM as well
-  # NB: 4x4 produced one empty cell and one cell with only one event
-  # So the default size has been reduced to 4x3
 som_model_PCI &lt;- function(data_packet, xdim = 4, ydim = 3){
   # Create a scaled matrix for the SOM
   # Cancel out first column as this is the reference ID of the event per row
@@ -1293,25 +1344,25 @@ som_model_PCI &lt;- function(data_packet, xdim = 4, ydim = 3){
                               node_data_wide$node, distance = &quot;euclidean&quot;)$signif
   
   # Combine and exit
-  res &lt;- list(data = node_data, info = node_info, ANOSIM = paste0(&quot;p = &quot;,som_anosim))
+  res &lt;- list(data = node_data, info = node_info, ANOSIM = paste0(&quot;p = &quot;,round(som_anosim, 4)))
   return(res)
 }</code></pre>
 <p>With the function sorted, we now feed it the data packets.</p>
 <pre class="r"><code># The SOM on the entire study area
 packet_all &lt;- readRDS(&quot;data/packet_all.Rda&quot;)
-system.time(som_all &lt;- som_model_PCI(packet_all)) # 136 seconds
+system.time(som_all &lt;- som_model_PCI(packet_all)) # 132 seconds
 # som_all$ANOSIM # p = 0.001
 saveRDS(som_all, file = &quot;data/som_all.Rda&quot;)
 
 # The SOM excluding the Labrador Sea region
 packet_nolab &lt;- readRDS(&quot;data/packet_nolab.Rda&quot;)
-system.time(som_nolab &lt;- som_model_PCI(packet_nolab)) # 72 seconds
+system.time(som_nolab &lt;- som_model_PCI(packet_nolab)) # 63 seconds
 # som_nolab$ANOSIM # p = 0.001
 saveRDS(som_nolab, file = &quot;data/som_nolab.Rda&quot;)
 
 # The SOM excluding the Labrador Sea and Gulf of St Lawrence regions
 packet_nolabgsl &lt;- readRDS(&quot;data/packet_nolabgsl.Rda&quot;)
-system.time(som_nolabgsl &lt;- som_model_PCI(packet_nolabgsl)) # 58 seconds
+system.time(som_nolabgsl &lt;- som_model_PCI(packet_nolabgsl)) # 52 seconds
 # som_nolabgsl$ANOSIM # p = 0.001
 saveRDS(som_nolabgsl, file = &quot;data/som_nolabgsl.Rda&quot;)
 
@@ -1319,32 +1370,34 @@ saveRDS(som_nolabgsl, file = &quot;data/som_nolabgsl.Rda&quot;)
 # so we will proceed with the rest of the experiments only excluding the Labrador Shelf
 
 # A 9 node SOM
-system.time(som_nolab_9 &lt;- som_model_PCI(packet_nolab, xdim = 3,  ydim = 3)) # 56 seconds
+system.time(som_nolab_9 &lt;- som_model_PCI(packet_nolab, xdim = 3,  ydim = 3)) # 53 seconds
 # som_nolab_9$ANOSIM # p = 0.001
 saveRDS(som_nolab_9, file = &quot;data/som_nolab_9.Rda&quot;)
 
 # The 9 node results are perhaps easier to make sense of than 12 nodes, but it&#39;s not certain
 
 # A 16 node SOM
-system.time(som_nolab_16 &lt;- som_model_PCI(packet_nolab, xdim = 4, ydim = 4)) # 91 seconds
+system.time(som_nolab_16 &lt;- som_model_PCI(packet_nolab, xdim = 4, ydim = 4)) # 86 seconds
 # som_nolab_16$ANOSIM # p = 0.001
 saveRDS(som_nolab_16, file = &quot;data/som_nolab_16.Rda&quot;)
 
 # 16 nodes seems unnecessary...
 
 # A SOM without moderate events
+packet_nolabmod &lt;- readRDS(&quot;data/packet_nolabmod.Rda&quot;)
 system.time(som_nolabmod &lt;- som_model_PCI(packet_nolabmod, xdim = 2, ydim = 2)) # 12 seconds
-# som_nolabmod$ANOSIM # p = 0.042
+# som_nolabmod$ANOSIM # p = 0.0417
 saveRDS(som_nolabmod, file = &quot;data/som_nolabmod.Rda&quot;)
 
 # There are fewer than 40 category &quot;II Strong&quot; and larger MHWs so using more than 4 nodes wouldn&#39;t be appropriate
 # These results are defintely too sparse to use for a publication
 
 # A SOM without events shorter than 14 days
+packet_nolab14 &lt;- readRDS(&quot;data/packet_nolab14.Rda&quot;)
 system.time(som_nolab14 &lt;- som_model_PCI(packet_nolab14, xdim = 3, ydim = 3)) # 12 seconds
 # som_nolab14$ANOSIM # p = 0.001
 saveRDS(som_nolab14, file = &quot;data/som_nolab14.Rda&quot;)</code></pre>
-<p>As simpleas that we now have a range of results from our SOM experiments. Up next in the <a href="https://robwschlegel.github.io/MHWNWA/node-summary.html">Node summary vignette</a> we will show the results with a range of visuals.</p>
+<p>As simple as that we now have a range of results from our SOM experiments. Up next in the <a href="https://robwschlegel.github.io/MHWNWA/node-summary.html">Node summary vignette</a> we will show the results with a range of visuals.</p>
 </div>
 <div id="musings" class="section level2">
 <h2>Musings</h2>
