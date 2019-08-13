@@ -71,9 +71,9 @@ A last point here is that this methodology should also be useful for looking bac
 See the files in the `/output/SOM_nodes/` folder in the GitHub repo for this project. They aren't all shown here because they take a bit too long to render. 
 <!-- But the following shows what the SST anomaly nodes look like. -->
 
-## Figure caption key
+## Figure summary key
 
-The captions for the figures below have a lot of acronyms in them but they are consistently used and I will provide a list of what they are here. Whenever one sees an acronym in lower case letters it is referring to one of the regions of the study area as seen in the following figure.
+The summariesfor the figures below have a lot of acronyms in them but they are consistently used and I will provide a list of what they are here. Whenever one sees an acronym in lower case letters it is referring to one of the regions of the study area as seen in the following figure.
 
 ```{r study-regions, out.width='100%', fig.align='center', fig.cap='The regions of the coast were devided up by their temperature and salinity regimes based on work by @Richaud2016. The regions were furthered divided into sub-regions based on their depth.'}
 knitr::include_graphics("assets/NAPA/study_regions.png")
@@ -98,11 +98,24 @@ The upper case acronyms used in the following figure captions are as follows:
 - LC = Labrador Current
 - NS = Nova Scotia
 
+It is also worth noting that the scales used to show the variables in the individual node summary figures are not the same across all of the nodes. This was an intentional decision as it allows for more detail to emerge within each node summary. The overall comparisons of nodes are to be done on the figures that show only 2 or 3 variables for all of the nodes at once.
+
 ## SOM experiment: No Labrador Shelf region (default), 4x3 nodes
+
+There are a total of 289 MHWs considered when putting this 12 node (4x3) SOM together. The largest conetration of MHWs is into the middle two SOM nodes (6 + 7), where there are twice as many events as some of the side and corner nodes. The top left corner, node 1, also has a large amount of events palced within it and the diagonally opposite node (12) has a decent number. Overall I would not have said that any of the nodes have notably fewer events, but further analysis shows that node 8 (middle right) is mostly poupulated by MHWs from one large event.
 
 ### Node summary table
 
 The table below contains a concise summary of the nodes following Table 4 in @Oliver2018tasmania. The following sub-sections provide more in-depth explanations.
+
+```{r}
+# knitr::kable(x = data.frame(node = c(1:12),
+#                             Region = c(""),
+#                             Season = c(""),
+#                             MHW_Propeties = c(""),
+#                             Conditions = c(""), 
+#                             stringsAsFactors = F))
+```
 
 |Node|Region    |Season    |MHW Properties    |Conditions       |
 |----|----------|----------|------------------|-----------------|
@@ -110,11 +123,17 @@ The table below contains a concise summary of the nodes following Table 4 in @Ol
 
 ### Season + region
 
+In the figure below we most quickly see that the proportion of MHWs occurring in the middle two nodes are summer events. The seasons are determined by the mnth during which the peak of the event occurred, with `Winter = JFM` etc. The nodes on the right-hand have mostly events from the mab. The distribution becomes more even as we move to the centre with the left-hand nodes having mostly nfs and gsl events. The bottom left node has almost no summer events. 
+
 ```{r no-ls-season-summary, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/no_ls/fig_5.png")
 ```
 
 ### SST + U + V
+
+The only U + V anomaly pattern I see is that the centre nodes (6 + 7) and the opposite corners of nodes 1 + 12 show little strength/vorticity in the GS while the other nodes tend to show more. The strength of the GS is apparent in node 8, and the vorticity in the eddy field is very apparent in node 5. 
+
+For SST we see moving from the right to the left the LS anomaly tends to go from cool to warm. As we move from the top down the AO tends to become warmer. The gm, gsl, and ss regions are warm in all of the nodes. Most of the SST is anomalously warm in the middle two nodes. 
 
 ```{r no-ls-sst-summary, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/no_ls/fig_2.png")
@@ -122,11 +141,23 @@ knitr::include_graphics("assets/no_ls/fig_2.png")
 
 ### Air temp + U + V
 
+Here we see much clearer patterns. 
+
+For air temperature anomalies we see that the air above the LS gets warmer as we move left and down. The air over the USA becomes warmer as we move to the right. Most of the air in the middle two nodes is warm. The air over the AO becomes warmer as we move down the nodes.
+
+One consistent pattern across all of the U + V values is that the top and right-hand sides have strong anomalous wind movement down from the Northeast corner while the bottom right corner nodes have strong northward wind anomalies in their top right corners.
+
+On the right-hand side of the nodes we see generally anti-cyclonic wind movement around a thermal dipole with the southward moving air being anomolously warm. The colder (warmer) th air temperature the faster south (north) the anomalous wind movement is. In the second right-most column (nodes 3 +7 +11) we also see anticyclonic wind anomalies around thermal dipoles. The central position of the anticyclone is different in each node, and the thermal anomalies tend to be less than the right-hand column. Te left-hand two columns have cyclonic wind movement around thermal dipoles with the stronger patterns in the far left column. Node 10 is a bit different in that it appears to have anticyclonic wind movement, but a cold dipole that looks more like the cyclonic movement nodes. The cetnre two nodes have the smaller wind patterns, with node 6 the smallest.
+
 ```{r no-ls-t2m-summary, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/no_ls/fig_3.png")
 ```
 
 ### MLD + Net downward heatflux
+
+The MLD in the AO in the top nodes is generally deeper, and shoals as we move to the bottom row. The MLD in the LS is deeper in the right-hand column and shoals as we move left. The MLD for the mab is deeper in the left-hand column and shoals as we move to the right.
+
+The gradients of net downward heatflux change nicely across the nodes and generally speaking we see more positive downward heatflux over areas with anomalously shallow water. There is little happening in the centre two nodes. There is high positive downward heatflux over the LS in the bottom left node (9) with negative heatflux over the mab. This positive heatflux gradient slowly moves over the AO as we move from the left to the right along the bottom row of nodes. There is a negative downward heatflux gradient over the mab in the top left node (1) that slowly moves up and over to the LS as we move towards node 4. This negative gradient is replaced by a positive gradient.
 
 ```{r no-ls-mld-summary, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/no_ls/fig_4.png")
@@ -134,11 +165,17 @@ knitr::include_graphics("assets/no_ls/fig_4.png")
 
 ### Node 1
 
+This node has a pretty even split of months of occurrence, with a lean towards summer and away from winter. Most of the events took place in the nfs, cbs, or gsl. The most intense events in this node occurred in Autumn/Winter of 2010/11. There are events from 1999 to 2017 with more events in the later half. There is a big mix of very small and somehwat large events for both cumulative and max intensities.
+
+The Sutheast AO tends to be cold with a warm GSL and LS. Looking closely one may see that the GS is slightly anomalously slow. The atmosphere is dominated by a cyclonic dipole offshore of the mab/gm. The Southeast AO is up to 20 metres deeper than usual with a negative downward heatflux over it. The LS is shallow but there is not much positive heatflux into it, with the exception of two curiously concentrated points.
+
 ```{r no-ls-node-1, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/no_ls/node_1_panels.png")
 ```
 
 ### Node 2
+
+
 
 ```{r no-ls-node-2, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/no_ls/node_2_panels.png")

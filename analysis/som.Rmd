@@ -139,7 +139,7 @@ wide_packet <- function(df){
   # Remove columns (pixels) with no variance
   # This may occur in pixels where there is no variance in MLD anomaly
   no_var <- data.frame(min = sapply(res_fix[,-1], min),
-                       max = sapply(res_fix[,-1],max)) %>% 
+                       max = sapply(res_fix[,-1], max)) %>% 
     mutate(col_name = row.names(.)) %>% 
     filter(min == max)
   res_filter <- res_fix[,!(colnames(res_fix) %in% no_var$col_name)]

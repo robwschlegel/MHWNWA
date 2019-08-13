@@ -611,7 +611,7 @@ fig_4_func <- function(fig_data, col_num){
     geom_contour(data = fig_data$som_data_wide, binwidth = 50,
                  aes(z = qnet_anom, colour = stat(level)), size = 1) +
     # Colour scale
-    scale_fill_gradient2("MLD prop.",low = "blue", high = "red") +
+    scale_fill_gradient2("MLD",low = "blue", high = "red") +
     scale_colour_gradient2("Net downward\nheat flux\nanom. (W/m2)", guide = "legend",
                            low = "green", mid = "grey", high = "yellow") +
     # The facets
