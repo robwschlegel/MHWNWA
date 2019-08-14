@@ -663,7 +663,7 @@ fig_6_func <- function(fig_data, col_num){
     geom_hline(data = fig_data$node_h_lines, aes(yintercept = mean_int_cum), linetype = "dashed") +
     geom_label(aes(x = mean(range(date_peak)), y = max(intensity_cumulative), label = paste0("n = ", count)),
                size = 3, label.padding = unit(0.5, "lines")) +
-    scale_x_date(labels = scales::date_format("%b-%Y")) +
+    scale_x_date(labels = scales::date_format("%b-%Y"), date_minor_breaks = "1 year") +
     labs(x = "", y = "Cumulative intensity (°C x days)", colour = "Season") +
     theme(legend.position = "bottom") +
     facet_wrap(~node, ncol = col_num)
@@ -683,7 +683,7 @@ fig_7_func <- function(fig_data, col_num){
     geom_hline(data = fig_data$node_h_lines, aes(yintercept = mean_int_max), linetype = "dashed") +
     geom_label(aes(x = mean(range(date_peak)), y = max(intensity_max), label = paste0("n = ", count)),
                size = 3, label.padding = unit(0.5, "lines")) +
-    scale_x_date(labels = scales::date_format("%b-%Y")) +
+    scale_x_date(labels = scales::date_format("%b-%Y"), date_minor_breaks = "1 year") +
     labs(x = "", y = "Max. intensity (°C)", colour = "Region") +
     theme(legend.position = "bottom") +
     facet_wrap(~node, ncol = col_num)
