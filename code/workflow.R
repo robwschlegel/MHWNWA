@@ -16,7 +16,7 @@
 #                                    # "analysis/figures.Rmd",
 #                                    "analysis/node-summary.Rmd"),
 #                          message = "Re-publish entire site.")
-# ) # 52 seconds
+# ) # 80 seconds
 
 
 # Startup -----------------------------------------------------------------

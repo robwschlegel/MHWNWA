@@ -330,7 +330,7 @@ load_anom <- function(file_name, OISST = F){
 
 # testers...
 # event_sub <- OISST_MHW_event[1,]
-data_packet <- function(event_sub){
+data_packet_func <- function(event_sub){
 
   # Filter base anomally range
   packet_base <- ALL_anom %>%
@@ -361,7 +361,7 @@ data_packet <- function(event_sub){
 }
 
 # Function for casting wide the data packets
-wide_packet <- function(df){
+wide_packet_func <- function(df){
   # Cast the data to a single row
   res <- data.table::data.table(df) %>%
     select(-t) %>%
@@ -467,63 +467,57 @@ fig_data_func <- function(data_packet){
     filter(region != "ls", node >= 1)
 
   # Grid of complete node x season matrix
-  node_prop_grid <- expand.grid(seq(1:max(OISST_MHW_meta$node, na.rm = T)),
-                                c("Summer", "Autumn", "Winter", "Spring"),
-                                stringsAsFactors = F) %>%
+  node_season_grid <- expand.grid(seq(1:max(OISST_MHW_meta$node, na.rm = T)),
+                                  c("Summer", "Autumn", "Winter", "Spring"),
+                                  stringsAsFactors = F) %>%
     dplyr::rename(node = Var1, season_peak = Var2)
 
   # Proportion of MHWs in each season in each node
-  node_prop_info <- OISST_MHW_meta %>%
+  node_season_info <- OISST_MHW_meta %>%
     dplyr::select(region:event_no, node:season_peak) %>%
     group_by(node, season_peak) %>%
-    mutate(node_season_prop = round(n()/count, 2)) %>%
+    mutate(node_season_count = n(),
+           node_season_prop = round(n()/count, 2)) %>%
     select(node, count, season_peak:node_season_prop) %>%
     unique() %>%
     na.omit() %>%
-    right_join(node_prop_grid, by = c("node", "season_peak")) %>%
-    mutate(node_season_prop = ifelse(is.na(node_season_prop), 0, node_season_prop)) %>%
+    right_join(node_season_grid, by = c("node", "season_peak")) %>%
+    mutate(node_season_count = ifelse(is.na(node_season_count), 0, node_season_count),
+           node_season_prop = ifelse(is.na(node_season_prop), 0, node_season_prop)) %>%
     # Fill holes in count column created by right_join
     group_by(node) %>%
     mutate(count = max(count, na.rm = T)) %>%
     ungroup()
 
-  # Grid of complete node x season matrix
-  region_prop_grid <- expand.grid(seq(1:max(OISST_MHW_meta$node, na.rm = T)),
+  # Grid of complete node x region matrix
+  node_region_grid <- expand.grid(seq(1:max(OISST_MHW_meta$node, na.rm = T)),
                                   unique(OISST_MHW_meta$region),
                                   stringsAsFactors = F) %>%
     dplyr::rename(node = Var1, region = Var2)
 
-  # Proportion of MHWs in each season in each region
-  region_prop_info <- OISST_MHW_meta %>%
-    dplyr::select(region:event_no, node:season_peak) %>%
+  # Proportion of MHWs in each region in each node
+  node_region_info <- OISST_MHW_meta %>%
+    dplyr::select(region:event_no, node:count) %>%
     group_by(node, region) %>%
-    mutate(region_node_prop = round(n()/count, 2)) %>%
-    select(region, node, count, region_node_prop) %>%
+    mutate(node_region_count = n(),
+           node_region_prop = round(n()/count, 2)) %>%
+    select(node, count, region, node_region_count, node_region_prop) %>%
     unique() %>%
-    ungroup() %>%
-    right_join(region_prop_grid, by = c("node", "region")) %>%
-    mutate(region_node_prop = ifelse(is.na(region_node_prop), 0, region_node_prop)) %>%
+    na.omit() %>%
+    right_join(node_region_grid, by = c("node", "region")) %>%
+    mutate(node_region_count = ifelse(is.na(node_region_count), 0, node_region_count),
+           node_region_prop = ifelse(is.na(node_region_prop), 0, node_region_prop)) %>%
     # Fill holes in count column created by right_join
     group_by(node) %>%
     mutate(count = max(count, na.rm = T)) %>%
     ungroup()
 
-  # Fill in the blanks
-  region_prop_grid <- expand.grid(unique(region_prop_info$region),
-                                  seq(1:max(OISST_MHW_meta$node, na.rm = T)),
-                                  stringsAsFactors = F) %>%
-    dplyr::rename(region = Var1, node = Var2) %>%
-    left_join(NWA_coords, by = "region") %>%
-    left_join(region_prop_info, by = c("region", "node")) %>%
-    mutate(count = replace_na(count, 0),
-           region_node_prop = replace_na(region_node_prop, 0)) %>%
-    filter(region != "ls")
-
   # Create labels for number of states per region per node
-  region_prop_label <- region_prop_grid %>%
-    group_by(region, node, count, region_node_prop) %>%
-    summarise(lon = mean(lon), lat = mean(lat)) %>%
-    mutate(count_region_node = round(count*region_node_prop))
+  region_prop_label <- NWA_coords %>%
+    group_by(region) %>%
+    mutate(lon_center = mean(lon), lat_center = mean(lat)) %>%
+    left_join(node_region_info, by = "region") %>%
+    na.omit()
 
   # Calculate mean and median intensities per node for plotting
   node_h_lines <- OISST_MHW_meta %>%
@@ -537,8 +531,8 @@ fig_data_func <- function(data_packet){
   res <- list(som_data_wide = som_data_wide,
               som_data_sub = som_data_sub,
               OISST_MHW_meta = OISST_MHW_meta,
-              node_prop_info = node_prop_info,
-              region_prop_grid = region_prop_grid,
+              node_season_info = node_season_info,
+              node_region_info = node_region_info,
               region_prop_label = region_prop_label,
               node_h_lines = node_h_lines)
   return(res)
@@ -611,7 +605,7 @@ fig_4_func <- function(fig_data, col_num){
     geom_contour(data = fig_data$som_data_wide, binwidth = 50,
                  aes(z = qnet_anom, colour = stat(level)), size = 1) +
     # Colour scale
-    scale_fill_gradient2("MLD",low = "blue", high = "red") +
+    scale_fill_gradient2("MLD anom. (m)",low = "blue", high = "red") +
     scale_colour_gradient2("Net downward\nheat flux\nanom. (W/m2)", guide = "legend",
                            low = "green", mid = "grey", high = "yellow") +
     # The facets
@@ -627,22 +621,27 @@ fig_4_func <- function(fig_data, col_num){
 fig_5_func <- function(fig_data, col_num){
   fig_5 <- frame_base +
     # The regions
-    geom_polygon(data = fig_data$region_prop_grid,
-                 aes(group = region, fill = region_node_prop), colour = "black") +
+    geom_polygon(data = fig_data$region_prop_label,
+                 aes(group = region, fill = node_region_prop), colour = "black") +
     # The base map
     geom_polygon(data = map_base, aes(group = group), show.legend = F) +
     # Assorted labels
-    geom_label(data = fig_data$region_prop_label, aes(label = count_region_node)) +
     geom_label(data = fig_data$region_prop_label,
-               aes(x = -68, y = 35, label = paste0("n = ",count))) +
-    geom_label(data = filter(fig_data$node_prop_info, season_peak == "Winter"),
-               aes(x = -58, y = 37, fill = node_season_prop, label = "Winter"), colour = "black") +
-    geom_label(data = filter(fig_data$node_prop_info, season_peak == "Spring"),
-               aes(x = -48, y = 37, fill = node_season_prop, label = "Spring"), colour = "black") +
-    geom_label(data = filter(fig_data$node_prop_info, season_peak == "Summer"),
-               aes(x = -58, y = 35, fill = node_season_prop, label = "Summer"), colour = "black") +
-    geom_label(data = filter(fig_data$node_prop_info, season_peak == "Autumn"),
-               aes(x = -48, y = 35, fill = node_season_prop, label = "Autumn"), colour = "black") +
+               aes(x = lon_center, y = lat_center, label = node_region_count)) +
+    geom_label(data = fig_data$region_prop_label,
+               aes(x = -68, y = 36, label = paste0("n = ",count))) +
+    geom_label(data = filter(fig_data$node_season_info, season_peak == "Winter"),
+               aes(x = -58, y = 38, fill = node_season_prop,
+                   label = paste0("Winter\n n = ",node_season_count))) +
+    geom_label(data = filter(fig_data$node_season_info, season_peak == "Spring"),
+               aes(x = -48, y = 38, fill = node_season_prop,
+                   label = paste0("Spring\n n = ",node_season_count))) +
+    geom_label(data = filter(fig_data$node_season_info, season_peak == "Summer"),
+               aes(x = -58, y = 34, fill = node_season_prop,
+                   label = paste0("Summer\n n = ",node_season_count))) +
+    geom_label(data = filter(fig_data$node_season_info, season_peak == "Autumn"),
+               aes(x = -48, y = 34, fill = node_season_prop,
+                   label = paste0("Autumn\n n = ",node_season_count))) +
     scale_fill_distiller("Proportion\nof events per\nregion/season\nper node",
                          palette = "BuPu", direction = 1) +
     # The facets
@@ -658,14 +657,16 @@ fig_6_func <- function(fig_data, col_num){
   fig_6 <- ggplot(data = fig_data$OISST_MHW_meta,
                                 aes(x = date_peak, y = intensity_cumulative)) +
     geom_smooth(method = "lm", se = F, aes(colour = season_peak)) +
+    geom_label(aes(x = mean(range(date_peak)), y = max(intensity_cumulative), label = paste0("n = ", count)),
+               size = 3, label.padding = unit(0.5, "lines")) +
     geom_lolli() +
     geom_point(aes(colour = season_peak)) +
     geom_hline(data = fig_data$node_h_lines, aes(yintercept = mean_int_cum), linetype = "dashed") +
-    geom_label(aes(x = mean(range(date_peak)), y = max(intensity_cumulative), label = paste0("n = ", count)),
-               size = 3, label.padding = unit(0.5, "lines")) +
-    scale_x_date(labels = scales::date_format("%b-%Y"), date_minor_breaks = "1 year") +
+    scale_x_date(labels = scales::date_format("%Y"),
+                 date_breaks = "2 years", date_minor_breaks = "1 year") +
     labs(x = "", y = "Cumulative intensity (°C x days)", colour = "Season") +
-    theme(legend.position = "bottom") +
+    theme(legend.position = "bottom",
+          axis.text.x = element_text(angle = 30)) +
     facet_wrap(~node, ncol = col_num)
   return(fig_6)
 }
@@ -678,23 +679,43 @@ fig_7_func <- function(fig_data, col_num){
   fig_7 <- ggplot(data = fig_data$OISST_MHW_meta,
                   aes(x = date_peak, y = intensity_max)) +
     geom_smooth(method = "lm", se = F, aes(colour = region)) +
+    geom_label(aes(x = mean(range(date_peak)), y = max(intensity_max), label = paste0("n = ", count)),
+               size = 3, label.padding = unit(0.5, "lines")) +
     geom_lolli() +
     geom_point(aes(colour = region)) +
     geom_hline(data = fig_data$node_h_lines, aes(yintercept = mean_int_max), linetype = "dashed") +
-    geom_label(aes(x = mean(range(date_peak)), y = max(intensity_max), label = paste0("n = ", count)),
-               size = 3, label.padding = unit(0.5, "lines")) +
-    scale_x_date(labels = scales::date_format("%b-%Y"), date_minor_breaks = "1 year") +
+    scale_x_date(labels = scales::date_format("%Y"),
+                 date_breaks = "2 years", date_minor_breaks = "1 year") +
     labs(x = "", y = "Max. intensity (°C)", colour = "Region") +
-    theme(legend.position = "bottom") +
+    theme(legend.position = "bottom",
+          axis.text.x = element_text(angle = 30)) +
     facet_wrap(~node, ncol = col_num)
+  fig_7
   return(fig_7)
 }
+
+
+# Figure 8 code -----------------------------------------------------------
+
+# This will show the real current values
+
+
+# Figure 9 code -----------------------------------------------------------
+
+# This will show the real wind values
+
+
+# Figure 10 code -----------------------------------------------------------
+
+# This will show a table of the MHW metric summaries
+# min, mean, max, sd
 
 
 # Create summary figures of all nodes together ----------------------------
 
 # testers...
 # som_packet <- readRDS("data/som_nolab.Rda")
+# som_packet <- readRDS("data/som_nolab14.Rda")
 # som_packet <- readRDS("data/som_nolab_16.Rda")
 # dir_name = "no_ls"
 # col_num = 4
@@ -758,8 +779,8 @@ node_figure <- function(node_number, fig_packet, dir_name){
   fig_packet$som_data_wide <- filter(fig_packet$som_data_wide, node == node_number)
   fig_packet$som_data_sub <- filter(fig_packet$som_data_sub, node == node_number)
   fig_packet$OISST_MHW_meta <- filter(fig_packet$OISST_MHW_meta, node == node_number)
-  fig_packet$node_prop_info <- filter(fig_packet$node_prop_info, node == node_number)
-  fig_packet$region_prop_grid <- filter(fig_packet$region_prop_grid, node == node_number)
+  fig_packet$node_season_info <- filter(fig_packet$node_season_info, node == node_number)
+  fig_packet$node_region_info <- filter(fig_packet$node_region_info, node == node_number)
   fig_packet$region_prop_label <- filter(fig_packet$region_prop_label, node == node_number)
   fig_packet$node_h_lines <- filter(fig_packet$node_h_lines, node == node_number)
 
