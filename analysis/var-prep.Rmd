@@ -169,7 +169,7 @@ system.time(
 ) # 99 seconds
 
 # Function for creating packets
-data_packet <- function(event_sub){
+data_packet_func <- function(event_sub){
 
   # Filter base anomally range
   packet_base <- ALL_anom %>%
@@ -197,7 +197,7 @@ doMC::registerDoMC(cores = 25)
 
 # Create one big packet
 system.time(
-synoptic_states <- plyr::ddply(OISST_MHW_event, c("region", "event_no"), data_packet, .parallel = T)
+synoptic_states <- plyr::ddply(OISST_MHW_event, c("region", "event_no"), data_packet_func, .parallel = T)
 ) # 3 seconds for first event, 50 for all events
 
 # Save

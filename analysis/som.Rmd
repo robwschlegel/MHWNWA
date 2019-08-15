@@ -120,7 +120,7 @@ NWA_coords_nolabgsl <- NWA_coords %>%
 #   geom_polygon(data = NWA_coords_nolabgsl, aes(colour = region), fill = NA)
 
 # Function for casting wide the custom packets
-wide_packet <- function(df){
+wide_packet_func <- function(df){
   
   # Cast the data to a single row
   res <- data.table::data.table(df) %>% 
@@ -150,7 +150,7 @@ wide_packet <- function(df){
 
 # Packet for entire study region
 system.time(
-  packet_all <- wide_packet(synoptic_states_unnest)
+  packet_all <- wide_packet_func(synoptic_states_unnest)
 ) # 182 seconds
 saveRDS(packet_all, "data/packet_all.Rda")
 
@@ -159,7 +159,7 @@ system.time(
   packet_nolab <- synoptic_states_unnest %>% 
     filter(region != "ls",
            lat <= round(max(NWA_coords_nolab$lat))+0.5) %>% 
-    wide_packet()
+    wide_packet_func()
 ) # 103 seconds
 saveRDS(packet_nolab, "data/packet_nolab.Rda")
 
@@ -168,7 +168,7 @@ system.time(
   packet_nolabgsl <- synoptic_states_unnest %>% 
     filter(!region %in% c("ls", "gsl"),
            lat <= round(max(NWA_coords_nolabgsl$lat))+0.5) %>% 
-    wide_packet()
+    wide_packet_func()
 ) # 82 seconds
 saveRDS(packet_nolabgsl, "data/packet_nolabgsl.Rda")
 
@@ -180,7 +180,7 @@ system.time(
     left_join(select(OISST_MHW_cats, region, event_no, category), by = c("region", "event_no")) %>% 
     filter(category != "I Moderate") %>% 
     select(-category) %>% 
-    wide_packet()
+    wide_packet_func()
 ) # 14 seconds
 saveRDS(packet_nolabmod, "data/packet_nolabmod.Rda")
 
@@ -192,7 +192,7 @@ system.time(
     left_join(select(OISST_MHW_cats, region, event_no, duration), by = c("region", "event_no")) %>% 
     filter(duration >= 14) %>% 
     select(-duration) %>% 
-    wide_packet()
+    wide_packet_func()
 ) # 40 seconds
 saveRDS(packet_nolab14, "data/packet_nolab14.Rda")
 
