@@ -481,11 +481,19 @@ knitr::include_graphics("assets/no_ls_14/fig_3.png")
 
 ### MLD + Net downward heatflux
 
+The similarities between these nodes and the default 3x3 results persist, but the MLD anomalies for nodes 1 + 2 are a bit different around the GS as it moves across the study area. The general pattern across the nodes is that the left-hand column has a positive MLD anomaly over the GS with a negative heatflux, while showing a negative MLD anomaly over the LS and AO with a positive heatflux term. This pattern is muted in the middle column, and reversed in the right-hand column.Node 8 looks like it would better be swapped with node 7, so there must be some other more important variable at play here. Node 9 in particular shows very little anomalies for either MLD or heatflux.
+
 ```{r no-ls-14-mld-summary, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/no_ls_14/fig_4.png")
 ```
 
 ### Node 1
+
+This node is tied with node 9 for the highest count of MHWs at 15, meaning this is a common pattern for lengthy/large MHWs. The MHWs take place largely in the gsl, nfs, and cbs, with only 1 event each in the ss + gm and 0 MHWs in the mab. About half the events occurred in autumn, with spill-over into summer, only 2 winter events and 1 spring event. These events occurred from 2008 -- 2016 in 7 distinct pulses, 4 of which triggerred MHWs in 2 -- 3 regions at once. The cummulative intensity and max intensities are on the higher end.
+
+The GS is a bit cold here with the SST of the AO being unremarkable, the rest of the coastal regions are warmer. The atmoshpere shows a massive thermal dipole cyclone situated to the south of the cbs with winds pushing anomolously warm air down from northern CA over the nfs + gsl + cbs but the warm anomaly looses power as it reaches NS. The GS and much of the AO are anomlously deep with a weak negative heatflux. The LS shows the opposite while the coastal waters from the gm and up are just barely shallower than normal with a minor negative heatflux.
+
+This is clearly some sort of storm that is somehow pulling air south along the coastline, but the temperature of that air stops being anomolous once it pases the cbs.
 
 ```{r no-ls-14-node-1, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/no_ls_14/node_1_panels.png")
@@ -493,11 +501,23 @@ knitr::include_graphics("assets/no_ls_14/node_1_panels.png")
 
 ### Node 2
 
+This node shows a good spread of affected regions, with the weighting towards the two ends (mab + nfs), which is a bit odd. About half of these were summer events, with winter , spring, and autumn being decreasingly present in that order. MHWs occurred from 1999 -- 2012. There were 7 occurrences of this event for a total of 11 MHWs. The events here are on the low side of average with only one being slightly noteworthy.
+
+A cold AO with a lot of cold core eddies. Warmcoastal regions but the cold cores are pushing towards the ss. Warm air anomaly over land and the coastal waters but cold over the AO. Anomalous southward air movement along the border between the warm and cold air that turns back up nortwards in a vaguely cyclonic motion. The MLD anomaly is al over the place and appears to be dominated by the eddy field. There is aome positive heatflux over the partially shallower GS but also neagtive heatflux just downstream from that. This is the messiest MLD node I've seen in this study.
+
+This one is a bit odd. I'm thinking that because of all of the cold core eddy activity that the GS is being forced funny somewhere outside of the study area while we are also getting some sort of cold air cell that is causing even more mixing over the AO. This is all going on while the air over the continent is warm and wanting to just sit on the coastal waters.
+
 ```{r no-ls-14-node-2, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/no_ls_14/node_2_panels.png")
 ```
 
 ### Node 3
+
+MHWs being triggered in the mab + ss, with 1 in the cbs. These are half summer events with spill-over into spring + autumn and 1 winter event. 2 of the 7 occurrence of this events triggered MHWs in two regions. The main range of MHWs in this node is 2012 -- 2018, with the one winter event in 2002. These are medium sized events with higher range  of max intensities.
+
+A warm AO and very warm fast moving turbulent shelf pushing GS. LS is a mix of warm and cold. Warm air anomaly over US with fast southward wind anomaly in cold air over LS/AO. This turns northward cyclonicaly offshore of the mab. Shallow MLD over GS with positive heatflux. LS and AO have mostly positive MLD anomaly and negative heatflux.
+
+This appears to be a GS driven MHW pattern. It looks like it is transporting warm water and air northwards, which is cauing the MHWs in the mab and ss. Bt this doesn't explain the presence of the strong southward wind anomaly over the LS.
 
 ```{r no-ls-14-node-3, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/no_ls_14/node_3_panels.png")
@@ -505,11 +525,23 @@ knitr::include_graphics("assets/no_ls_14/node_3_panels.png")
 
 ### Node 4
 
+Mostly northern regions showing up as MHWs in this node, fading to 0 events in the mab. This pattern occurred only 3 times from 2006 -- 2012, causing 8 MHWs. The first two occurrences were in spring. The third and last occurrence was in autumn and caused MHWs in 5 regions at once. The cummulative intensitiescare normal, but the max intensities are on the high end, with one being over 5C!
+
+The GS is incredibly cool here with massive eddy activity. Some of which appear to be pushing warm water towards the shelf. The coastal regions from the gm up become increasingly warmer. There is an enormous cyclonic anomalysitting offshore of the mab, drawing cold air down over the US and the gm + mab. There is also a little anticyclone above the nfs that appears to be helping to push warm air of ver the shelf there. The GS is maybe pushing up onto the coast south of Cape Cod, judging by the anomolous positive MLD signal there in conunction with a strong negative heatflux term. Most of the rest of the AO and LS are shallow with positive heatflux.
+
+This appears to be a pretty rare spring or autumn storm that is pulling air up from the south and dumping it onto the coast mostly north of NS. The proximity of the storm to the coastline is such that it is drawing anomalously cool air down over the southern regions.
+
 ```{r no-ls-14-node-4, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/no_ls_14/node_4_panels.png")
 ```
 
 ### Node 5
+
+Mostly MHWs in the southern regions, weaking in the northern regions but everywhere saw at least 1 MHW. Almost all summer events with just 2 in spring and winter. 6 occurrences of this pattern led to the 13 MHWs, with one pulse in summer 2013 causing MHWs in 5 regions at once. The cummulative intensity of the events is massive and most of the max intensities are as well. This is by far the node with the largest MHWs in the entire study. MHWs from 2011 to 2018.
+
+The GS is perhaps moving a bit faster and is more turbulent with shelf waters being very warm. In fact the SST for the entire study area is warm. The air anomaly is warm everywhere, too, with a focus over the coastal regions centred on the gm. There is little anomalous wind movement over the study regions. Perhaps just enough to be holding the warm air in place over the shelf. Most of the study region shows a negative MLD anomaly and minor positive heatflux.
+
+This node looks like the GS may be transporting warm water northwards that then interacts with a lazy atmosphere to allow the whole heat blanket to just sit on the coast. Judging from the size of the MHWs this does not look like a case of advection, rather that things are sitting sedentary for long periods of time.
 
 ```{r no-ls-14-node-5, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/no_ls_14/node_5_panels.png")
@@ -517,11 +549,23 @@ knitr::include_graphics("assets/no_ls_14/node_5_panels.png")
 
 ### Node 6
 
+No MHWs in the gsl and a roughly even distribution otherwise, focussed on the gm. Thesea re almost always winter events with one pulse in autumn. MHWs occurred from 2012 -- 2018 in 4 pulses. The middle two pulses caused 3 and 4 MHWs respectively. The cummulative and max intensities are on the higher end. Interestingly, the order of the max intensity of the MHWs in each region during the two large pulses are the same. The solo 2012 occurrence of this pattern caused only 1 small MHW in the nfs and so I would gues this isn't actually matching this pattern well, but was just clumped in here by the SOM.
+
+A very fast moving GS coming up along the coast bringing crazy hot water up against the shelf. This is then offset by it meeting a cold LS and appearing to then diflect anomalously south, judging by the eddy field vectors. Very hot air anomaly overland with strong anomalous northward winds. The wind turns east and then south in an anticyclonic pattern upon reaching the gsl and cooling. The GS itself is not anomalously shallow, but the waters to either side of it are. The main thrust of the GS is covered by a focussed large positive heatflux anomaly. The LS and Grand Banks are anomalously deep in most places with the LS having a strong negative heatflux.
+
+This is another chicken vs. egg situation where it is not clear if the strong GS is driving warm water northwards, which then causes a warm air anomaly, or if the air anomaly is already there and acts to supercharge the GS. Either way, we see a strong positive heatflux from the atmosphere into the GS which is then transporting warm water against the shelf waters.
+
 ```{r no-ls-14-node-6, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/no_ls_14/node_6_panels.png")
 ```
 
 ### Node 7
+
+These MHWs are centred around the cbs and decrease in count from there, with 0 in the mab. Mostly autumn and summer MHWs with two in spring and one in winter. Occurred from 1999 -- 2015 in 6 pulses causing 12 events. Medium intensities.
+
+Overall warm SST, with the waters over the cbs + nfs the warmest. Cold air overland with igh anomaly over the nfs. Large anticyclone located to the east of the study area that is bringing warm air up and over the nfs. Mostly negative MLD anomalies with correspondingly strong positive heatflux.
+
+This appears to be a summer/autumn storm that is tracking in from over the AO onto the nfs during a time when the air over the continent is colder than usual.
 
 ```{r no-ls-14-node-7, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/no_ls_14/node_7_panels.png")
@@ -529,11 +573,23 @@ knitr::include_graphics("assets/no_ls_14/node_7_panels.png")
 
 ### Node 8
 
+MHWs centered over the ss and becoming less frequent from there. The occurrence of this pattern is 2014 -- 2018, with one small winter nfs MHW in 1999. There are some massive MHWs in this node. There is one small winter nfs MHW in 1999.
+
+This node is very similar to node 7, but with a cool LS and warm air over the continent. The track of the storm appears to be over-land, too. The warmer cores within the GS have a negative heatflux anomaly while most of the study area is shallow with a small positive heatflux.
+
+This is a funny pattern in that it appears that the GS is causing these MHWs, but it meanders out away from the coast for a bit, missing the mab, and then, perhaps to the strong warm wind anomaly, tries to turn back into the shelf. This explains the pattern of observed MHWs by region being centred around the ss but with no events in the gsl.
+
 ```{r no-ls-14-node-8, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/no_ls_14/node_8_panels.png")
 ```
 
 ### Node 9
+
+MHWs centred over the gm and reducing from there. Mostly summer events with some spill-over into spring and autumn. Ranged evenly from 1994 to 2018. One pulse in spring/summer of 1999 caused some large MHWs. The max intensities are on the high end.
+
+Unremarkable GS with cool LS and warm shelf waters. Very clear anticylonic storm moving north over the AO pulling up warm air over the coastal waters south of NS. Minor negative MLD in most of study area with a small positive heatflux centred within the storms eye.
+
+Summer storm bringing warm air north, especially onto NS itself. [I wonder if this is what caused the heatwave in September 2018.]
 
 ```{r no-ls-14-node-9, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/no_ls_14/node_9_panels.png")

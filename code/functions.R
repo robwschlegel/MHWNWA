@@ -643,7 +643,7 @@ fig_5_func <- function(fig_data, col_num){
                aes(x = -58, y = 35, fill = node_season_prop, label = "Summer"), colour = "black") +
     geom_label(data = filter(fig_data$node_prop_info, season_peak == "Autumn"),
                aes(x = -48, y = 35, fill = node_season_prop, label = "Autumn"), colour = "black") +
-    scale_fill_distiller("Proportion\nof events\nper region\nper node",
+    scale_fill_distiller("Proportion\nof events per\nregion/season\nper node",
                          palette = "BuPu", direction = 1) +
     # The facets
     facet_wrap(~node, ncol = col_num)
@@ -657,9 +657,9 @@ fig_5_func <- function(fig_data, col_num){
 fig_6_func <- function(fig_data, col_num){
   fig_6 <- ggplot(data = fig_data$OISST_MHW_meta,
                                 aes(x = date_peak, y = intensity_cumulative)) +
+    geom_smooth(method = "lm", se = F, aes(colour = season_peak)) +
     geom_lolli() +
     geom_point(aes(colour = season_peak)) +
-    geom_smooth(method = "lm", se = F, aes(colour = season_peak)) +
     geom_hline(data = fig_data$node_h_lines, aes(yintercept = mean_int_cum), linetype = "dashed") +
     geom_label(aes(x = mean(range(date_peak)), y = max(intensity_cumulative), label = paste0("n = ", count)),
                size = 3, label.padding = unit(0.5, "lines")) +
@@ -677,9 +677,9 @@ fig_6_func <- function(fig_data, col_num){
 fig_7_func <- function(fig_data, col_num){
   fig_7 <- ggplot(data = fig_data$OISST_MHW_meta,
                   aes(x = date_peak, y = intensity_max)) +
+    geom_smooth(method = "lm", se = F, aes(colour = region)) +
     geom_lolli() +
     geom_point(aes(colour = region)) +
-    geom_smooth(method = "lm", se = F, aes(colour = region)) +
     geom_hline(data = fig_data$node_h_lines, aes(yintercept = mean_int_max), linetype = "dashed") +
     geom_label(aes(x = mean(range(date_peak)), y = max(intensity_max), label = paste0("n = ", count)),
                size = 3, label.padding = unit(0.5, "lines")) +
