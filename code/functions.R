@@ -230,10 +230,10 @@ load_all_GLORYS_hires <- function(file_names){
 # Cycles through one lon slice at a time as the hourly data are too cumbersome otherwise
 # file_name <- "../../oliver/data/ERA/ERA5/T2M/ERA5_T2M_1993.nc"
 # lon_slice <- -80.5
-load_ERA5 <- function(lon_slice, file_name){
+load_ERA5 <- function(file_name){
   res <- tidync(file_name) %>%
     hyper_filter(latitude = dplyr::between(latitude, 31.5, 63.5),
-                 longitude = longitude == lon_slice+360) %>%
+                 longitude = dplyr::between(longitude, -80.5+360, -40.5+360)) %>%
     hyper_tibble() %>%
     mutate(time = as.Date(as.POSIXct(time * 3600, origin = '1900-01-01', tz = "GMT"))) %>%
     dplyr::rename(lon = longitude, lat = latitude, t = time)
@@ -244,20 +244,11 @@ load_ERA5 <- function(lon_slice, file_name){
   return(res_mean)
 }
 
-# Lon range: -80.5 to -40.5
-load_one_ERA5 <- function(file_name){
-  # system.time(
-  res_one <- plyr::ldply(seq(-80.5, -40.5, by = 0.25), load_ERA5,
-                         .parallel = T, file_name = file_name)
-  # ) # 117 seconds
-}
-
 # Function to load all of the NetCDF files for one ERA 5 variable
 load_all_ERA5 <- function(file_names){
   # system.time(
-  res_all <- plyr::ldply(file_names, load_one_ERA5,
-                         .parallel = F, .progress = "text")
-  # ) # 116 seconds for one year, 222 seconds for two
+  res_all <- plyr::ldply(file_names, load_ERA5, .parallel = T)
+  # ) # 73 seconds for one year, 119 seconds for two
 }
 
 
@@ -448,8 +439,8 @@ som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
 fig_data_func <- function(data_packet){
   # Cast the data wide
   som_data_wide <- data_packet$data %>%
-    spread(var, val) %>%
-    mutate(mld_anom_cut = cut(mld_anom, breaks = seq(-0.5, 0.5, 0.1)))
+    spread(var, val) #%>%
+    # mutate(mld_anom_cut = cut(mld_anom, breaks = seq(-0.5, 0.5, 0.1)))
 
   # Reduce wind/ current vectors
   lon_sub <- seq(min(som_data_wide$lon), max(som_data_wide$lon), by = 1)
@@ -539,8 +530,27 @@ fig_data_func <- function(data_packet){
 }
 
 
+# Create mean synoptic states ---------------------------------------------
+
+# testers...
+# guide_index <- node_date_index[1,]
+# daily_data <- ERA5_u
+synoptic_states_func <- function(guide_index, daily_data){
+  # It is faster to filter before switching to data.table
+  daily_data_sub <- daily_data %>%
+    filter(t >= guide_index$date_start,
+           t <= guide_index$date_end) %>%
+    select(-t)
+  # Switch to data.table for faster means
+  res_dt <- data.table(daily_data_sub)
+  setkey(res_dt, lon, lat)
+  res_mean <- res_dt[, lapply(.SD, mean), by = list(lon, lat)]
+  return(res_mean)
+}
+
+
 # Figure 2 code -----------------------------------------------------------
-# sst + u + v
+# SST + U + V
 
 fig_2_func <- function(fig_data, col_num){
 
@@ -569,22 +579,54 @@ fig_2_func <- function(fig_data, col_num){
 
 
 # Figure 3 code -----------------------------------------------------------
-# Air temp + u + v
+# Air temp + U + V + MSLP
 
 fig_3_func <- function(fig_data, col_num){
+
+  # Load MSLP anomaly data as necessary
+  if(!exists("ERA5_mslp_anom")){
+    system.time(
+    ERA5_mslp_anom <- readRDS("data/ERA5_mslp_anom.Rda")
+    ) # 22 seconds
+  }
+
+  # Extract daily data by dates and mean them per node
+  node_date_index <- fig_data$OISST_MHW_meta %>%
+    select(node, date_start, date_end) %>%
+    mutate(index = row.names(.))
+
+  # Create synoptic states per MHW per variable
+  doMC::registerDoMC(cores = 10) # NB: Be careful here...
+  # system.time(
+  synoptic_states_mslp_anom <- plyr::ddply(node_date_index, .variables = c("index", "node"),
+                                           .fun = synoptic_states_func, .parallel = T,
+                                           daily_data = ERA5_mslp_anom) %>%
+    select(-index) %>%
+    group_by(node, lon, lat) %>%
+    dplyr::summarise(msl_anom = mean(msl_anom, na.rm = T)) %>%
+    ungroup() %>%
+    mutate(lon = ifelse(lon > 180, lon-360, lon))
+  # ) # 56 seconds for 104 MHWs
+
+  # The figure
   fig_3 <- frame_base +
     # The air temperature
     geom_raster(data = fig_data$som_data_wide, aes(fill = t2m_anom)) +
     # The land mass
     geom_polygon(data = map_base, aes(group = group), alpha = 0.9,
                  fill = NA, colour = "black", size = 0.5, show.legend = FALSE) +
+    # The mean sea level pressure contours
+    geom_contour(data = synoptic_states_mslp_anom,
+                 aes(z = msl_anom, colour = stat(level)), size = 1) +
     # The wind vectors
     geom_segment(data = fig_data$som_data_sub, aes(xend = lon + u10_anom * wind_uv_scalar,
                                           yend = lat + v10_anom * wind_uv_scalar),
                  arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
                  linejoin = "mitre", size = 0.4, alpha = 0.4) +
-    # Use diverging gradient
+    # Colour scale
     scale_fill_gradient2(name = "Air temp.\nanom. (°C)", low = "blue", high = "red") +
+    scale_colour_gradient2("MSLP anom.", guide = "legend",
+                           low = "green", mid = "grey", high = "yellow") +
     # The facets
     facet_wrap(~node, ncol = col_num)
   return(fig_3)
@@ -610,7 +652,6 @@ fig_4_func <- function(fig_data, col_num){
                            low = "green", mid = "grey", high = "yellow") +
     # The facets
     facet_wrap(~node, ncol = col_num)
-  fig_4
   return(fig_4)
 }
 
@@ -690,25 +731,202 @@ fig_7_func <- function(fig_data, col_num){
     theme(legend.position = "bottom",
           axis.text.x = element_text(angle = 30)) +
     facet_wrap(~node, ncol = col_num)
-  fig_7
   return(fig_7)
 }
 
 
 # Figure 8 code -----------------------------------------------------------
+# The real current values
 
-# This will show the real current values
+fig_8_func <- function(fig_data, col_num){
+
+  # Load U and V data as necessary
+  if(!exists("GLORYS_u_sub")){
+    # system.time(
+      GLORYS_u_sub <- readRDS("data/GLORYS_u.Rda") %>%
+        filter(lon %in% unique(fig_data$som_data_sub$lon),
+               lat %in% unique(fig_data$som_data_sub$lat))
+    # ) # 20 seconds
+  }
+  if(!exists("GLORYS_v_sub")){
+    # system.time(
+      GLORYS_v_sub <- readRDS("data/GLORYS_v.Rda") %>%
+        filter(lon %in% unique(fig_data$som_data_sub$lon),
+               lat %in% unique(fig_data$som_data_sub$lat))
+    # ) # 20 seconds
+  }
+
+  # Extract daily data by dates and mean them per node
+  node_date_index <- fig_data$OISST_MHW_meta %>%
+    select(node, date_start, date_end) %>%
+    mutate(index = row.names(.))
+
+  # Create synoptic states per MHW per variable
+  # system.time(
+  synoptic_states_u <- plyr::ddply(node_date_index, .variables = c("index", "node"),
+                                   .fun = synoptic_states_func, .parallel = T,
+                                   daily_data = GLORYS_u_sub)
+  # ) # 5 seconds for 104 MHWs
+  # system.time(
+  synoptic_states_v <- plyr::ddply(node_date_index, .variables = c("index", "node"),
+                                   .fun = synoptic_states_func, .parallel = T,
+                                   daily_data = GLORYS_v_sub)
+  # ) # 6 seconds for 104 MHWs
+  synoptic_states_uv <- left_join(synoptic_states_u, synoptic_states_v,
+                               by = c("index", "node", "lon", "lat")) %>%
+    select(-index) %>%
+    group_by(node, lon, lat) %>%
+    dplyr::summarise(u = mean(u, na.rm = T),
+                     v = mean(v, na.rm = T)) %>%
+    ungroup()
+
+  # The figure
+  fig_8 <- frame_base +
+    # The land mass
+    geom_polygon(data = map_base, aes(group = group), alpha = 0.8,
+                 fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
+    # The current vectors
+    geom_segment(data = synoptic_states_uv, aes(xend = lon + u * current_uv_scalar,
+                                                yend = lat + v * current_uv_scalar),
+                 arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
+                 linejoin = "mitre", size = 0.4, alpha = 0.8) +
+    # The facets
+    facet_wrap(~node, ncol = col_num)
+  return(fig_8)
+}
 
 
 # Figure 9 code -----------------------------------------------------------
+# The real wind values
 
-# This will show the real wind values
+fig_9_func <- function(fig_data, col_num){
+
+  # Load U and V data as necessary
+  if(!exists("ERA5_u_sub")){
+    # system.time(
+      ERA5_u_sub <- readRDS("data/ERA5_u.Rda") %>%
+        filter(lon %in% c(unique(fig_data$som_data_sub$lon)+360),
+               lat %in% unique(fig_data$som_data_sub$lat))
+    # ) # 29 seconds
+  }
+  if(!exists("ERA5_v_sub")){
+    # system.time(
+      ERA5_v_sub <- readRDS("data/ERA5_v.Rda") %>%
+        filter(lon %in% c(unique(fig_data$som_data_sub$lon)+360),
+               lat %in% unique(fig_data$som_data_sub$lat))
+    # ) # 29 seconds
+  }
+
+  # Extract daily data by dates and mean them per node
+  node_date_index <- fig_data$OISST_MHW_meta %>%
+    select(node, date_start, date_end) %>%
+    mutate(index = row.names(.))
+
+  # Create synoptic states per MHW per variable
+  # system.time(
+  synoptic_states_u <- plyr::ddply(node_date_index, .variables = c("index", "node"),
+                                   .fun = synoptic_states_func, .parallel = T,
+                                   daily_data = ERA5_u_sub)
+  # ) # 5 seconds for 104 MHWs
+  # system.time(
+  synoptic_states_v <- plyr::ddply(node_date_index, .variables = c("index", "node"),
+                                   .fun = synoptic_states_func, .parallel = T,
+                                   daily_data = ERA5_v_sub)
+  # ) # 6 seconds for 104 MHWs
+  synoptic_states_uv <- left_join(synoptic_states_u, synoptic_states_v,
+                                  by = c("index", "node", "lon", "lat")) %>%
+    select(-index) %>%
+    group_by(node, lon, lat) %>%
+    dplyr::summarise(u10 = mean(u10, na.rm = T),
+                     v10 = mean(v10, na.rm = T)) %>%
+    ungroup() %>%
+    mutate(lon = ifelse(lon > 180, lon-360, lon))
+
+  # The figure
+  fig_9 <- frame_base +
+    # The land mass
+    geom_polygon(data = map_base, aes(group = group), alpha = 0.8,
+                 fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
+    # The wind vectors
+    geom_segment(data = synoptic_states_uv, aes(xend = lon + u10 * wind_uv_scalar,
+                                                yend = lat + v10 * wind_uv_scalar),
+                 arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
+                 linejoin = "mitre", size = 0.4, alpha = 0.8) +
+    # The facets
+    facet_wrap(~node, ncol = col_num)
+  return(fig_9)
+}
 
 
 # Figure 10 code -----------------------------------------------------------
+# The table of the MHW metric summaries
+# min, median, mean, max, sd
 
-# This will show a table of the MHW metric summaries
-# min, mean, max, sd
+fig_10_func <- function(fig_data, col_num){
+
+  # Create summary stats tables
+  summary_data <- fig_data$OISST_MHW_meta %>%
+    select(node, duration, intensity_max, intensity_mean,
+           intensity_cumulative, rate_onset, rate_decline) %>%
+    dplyr::rename(int_cum = intensity_cumulative,
+                  int_mean = intensity_mean,
+                  int_max = intensity_max) %>%
+    gather(key = "var", value = "val", -node) %>%
+    group_by(node, var) %>%
+    summarise(count = n(),
+              min = min(val, na.rm = T),
+              median = median(val, na.rm = T),
+              mean = mean(val, na.rm = T),
+              max = max(val, na.rm = T),
+              sd = sd(val, na.rm = T)) %>%
+    ungroup() %>%
+    mutate_if(is.numeric, round, digits = 2)
+
+  # This is a dumb way to do this, but I can't find a built in method for faceting tables...
+  g1 <- gridExtra::tableGrob(filter(summary_data, node == 1), rows = NULL)
+  if(max(summary_data$node) > 1){
+    g2 <- gridExtra::tableGrob(filter(summary_data, node == 2), rows = NULL)
+    g3 <- gridExtra::tableGrob(filter(summary_data, node == 3), rows = NULL)
+    g4 <- gridExtra::tableGrob(filter(summary_data, node == 4), rows = NULL)
+  }
+  if(max(summary_data$node) > 4){
+    g5 <- gridExtra::tableGrob(filter(summary_data, node == 5), rows = NULL)
+    g6 <- gridExtra::tableGrob(filter(summary_data, node == 6), rows = NULL)
+    g7 <- gridExtra::tableGrob(filter(summary_data, node == 7), rows = NULL)
+    g8 <- gridExtra::tableGrob(filter(summary_data, node == 8), rows = NULL)
+    g9 <- gridExtra::tableGrob(filter(summary_data, node == 9), rows = NULL)
+  }
+  if(max(summary_data$node) >= 12){
+    g10 <- gridExtra::tableGrob(filter(summary_data, node == 10), rows = NULL)
+    g11 <- gridExtra::tableGrob(filter(summary_data, node == 11), rows = NULL)
+    g12 <- gridExtra::tableGrob(filter(summary_data, node == 12), rows = NULL)
+  }
+  if(max(summary_data$node) == 16){
+    g13 <- gridExtra::tableGrob(filter(summary_data, node == 13), rows = NULL)
+    g14 <- gridExtra::tableGrob(filter(summary_data, node == 14), rows = NULL)
+    g15 <- gridExtra::tableGrob(filter(summary_data, node == 15), rows = NULL)
+    g16 <- gridExtra::tableGrob(filter(summary_data, node == 16), rows = NULL)
+  }
+
+  # Create gridded tables matching the number of input nodes
+  if(length(unique(summary_data$node)) == 1){
+    fig_10 <- ggpubr::ggarrange(g1, g2, g3, g4, ncol = col_num, nrow = 1)
+  } else if(length(unique(summary_data$node)) == 4){
+    fig_10 <- ggpubr::ggarrange(g1, g2, g3, g4, ncol = col_num, nrow = 2)
+  } else if(length(unique(summary_data$node)) == 9){
+    fig_10 <- ggpubr::ggarrange(g1, g2, g3, g4, g5, g6, g7, g8, g9,
+                                      ncol = col_num, nrow = 3)
+  } else if(length(unique(summary_data$node)) == 12){
+    fig_10 <- ggpubr::ggarrange(g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12,
+                                      ncol = col_num, nrow = 3)
+  } else if(length(unique(summary_data$node)) == 16){
+    fig_10 <- ggpubr::ggarrange(g1, g2, g3, g4, g5, g6, g7, g8, g9,
+                                      g10, g11, g12, g13, g14, g15, g16,
+                                      ncol = col_num, nrow = 3)
+  }
+  # fig_10
+  return(fig_10)
+}
 
 
 # Create summary figures of all nodes together ----------------------------
@@ -762,6 +980,21 @@ som_node_visualise <- function(som_packet,
   ggsave(fig_7, filename = paste0("output/SOM/",dir_name,"/fig_7.pdf"), height = fig_height, width = fig_width)
   ggsave(fig_7, filename = paste0("output/SOM/",dir_name,"/fig_7.png"), height = fig_height, width = fig_width)
 
+  # The real current vectors
+  fig_8 <- fig_8_func(base_data, col_num)
+  ggsave(fig_8, filename = paste0("output/SOM/",dir_name,"/fig_8.pdf"), height = fig_height, width = fig_width)
+  ggsave(fig_8, filename = paste0("output/SOM/",dir_name,"/fig_8.png"), height = fig_height, width = fig_width)
+
+  # The real wind vectors
+  fig_9 <- fig_9_func(base_data, col_num)
+  ggsave(fig_9, filename = paste0("output/SOM/",dir_name,"/fig_9.pdf"), height = fig_height, width = fig_width)
+  ggsave(fig_9, filename = paste0("output/SOM/",dir_name,"/fig_9.png"), height = fig_height, width = fig_width)
+
+  # The MHW metric summary tables
+  fig_10 <- fig_10_func(base_data, col_num)
+  ggsave(fig_10, filename = paste0("output/SOM/",dir_name,"/fig_10.pdf"), height = fig_height, width = fig_width)
+  ggsave(fig_10, filename = paste0("output/SOM/",dir_name,"/fig_10.png"), height = fig_height, width = fig_width)
+
   # Create individual node summaries
   plyr::l_ply(1:max(base_data$OISST_MHW_meta$node, na.rm = T), .fun = node_figure, .parallel = T,
               fig_packet = base_data, dir_name = dir_name)
@@ -799,8 +1032,17 @@ node_figure <- function(node_number, fig_packet, dir_name){
   # Lollis showing season and cum.int.
   fig_6_sub <- fig_6_func(fig_packet, 1)
 
-  # Lllis showing max.int and region
+  # Lollis showing max.int and region
   fig_7_sub <- fig_7_func(fig_packet, 1)
+
+  # The real current vectors
+  fig_8_sub <- fig_8_func(fig_packet, 1)
+
+  # The real wind vectors
+  fig_9_sub <- fig_9_func(fig_packet, 1)
+
+  # The MHW metric summary tables
+  fig_10_sub <- fig_10_func(fig_packet, 1)
 
   # Create title
   title <- cowplot::ggdraw() + cowplot::draw_label(paste0("Node: ",node_number), fontface = 'bold')
@@ -808,8 +1050,8 @@ node_figure <- function(node_number, fig_packet, dir_name){
   # Stick them together
   fig_all <- cowplot::plot_grid(fig_2_sub, fig_3_sub, fig_4_sub,
                                 fig_5_sub, fig_6_sub, fig_7_sub,
-                                labels = c('A', 'B', 'C', 'D', 'E', 'F'),
-                                nrow = 2, rel_heights = c(1, 1))#, align = "v")#+
+                                labels = c('A', 'B', 'C', 'D', 'E', 'F', 'H', 'I', 'J'),
+                                nrow = 3, rel_heights = c(1, 1))#, align = "v")#+
     # cowplot::draw_figure_label(label = paste0("Node: ",node_number), size = 20)
   fig_all_title <- cowplot::plot_grid(title, fig_all, ncol = 1, rel_heights = c(0.05, 1))
   # fig_all_title

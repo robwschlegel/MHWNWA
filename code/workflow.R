@@ -93,6 +93,11 @@ source("code/functions.R")
 
 # nc_info <- ncdump::NetCDF(ERA5_u_files[1])$variable$name
 
+# Set number of cores
+  # NB: Can't hold all files in memmory at once
+doMC::registerDoMC(cores = 10)
+
+### OISST data processing
 ## Sea surface temperature
   # NB: This file was createds in the sst-prep vignette
 # OISST_sst <- readRDS("data/OISST_sst.Rda")
@@ -101,6 +106,7 @@ source("code/functions.R")
 # OISST_sst_anom <- anom_one(OISST_sst, OISST_sst_clim, 2)
 # saveRDS(OISST_sst_anom, "data/OISST_sst_anom.Rda")
 
+### ERA 5 data processing
 ## Air temperature at 2 metres
 # Grab file location
 # print(paste0("Began loading t2m at ", Sys.time()))
@@ -142,6 +148,19 @@ source("code/functions.R")
 # print(paste0("Began v10 anomalies at ", Sys.time()))
 # ERA5_v_anom <- anom_one(ERA5_v, ERA5_v_clim, 6)
 # saveRDS(ERA5_v_anom, "data/ERA5_v_anom.Rda")
+
+## Mean sea level pressure
+# "v10"
+# print(paste0("Began loading MSLP at ", Sys.time()))
+# ERA5_mslp_files <- dir("../../oliver/data/ERA/ERA5/MSLP", full.names = T, pattern = "ERA5")[15:40]
+# ERA5_mslp <- load_all_ERA5(ERA5_mslp_files)
+# saveRDS(ERA5_mslp, "data/ERA5_mslp.Rda")
+# print(paste0("Began MSLP clims at ", Sys.time()))
+# ERA5_mslp_clim <- ts2clm_one(ERA5_mslp)
+# saveRDS(ERA5_mslp_clim, "data/ERA5_mslp_clim.Rda")
+# print(paste0("Began MSLP anomalies at ", Sys.time()))
+# ERA5_mslp_anom <- anom_one(ERA5_mslp, ERA5_mslp_clim, 2)
+# saveRDS(ERA5_mslp_anom, "data/ERA5_mslp_anom.Rda")
 
 ### GLORYS data processing
 ## Load high-res GLORYS data
@@ -294,16 +313,16 @@ source("code/functions.R")
 
 # Set number of cores
   # NB: 50 cores can be too much for the RAM
-doMC::registerDoMC(cores = 25)
+# doMC::registerDoMC(cores = 25)
 
 # Create one big packet
-print(paste0("Began creating data packets at ", Sys.time()))
+# print(paste0("Began creating data packets at ", Sys.time()))
 # system.time(
 # synoptic_states <- plyr::ddply(OISST_MHW_event, c("region", "event_no"), data_packet, .parallel = T)
 # ) # 3 seconds for first event, 50 for all events
 
 # Save
-saveRDS(synoptic_states, "data/synoptic_states.Rda")
+# saveRDS(synoptic_states, "data/synoptic_states.Rda")
 
 
 # SOM analysis ------------------------------------------------------------
