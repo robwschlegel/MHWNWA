@@ -548,6 +548,8 @@ synoptic_states_func <- function(guide_index, daily_data){
   return(res_mean)
 }
 
+# Create synoptic states for SOM output
+
 
 # Figure 2 code -----------------------------------------------------------
 # SST + U + V

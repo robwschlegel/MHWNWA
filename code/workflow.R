@@ -343,8 +343,8 @@ source("code/functions.R")
 # Visuals -----------------------------------------------------------------
 
 # No Labrador Shelf SOM visuals
-som_no_ls <- readRDS("data/som_nolab.Rda")
-som_node_visualise(som_no_ls, dir_name = "no_ls")
+# som_no_ls <- readRDS("data/som_nolab.Rda")
+# som_node_visualise(som_no_ls, dir_name = "no_ls")
 
 # No Labrador Shelf or Gulf of St Lawrence SOM visuals
 # som_no_ls_gsl <- readRDS("data/som_nolabgsl.Rda")
