@@ -338,6 +338,9 @@ Net heatflux (OAFlux) doesn't line up perfectly with seasonal SST signal, but is
 
 There is almost no seasonal cycle for slope waters in any of the regions [@Richaud2016].
 
+A decrease in the jet stream could lead to fewer storm tracks and overall warmer air: https://www.nature.com/articles/s41558-019-0555-0
+This could be an explanation for the "dog days of summer" middle two nodes.
+
 ### More ideas
 
 It would be interesting to see if the SOM outputs differ in any meaningful ways when only data from the first half of the study time period are used compared against the second half.

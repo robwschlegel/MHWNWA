@@ -95,7 +95,7 @@ source("code/functions.R")
 
 # Set number of cores
   # NB: Can't hold all files in memmory at once
-doMC::registerDoMC(cores = 10)
+# doMC::registerDoMC(cores = 10)
 
 ### OISST data processing
 ## Sea surface temperature
@@ -343,26 +343,26 @@ doMC::registerDoMC(cores = 10)
 # Visuals -----------------------------------------------------------------
 
 # No Labrador Shelf SOM visuals
-# som_no_ls <- readRDS("data/som_nolab.Rda")
-# som_node_visualise(som_no_ls, dir_name = "no_ls")
+som_no_ls <- readRDS("data/som_nolab.Rda")
+som_node_visualise(som_no_ls, dir_name = "no_ls")
 
-# No Labrador Sea or Gulf of St Lawrence SOM visuals
+# No Labrador Shelf or Gulf of St Lawrence SOM visuals
 # som_no_ls_gsl <- readRDS("data/som_nolabgsl.Rda")
 # som_node_visualise(som_no_ls_gsl, dir_name = "no_ls_gsl")
 
-# No Labrador Sea SOM visuals with 4x4 nodes
+# No Labrador Shelf SOM visuals with 4x4 nodes
 # som_no_ls_4x4 <- readRDS("data/som_nolab_16.Rda")
 # som_node_visualise(som_no_ls_4x4, dir_name = "no_ls_4x4", col_num = 4)
 
-# No Labrador Sea SOM visuals with 3x3 nodes
+# No Labrador Shelf SOM visuals with 3x3 nodes
 # som_no_ls_3x3 <- readRDS("data/som_nolab_9.Rda")
 # som_node_visualise(som_no_ls_3x3, dir_name = "no_ls_3x3", col_num = 3)
 
-# No Labrador Sea and no moderate event SOM visuals
+# No Labrador Shelf and no moderate event SOM visuals
 # som_no_ls_mod <- readRDS("data/som_nolabmod.Rda")
 # som_node_visualise(som_no_ls_mod, dir_name = "no_ls_mod", col_num = 2)
 
-# No Labrador Sea and no events shorter than 2 weeks SOM visuals
+# No Labrador Shelf and no events shorter than 2 weeks SOM visuals
 # som_no_ls_14 <- readRDS("data/som_nolab14.Rda")
 # som_node_visualise(som_no_ls_14, dir_name = "no_ls_14", col_num = 3)
 

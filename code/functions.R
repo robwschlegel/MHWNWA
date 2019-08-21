@@ -880,51 +880,31 @@ fig_10_func <- function(fig_data, col_num){
               max = max(val, na.rm = T),
               sd = sd(val, na.rm = T)) %>%
     ungroup() %>%
-    mutate_if(is.numeric, round, digits = 2)
+    mutate_if(is.numeric, round, digits = 2) %>%
+    mutate(all_stat = paste(var, min, median, mean, max, sd, sep = " / "))
 
-  # This is a dumb way to do this, but I can't find a built in method for faceting tables...
-  g1 <- gridExtra::tableGrob(filter(summary_data, node == 1), rows = NULL)
-  if(max(summary_data$node) > 1){
-    g2 <- gridExtra::tableGrob(filter(summary_data, node == 2), rows = NULL)
-    g3 <- gridExtra::tableGrob(filter(summary_data, node == 3), rows = NULL)
-    g4 <- gridExtra::tableGrob(filter(summary_data, node == 4), rows = NULL)
-  }
-  if(max(summary_data$node) > 4){
-    g5 <- gridExtra::tableGrob(filter(summary_data, node == 5), rows = NULL)
-    g6 <- gridExtra::tableGrob(filter(summary_data, node == 6), rows = NULL)
-    g7 <- gridExtra::tableGrob(filter(summary_data, node == 7), rows = NULL)
-    g8 <- gridExtra::tableGrob(filter(summary_data, node == 8), rows = NULL)
-    g9 <- gridExtra::tableGrob(filter(summary_data, node == 9), rows = NULL)
-  }
-  if(max(summary_data$node) >= 12){
-    g10 <- gridExtra::tableGrob(filter(summary_data, node == 10), rows = NULL)
-    g11 <- gridExtra::tableGrob(filter(summary_data, node == 11), rows = NULL)
-    g12 <- gridExtra::tableGrob(filter(summary_data, node == 12), rows = NULL)
-  }
-  if(max(summary_data$node) == 16){
-    g13 <- gridExtra::tableGrob(filter(summary_data, node == 13), rows = NULL)
-    g14 <- gridExtra::tableGrob(filter(summary_data, node == 14), rows = NULL)
-    g15 <- gridExtra::tableGrob(filter(summary_data, node == 15), rows = NULL)
-    g16 <- gridExtra::tableGrob(filter(summary_data, node == 16), rows = NULL)
-  }
-
-  # Create gridded tables matching the number of input nodes
-  if(length(unique(summary_data$node)) == 1){
-    fig_10 <- ggpubr::ggarrange(g1, g2, g3, g4, ncol = col_num, nrow = 1)
-  } else if(length(unique(summary_data$node)) == 4){
-    fig_10 <- ggpubr::ggarrange(g1, g2, g3, g4, ncol = col_num, nrow = 2)
-  } else if(length(unique(summary_data$node)) == 9){
-    fig_10 <- ggpubr::ggarrange(g1, g2, g3, g4, g5, g6, g7, g8, g9,
-                                      ncol = col_num, nrow = 3)
-  } else if(length(unique(summary_data$node)) == 12){
-    fig_10 <- ggpubr::ggarrange(g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12,
-                                      ncol = col_num, nrow = 3)
-  } else if(length(unique(summary_data$node)) == 16){
-    fig_10 <- ggpubr::ggarrange(g1, g2, g3, g4, g5, g6, g7, g8, g9,
-                                      g10, g11, g12, g13, g14, g15, g16,
-                                      ncol = col_num, nrow = 3)
-  }
-  # fig_10
+  fig_10 <- ggplot(summary_data) +
+    geom_blank() +
+    geom_label(aes(label = c("min / median / mean / max / sd"), x = 0, y = 0.1),
+               fill = "black", colour = "white") +
+    geom_label(data = filter(summary_data, var == "duration"),
+               aes(label = all_stat, x = 0, y = 0)) +
+    geom_label(data = filter(summary_data, var == "int_mean"),
+               aes(label = all_stat, x = 0, y = -0.1), fill = "grey80") +
+    geom_label(data = filter(summary_data, var == "int_max"),
+               aes(label = all_stat, x = 0, y = -0.2)) +
+    geom_label(data = filter(summary_data, var == "int_cum"),
+               aes(label = all_stat, x = 0, y = -0.3), fill = "grey80") +
+    geom_label(data = filter(summary_data, var == "rate_onset"),
+               aes(label = all_stat, x = 0, y = -0.4)) +
+    geom_label(data = filter(summary_data, var == "rate_decline"),
+               aes(label = all_stat, x = 0, y = -0.5), fill = "grey80") +
+    facet_wrap(~node, ncol = col_num) +
+    labs(x = NULL, y = NULL) +
+    # theme_bw()
+    theme_void() +
+    theme(strip.background = element_rect(colour = "black", fill = "grey80"),
+          panel.border = element_rect(colour = "black", fill = NA))
   return(fig_10)
 }
 
@@ -996,7 +976,8 @@ som_node_visualise <- function(som_packet,
   ggsave(fig_10, filename = paste0("output/SOM/",dir_name,"/fig_10.png"), height = fig_height, width = fig_width)
 
   # Create individual node summaries
-  plyr::l_ply(1:max(base_data$OISST_MHW_meta$node, na.rm = T), .fun = node_figure, .parallel = T,
+  # doMC::registerDoMC(cores = 4)
+  plyr::l_ply(1:max(base_data$OISST_MHW_meta$node, na.rm = T), .fun = node_figure, .progress = "text",
               fig_packet = base_data, dir_name = dir_name)
 }
 
@@ -1050,12 +1031,13 @@ node_figure <- function(node_number, fig_packet, dir_name){
   # Stick them together
   fig_all <- cowplot::plot_grid(fig_2_sub, fig_3_sub, fig_4_sub,
                                 fig_5_sub, fig_6_sub, fig_7_sub,
+                                fig_8_sub, fig_9_sub, fig_10_sub,
                                 labels = c('A', 'B', 'C', 'D', 'E', 'F', 'H', 'I', 'J'),
                                 nrow = 3, rel_heights = c(1, 1))#, align = "v")#+
     # cowplot::draw_figure_label(label = paste0("Node: ",node_number), size = 20)
   fig_all_title <- cowplot::plot_grid(title, fig_all, ncol = 1, rel_heights = c(0.05, 1))
   # fig_all_title
   # ggsave(fig_all_title, filename = paste0("output/node_",node_number,"_panels.png"), height = 12, width = 16)
-  ggsave(fig_all_title, filename = paste0("output/SOM/",dir_name,"/node_",node_number,"_panels.pdf"), height = 9, width = 16)
-  ggsave(fig_all_title, filename = paste0("output/SOM/",dir_name,"/node_",node_number,"_panels.png"), height = 9, width = 16)
+  ggsave(fig_all_title, filename = paste0("output/SOM/",dir_name,"/node_",node_number,"_panels.pdf"), height = 14, width = 21)
+  ggsave(fig_all_title, filename = paste0("output/SOM/",dir_name,"/node_",node_number,"_panels.png"), height = 14, width = 21)
 }
