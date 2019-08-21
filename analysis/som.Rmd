@@ -349,4 +349,6 @@ The output of the SOMs could likely be more meaningfully conveyed from the point
 
 Once this summary is worked out it would then follow that the same analysis be run 1, 2, 3 etc. months in the past and see what the same information format provides w.r.t. a sort of predictive capacity. All of this can then be used to check other data products with a more focused lens in order to maximise the utility of the output.
 
+It appears as though some patterns/drivers for MHWs are more predictable than others: https://www.frontiersin.org/articles/10.3389/fmars.2019.00497/full
+
 ## References
