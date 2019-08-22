@@ -7,15 +7,15 @@ navbar:
     href: index.html
   - text: "Analyses"
     menu:
-    - text: "Polygon preparation"
+    - text: "Study area and regions"
       href: polygon-prep.html
-    - text: "SST preparation"
+    - text: "MHW detection"
       href: sst-prep.html
-    - text: "Variable preparation"
+    - text: "Heat budget data preparation"
       href: var-prep.html
     - text: "SOM analysis"
       href: som.html
-    - text: "Node summary"
+    - text: "Node summaries"
       href: node-summary.html
   - text: License
     href: license.html
