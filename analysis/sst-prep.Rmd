@@ -52,12 +52,11 @@ map_base <- readRDS("data/map_base.Rda")
 Up first we take the lon/lat grid from the 1/4 degree daily NOAA OISST product and find which points fall within each region. We will save this information to allow us to then easily pull out the desired pixels from the cube of OISST data.
 
 ```{r pixel-regions}
-# Load NAPA bathymetry
+# Create the OISST lon/lat grid
 OISST_grid <- data.frame(expand.grid(c(seq(0.125, 179.875, by = 0.25), 
                                        seq(-179.875, -0.125, by = 0.25)),
                                      seq(-89.875, 89.875, by = 0.25)))
 colnames(OISST_grid) <- c("lon", "lat")
-# saveRDS(OISST_grid, "data/OISST_grid.Rda")
 
 # Trim down OISST grid for faster processing
 OISST_grid_region <- OISST_grid %>% 
@@ -65,7 +64,6 @@ OISST_grid_region <- OISST_grid %>%
          lon <= max(NWA_coords$lon),
          lat >= min(NWA_coords$lat),
          lat <= max(NWA_coords$lat))
-# saveRDS(OISST_grid_region, "data/OISST_grid_region.Rda")
 
 # Function for finding and cleaning up points within a given region polygon
 pnts_in_region <- function(region_in){

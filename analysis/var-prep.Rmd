@@ -1,7 +1,7 @@
 ---
 title: "Variable preparation"
 author: "Robert Schlegel"
-date: "2019-07-25"
+date: "2019-08-22"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
@@ -17,22 +17,20 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
 
 ## Introduction
 
-This vignette will walk through the steps needed to create mean 'whatever' states during all of the MHWs detected in the previous [SST preparation](https://robwschlegel.github.io/MHWNWA/sst-prep.html) vignette. These 'whatever' states are any of the abiotic variables that have a presence in the ocean heat budget equation and that have been deemed relevant w.r.t. forcing of extreme ocean surface temperatures.
+This vignette walks through the steps needed to create mean synoptic states during all of the [MHWs detected](https://robwschlegel.github.io/MHWNWA/sst-prep.html) in the previous vignette. These synoptic states consist of the variables in the ocean heat budget equation.
 
-After first going through this entire process with the NAPA model output it become clear that this analysis should be run first with obs/reanalysis data, and the NAPA model results may be compared against this as desired. To this end we will now use the following variables as found in the following data products:
+After first going through this entire process with the NAPA model output it became clear that this analysis should actually be run with obs/reanalysis data, and the NAPA model results may be compared against this as desired. To this end we will use the following variables as found in the following data products:
 
-- NOAA OISST: SST
-- GLORYS: Mixed layer depth, U & V current vectors (~0.5m)
-- ERA 5: U & V wind vectors (10m), air temperature (2m)
-    - Net heat flux term: Latent & sensible heat flux, shortwave and longwave radiation
+- NOAA: (optimally interpolated) SST
+- GLORYS: Mixed layer depth (metres), U & V current vectors (~0.5m)
+- ERA 5: U & V wind vectors (10m), air temperature (2m), net heat flux:
+    - latent & sensible heat flux, shortwave & longwave radiation
 
-All of these variables have a daily resolution from at least 1993 -- 2018. The spatial resolution varies from a standard 1/4 degree data to everything except for the hi-res (1/12 degree) GLORYS data from 2016 -- 2018. The OISST, ERA 5, and GLORYS (1993 -- 2015) data are natively at 1/4 degree, though the coordinates are slightly off between OISST and ERA 5 + GLORYS. The ERA5 data are also hourly, so will need to be binned into mean daily values. In order to trade between efficiency and accuracy we will be converting everything to the 1/4 degree grid of the GLORYS/ERA 5 data.
-
-In order to compare the OISST dataset to the other 1/4 degree products the lat values for OISST will have 0.125 added to them, and the longitude values will have 0.125 subtracted from them. This is because the OISST coordinates give the centre value of each pixel, whereas the other coordinate system gives the top left corner (north-west corner).
+All of these products and variables have a shared daily resolution period from 1993 -- 2018. The spatial resolutions for NOAA and ERA 5 are 1/4 degrees and the GLORYS data are 1/12 degree. The coordinates are slightly off between OISST and ERA 5 & GLORYS, with the coordinate system for NOAA being centred per pixel while the other two products have their coordinate system based on the northwest corner. In order to compare the OISST dataset to the other 1/4 degree products the lat values for OISST will have 0.125 added to them, and the longitude values will have 0.125 subtracted from them. The ERA5 data are hourly, so will need to be binned into mean daily values. In order to trade between efficiency and accuracy we will be converting everything to the 1/4 degree grid of the GLORYS/ERA 5 data at a daily temporal resolution.
 
 ```{r startup}
 # Packages used in this vignette
-library(jsonlite, lib.loc = "../R-packages/")
+library(jsonlite, lib.loc = "../R-packages/") # Necessary for some version mismatches...
 library(tidyverse) # Base suite of functions
 library(tidync, lib.loc = "../R-packages/")
 library(lubridate) # For convenient date manipulation
@@ -50,12 +48,6 @@ NWA_corners <- readRDS("data/NWA_corners.Rda")
 # The region pixel lon/lat values
 NWA_info <- readRDS("data/NWA_info.Rda")
 
-# Load the OISST grid
-OISST_grid <- readRDS("data/OISST_grid.Rda")
-
-# Load the OISST grid trimmed to the region coords
-OISST_grid_region <- readRDS("data/OISST_grid_region.Rda")
-
 # Load MHW results
 OISST_region_MHW <- readRDS("data/OISST_region_MHW.Rda")
 
@@ -67,49 +59,21 @@ MHW_event <- OISST_region_MHW %>%
   unnest(events)
 ```
 
-For the upcoming variable prep we are also going to want the OISST coordinates that are within our chosen study area as seen with `NWA_corners`. 
-<!-- We will also create a subsetted bathy coord file, too, so as to have an effective land mask. This will help us to reduce a lot of computational cost as we go along because many of the pixels over land are given 0 values, rather than missing values, which is a strange choice... -->
-
-```{r OISST-grid-sub}
-# The OISST coordinates for the study area only
-OISST_grid_study <- OISST_grid %>% 
-  filter(lon >= NWA_corners[1], lon <= NWA_corners[2],
-           lat >= NWA_corners[3], lat <= NWA_corners[4])
-# saveRDS(OISST_grid_study, "data/OISST_grid_study.Rda")
-```
-
 ## Base datasets
 
-Rather than go about performing all of the calculations below on piecemeal bits of data, it should be possible to load the entire datasets for each variable into memory at once. So in this section we will create functions that load each of the variables for the different data products. We will then create and save these complete datasets for ease of use later on.
+Rather than go about performing all of the calculations below on piecemeal bits of data, we will load each variable into memory at once. The following code chunk shows how we create functions that load each of the variables from the different data products. We will then create and save this complete dataset for ease of use later on.
 
 ```{r variable-datasets, eval=FALSE}
 # Load the functions used below
-  # I've chosen to house a lot of code here to keep this vignette tidier
+  # I've chosen to house the functions  in the following script
+  # in order to keep this vignette tidier
 source("code/functions.R")
-
-## SST
-# The files with data in the study area
-OISST_sst_files <- data.frame(files = dir("../../data/OISST", full.names = T),
-                              lon = c(seq(0.125, 179.875, by = 0.25), seq(-179.875, -0.125, by = 0.25))) %>% 
-  filter(lon >= NWA_corners[1]+0.125, lon <= NWA_corners[2]+0.125) %>% 
-  mutate(files = as.character(files))
-OISST_sst_files <- as.vector(OISST_sst_files$files)
-
-# Aggregate data
-system.time(
-OISST_sst <- load_all_OISST(OISST_sst_files) %>% 
-  dplyr::rename(sst = temp)
-) # 41 seconds
-
-# save
-saveRDS(OISST_sst, "data/OISST_sst.Rda")
-
-# The code used to create the rest of the base files may be seen in code/workflow.R
+# See the code/workflow.R script for the exact code used for this step
 ```
 
 ### Net heat flux
 
-This is the one variable I was not able to source. The OAFlux product does have a net heat flux layer, but it ends in 2009. This is not long enough so we are going to create our own net heat flux layer by adding together the latent & sensible heat flux layers with the short & long wave radiation layers all from the ERA 5 product. When doing so we must ensure that the directions of the terms are matched correctly (i.e. that they all represent positive downward flux). 
+This is the one variable I was not able to source. The OAFlux product does have a net heat flux layer, but it ends in 2009. This is not long enough so we are going to create our own net heat flux layer by adding together the latent & sensible heat flux layers with the shortwave & longwave radiation layers from the ERA 5 product. When doing so we must ensure that the directions of the terms are matched correctly (i.e. that they all represent positive downward flux). Reading through the available meta-data I was not able to verify this, but it appears as though these area all positive downward flux terms. 
 
 ```{r net-heat-flux, eval=FALSE}
 # The code used to perform these steps may be seen in code/workflow.R
@@ -117,39 +81,17 @@ This is the one variable I was not able to source. The OAFlux product does have 
 
 ## Climatologies
 
-In the data packets we need to create for the SOMs (see below) we will need to include anomaly values. In order to do this we need to first create daily climatology values for each variable for each pixel. In order to create a climatology of values we will need to load all of the files and then pixel-wise go about getting the seasonal (daily) climatologies. This will be done with the same function (`ts2clm()`) that is used for the MHW climatologies. One-by-one we will load an entire dataset (created above) into memory so that we can perform the necessary calculations. Hold on to your hats, this is going to be RAM heavy...
+In the data packets we need to create for the [SOM](https://robwschlegel.github.io/MHWNWA/som.html) we will need to include anomaly values. In order to do this we need to first create daily climatologies for each variable for each pixel. To do so we will need to load all of the files and then pixel-wise go about getting the seasonal (mean daily) climatologies. This will be done with the same function (`ts2clm()`) that is used for the MHW climatologies. One-by-one we will load an entire dataset (created above) into memory so that we can perform the necessary calculations. Hold on to your hats, this is going to be RAM heavy...
 
 ```{r variable-climatologies, eval=FALSE}
-# Load functions required below
-source("code/functions.R")
-
-## SST
-# Load
-OISST_sst <- readRDS("data/OISST_sst.Rda")
-# Calculate clims
-system.time(
-OISST_sst_clim <- ts2clm_one(OISST_sst)
-) # 1139 seconds
-
-# Save
-saveRDS(OISST_sst_clim, "data/OISST_sst_clim.Rda")
-
-# The code used to create the other climatologies may be found in code/workflow.R
+# The code used to create the climatologies may be found in code/workflow.R
 ```
 
 ## Anomalies
 
-The last step before we can begin creating our data packets is to now subtract our climatology data from our base data for each of the variables used in this study. We will then save this large anomaly cubes to allow for easy synoptic state creation.
+The last step before we can begin creating our data packets is to subtract our climatology data from our base data for each of the variables used in this study. We then save these large anomaly cubes to allow for easier synoptic state creation later on.
 
 ```{r variable-anomalies, eval=FALSE}
-# Calculate SST anomalies
-system.time(
-OISST_sst_anom <- anom_one(OISST_sst, OISST_sst_clim, 2)
-) # 83 seconds
-
-# Save
-saveRDS(OISST_sst_anom, "data/OISST_sst_anom.Rda")
-
 # The code used to create the rest of the anomalies may be found in code/workflow.R
 ```
 
@@ -157,52 +99,11 @@ saveRDS(OISST_sst_anom, "data/OISST_sst_anom.Rda")
 
 The next step is to create mean synoptic states for each variable during each of the MHWs detected in each region. To do this we simply load the combined anomaly dataset of all of our chosen variables and slice off only the bits we need during each of the observed MHWs. These slices are then meaned, pixel-wise, to create the synoptic states during each event.
 
-One thing to note here is that during this process, before the slices are created, each pixel for the mixed layer depth anomaly is divided by the max value observed at that pixel, scaling these values to 1. This is done as the range of MLD can vary dramatically over the Labrador sea and we want to avoid this from influencing the results.
+<!-- One thing to note here is that during this process, before the slices are created, each pixel for the mixed layer depth anomaly is divided by the max value observed at that pixel, scaling these values to 1. This is done as the range of MLD can vary dramatically over the Labrador sea and we want to avoid this from influencing the results. -->
 
 ```{r data-packets, eval=FALSE}
-# Load anomalies and scale MLD
-system.time(
-  if(!exists("ALL_anom")) ALL_anom <- readRDS("data/ALL_anom.Rda") %>%
-    group_by(lon, lat) %>%
-    mutate(mld_anom = mld_anom/max(abs(mld_anom), na.rm = T)) %>%
-    ungroup()
-) # 99 seconds
-
-# Function for creating packets
-data_packet_func <- function(event_sub){
-
-  # Filter base anomally range
-  packet_base <- ALL_anom %>%
-    filter(t >= event_sub$date_start, t <= event_sub$date_end)
-
-  # Create mean synoptic values
-  packet_mean <- packet_base %>%
-    select(-t) %>%
-    group_by(lon, lat) %>%
-    summarise_all(mean, na.rm = T) %>%
-    arrange(lon, lat) %>%
-    ungroup()
-  packet_mean[is.na(packet_mean)] <- NA
-  packet_mean <- nest(packet_mean, .key = "synoptic")
-
-  # Combine results with MHW dataframe
-  packet_res <- cbind(event_sub, packet_mean)
-
-  # Exit
-  return(packet_res)
-}
-
-# Set number of cores
-doMC::registerDoMC(cores = 25)
-
-# Create one big packet
-system.time(
-synoptic_states <- plyr::ddply(OISST_MHW_event, c("region", "event_no"), data_packet_func, .parallel = T)
-) # 3 seconds for first event, 50 for all events
-
-# Save
-saveRDS(synoptic_states, "data/synoptic_states.Rda")
+# This code may be found in code/workflow.R
 ```
 
-With all of our mean synoptic states created it is now time to feed them to the [Self-organising map (SOM) analysis](https://robwschlegel.github.io/MHWNWA/som.html).
+With all of our mean synoptic states created it is now time to feed them to the [Self-organising map (SOM)](https://robwschlegel.github.io/MHWNWA/som.html).
 

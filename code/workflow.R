@@ -27,12 +27,12 @@ source("code/functions.R")
 
 # Study area --------------------------------------------------------------
 
-# See the "Polygon preparation" vignette
+# See the "Study area and regions" vignette
 
 
-# MHW calculations --------------------------------------------------------
+# MHW detection -----------------------------------------------------------
 
-# See the "SST preparation" vignette
+# See the "MHW detection" vignette
 
 
 # Create net heat flux (qnet) variable ------------------------------------
@@ -99,8 +99,9 @@ source("code/functions.R")
 
 ### OISST data processing
 ## Sea surface temperature
-  # NB: This file was createds in the sst-prep vignette
-# OISST_sst <- readRDS("data/OISST_sst.Rda")
+# OISST_files <- OISST_files <- dir("../../data/OISST", full.names = T)
+# OISST_sst <- load_all_OISST(OISST_files)
+# saveRDS(OISST_sst, "data/OISST_sst.Rda")
 # OISST_sst_clim <- ts2clm_one(OISST_sst)
 # saveRDS(OISST_sst_clim, "data/OISST_sst_clim.Rda")
 # OISST_sst_anom <- anom_one(OISST_sst, OISST_sst_clim, 2)
@@ -315,7 +316,7 @@ source("code/functions.R")
   # NB: 50 cores can be too much for the RAM
 # doMC::registerDoMC(cores = 25)
 
-# Create one big packet
+# Create one big anomaly packet
 # print(paste0("Began creating data packets at ", Sys.time()))
 # system.time(
 # synoptic_states <- plyr::ddply(OISST_MHW_event, c("region", "event_no"), data_packet, .parallel = T)
@@ -324,20 +325,14 @@ source("code/functions.R")
 # Save
 # saveRDS(synoptic_states, "data/synoptic_states.Rda")
 
+# Create base data packet for real SST + air temp + U + V figures
+
 
 # SOM analysis ------------------------------------------------------------
 
-# The SOM excluding the Labrador Sea region
 # packet_nolab <- readRDS("data/packet_nolab.Rda")
 # system.time(som_nolab <- som_model_PCI(packet_nolab)) # 78 seconds
 # saveRDS(som_nolab, file = "data/som_nolab.Rda")
-
-# The SOM excluding the Labrador Sea and Gulf of St Lawrence regions
-# packet_nolabgsl <- readRDS("data/packet_nolabgsl.Rda")
-# system.time(som_nolabgsl <- som_model_PCI(packet_nolabgsl)) # 75 seconds
-# saveRDS(som_nolabgsl, file = "data/som_nolabgsl.Rda")
-
-## See the som vignette for more variations
 
 
 # Visuals -----------------------------------------------------------------
@@ -346,28 +341,3 @@ source("code/functions.R")
 # som_no_ls <- readRDS("data/som_nolab.Rda")
 # som_node_visualise(som_no_ls, dir_name = "no_ls")
 
-# No Labrador Shelf or Gulf of St Lawrence SOM visuals
-# som_no_ls_gsl <- readRDS("data/som_nolabgsl.Rda")
-# som_node_visualise(som_no_ls_gsl, dir_name = "no_ls_gsl")
-
-# No Labrador Shelf SOM visuals with 4x4 nodes
-# som_no_ls_4x4 <- readRDS("data/som_nolab_16.Rda")
-# som_node_visualise(som_no_ls_4x4, dir_name = "no_ls_4x4", col_num = 4)
-
-# No Labrador Shelf SOM visuals with 3x3 nodes
-# som_no_ls_3x3 <- readRDS("data/som_nolab_9.Rda")
-# som_node_visualise(som_no_ls_3x3, dir_name = "no_ls_3x3", col_num = 3)
-
-# No Labrador Shelf and no moderate event SOM visuals
-# som_no_ls_mod <- readRDS("data/som_nolabmod.Rda")
-# som_node_visualise(som_no_ls_mod, dir_name = "no_ls_mod", col_num = 2)
-
-# No Labrador Shelf and no events shorter than 2 weeks SOM visuals
-# som_no_ls_14 <- readRDS("data/som_nolab14.Rda")
-# som_node_visualise(som_no_ls_14, dir_name = "no_ls_14", col_num = 3)
-
-# SOM visuals with all data
-  # NB: The visuals are framed to the no ls area
-  # so the figures created here have the top bit cut off
-# som_all <- readRDS("data/som_all.Rda")
-# som_node_visualise(som_all, dir_name = "all")

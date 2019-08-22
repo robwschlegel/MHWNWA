@@ -24,18 +24,19 @@ doMC::registerDoMC(cores = 50)
 options(scipen = 999)
 
 # Corners of the study area
+  # Created in 'analysis/polygon-prep.Rmd'
 NWA_corners <- readRDS("data/NWA_corners.Rda")
 
-# Corners of the study area without Labrador Sea
-NWA_nols <- c(-80, -41, 32, 52.5)
-
 # Individual regions
-NWA_coords <- readRDS("data/NWA_coords_cabot.Rda")
+  # Created in 'analysis/polygon-prep.Rmd'
+NWA_coords <- readRDS("data/NWA_coords.Rda")
 
 # The pixels in each region
+  # Created in 'analysis/polygon-prep.Rmd'
 NWA_info <- readRDS("data/NWA_info.Rda")
 
 # MHW results
+  # Created in 'analysis/sst-prep.Rmd'
 OISST_region_MHW <- readRDS("data/OISST_region_MHW.Rda")
 
 # MHW Events
@@ -53,20 +54,17 @@ suppressWarnings( # Don't need warning about different names for events
 )
 
 # The base land polygon
-map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE)) %>%
-  dplyr::rename(lon = long) %>%
-  mutate(group = ifelse(lon > 180, group+9999, group),
-         lon = ifelse(lon > 180, lon-360, lon)) %>%
-  select(-region, -subregion)
+  # Created in 'analysis/polygon-prep.Rmd'
+map_base <- readRDS("data/map_base.Rda")
 
-# The base map frame
+# The base map frame used for all figures
 frame_base <- ggplot(map_base, aes(x = lon, y = lat)) +
   scale_x_continuous(breaks = seq(-70, -50, 10),
                      labels = c("70°W", "60°W", "50°W"),
                      position = "top") +
   scale_y_continuous(breaks = c(40, 50),
                      labels = scales::unit_format(suffix = "°N", sep = "")) +
-  coord_cartesian(xlim = c(NWA_nols[1:2]), ylim = c(NWA_nols[3:4]), expand = F) +
+  coord_cartesian(xlim = c(NWA_corners[1:2]), ylim = c(NWA_corners[3:4]), expand = F) +
   labs(x = NULL, y = NULL) +
   theme_bw() +
   theme(panel.border = element_rect(fill = NA, colour = "black", size = 1),
@@ -92,6 +90,7 @@ bathy <- readRDS("data/NWA_bathy_lowres.Rda")
 
 # Load anomaly data as necessary
 # This also scales each MLD pixel to 1
+# NB: It was decided not to first scale the MLD data
 # system.time(
 #   if(!exists("ALL_anom")) ALL_anom <- readRDS("data/ALL_anom.Rda") %>%
 #     group_by(lon, lat) %>%
@@ -112,13 +111,13 @@ bathy <- readRDS("data/NWA_bathy_lowres.Rda")
 
 # The land mask NetCDF file is downloaded here:
 # https://www.esrl.noaa.gov/psd/data/gridded/data.noaa.oisst.v2.highres.html
-OISST_land_mask_func <- function(){
-  lmask <- want_vec <- tidync("data/lsmask.oisst.v2.nc") %>%
-    hyper_tibble() %>%
-    dplyr::select(-time) %>%
-    mutate(lon = ifelse(lon > 180, lon-360, lon))
-  saveRDS(lmask, "data/land_mask_OISST.Rda")
-}
+# OISST_land_mask_func <- function(){
+#   lmask <- want_vec <- tidync("data/lsmask.oisst.v2.nc") %>%
+#     hyper_tibble() %>%
+#     dplyr::select(-time) %>%
+#     mutate(lon = ifelse(lon > 180, lon-360, lon))
+#   saveRDS(lmask, "data/land_mask_OISST.Rda")
+# }
 
 # Test visuals
 # ggplot(lmask, aes(x = lon, y = lat)) +
@@ -127,10 +126,11 @@ OISST_land_mask_func <- function(){
 
 # Extract data from NOAA OISST NetCDF -------------------------------------
 
+# tester...
 # file_name <- "../data/OISST/avhrr-only-v2.ts.0001.nc"
 load_OISST <- function(file_name){
   res <- tidync(file_name) %>%
-    hyper_filter(lat = dplyr::between(lat, 31.5-0.125, 63.5-0.125),
+    hyper_filter(lat = dplyr::between(lat, NWA_corners[3]-0.125, NWA_corners[4]-0.125),
                  time = dplyr::between(time, as.integer(as.Date("1993-01-01")),
                                        as.integer(as.Date("2018-12-31")))) %>%
     hyper_tibble() %>%
@@ -150,6 +150,7 @@ load_all_OISST <- function(file_names){
 # Extract data from GLORYS NetCDF -----------------------------------------
 
 # 1/4 degree data from 1993 to 2015
+# testers...
 # file_name <- "../data/GLORYS/MHWNWA_GLORYS_quarter_degree_daily_1993-01.nc"
 load_GLORYS <- function(file_name){
   res_uv <- tidync(file_name) %>%
@@ -177,6 +178,7 @@ load_all_GLORYS <- function(file_names){
 }
 
 # 1/12 degree data from 2016 to 2018
+# testers...
 # file_name <- "../data/GLORYS/MHWNWA_GLORYS_twelfth_degree_daily_2016-01.nc"
 load_GLORYS_hires <- function(file_name){
   # Process U and V
@@ -227,7 +229,7 @@ load_all_GLORYS_hires <- function(file_names){
 # Extract data from ERA 5 NetCDF ------------------------------------------
 
 # Function for loading a single ERA 5 NetCDF file
-# Cycles through one lon slice at a time as the hourly data are too cumbersome otherwise
+# testers...
 # file_name <- "../../oliver/data/ERA/ERA5/T2M/ERA5_T2M_1993.nc"
 # lon_slice <- -80.5
 load_ERA5 <- function(file_name){
@@ -310,8 +312,8 @@ load_anom <- function(file_name, OISST = F){
     res <- readRDS(file_name) %>%
       mutate(lon = ifelse(lon > 180, lon-360, lon))
   }
-  res <- res %>% filter(lon >= -80, lon <= -41,
-                        lat >= 32, lat <= 63)
+  res <- res %>% filter(lon >= NWA_corners[1], lon <= NWA_corners[2],
+                        lat >= NWA_corners[3], lat <= NWA_corners[4])
   res <- setkey(data.table(res, key = c("lon", "lat", "t")))
   return(res)
 }
