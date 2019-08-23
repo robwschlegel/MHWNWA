@@ -31,54 +31,13 @@ library(lubridate) # For convenient date manipulation
 library(yasomi, lib.loc = "../R-packages/") # The SOM package of choice due to PCI compliance
 library(data.table) # For working with massive dataframes
 
-# Set number of cores
-doMC::registerDoMC(cores = 50)
-
-# Disable scientific notation for numeric values
-  # I just find it annoying
-options(scipen = 999)
-
-# Set number of cores
-doMC::registerDoMC(cores = 50)
-
-# Disable scientific notation for numeric values
-  # I just find it annoying
-options(scipen = 999)
-
-# Individual regions
-NWA_coords <- readRDS("data/NWA_coords_cabot.Rda")
-
-# Corners of the study area
-NWA_corners <- readRDS("data/NWA_corners.Rda")
-
-# The base map
-map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE)) %>%
-  dplyr::rename(lon = long) %>%
-  mutate(group = ifelse(lon > 180, group+9999, group),
-         lon = ifelse(lon > 180, lon-360, lon)) %>% 
-  select(-region, -subregion)
-
-# MHW results
-OISST_region_MHW <- readRDS("data/OISST_region_MHW.Rda")
-
-# MHW Events
-OISST_MHW_event <- OISST_region_MHW %>%
-  select(-cats) %>%
-  unnest(events) %>%
-  filter(row_number() %% 2 == 0) %>%
-  unnest(events)
-
-# MHW Categories
-suppressWarnings( # Don't need warning about different names for events
-OISST_MHW_cats <- OISST_region_MHW %>%
-  select(-events) %>%
-  unnest(cats) 
-)
+# Load functions and objects to be used below
+source("code/functions.R")
 ```
 
-## Tailored data packets
+## Data packet
 
-In this last stage before running our SOM analyses we will create data packets that can be fed directly into the SOM algorithm. These data packets will vary based on the exclusion of certain regions in the study area. In the first run of this analysis on the NAPA model data it was found that the inclusion of the Labrador Sea complicated the results quite a bit. It is also unclear whether or not the Gulf of St Lawrence region should be included in the analysis. While creating whatever packets we desire we will also be converting them into the super-wide matrix format that the SOM model desires.
+In this last stage before running our SOM analysis we will create a data packet that can be fed directly into the SOM algorithm. This means that it must be converted into a super-wide matrix format. In the first run of this analysis on the NAPA model data it was found that the inclusion of the Labrador Sea complicated the results quite a bit. It was also unclear whether or not the Gulf of St Lawrence region should be included in the analysis. So in the second run of this analysis multiple different SOM variations were employed and it was decided that the gsl region should be included.
 
 ### Unnest synoptic state packets
 
@@ -87,7 +46,7 @@ Up first we must simply load and unnest the synoptic state packets made previous
 ```{r unnest-packets, eval=FALSE}
 # Load the synoptic states data packet
 system.time(
-synoptic_states <- readRDS("data/synoptic_states.Rda")
+synoptic_states <- readRDS("data/SOM/synoptic_states.Rda")
 ) # 3 seconds
 
 # Unnest the synoptic data
@@ -98,257 +57,30 @@ synoptic_states_unnest <- synoptic_states %>%
 ) # 8 seconds
 ```
 
-### Custom packets
+### Create packet
 
-With all of our data ready we may now trim them as we see fit before saving them for the SOM.
+With all of our data ready we may now prepare and save them for the SOM.
 
 ```{r create-SOM-packet, eval=FALSE}
-# The study area size when the Labrador region is excluded
-NWA_coords_nolab <- NWA_coords %>% 
-  filter(region != "ls")
-
-# The study area size when the Labrador and GSL regions are excluded
-NWA_coords_nolabgsl <- NWA_coords %>% 
-  filter(!region %in% c("ls", "gsl"))
-
-# Test visuals of reduced study areas
-# synoptic_states[1,] %>% 
-#   unnest() %>% 
-#   filter(lat <= round(max(NWA_coords_nolabgsl$lat))+0.5) %>% 
-#   ggplot(aes(x = lon, y = lat)) +
-#   geom_raster(aes(fill = sst_anom)) +
-#   geom_polygon(data = NWA_coords_nolabgsl, aes(colour = region), fill = NA)
-
-# Function for casting wide the custom packets
-wide_packet_func <- function(df){
-  
-  # Cast the data to a single row
-  res <- data.table::data.table(df) %>% 
-    select(-t) %>% 
-    reshape2::melt(id = c("region", "event_no", "lon", "lat"),
-                   measure = c(colnames(.)[-c(1:4)]), 
-                   variable.name = "var", value.name = "val") %>% 
-    dplyr::arrange(var, lon, lat) %>%
-    unite(coords, c(lon, lat, var), sep = "BBB") %>%
-    unite(event_ID, c(region, event_no), sep = "BBB") %>%
-    reshape2::dcast(event_ID ~ coords, value.var = "val")
-  
-  # Remove columns (pixels) with missing data
-  res_fix <- res[,colSums(is.na(res))<1]
-  
-  # Remove columns (pixels) with no variance
-  # This may occur in pixels where there is no variance in MLD anomaly
-  no_var <- data.frame(min = sapply(res_fix[,-1], min),
-                       max = sapply(res_fix[,-1], max)) %>% 
-    mutate(col_name = row.names(.)) %>% 
-    filter(min == max)
-  res_filter <- res_fix[,!(colnames(res_fix) %in% no_var$col_name)]
-  
-  # Exit
-  return(res_filter)
-}
-
 # Packet for entire study region
 system.time(
-  packet_all <- wide_packet_func(synoptic_states_unnest)
-) # 182 seconds
-saveRDS(packet_all, "data/packet_all.Rda")
-
-# Exclude Labrador region
-system.time(
-  packet_nolab <- synoptic_states_unnest %>% 
-    filter(region != "ls",
-           lat <= round(max(NWA_coords_nolab$lat))+0.5) %>% 
-    wide_packet_func()
-) # 103 seconds
-saveRDS(packet_nolab, "data/packet_nolab.Rda")
-
-# Exclude Labrador and Gulf of St Lawrence regions
-system.time(
-  packet_nolabgsl <- synoptic_states_unnest %>% 
-    filter(!region %in% c("ls", "gsl"),
-           lat <= round(max(NWA_coords_nolabgsl$lat))+0.5) %>% 
-    wide_packet_func()
-) # 82 seconds
-saveRDS(packet_nolabgsl, "data/packet_nolabgsl.Rda")
-
-# Exclude Labrador region and moderate events
-system.time(
-  packet_nolabmod <- synoptic_states_unnest %>% 
-    filter(region != "ls",
-           lat <= round(max(NWA_coords_nolab$lat))+0.5) %>% 
-    left_join(select(OISST_MHW_cats, region, event_no, category), by = c("region", "event_no")) %>% 
-    filter(category != "I Moderate") %>% 
-    select(-category) %>% 
-    wide_packet_func()
-) # 14 seconds
-saveRDS(packet_nolabmod, "data/packet_nolabmod.Rda")
-
-# Exclude Labrador region and moderate events
-system.time(
-  packet_nolab14 <- synoptic_states_unnest %>% 
-    filter(region != "ls",
-           lat <= round(max(NWA_coords_nolab$lat))+0.5) %>% 
-    left_join(select(OISST_MHW_cats, region, event_no, duration), by = c("region", "event_no")) %>% 
-    filter(duration >= 14) %>% 
-    select(-duration) %>% 
-    wide_packet_func()
-) # 40 seconds
-saveRDS(packet_nolab14, "data/packet_nolab14.Rda")
-
-# A packet for events with a cummulative intensity of at least 100
+  packet <- wide_packet_func(synoptic_states_unnest)
+) # 187 seconds
+saveRDS(packet, "data/SOM/packet.Rda")
 ```
 
 ## Run SOM models
 
-Now that we have our data packets to feed the SOM, we need a function that will ingest them and produce results for us. The function below has been greatly expanded on from the previous version of this project and now performs all of the SOM related work in one go. This allowed me to remove a couple hundreds lines of code and text from this vignette.
-
-```{r som-func}
-# Function for calculating SOMs using PCI
-# This outputs the mean values for each SOM as well
-som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
-  # Create a scaled matrix for the SOM
-  # Cancel out first column as this is the reference ID of the event per row
-  data_packet_matrix <- as.matrix(scale(data_packet[,-1]))
-
-  # Create the grid that the SOM will use to determine the number of nodes
-  som_grid <- somgrid(xdim = xdim, ydim = ydim, topo = "hexagonal")
-
-  # Run the SOM with PCI
-  som_model <- batchsom(data_packet_matrix,
-                        somgrid = som_grid,
-                        init = "pca",
-                        max.iter = 100)
-  
-  # Create a data.frame of info
-  node_info <- data.frame(event_ID = data_packet[,"event_ID"],
-                           node = som_model$classif) %>% 
-    separate(event_ID, into = c("region", "event_no"), sep = "BBB") %>% 
-    group_by(node) %>% 
-    mutate(count = n()) %>% 
-    ungroup() %>% 
-    mutate(event_no = as.numeric(as.character(event_no))) %>%
-    left_join(select(OISST_MHW_cats, region, event_no, category, peak_date), 
-              by = c("region", "event_no")) %>% 
-    mutate(month_peak = lubridate::month(peak_date, label = T),
-           season_peak = case_when(month_peak %in% c("Jan", "Feb", "Mar") ~ "Winter",
-                                   month_peak %in% c("Apr", "May", "Jun") ~ "Spring",
-                                   month_peak %in% c("Jul", "Aug", "Sep") ~ "Summer",
-                                   month_peak %in% c("Oct", "Nov", "Dec") ~ "Autumn")) %>% 
-    select(-peak_date, -month_peak)
-  
-  # Determine which event goes in which node and melt
-  data_packet_long <- cbind(node = som_model$classif, data_packet) %>% 
-    separate(event_ID, into = c("region", "event_no"), sep = "BBB") %>% 
-    data.table() %>% 
-    reshape2::melt(id = c("node", "region", "event_no"),
-                   measure = c(colnames(.)[-c(1:3)]), 
-                   variable.name = "variable", value.name = "value")
-  
-  # Create the mean values that serve as the unscaled results from the SOM
-  node_data <- data_packet_long[, .(val = mean(value, na.rm = TRUE)),
-                                   by = .(node, variable)] %>% 
-    separate(variable, into = c("lon", "lat", "var"), sep = "BBB") %>%
-    dplyr::arrange(node, var, lon, lat) %>% 
-    mutate(lon = as.numeric(lon),
-           lat = as.numeric(lat),
-           val = round(val, 4))
-  
-  ## ANOSIM for goodness of fit for node count
-  node_data_wide <- node_data %>%
-    unite(coords, c(lon, lat, var), sep = "BBB") %>% 
-    data.table() %>% 
-    dcast(node~coords, value.var = "val")
-
-  # Calculate similarity
-  som_anosim <- vegan::anosim(as.matrix(node_data_wide[,-1]), 
-                              node_data_wide$node, distance = "euclidean")$signif
-  
-  # Combine and exit
-  res <- list(data = node_data, info = node_info, ANOSIM = paste0("p = ",round(som_anosim, 4)))
-  return(res)
-}
-```
-
-With the function sorted, we now feed it the data packets.
+Now that we have our data packet to feed the SOM with a function that ingests them and produces results for us. The function below has been greatly expanded on from the previous version of this project and now performs all of the SOM related work in one go. This allowed me to remove a couple hundreds lines of code and text from this vignette.
 
 ```{r som-run, eval=FALSE}
 # The SOM on the entire study area
-packet_all <- readRDS("data/packet_all.Rda")
-system.time(som_all <- som_model_PCI(packet_all)) # 132 seconds
-# som_all$ANOSIM # p = 0.001
-saveRDS(som_all, file = "data/som_all.Rda")
-
-# The SOM excluding the Labrador Sea region
-packet_nolab <- readRDS("data/packet_nolab.Rda")
-system.time(som_nolab <- som_model_PCI(packet_nolab)) # 63 seconds
-# som_nolab$ANOSIM # p = 0.001
-saveRDS(som_nolab, file = "data/som_nolab.Rda")
-
-# The SOM excluding the Labrador Sea and Gulf of St Lawrence regions
-packet_nolabgsl <- readRDS("data/packet_nolabgsl.Rda")
-system.time(som_nolabgsl <- som_model_PCI(packet_nolabgsl)) # 52 seconds
-# som_nolabgsl$ANOSIM # p = 0.001
-saveRDS(som_nolabgsl, file = "data/som_nolabgsl.Rda")
-
-# We see below that the results are crisper when we leave the Gulf of St Lawrence in,
-# so we will proceed with the rest of the experiments only excluding the Labrador Shelf
-
-# A 9 node SOM
-system.time(som_nolab_9 <- som_model_PCI(packet_nolab, xdim = 3,  ydim = 3)) # 53 seconds
-# som_nolab_9$ANOSIM # p = 0.001
-saveRDS(som_nolab_9, file = "data/som_nolab_9.Rda")
-
-# The 9 node results are perhaps easier to make sense of than 12 nodes, but it's not certain
-
-# A 16 node SOM
-system.time(som_nolab_16 <- som_model_PCI(packet_nolab, xdim = 4, ydim = 4)) # 86 seconds
-# som_nolab_16$ANOSIM # p = 0.001
-saveRDS(som_nolab_16, file = "data/som_nolab_16.Rda")
-
-# 16 nodes seems unnecessary...
-
-# A SOM without moderate events
-packet_nolabmod <- readRDS("data/packet_nolabmod.Rda")
-system.time(som_nolabmod <- som_model_PCI(packet_nolabmod, xdim = 2, ydim = 2)) # 12 seconds
-# som_nolabmod$ANOSIM # p = 0.0417
-saveRDS(som_nolabmod, file = "data/som_nolabmod.Rda")
-
-# There are fewer than 40 category "II Strong" and larger MHWs so using more than 4 nodes wouldn't be appropriate
-# These results are defintely too sparse to use for a publication
-
-# A SOM without events shorter than 14 days
-packet_nolab14 <- readRDS("data/packet_nolab14.Rda")
-system.time(som_nolab14 <- som_model_PCI(packet_nolab14, xdim = 3, ydim = 3)) # 12 seconds
-# som_nolab14$ANOSIM # p = 0.001
-saveRDS(som_nolab14, file = "data/som_nolab14.Rda")
+packet <- readRDS("data/SOM/packet.Rda")
+system.time(som <- som_model_PCI(packet)) # 132 seconds
+# som$ANOSIM # p = 0.001
+saveRDS(som, file = "data/SOM/som.Rda")
 ```
 
-As simple as that we now have a range of results from our SOM experiments. Up next in the [Node summary vignette](https://robwschlegel.github.io/MHWNWA/node-summary.html) we will show the results with a range of visuals.
-
-## Musings
-
-### Possible mechanisms
-
-"Finally, Shearman and Lentz (2010) showed that century-long ocean warming trends observed along the entire northeast U.S. coast are not related to local atmospheric forcing but driven by atmospheric warming of source waters in the Labrador Sea and the Arctic, which are advected into the region." [@Richaud2016]
-
-Downwelling
-
-Net heatflux (OAFlux) doesn't line up perfectly with seasonal SST signal, but is very close, with heat flux tending to lead SST by 2 -- 3 months [@Richaud2016]. It is therefore likely one of the primary drivers of SST and should therefore be strongly considered when constructing SOMs.
-
-There is almost no seasonal cycle for slope waters in any of the regions [@Richaud2016].
-
-A decrease in the jet stream could lead to fewer storm tracks and overall warmer air: https://www.nature.com/articles/s41558-019-0555-0
-This could be an explanation for the "dog days of summer" middle two nodes.
-
-### More ideas
-
-It would be interesting to see if the SOM outputs differ in any meaningful ways when only data from the first half of the study time period are used compared against the second half.
-
-The output of the SOMs could likely be more meaningfully conveyed from the point of view of the regions. What I mean by this is to take the summary of the nodes, convey them into a table, and then use that table to inform a series of information bits that is focused around each region. Some sort of interactive visual may be useful for this. Showing the percentage that each region has in each node would be a good start. This would allow for a more meaningful further explanation for which drivers affect which regions during which seasons and over which years. 
-
-Once this summary is worked out it would then follow that the same analysis be run 1, 2, 3 etc. months in the past and see what the same information format provides w.r.t. a sort of predictive capacity. All of this can then be used to check other data products with a more focused lens in order to maximise the utility of the output.
-
-It appears as though some patterns/drivers for MHWs are more predictable than others: https://www.frontiersin.org/articles/10.3389/fmars.2019.00497/full
+And there we have our SOM results. Up next in the [Node summary vignette](https://robwschlegel.github.io/MHWNWA/node-summary.html) we will show the results with a range of visuals.
 
 ## References

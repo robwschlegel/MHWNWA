@@ -84,6 +84,10 @@ current_uv_scalar <- 4
 # Establish the vector scalar for the wind
 wind_uv_scalar <- 0.5
 
+# Reduced wind/ current vector grid
+lon_sub <- seq(NWA_corners[1], NWA_corners[2], by = 1)
+lat_sub <- seq(NWA_corners[3], NWA_corners[4], by = 1)
+
 # Bathymetry data
 # NB: This was created in a previous version of the polygon-prep vignette
 bathy <- readRDS("data/NWA_bathy_lowres.Rda")
@@ -92,10 +96,10 @@ bathy <- readRDS("data/NWA_bathy_lowres.Rda")
 # This also scales each MLD pixel to 1
 # NB: It was decided not to first scale the MLD data
 # system.time(
-#   if(!exists("ALL_anom")) ALL_anom <- readRDS("data/ALL_anom.Rda") %>%
-#     group_by(lon, lat) %>%
-#     mutate(mld_anom = mld_anom/max(abs(mld_anom), na.rm = T)) %>%
-#     ungroup()
+#   if(!exists("ALL_anom")) ALL_anom <- readRDS("data/ALL_anom.Rda") #%>%
+#     #group_by(lon, lat) %>%
+#     #mutate(mld_anom = mld_anom/max(abs(mld_anom), na.rm = T)) %>%
+#     #ungroup()
 # ) # 99 seconds
 
 # The OISST land mask
@@ -355,6 +359,7 @@ data_packet_func <- function(event_sub){
 
 # Function for casting wide the data packets
 wide_packet_func <- function(df){
+
   # Cast the data to a single row
   res <- data.table::data.table(df) %>%
     select(-t) %>%
@@ -365,10 +370,38 @@ wide_packet_func <- function(df){
     unite(coords, c(lon, lat, var), sep = "BBB") %>%
     unite(event_ID, c(region, event_no), sep = "BBB") %>%
     reshape2::dcast(event_ID ~ coords, value.var = "val")
+
   # Remove columns (pixels) with missing data
   res_fix <- res[,colSums(is.na(res))<1]
-  return(res_fix)
+
+  # Remove columns (pixels) with no variance
+  # This may occur in pixels where there is no variance in MLD anomaly
+  no_var <- data.frame(min = sapply(res_fix[,-1], min),
+                       max = sapply(res_fix[,-1], max)) %>%
+    mutate(col_name = row.names(.)) %>%
+    filter(min == max)
+  res_filter <- res_fix[,!(colnames(res_fix) %in% no_var$col_name)]
+
+  # Exit
+  return(res_filter)
 }
+
+# testers...
+# guide_index <- node_date_index[1,]
+# daily_data <- ERA5_u
+synoptic_states_func <- function(guide_index, daily_data){
+  # It is faster to filter before switching to data.table
+  daily_data_sub <- daily_data %>%
+    filter(t >= guide_index$date_start,
+           t <= guide_index$date_end) %>%
+    select(-t)
+  # Switch to data.table for faster means
+  res_dt <- data.table(daily_data_sub)
+  setkey(res_dt, lon, lat)
+  res_mean <- res_dt[, lapply(.SD, mean), by = list(lon, lat)]
+  return(res_mean)
+}
+
 
 # Run SOM and create summary output ---------------------------------------
 
@@ -439,6 +472,7 @@ som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
 # Figure data processing --------------------------------------------------
 
 fig_data_func <- function(data_packet){
+
   # Cast the data wide
   som_data_wide <- data_packet$data %>%
     spread(var, val) #%>%
@@ -532,27 +566,6 @@ fig_data_func <- function(data_packet){
 }
 
 
-# Create mean synoptic states ---------------------------------------------
-
-# testers...
-# guide_index <- node_date_index[1,]
-# daily_data <- ERA5_u
-synoptic_states_func <- function(guide_index, daily_data){
-  # It is faster to filter before switching to data.table
-  daily_data_sub <- daily_data %>%
-    filter(t >= guide_index$date_start,
-           t <= guide_index$date_end) %>%
-    select(-t)
-  # Switch to data.table for faster means
-  res_dt <- data.table(daily_data_sub)
-  setkey(res_dt, lon, lat)
-  res_mean <- res_dt[, lapply(.SD, mean), by = list(lon, lat)]
-  return(res_mean)
-}
-
-# Create synoptic states for SOM output
-
-
 # Figure 2 code -----------------------------------------------------------
 # SST + U + V
 
@@ -586,32 +599,6 @@ fig_2_func <- function(fig_data, col_num){
 # Air temp + U + V + MSLP
 
 fig_3_func <- function(fig_data, col_num){
-
-  # Load MSLP anomaly data as necessary
-  if(!exists("ERA5_mslp_anom")){
-    system.time(
-    ERA5_mslp_anom <- readRDS("data/ERA5_mslp_anom.Rda")
-    ) # 22 seconds
-  }
-
-  # Extract daily data by dates and mean them per node
-  node_date_index <- fig_data$OISST_MHW_meta %>%
-    select(node, date_start, date_end) %>%
-    mutate(index = row.names(.))
-
-  # Create synoptic states per MHW per variable
-  doMC::registerDoMC(cores = 10) # NB: Be careful here...
-  # system.time(
-  synoptic_states_mslp_anom <- plyr::ddply(node_date_index, .variables = c("index", "node"),
-                                           .fun = synoptic_states_func, .parallel = T,
-                                           daily_data = ERA5_mslp_anom) %>%
-    select(-index) %>%
-    group_by(node, lon, lat) %>%
-    dplyr::summarise(msl_anom = mean(msl_anom, na.rm = T)) %>%
-    ungroup() %>%
-    mutate(lon = ifelse(lon > 180, lon-360, lon))
-  # ) # 56 seconds for 104 MHWs
-
   # The figure
   fig_3 <- frame_base +
     # The air temperature
@@ -743,47 +730,6 @@ fig_7_func <- function(fig_data, col_num){
 # The real current values
 
 fig_8_func <- function(fig_data, col_num){
-
-  # Load U and V data as necessary
-  if(!exists("GLORYS_u_sub")){
-    # system.time(
-      GLORYS_u_sub <- readRDS("data/GLORYS_u.Rda") %>%
-        filter(lon %in% unique(fig_data$som_data_sub$lon),
-               lat %in% unique(fig_data$som_data_sub$lat))
-    # ) # 20 seconds
-  }
-  if(!exists("GLORYS_v_sub")){
-    # system.time(
-      GLORYS_v_sub <- readRDS("data/GLORYS_v.Rda") %>%
-        filter(lon %in% unique(fig_data$som_data_sub$lon),
-               lat %in% unique(fig_data$som_data_sub$lat))
-    # ) # 20 seconds
-  }
-
-  # Extract daily data by dates and mean them per node
-  node_date_index <- fig_data$OISST_MHW_meta %>%
-    select(node, date_start, date_end) %>%
-    mutate(index = row.names(.))
-
-  # Create synoptic states per MHW per variable
-  # system.time(
-  synoptic_states_u <- plyr::ddply(node_date_index, .variables = c("index", "node"),
-                                   .fun = synoptic_states_func, .parallel = T,
-                                   daily_data = GLORYS_u_sub)
-  # ) # 5 seconds for 104 MHWs
-  # system.time(
-  synoptic_states_v <- plyr::ddply(node_date_index, .variables = c("index", "node"),
-                                   .fun = synoptic_states_func, .parallel = T,
-                                   daily_data = GLORYS_v_sub)
-  # ) # 6 seconds for 104 MHWs
-  synoptic_states_uv <- left_join(synoptic_states_u, synoptic_states_v,
-                               by = c("index", "node", "lon", "lat")) %>%
-    select(-index) %>%
-    group_by(node, lon, lat) %>%
-    dplyr::summarise(u = mean(u, na.rm = T),
-                     v = mean(v, na.rm = T)) %>%
-    ungroup()
-
   # The figure
   fig_8 <- frame_base +
     # The land mass
@@ -804,48 +750,6 @@ fig_8_func <- function(fig_data, col_num){
 # The real wind values
 
 fig_9_func <- function(fig_data, col_num){
-
-  # Load U and V data as necessary
-  if(!exists("ERA5_u_sub")){
-    # system.time(
-      ERA5_u_sub <- readRDS("data/ERA5_u.Rda") %>%
-        filter(lon %in% c(unique(fig_data$som_data_sub$lon)+360),
-               lat %in% unique(fig_data$som_data_sub$lat))
-    # ) # 29 seconds
-  }
-  if(!exists("ERA5_v_sub")){
-    # system.time(
-      ERA5_v_sub <- readRDS("data/ERA5_v.Rda") %>%
-        filter(lon %in% c(unique(fig_data$som_data_sub$lon)+360),
-               lat %in% unique(fig_data$som_data_sub$lat))
-    # ) # 29 seconds
-  }
-
-  # Extract daily data by dates and mean them per node
-  node_date_index <- fig_data$OISST_MHW_meta %>%
-    select(node, date_start, date_end) %>%
-    mutate(index = row.names(.))
-
-  # Create synoptic states per MHW per variable
-  # system.time(
-  synoptic_states_u <- plyr::ddply(node_date_index, .variables = c("index", "node"),
-                                   .fun = synoptic_states_func, .parallel = T,
-                                   daily_data = ERA5_u_sub)
-  # ) # 5 seconds for 104 MHWs
-  # system.time(
-  synoptic_states_v <- plyr::ddply(node_date_index, .variables = c("index", "node"),
-                                   .fun = synoptic_states_func, .parallel = T,
-                                   daily_data = ERA5_v_sub)
-  # ) # 6 seconds for 104 MHWs
-  synoptic_states_uv <- left_join(synoptic_states_u, synoptic_states_v,
-                                  by = c("index", "node", "lon", "lat")) %>%
-    select(-index) %>%
-    group_by(node, lon, lat) %>%
-    dplyr::summarise(u10 = mean(u10, na.rm = T),
-                     v10 = mean(v10, na.rm = T)) %>%
-    ungroup() %>%
-    mutate(lon = ifelse(lon > 180, lon-360, lon))
-
   # The figure
   fig_9 <- frame_base +
     # The land mass
@@ -916,19 +820,17 @@ fig_10_func <- function(fig_data, col_num){
 # Create summary figures of all nodes together ----------------------------
 
 # testers...
-# som_packet <- readRDS("data/som_nolab.Rda")
-# som_packet <- readRDS("data/som_nolab14.Rda")
-# som_packet <- readRDS("data/som_nolab_16.Rda")
-# dir_name = "no_ls"
+# som_packet <- readRDS("data/som.Rda")
 # col_num = 4
 # fig_height = 9
 # fig_width = 13
 som_node_visualise <- function(som_packet,
-                               col_num = 4, dir_name = "test",
-                               fig_height = 9, fig_width = 13){
+                               col_num = 4,
+                               fig_height = 9,
+                               fig_width = 13){
   # Check if directory exists and create it if not
-  if(!dir.exists(paste0("output/SOM/",dir_name))){
-    dir.create(paste0("output/SOM/",dir_name))
+  if(!dir.exists("output/SOM/")){
+    dir.create("output/SOM/")
   }
 
   # Base data

@@ -316,23 +316,89 @@ source("code/functions.R")
   # NB: 50 cores can be too much for the RAM
 # doMC::registerDoMC(cores = 25)
 
-# Create one big anomaly packet
+## Create one big anomaly packet
 # print(paste0("Began creating data packets at ", Sys.time()))
 # system.time(
 # synoptic_states <- plyr::ddply(OISST_MHW_event, c("region", "event_no"), data_packet, .parallel = T)
 # ) # 3 seconds for first event, 50 for all events
 
 # Save
-# saveRDS(synoptic_states, "data/synoptic_states.Rda")
+# saveRDS(synoptic_states, "data/SOM/synoptic_states.Rda")
 
-# Create base data packet for real SST + air temp + U + V figures
+## Create data packet for other variables required for plotting,
+## but not used in the SOM analysis
+
+# Load and merge GLORYS U and V data as necessary
+if(!exists("GLORYS_u_sub")){
+  system.time(GLORYS_u_sub <- load_anom("data/base/GLORYS_u.Rda") %>%
+                filter(lon %in% lon_sub,
+                       lat %in% lat_sub)) # 42 seconds
+}
+if(!exists("GLORYS_v_sub")){
+  system.time(GLORYS_v_sub <- load_anom("data/base/GLORYS_v.Rda") %>%
+                filter(lon %in% lon_sub,
+                       lat %in% lat_sub)) # 42 seconds
+}
+system.time(GLORYS_uv_sub <- merge(GLORYS_u_sub, GLORYS_v_sub,
+                                   by = c("lon", "lat", "t"), all.x = T)) # 68 seconds
+
+# Load ERA 5 U and V data as necessary
+if(!exists("ERA5_u_sub")){
+  system.time(ERA5_u_sub <- load_anom("data/base/ERA5_u.Rda") %>%
+                filter(lon %in% lon_sub,
+                       lat %in% lat_sub)) # 60 seconds
+}
+if(!exists("ERA5_v_sub")){
+  system.time(ERA5_v_sub <- load_anom("data/base/ERA5_v.Rda") %>%
+                filter(lon %in% lon_sub,
+                       lat %in% lat_sub)) # 60 seconds
+}
+system.time(ERA5_uv_sub <- merge(ERA5_u_sub, ERA5_v_sub,
+                                 by = c("lon", "lat", "t"), all.x = T)) # 87 seconds
+
+# Combine all
+system.time(ALL_uv_sub <- merge(ERA5_uv_sub, GLORYS_uv_sub,
+                                by = c("lon", "lat", "t"), all.x = T)) # 58 seconds
+
+# Load MSLP anomaly data as necessary
+if(!exists("ERA5_mslp_anom")){
+  system.time(ERA5_mslp_anom <- load_anom("data/anom/ERA5_mslp_anom.Rda")) # 55 seconds
+}
+
+# Load SST data
+
+# Load air temp data
+
+system.time(ALL_other <- merge(ERA5_mslp_anom, ALL_uv_sub,
+                               by = c("lon", "lat", "t"), all.x = T)) # 58 seconds
+
+## Create synoptic states per MHW per variable
+doMC::registerDoMC(cores = 10) # NB: Be careful here...
+
+system.time(
+synoptic_states_uv <- plyr::ddply(OISST_MHW_event,
+                                  .variables = c("region", "event_no"),
+                                 .fun = synoptic_states_func, .parallel = T,
+                                 daily_data = ALL_uv_sub)) # 9 seconds
+
+system.time(
+synoptic_states_mslp_anom <- plyr::ddply(OISST_MHW_event,
+                                         .variables = c("region", "event_no"),
+                                         .fun = synoptic_states_func, .parallel = T,
+                                         daily_data = ERA5_mslp_anom)) # 65 seconds
+
+
+# Combine and save
+synoptic_states_other <- inner_join(synoptic_states_uv, synoptic_states_mslp_anom,
+                                    by = c("region", "event_no", "lon", "lat"))
+saveRDS(synoptic_states_other, "data/SOM/synoptic_states_other.Rda")
 
 
 # SOM analysis ------------------------------------------------------------
 
-# packet_nolab <- readRDS("data/packet_nolab.Rda")
-# system.time(som_nolab <- som_model_PCI(packet_nolab)) # 78 seconds
-# saveRDS(som_nolab, file = "data/som_nolab.Rda")
+# packet <- readRDS("data/SOM/packet.Rda")
+# system.time(som <- som_model_PCI(packet)) # 78 seconds
+# saveRDS(som, file = "data/SOM/som.Rda")
 
 
 # Visuals -----------------------------------------------------------------
