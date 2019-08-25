@@ -327,10 +327,10 @@ load_anom <- function(file_name, OISST = F){
 
 # testers...
 # event_sub <- OISST_MHW_event[1,]
-data_packet_func <- function(event_sub){
+data_packet_func <- function(event_sub, df = ALL_anom){
 
   # Filter base anomally range
-  packet_base <- ALL_anom %>%
+  packet_base <- df %>%
     filter(t >= event_sub$date_start, t <= event_sub$date_end)
 
   # Create mean synoptic values
@@ -389,18 +389,18 @@ wide_packet_func <- function(df){
 # testers...
 # guide_index <- node_date_index[1,]
 # daily_data <- ERA5_u
-synoptic_states_func <- function(guide_index, daily_data){
-  # It is faster to filter before switching to data.table
-  daily_data_sub <- daily_data %>%
-    filter(t >= guide_index$date_start,
-           t <= guide_index$date_end) %>%
-    select(-t)
-  # Switch to data.table for faster means
-  res_dt <- data.table(daily_data_sub)
-  setkey(res_dt, lon, lat)
-  res_mean <- res_dt[, lapply(.SD, mean), by = list(lon, lat)]
-  return(res_mean)
-}
+# synoptic_states_func <- function(guide_index, daily_data){
+#   # It is faster to filter before switching to data.table
+#   daily_data_sub <- daily_data %>%
+#     filter(t >= guide_index$date_start,
+#            t <= guide_index$date_end) %>%
+#     select(-t)
+#   # Switch to data.table for faster means
+#   res_dt <- data.table(daily_data_sub)
+#   setkey(res_dt, lon, lat)
+#   res_mean <- res_dt[, lapply(.SD, mean), by = list(lon, lat)]
+#   return(res_mean)
+# }
 
 
 # Run SOM and create summary output ---------------------------------------

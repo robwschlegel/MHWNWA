@@ -295,12 +295,12 @@ source("code/functions.R")
 # NB: This causes RStudio server to hang, but it still works
 # print(paste0("Began saving all anoms at ", Sys.time()))
 # system.time(
-# saveRDS(ALL_anom, "data/ALL_anom.Rda")
+# saveRDS(ALL_anom, "data/anom/ALL_anom.Rda")
 # ) # 514 seconds
 
 # Load
 # system.time(
-# ALL_anom <- readRDS("data/ALL_anom.Rda")
+# ALL_anom <- readRDS("data/anom/ALL_anom.Rda")
 # ) # 78 seconds
 
 ## Test visuals
@@ -308,6 +308,68 @@ source("code/functions.R")
 #   filter(t == "2000-01-01") %>%
 #   ggplot(aes(x = lon, y = lat)) +
 #   geom_raster(aes(fill = sst_anom))
+
+
+# Combine all other data into one data.frame ------------------------------
+# These data are not used in the SOM calculation,
+# But are used to create summary figures
+
+# Load and merge GLORYS U and V data
+# system.time(GLORYS_u_sub <- load_anom("data/base/GLORYS_u.Rda") %>%
+#               filter(lon %in% lon_sub,
+#                      lat %in% lat_sub)) # 42 seconds
+# system.time(GLORYS_v_sub <- load_anom("data/base/GLORYS_v.Rda") %>%
+#               filter(lon %in% lon_sub,
+#                      lat %in% lat_sub)) # 42 seconds
+# system.time(GLORYS_uv_sub <- left_join(GLORYS_u_sub, GLORYS_v_sub,
+#                                        by = c("lon", "lat", "t"))) # 5 seconds
+
+# Load ERA 5 U and V data
+# system.time(ERA5_u_sub <- load_anom("data/base/ERA5_u.Rda") %>%
+#               filter(lon %in% lon_sub,
+#                      lat %in% lat_sub)) # 60 seconds
+# system.time(ERA5_v_sub <- load_anom("data/base/ERA5_v.Rda") %>%
+#               filter(lon %in% lon_sub,
+#                      lat %in% lat_sub)) # 60 seconds
+# system.time(ERA5_uv_sub <- left_join(ERA5_u_sub, ERA5_v_sub,
+#                                      by = c("lon", "lat", "t"))) # 7 seconds
+
+# Combine all
+# system.time(ALL_uv_sub <- left_join(ERA5_uv_sub, GLORYS_uv_sub,
+#                                     by = c("lon", "lat", "t"))) # 5 seconds
+
+# Load air temp data
+# system.time(ERA5_t2m <- load_anom("data/base/ERA5_t2m.Rda")) # 55 seconds
+
+# Load MSLP anomaly data
+# system.time(ERA5_mslp_anom <- load_anom("data/anom/ERA5_mslp_anom.Rda")) # 52 seconds
+
+# Load SST data
+# system.time(OISST_sst <- load_anom("data/base/OISST_sst.Rda", OISST = T)) # 33 seconds
+
+# Merge everything
+# system.time(ALL_other <- left_join(ERA5_t2m, ERA5_mslp_anom,
+#                                    by = c("lon", "lat", "t")) %>%
+#               left_join(OISST_sst, by = c("lon", "lat", "t")) %>%
+#               left_join(ALL_uv_sub, by = c("lon", "lat", "t"))) # 260 seconds
+
+# Save
+# NB: This causes RStudio server to hang, but it still works
+# print(paste0("Began saving all other data at ", Sys.time()))
+# system.time(saveRDS(ALL_other, "data/anom/ALL_other.Rda")) # 318 seconds
+
+# Load
+# system.time(ALL_other <- readRDS("data/anom/ALL_other.Rda")) # 29 seconds
+
+## Test visuals
+# ALL_other %>%
+#   filter(t == "2000-01-01") %>%
+#   ggplot(aes(x = lon, y = lat)) +
+#   geom_raster(aes(fill = sst)) +
+#   geom_segment(aes(xend = lon + u10 * wind_uv_scalar,
+#                    yend = lat + v10 * wind_uv_scalar),
+#                arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
+#                linejoin = "mitre", size = 0.4, alpha = 0.4)
 
 
 # Data packets ------------------------------------------------------------
@@ -318,80 +380,17 @@ source("code/functions.R")
 
 ## Create one big anomaly packet
 # print(paste0("Began creating data packets at ", Sys.time()))
-# system.time(
-# synoptic_states <- plyr::ddply(OISST_MHW_event, c("region", "event_no"), data_packet, .parallel = T)
-# ) # 3 seconds for first event, 50 for all events
-
+# system.time(synoptic_states <- plyr::ddply(OISST_MHW_event, c("region", "event_no"),
+                                           # data_packet_func, .parallel = T)) # 50 seconds
 # Save
 # saveRDS(synoptic_states, "data/SOM/synoptic_states.Rda")
 
-## Create data packet for other variables required for plotting,
-## but not used in the SOM analysis
-
-# Load and merge GLORYS U and V data as necessary
-if(!exists("GLORYS_u_sub")){
-  system.time(GLORYS_u_sub <- load_anom("data/base/GLORYS_u.Rda") %>%
-                filter(lon %in% lon_sub,
-                       lat %in% lat_sub)) # 42 seconds
-}
-if(!exists("GLORYS_v_sub")){
-  system.time(GLORYS_v_sub <- load_anom("data/base/GLORYS_v.Rda") %>%
-                filter(lon %in% lon_sub,
-                       lat %in% lat_sub)) # 42 seconds
-}
-system.time(GLORYS_uv_sub <- merge(GLORYS_u_sub, GLORYS_v_sub,
-                                   by = c("lon", "lat", "t"), all.x = T)) # 68 seconds
-
-# Load ERA 5 U and V data as necessary
-if(!exists("ERA5_u_sub")){
-  system.time(ERA5_u_sub <- load_anom("data/base/ERA5_u.Rda") %>%
-                filter(lon %in% lon_sub,
-                       lat %in% lat_sub)) # 60 seconds
-}
-if(!exists("ERA5_v_sub")){
-  system.time(ERA5_v_sub <- load_anom("data/base/ERA5_v.Rda") %>%
-                filter(lon %in% lon_sub,
-                       lat %in% lat_sub)) # 60 seconds
-}
-system.time(ERA5_uv_sub <- merge(ERA5_u_sub, ERA5_v_sub,
-                                 by = c("lon", "lat", "t"), all.x = T)) # 87 seconds
-
-# Combine all
-system.time(ALL_uv_sub <- merge(ERA5_uv_sub, GLORYS_uv_sub,
-                                by = c("lon", "lat", "t"), all.x = T)) # 58 seconds
-
-# Load MSLP anomaly data as necessary
-if(!exists("ERA5_mslp_anom")){
-  system.time(ERA5_mslp_anom <- load_anom("data/anom/ERA5_mslp_anom.Rda")) # 55 seconds
-}
-
-# Load SST data
-
-# Load air temp data
-
-system.time(ALL_other <- merge(ERA5_mslp_anom, ALL_uv_sub,
-                               by = c("lon", "lat", "t"), all.x = T)) # 58 seconds
-
-## Create synoptic states per MHW per variable
-doMC::registerDoMC(cores = 10) # NB: Be careful here...
-
-system.time(
-synoptic_states_uv <- plyr::ddply(OISST_MHW_event,
-                                  .variables = c("region", "event_no"),
-                                 .fun = synoptic_states_func, .parallel = T,
-                                 daily_data = ALL_uv_sub)) # 9 seconds
-
-system.time(
-synoptic_states_mslp_anom <- plyr::ddply(OISST_MHW_event,
-                                         .variables = c("region", "event_no"),
-                                         .fun = synoptic_states_func, .parallel = T,
-                                         daily_data = ERA5_mslp_anom)) # 65 seconds
-
-
-# Combine and save
-synoptic_states_other <- inner_join(synoptic_states_uv, synoptic_states_mslp_anom,
-                                    by = c("region", "event_no", "lon", "lat"))
-saveRDS(synoptic_states_other, "data/SOM/synoptic_states_other.Rda")
+## Create other synoptic states per MHW per variable
+# doMC::registerDoMC(cores = 10) # NB: Be careful here...
+# system.time(synoptic_states_other <- plyr::ddply(OISST_MHW_event, c("region", "event_no"),
+                                                 # data_packet_func, .parallel = T, df = ALL_other)) # 71 seconds
+# Save
+# saveRDS(synoptic_states_other, "data/SOM/synoptic_states_other.Rda")
 
 
 # SOM analysis ------------------------------------------------------------
@@ -403,7 +402,6 @@ saveRDS(synoptic_states_other, "data/SOM/synoptic_states_other.Rda")
 
 # Visuals -----------------------------------------------------------------
 
-# No Labrador Shelf SOM visuals
-# som_no_ls <- readRDS("data/som_nolab.Rda")
-# som_node_visualise(som_no_ls, dir_name = "no_ls")
+# som <- readRDS("data/SOM/som.Rda")
+# som_node_visualise(som)
 
