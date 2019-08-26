@@ -15,6 +15,7 @@ library(data.table) # For faster mean values
 library(heatwaveR, lib.loc = "../R-packages/")
 # cat(paste0("heatwaveR version = ", packageDescription("heatwaveR")$Version))
 library(tidync, lib.loc = "../R-packages/")
+library(yasomi, lib.loc = "../R-packages/")
 
 # Set number of cores
 doMC::registerDoMC(cores = 50)
@@ -331,7 +332,10 @@ data_packet_func <- function(event_sub, df = ALL_anom){
 
   # Filter base anomally range
   packet_base <- df %>%
-    filter(t >= event_sub$date_start, t <= event_sub$date_end)
+    filter(t >= event_sub$date_start, t <= event_sub$date_end,
+           lon >= NWA_corners[1], lon <= NWA_corners[2],
+           lat >= NWA_corners[3], lat <= NWA_corners[4])
+  rm(df); gc()
 
   # Create mean synoptic values
   packet_mean <- packet_base %>%
@@ -361,8 +365,8 @@ data_packet_func <- function(event_sub, df = ALL_anom){
 wide_packet_func <- function(df){
 
   # Cast the data to a single row
-  res <- data.table::data.table(df) %>%
-    select(-t) %>%
+  res <- select(df, -t) %>%
+    data.table::data.table() %>%
     reshape2::melt(id = c("region", "event_no", "lon", "lat"),
                    measure = c(colnames(.)[-c(1:4)]),
                    variable.name = "var", value.name = "val") %>%
@@ -385,22 +389,6 @@ wide_packet_func <- function(df){
   # Exit
   return(res_filter)
 }
-
-# testers...
-# guide_index <- node_date_index[1,]
-# daily_data <- ERA5_u
-# synoptic_states_func <- function(guide_index, daily_data){
-#   # It is faster to filter before switching to data.table
-#   daily_data_sub <- daily_data %>%
-#     filter(t >= guide_index$date_start,
-#            t <= guide_index$date_end) %>%
-#     select(-t)
-#   # Switch to data.table for faster means
-#   res_dt <- data.table(daily_data_sub)
-#   setkey(res_dt, lon, lat)
-#   res_mean <- res_dt[, lapply(.SD, mean), by = list(lon, lat)]
-#   return(res_mean)
-# }
 
 
 # Run SOM and create summary output ---------------------------------------
@@ -453,18 +441,44 @@ som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
            lat = as.numeric(lat),
            val = round(val, 4))
 
-  ## ANOSIM for goodness of fit for node count
+  # Load the other synoptic state data as necessary
+  if(!exists("synoptic_states_other_unnest")){
+    # system.time(
+    synoptic_states_other_unnest <- readRDS("data/SOM/synoptic_states_other.Rda") %>%
+      select(region, event_no, synoptic) %>%
+      unnest()
+    # ) # 5 seconds
+  }
+
+  # Create mean node states for data not used in the calculation
+  other_data <- data_packet_long %>%
+    select(node, region, event_no) %>%
+    unique() %>%
+    mutate(event_no = as.numeric(event_no)) %>%
+    left_join(synoptic_states_other_unnest, by = c("region", "event_no")) %>%
+    select(-t, -region, -event_no) %>%
+    group_by(node, lon, lat) %>%
+    summarise_all(mean, na.rm = T) %>%
+    gather(key = "var", value = "val", -c(node:lat)) %>%
+    mutate(val = round(val, 4)) %>%
+    na.omit()
+    # mutate(val = replace_na(val, NA))
+
+  # ANOSIM for goodness of fit for node count
   node_data_wide <- node_data %>%
     unite(coords, c(lon, lat, var), sep = "BBB") %>%
     data.table() %>%
     dcast(node~coords, value.var = "val")
 
   # Calculate similarity
-  som_anosim <- vegan::anosim(as.matrix(node_data_wide[,-1]),
+  som_anosim <- vegan::anosim(as.matrix(node_data_wide[,-"node"]),
                               node_data_wide$node, distance = "euclidean")$signif
 
   # Combine and exit
-  res <- list(data = node_data, info = node_info, ANOSIM = paste0("p = ",som_anosim))
+  res <- list(data = node_data,
+              other_data = other_data,
+              info = node_info,
+              ANOSIM = paste0("p = ",som_anosim))
   return(res)
 }
 
@@ -477,21 +491,19 @@ fig_data_func <- function(data_packet){
   som_data_wide <- data_packet$data %>%
     spread(var, val) #%>%
     # mutate(mld_anom_cut = cut(mld_anom, breaks = seq(-0.5, 0.5, 0.1)))
-
-  # Reduce wind/ current vectors
-  lon_sub <- seq(min(som_data_wide$lon), max(som_data_wide$lon), by = 1)
-  lat_sub <- seq(min(som_data_wide$lat), max(som_data_wide$lat), by = 1)
+  other_data_wide <- data_packet$other_data %>%
+    spread(var, val)
 
   # currents <- currents[(currents$lon %in% lon_sub & currents$lat %in% lat_sub),]
   som_data_sub <- som_data_wide %>%
-    filter(lon %in% lon_sub, lat %in% lat_sub) %>%
-    mutate(arrow_size = 0.1)
-  # Creating dynamic arrow sizes does not work as ggplot cannot match up the vectorscorrectly
+    select(node, lon, lat, u_anom, v_anom, u10_anom, v10_anom) %>%
+    filter(lon %in% lon_sub, lat %in% lat_sub) #%>%
+    # mutate(arrow_size = 0.1)
+  # Creating dynamic arrow sizes does not work as ggplot cannot match up the vectors correctly
 
   # MHW season of (peak) occurrence and other meta-data
   OISST_MHW_meta <- OISST_MHW_event %>%
-    left_join(data_packet$info, by = c("region", "event_no")) %>%
-    filter(region != "ls", node >= 1)
+    left_join(data_packet$info, by = c("region", "event_no"))
 
   # Grid of complete node x season matrix
   node_season_grid <- expand.grid(seq(1:max(OISST_MHW_meta$node, na.rm = T)),
@@ -546,17 +558,20 @@ fig_data_func <- function(data_packet){
     left_join(node_region_info, by = "region") %>%
     na.omit()
 
-  # Calculate mean and median intensities per node for plotting
+  # Calculate mean and median intensities/durations per node for plotting
   node_h_lines <- OISST_MHW_meta %>%
     group_by(node) %>%
     summarise(mean_int_cum = mean(intensity_cumulative, na.rm = T),
               median_int_cum = median(intensity_cumulative, na.rm = T),
               mean_int_max = mean(intensity_max, na.rm = T),
-              median_int_max = median(intensity_max, na.rm = T))
+              median_int_max = median(intensity_max, na.rm = T),
+              mean_dur = mean(duration, na.rm = T),
+              median_dur = median(duration, na.rm = T))
 
   # Combine and exit
   res <- list(som_data_wide = som_data_wide,
               som_data_sub = som_data_sub,
+              other_data_wide = other_data_wide,
               OISST_MHW_meta = OISST_MHW_meta,
               node_season_info = node_season_info,
               node_region_info = node_region_info,
@@ -566,261 +581,10 @@ fig_data_func <- function(data_packet){
 }
 
 
-# Figure 2 code -----------------------------------------------------------
-# SST + U + V
-
-fig_2_func <- function(fig_data, col_num){
-
-  # The figure
-  fig_2 <- frame_base +
-    # The ocean temperature
-    geom_raster(data = fig_data$som_data_wide, aes(fill = sst_anom)) +
-    # The bathymetry
-    # stat_contour(data = bathy[bathy$depth < -100 & bathy$depth > -300,],
-    # aes(x = lon, y = lat, z = depth), alpha = 0.5,
-    # colour = "ivory", size = 0.5, binwidth = 200, na.rm = TRUE, show.legend = FALSE) +
-    # The current vectors
-    geom_segment(data = fig_data$som_data_sub, aes(xend = lon + u_anom * current_uv_scalar,
-                                                   yend = lat + v_anom * current_uv_scalar),
-                 arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
-                 linejoin = "mitre", size = 0.4, alpha = 0.8) +
-    # The land mass
-    geom_polygon(data = map_base, aes(group = group), alpha = 0.8,
-                 fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
-    # Use diverging gradient
-    scale_fill_gradient2(name = "SST\nanom. (°C)", low = "blue", high = "red") +
-    # The facets
-    facet_wrap(~node, ncol = col_num)
-  return(fig_2)
-}
-
-
-# Figure 3 code -----------------------------------------------------------
-# Air temp + U + V + MSLP
-
-fig_3_func <- function(fig_data, col_num){
-  # The figure
-  fig_3 <- frame_base +
-    # The air temperature
-    geom_raster(data = fig_data$som_data_wide, aes(fill = t2m_anom)) +
-    # The land mass
-    geom_polygon(data = map_base, aes(group = group), alpha = 0.9,
-                 fill = NA, colour = "black", size = 0.5, show.legend = FALSE) +
-    # The mean sea level pressure contours
-    geom_contour(data = synoptic_states_mslp_anom,
-                 aes(z = msl_anom, colour = stat(level)), size = 1) +
-    # The wind vectors
-    geom_segment(data = fig_data$som_data_sub, aes(xend = lon + u10_anom * wind_uv_scalar,
-                                          yend = lat + v10_anom * wind_uv_scalar),
-                 arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
-                 linejoin = "mitre", size = 0.4, alpha = 0.4) +
-    # Colour scale
-    scale_fill_gradient2(name = "Air temp.\nanom. (°C)", low = "blue", high = "red") +
-    scale_colour_gradient2("MSLP anom.", guide = "legend",
-                           low = "green", mid = "grey", high = "yellow") +
-    # The facets
-    facet_wrap(~node, ncol = col_num)
-  return(fig_3)
-}
-
-
-# Figure 4 code -----------------------------------------------------------
-# Net downward heat flux and MLD
-
-fig_4_func <- function(fig_data, col_num){
-  fig_4 <- frame_base +
-    # The MLD proportion
-    geom_raster(data = fig_data$som_data_wide, aes(fill = mld_anom)) +
-    # The land mass
-    geom_polygon(data = map_base, aes(group = group), alpha = 0.8,
-                 fill = "grey80", colour = "black", size = 0.5, show.legend = FALSE) +
-    # The net downward heat flux contours
-    geom_contour(data = fig_data$som_data_wide, binwidth = 50,
-                 aes(z = qnet_anom, colour = stat(level)), size = 1) +
-    # Colour scale
-    scale_fill_gradient2("MLD anom. (m)",low = "blue", high = "red") +
-    scale_colour_gradient2("Net downward\nheat flux\nanom. (W/m2)", guide = "legend",
-                           low = "green", mid = "grey", high = "yellow") +
-    # The facets
-    facet_wrap(~node, ncol = col_num)
-  return(fig_4)
-}
-
-
-# Figure 5 code -----------------------------------------------------------
-# Events per region and season
-
-fig_5_func <- function(fig_data, col_num){
-  fig_5 <- frame_base +
-    # The regions
-    geom_polygon(data = fig_data$region_prop_label,
-                 aes(group = region, fill = node_region_prop), colour = "black") +
-    # The base map
-    geom_polygon(data = map_base, aes(group = group), show.legend = F) +
-    # Assorted labels
-    geom_label(data = fig_data$region_prop_label,
-               aes(x = lon_center, y = lat_center, label = node_region_count)) +
-    geom_label(data = fig_data$region_prop_label,
-               aes(x = -68, y = 36, label = paste0("n = ",count))) +
-    geom_label(data = filter(fig_data$node_season_info, season_peak == "Winter"),
-               aes(x = -58, y = 38, fill = node_season_prop,
-                   label = paste0("Winter\n n = ",node_season_count))) +
-    geom_label(data = filter(fig_data$node_season_info, season_peak == "Spring"),
-               aes(x = -48, y = 38, fill = node_season_prop,
-                   label = paste0("Spring\n n = ",node_season_count))) +
-    geom_label(data = filter(fig_data$node_season_info, season_peak == "Summer"),
-               aes(x = -58, y = 34, fill = node_season_prop,
-                   label = paste0("Summer\n n = ",node_season_count))) +
-    geom_label(data = filter(fig_data$node_season_info, season_peak == "Autumn"),
-               aes(x = -48, y = 34, fill = node_season_prop,
-                   label = paste0("Autumn\n n = ",node_season_count))) +
-    scale_fill_distiller("Proportion\nof events per\nregion/season\nper node",
-                         palette = "BuPu", direction = 1) +
-    # The facets
-    facet_wrap(~node, ncol = col_num)
-  return(fig_5)
-}
-
-
-# Figure 6 code -----------------------------------------------------------
-# Lollis showing season and cum.int.
-
-fig_6_func <- function(fig_data, col_num){
-  fig_6 <- ggplot(data = fig_data$OISST_MHW_meta,
-                                aes(x = date_peak, y = intensity_cumulative)) +
-    geom_smooth(method = "lm", se = F, aes(colour = season_peak)) +
-    geom_label(aes(x = mean(range(date_peak)), y = max(intensity_cumulative), label = paste0("n = ", count)),
-               size = 3, label.padding = unit(0.5, "lines")) +
-    geom_lolli() +
-    geom_point(aes(colour = season_peak)) +
-    geom_hline(data = fig_data$node_h_lines, aes(yintercept = mean_int_cum), linetype = "dashed") +
-    scale_x_date(labels = scales::date_format("%Y"),
-                 date_breaks = "2 years", date_minor_breaks = "1 year") +
-    labs(x = "", y = "Cumulative intensity (°C x days)", colour = "Season") +
-    theme(legend.position = "bottom",
-          axis.text.x = element_text(angle = 30)) +
-    facet_wrap(~node, ncol = col_num)
-  return(fig_6)
-}
-
-
-# Figure 7 code -----------------------------------------------------------
-# Lollis showing season and cum.int.
-
-fig_7_func <- function(fig_data, col_num){
-  fig_7 <- ggplot(data = fig_data$OISST_MHW_meta,
-                  aes(x = date_peak, y = intensity_max)) +
-    geom_smooth(method = "lm", se = F, aes(colour = region)) +
-    geom_label(aes(x = mean(range(date_peak)), y = max(intensity_max), label = paste0("n = ", count)),
-               size = 3, label.padding = unit(0.5, "lines")) +
-    geom_lolli() +
-    geom_point(aes(colour = region)) +
-    geom_hline(data = fig_data$node_h_lines, aes(yintercept = mean_int_max), linetype = "dashed") +
-    scale_x_date(labels = scales::date_format("%Y"),
-                 date_breaks = "2 years", date_minor_breaks = "1 year") +
-    labs(x = "", y = "Max. intensity (°C)", colour = "Region") +
-    theme(legend.position = "bottom",
-          axis.text.x = element_text(angle = 30)) +
-    facet_wrap(~node, ncol = col_num)
-  return(fig_7)
-}
-
-
-# Figure 8 code -----------------------------------------------------------
-# The real current values
-
-fig_8_func <- function(fig_data, col_num){
-  # The figure
-  fig_8 <- frame_base +
-    # The land mass
-    geom_polygon(data = map_base, aes(group = group), alpha = 0.8,
-                 fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
-    # The current vectors
-    geom_segment(data = synoptic_states_uv, aes(xend = lon + u * current_uv_scalar,
-                                                yend = lat + v * current_uv_scalar),
-                 arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
-                 linejoin = "mitre", size = 0.4, alpha = 0.8) +
-    # The facets
-    facet_wrap(~node, ncol = col_num)
-  return(fig_8)
-}
-
-
-# Figure 9 code -----------------------------------------------------------
-# The real wind values
-
-fig_9_func <- function(fig_data, col_num){
-  # The figure
-  fig_9 <- frame_base +
-    # The land mass
-    geom_polygon(data = map_base, aes(group = group), alpha = 0.8,
-                 fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
-    # The wind vectors
-    geom_segment(data = synoptic_states_uv, aes(xend = lon + u10 * wind_uv_scalar,
-                                                yend = lat + v10 * wind_uv_scalar),
-                 arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
-                 linejoin = "mitre", size = 0.4, alpha = 0.8) +
-    # The facets
-    facet_wrap(~node, ncol = col_num)
-  return(fig_9)
-}
-
-
-# Figure 10 code -----------------------------------------------------------
-# The table of the MHW metric summaries
-# min, median, mean, max, sd
-
-fig_10_func <- function(fig_data, col_num){
-
-  # Create summary stats tables
-  summary_data <- fig_data$OISST_MHW_meta %>%
-    select(node, duration, intensity_max, intensity_mean,
-           intensity_cumulative, rate_onset, rate_decline) %>%
-    dplyr::rename(int_cum = intensity_cumulative,
-                  int_mean = intensity_mean,
-                  int_max = intensity_max) %>%
-    gather(key = "var", value = "val", -node) %>%
-    group_by(node, var) %>%
-    summarise(count = n(),
-              min = min(val, na.rm = T),
-              median = median(val, na.rm = T),
-              mean = mean(val, na.rm = T),
-              max = max(val, na.rm = T),
-              sd = sd(val, na.rm = T)) %>%
-    ungroup() %>%
-    mutate_if(is.numeric, round, digits = 2) %>%
-    mutate(all_stat = paste(var, min, median, mean, max, sd, sep = " / "))
-
-  fig_10 <- ggplot(summary_data) +
-    geom_blank() +
-    geom_label(aes(label = c("min / median / mean / max / sd"), x = 0, y = 0.1),
-               fill = "black", colour = "white") +
-    geom_label(data = filter(summary_data, var == "duration"),
-               aes(label = all_stat, x = 0, y = 0)) +
-    geom_label(data = filter(summary_data, var == "int_mean"),
-               aes(label = all_stat, x = 0, y = -0.1), fill = "grey80") +
-    geom_label(data = filter(summary_data, var == "int_max"),
-               aes(label = all_stat, x = 0, y = -0.2)) +
-    geom_label(data = filter(summary_data, var == "int_cum"),
-               aes(label = all_stat, x = 0, y = -0.3), fill = "grey80") +
-    geom_label(data = filter(summary_data, var == "rate_onset"),
-               aes(label = all_stat, x = 0, y = -0.4)) +
-    geom_label(data = filter(summary_data, var == "rate_decline"),
-               aes(label = all_stat, x = 0, y = -0.5), fill = "grey80") +
-    facet_wrap(~node, ncol = col_num) +
-    labs(x = NULL, y = NULL) +
-    # theme_bw()
-    theme_void() +
-    theme(strip.background = element_rect(colour = "black", fill = "grey80"),
-          panel.border = element_rect(colour = "black", fill = NA))
-  return(fig_10)
-}
-
-
 # Create summary figures of all nodes together ----------------------------
 
 # testers...
-# som_packet <- readRDS("data/som.Rda")
+# som_packet <- readRDS("data/SOM/som.Rda")
 # col_num = 4
 # fig_height = 9
 # fig_width = 13
@@ -828,12 +592,8 @@ som_node_visualise <- function(som_packet,
                                col_num = 4,
                                fig_height = 9,
                                fig_width = 13){
-  # Check if directory exists and create it if not
-  if(!dir.exists("output/SOM/")){
-    dir.create("output/SOM/")
-  }
 
-  # Base data
+  # Base data for all figures
   base_data <- fig_data_func(data_packet = som_packet)
 
   # SST + U + V
@@ -892,6 +652,7 @@ som_node_visualise <- function(som_packet,
 ## NB: This function contains objects created in "IMBeR_2019_figures.R"
 
 # testers...
+# fig_packet <- fig_data_func(readRDS("data/SOM/som.Rda"))
 # node_number = 8
 node_figure <- function(node_number, fig_packet, dir_name){
 
@@ -946,4 +707,265 @@ node_figure <- function(node_number, fig_packet, dir_name){
   # ggsave(fig_all_title, filename = paste0("output/node_",node_number,"_panels.png"), height = 12, width = 16)
   ggsave(fig_all_title, filename = paste0("output/SOM/",dir_name,"/node_",node_number,"_panels.pdf"), height = 14, width = 21)
   ggsave(fig_all_title, filename = paste0("output/SOM/",dir_name,"/node_",node_number,"_panels.png"), height = 14, width = 21)
+}
+
+
+# Counts per region and season figure -------------------------------------
+
+# testers...
+# fig_data <- fig_data_func(readRDS("data/SOM/som.Rda"))
+# col_num = 4
+region_season_fig <- function(fig_data, col_num){
+  # The figure
+  region_season <- frame_base +
+    # The regions
+    geom_polygon(data = fig_data$region_prop_label,
+                 aes(group = region, fill = node_region_prop), colour = "black") +
+    # The base map
+    geom_polygon(data = map_base, aes(group = group), show.legend = F) +
+    # Count per region
+    geom_label(data = fig_data$region_prop_label,
+               aes(x = lon_center, y = lat_center, label = node_region_count)) +
+    # Overall node count
+    geom_label(data = fig_data$region_prop_label,
+               aes(x = -68, y = 36, label = paste0("n = ",count))) +
+    # Winter count
+    geom_label(data = filter(fig_data$node_season_info, season_peak == "Winter"),
+               aes(x = -58, y = 38, fill = node_season_prop,
+                   label = paste0("Winter\n n = ",node_season_count))) +
+    # Spring count
+    geom_label(data = filter(fig_data$node_season_info, season_peak == "Spring"),
+               aes(x = -48, y = 38, fill = node_season_prop,
+                   label = paste0("Spring\n n = ",node_season_count))) +
+    # Summer count
+    geom_label(data = filter(fig_data$node_season_info, season_peak == "Summer"),
+               aes(x = -58, y = 34, fill = node_season_prop,
+                   label = paste0("Summer\n n = ",node_season_count))) +
+    # Autumn count
+    geom_label(data = filter(fig_data$node_season_info, season_peak == "Autumn"),
+               aes(x = -48, y = 34, fill = node_season_prop,
+                   label = paste0("Autumn\n n = ",node_season_count))) +
+    # Colour scale
+    scale_fill_distiller("Proportion\nof events per\nregion/season\nper node",
+                         palette = "BuPu", direction = 1) +
+    # The facets
+    facet_wrap(~node, ncol = col_num)
+  return(region_season)
+}
+
+
+# SST + U + V (anom) figure -----------------------------------------------
+
+sst_u_v_anom_fig <- function(fig_data, col_num){
+  # The figure
+  sst_u_v_anom <- frame_base +
+    # The ocean temperature
+    geom_raster(data = fig_data$som_data_wide, aes(fill = sst_anom)) +
+    # The bathymetry
+    # stat_contour(data = bathy[bathy$depth < -100 & bathy$depth > -300,],
+    # aes(x = lon, y = lat, z = depth), alpha = 0.5,
+    # colour = "ivory", size = 0.5, binwidth = 200, na.rm = TRUE, show.legend = FALSE) +
+    # The current vectors
+    geom_segment(data = fig_data$som_data_sub, aes(xend = lon + u_anom * current_uv_scalar,
+                                                   yend = lat + v_anom * current_uv_scalar),
+                 arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
+                 linejoin = "mitre", size = 0.4, alpha = 0.8) +
+    # The land mass
+    geom_polygon(data = map_base, aes(group = group), alpha = 0.8,
+                 fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
+    # Diverging gradient
+    scale_fill_gradient2(name = "SST\nanom. (°C)", low = "blue", high = "red") +
+    # The facets
+    facet_wrap(~node, ncol = col_num)
+  return(sst_u_v_anom)
+}
+
+
+
+# Air temp + U + V + MSLP (anom) figure -----------------------------------
+
+air_u_v_mslp_anom_fig <- function(fig_data, col_num){
+  # The figure
+  air_u_v_mslp_anom <- frame_base +
+    # The air temperature
+    geom_raster(data = fig_data$som_data_wide, aes(fill = t2m_anom)) +
+    # The land mass
+    geom_polygon(data = map_base, aes(group = group), alpha = 0.9,
+                 fill = NA, colour = "black", size = 0.5, show.legend = FALSE) +
+    # The mean sea level pressure contours
+    geom_contour(data = fig_data$other_data_wide,
+                 aes(z = msl_anom, colour = stat(level)), size = 1) +
+    # The wind vectors
+    geom_segment(data = fig_data$som_data_sub, aes(xend = lon + u10_anom * wind_uv_scalar,
+                                                   yend = lat + v10_anom * wind_uv_scalar),
+                 arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
+                 linejoin = "mitre", size = 0.4, alpha = 0.4) +
+    # Colour scale
+    scale_fill_gradient2(name = "Air temp.\nanom. (°C)", low = "blue", high = "red") +
+    scale_colour_gradient2("MSLP anom.", guide = "legend",
+                           low = "green", mid = "grey", high = "yellow") +
+    # The facets
+    facet_wrap(~node, ncol = col_num)
+  return(air_u_v_mslp_anom)
+}
+
+
+# QNET + MLD (anom) figure ------------------------------------------------
+
+qnet_mld_anom_fig <- function(fig_data, col_num){
+  # The figure
+  qnet_mld_anom <- frame_base +
+    # The MLD
+    geom_raster(data = fig_data$som_data_wide, aes(fill = mld_anom)) +
+    # The land mass
+    geom_polygon(data = map_base, aes(group = group), alpha = 0.8,
+                 fill = "grey80", colour = "black", size = 0.5, show.legend = FALSE) +
+    # The net downward heat flux contours
+    geom_contour(data = fig_data$som_data_wide, binwidth = 50,
+                 aes(z = qnet_anom, colour = stat(level)), size = 1) +
+    # Colour scale
+    scale_fill_gradient2("MLD anom. (m)",low = "blue", high = "red") +
+    scale_colour_gradient2("Net downward\nheat flux\nanom. (W/m2)", guide = "legend",
+                           low = "green", mid = "grey", high = "yellow") +
+    # The facets
+    facet_wrap(~node, ncol = col_num)
+  return(qnet_mld_anom)
+}
+
+
+# SST + U + V (real) figure -----------------------------------------------
+
+fig_8_func <- function(fig_data, col_num){
+  # The figure
+  fig_8 <- frame_base +
+    # The land mass
+    geom_polygon(data = map_base, aes(group = group), alpha = 0.8,
+                 fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
+    # The current vectors
+    geom_segment(data = synoptic_states_uv, aes(xend = lon + u * current_uv_scalar,
+                                                yend = lat + v * current_uv_scalar),
+                 arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
+                 linejoin = "mitre", size = 0.4, alpha = 0.8) +
+    # The facets
+    facet_wrap(~node, ncol = col_num)
+  return(fig_8)
+}
+
+
+# Air temp + U + V + MSLP (anom) figure -----------------------------------
+
+fig_9_func <- function(fig_data, col_num){
+  # The figure
+  fig_9 <- frame_base +
+    # The land mass
+    geom_polygon(data = map_base, aes(group = group), alpha = 0.8,
+                 fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
+    # The wind vectors
+    geom_segment(data = synoptic_states_uv, aes(xend = lon + u10 * wind_uv_scalar,
+                                                yend = lat + v10 * wind_uv_scalar),
+                 arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
+                 linejoin = "mitre", size = 0.4, alpha = 0.8) +
+    # The facets
+    facet_wrap(~node, ncol = col_num)
+  return(fig_9)
+}
+
+
+
+# Season + cum. int. lolli ------------------------------------------------
+
+fig_6_func <- function(fig_data, col_num){
+  fig_6 <- ggplot(data = fig_data$OISST_MHW_meta,
+                  aes(x = date_peak, y = intensity_cumulative)) +
+    geom_smooth(method = "lm", se = F, aes(colour = season_peak)) +
+    geom_label(aes(x = mean(range(date_peak)), y = max(intensity_cumulative), label = paste0("n = ", count)),
+               size = 3, label.padding = unit(0.5, "lines")) +
+    geom_lolli() +
+    geom_point(aes(colour = season_peak)) +
+    geom_hline(data = fig_data$node_h_lines, aes(yintercept = mean_int_cum), linetype = "dashed") +
+    scale_x_date(labels = scales::date_format("%Y"),
+                 date_breaks = "2 years", date_minor_breaks = "1 year") +
+    labs(x = "", y = "Cumulative intensity (°C x days)", colour = "Season") +
+    theme(legend.position = "bottom",
+          axis.text.x = element_text(angle = 30)) +
+    facet_wrap(~node, ncol = col_num)
+  return(fig_6)
+}
+
+
+
+# Region + max. int. lolli ------------------------------------------------
+
+
+fig_7_func <- function(fig_data, col_num){
+  fig_7 <- ggplot(data = fig_data$OISST_MHW_meta,
+                  aes(x = date_peak, y = intensity_max)) +
+    geom_smooth(method = "lm", se = F, aes(colour = region)) +
+    geom_label(aes(x = mean(range(date_peak)), y = max(intensity_max), label = paste0("n = ", count)),
+               size = 3, label.padding = unit(0.5, "lines")) +
+    geom_lolli() +
+    geom_point(aes(colour = region)) +
+    geom_hline(data = fig_data$node_h_lines, aes(yintercept = mean_int_max), linetype = "dashed") +
+    scale_x_date(labels = scales::date_format("%Y"),
+                 date_breaks = "2 years", date_minor_breaks = "1 year") +
+    labs(x = "", y = "Max. intensity (°C)", colour = "Region") +
+    theme(legend.position = "bottom",
+          axis.text.x = element_text(angle = 30)) +
+    facet_wrap(~node, ncol = col_num)
+  return(fig_7)
+}
+
+
+# Rate onset + duration lolli ---------------------------------------------
+
+
+
+# Summary table figure ----------------------------------------------------
+# The table of the MHW metric summaries
+# min, median, mean, max, sd
+
+summary_table_func <- function(fig_data, col_num){
+
+  # Create summary stats tables
+  summary_data <- fig_data$OISST_MHW_meta %>%
+    select(node, duration, intensity_max, intensity_mean,
+           intensity_cumulative, rate_onset, rate_decline) %>%
+    dplyr::rename(int_cum = intensity_cumulative,
+                  int_mean = intensity_mean,
+                  int_max = intensity_max) %>%
+    gather(key = "var", value = "val", -node) %>%
+    group_by(node, var) %>%
+    summarise(count = n(),
+              min = min(val, na.rm = T),
+              median = median(val, na.rm = T),
+              mean = mean(val, na.rm = T),
+              max = max(val, na.rm = T),
+              sd = sd(val, na.rm = T)) %>%
+    ungroup() %>%
+    mutate_if(is.numeric, round, digits = 2) %>%
+    mutate(all_stat = paste(var, min, median, mean, max, sd, sep = " / "))
+
+  summary_table <- ggplot(summary_data) +
+    geom_blank() +
+    geom_label(aes(label = c("min / median / mean / max / sd"), x = 0, y = 0.1),
+               fill = "black", colour = "white") +
+    geom_label(data = filter(summary_data, var == "duration"),
+               aes(label = all_stat, x = 0, y = 0)) +
+    geom_label(data = filter(summary_data, var == "int_mean"),
+               aes(label = all_stat, x = 0, y = -0.1), fill = "grey80") +
+    geom_label(data = filter(summary_data, var == "int_max"),
+               aes(label = all_stat, x = 0, y = -0.2)) +
+    geom_label(data = filter(summary_data, var == "int_cum"),
+               aes(label = all_stat, x = 0, y = -0.3), fill = "grey80") +
+    geom_label(data = filter(summary_data, var == "rate_onset"),
+               aes(label = all_stat, x = 0, y = -0.4)) +
+    geom_label(data = filter(summary_data, var == "rate_decline"),
+               aes(label = all_stat, x = 0, y = -0.5), fill = "grey80") +
+    facet_wrap(~node, ncol = col_num) +
+    labs(x = NULL, y = NULL) +
+    # theme_bw()
+    theme_void() +
+    theme(strip.background = element_rect(colour = "black", fill = "grey80"),
+          panel.border = element_rect(colour = "black", fill = NA))
+  return(summary_table)
 }

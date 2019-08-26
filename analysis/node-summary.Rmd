@@ -28,7 +28,7 @@ The following code chunk creates PDFs and PNGs for each of the variables for eac
 source("code/functions.R")
 
 # Create the full range of visuals
-som <- readRDS("data/som.Rda")
+som <- readRDS("data/SOM/som.Rda")
 som_node_visualise(som)
 ```
 

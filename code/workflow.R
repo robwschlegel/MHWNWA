@@ -376,21 +376,28 @@ source("code/functions.R")
 
 # Set number of cores
   # NB: 50 cores can be too much for the RAM
-# doMC::registerDoMC(cores = 25)
+doMC::registerDoMC(cores = 25)
 
 ## Create one big anomaly packet
 # print(paste0("Began creating data packets at ", Sys.time()))
 # system.time(synoptic_states <- plyr::ddply(OISST_MHW_event, c("region", "event_no"),
-                                           # data_packet_func, .parallel = T)) # 50 seconds
+                                           # data_packet_func, .parallel = T)) # 204 seconds
 # Save
 # saveRDS(synoptic_states, "data/SOM/synoptic_states.Rda")
 
 ## Create other synoptic states per MHW per variable
 # doMC::registerDoMC(cores = 10) # NB: Be careful here...
 # system.time(synoptic_states_other <- plyr::ddply(OISST_MHW_event, c("region", "event_no"),
-                                                 # data_packet_func, .parallel = T, df = ALL_other)) # 71 seconds
+                                                 # data_packet_func, .parallel = T, df = ALL_other)) # 122 seconds
 # Save
 # saveRDS(synoptic_states_other, "data/SOM/synoptic_states_other.Rda")
+
+## Create wide data packet that is fed to SOM
+# system.time(packet <- readRDS("data/SOM/synoptic_states.Rda") %>%
+#               select(region, event_no, synoptic) %>%
+#               unnest() %>%
+#               wide_packet_func()) # 122 seconds
+# saveRDS(packet, "data/SOM/packet.Rda")
 
 
 # SOM analysis ------------------------------------------------------------

@@ -46,15 +46,15 @@ Up first we must simply load and unnest the synoptic state packets made previous
 ```{r unnest-packets, eval=FALSE}
 # Load the synoptic states data packet
 system.time(
-synoptic_states <- readRDS("data/SOM/synoptic_states.Rda")
+  synoptic_states <- readRDS("data/SOM/synoptic_states.Rda")
 ) # 3 seconds
 
 # Unnest the synoptic data
 system.time(
-synoptic_states_unnest <- synoptic_states %>% 
-  select(region, event_no, synoptic) %>% 
-  unnest()
-) # 8 seconds
+  synoptic_states_unnest <- synoptic_states %>% 
+    select(region, event_no, synoptic) %>% 
+    unnest()
+) # 4 seconds
 ```
 
 ### Create packet
@@ -65,7 +65,7 @@ With all of our data ready we may now prepare and save them for the SOM.
 # Packet for entire study region
 system.time(
   packet <- wide_packet_func(synoptic_states_unnest)
-) # 187 seconds
+) # 179 seconds
 saveRDS(packet, "data/SOM/packet.Rda")
 ```
 
@@ -76,9 +76,22 @@ Now that we have our data packet to feed the SOM with a function that ingests th
 ```{r som-run, eval=FALSE}
 # The SOM on the entire study area
 packet <- readRDS("data/SOM/packet.Rda")
-system.time(som <- som_model_PCI(packet)) # 132 seconds
+system.time(som <- som_model_PCI(packet)) # 69 seconds
 # som$ANOSIM # p = 0.001
 saveRDS(som, file = "data/SOM/som.Rda")
+```
+
+```{r som-nolab, eval=FALSE, echo=FALSE}
+NWA_coords_nolab <- NWA_coords %>% 
+  filter(region != "ls")
+
+system.time(
+  packet_nolab <- synoptic_states_unnest %>% 
+    filter(region != "ls",
+           lat <= round(max(NWA_coords_nolab$lat))+0.5) %>% 
+    wide_packet_func()
+) # 110 seconds
+system.time(som_nolab <- som_model_PCI(packet_nolab)) # 77 seconds
 ```
 
 And there we have our SOM results. Up next in the [Node summary vignette](https://robwschlegel.github.io/MHWNWA/node-summary.html) we will show the results with a range of visuals.
