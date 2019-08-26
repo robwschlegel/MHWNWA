@@ -874,6 +874,8 @@ fig_9_func <- function(fig_data, col_num){
 
 # Season + cum. int. lolli ------------------------------------------------
 
+# NB: Also need to add stat labels showing the mean and median of the values being plotted
+
 fig_6_func <- function(fig_data, col_num){
   fig_6 <- ggplot(data = fig_data$OISST_MHW_meta,
                   aes(x = date_peak, y = intensity_cumulative)) +
