@@ -375,8 +375,8 @@ source("code/functions.R")
 # Data packets ------------------------------------------------------------
 
 # Set number of cores
-  # NB: 50 cores can be too much for the RAM
-doMC::registerDoMC(cores = 25)
+  # NB: 50 cores requires too much RAM
+# doMC::registerDoMC(cores = 25)
 
 ## Create one big anomaly packet
 # print(paste0("Began creating data packets at ", Sys.time()))
