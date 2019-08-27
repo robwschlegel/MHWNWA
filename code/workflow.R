@@ -341,14 +341,17 @@ source("code/functions.R")
 # Load air temp data
 # system.time(ERA5_t2m <- load_anom("data/base/ERA5_t2m.Rda")) # 55 seconds
 
-# Load MSLP anomaly data
+# Load MSLP real and anomaly data and combine
+# system.time(ERA5_mslp <- load_anom("data/base/ERA5_mslp.Rda")) # 52 seconds
 # system.time(ERA5_mslp_anom <- load_anom("data/anom/ERA5_mslp_anom.Rda")) # 52 seconds
+# system.time(ERA5_mslp_all <- left_join(ERA5_mslp, ERA5_mslp_anom,
+#                                        by = c("lon", "lat", "t"))) # 5 seconds
 
 # Load SST data
 # system.time(OISST_sst <- load_anom("data/base/OISST_sst.Rda", OISST = T)) # 33 seconds
 
 # Merge everything
-# system.time(ALL_other <- left_join(ERA5_t2m, ERA5_mslp_anom,
+# system.time(ALL_other <- left_join(ERA5_t2m, ERA5_mslp_all,
 #                                    by = c("lon", "lat", "t")) %>%
 #               left_join(OISST_sst, by = c("lon", "lat", "t")) %>%
 #               left_join(ALL_uv_sub, by = c("lon", "lat", "t"))) # 260 seconds
@@ -369,7 +372,8 @@ source("code/functions.R")
 #   geom_segment(aes(xend = lon + u10 * wind_uv_scalar,
 #                    yend = lat + v10 * wind_uv_scalar),
 #                arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
-#                linejoin = "mitre", size = 0.4, alpha = 0.4)
+#                linejoin = "mitre", size = 0.4, alpha = 0.4) +
+#   geom_contour(aes(z = msl, colour = stat(level)), size = 1)
 
 
 # Data packets ------------------------------------------------------------
@@ -388,7 +392,7 @@ source("code/functions.R")
 ## Create other synoptic states per MHW per variable
 # doMC::registerDoMC(cores = 10) # NB: Be careful here...
 # system.time(synoptic_states_other <- plyr::ddply(OISST_MHW_event, c("region", "event_no"),
-                                                 # data_packet_func, .parallel = T, df = ALL_other)) # 122 seconds
+#                                                  data_packet_func, .parallel = T, df = ALL_other)) # 122 seconds
 # Save
 # saveRDS(synoptic_states_other, "data/SOM/synoptic_states_other.Rda")
 

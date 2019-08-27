@@ -156,6 +156,7 @@ NWA_study_area <- ggplot(data = NWA_coords, aes(x = lon, y = lat)) +
   theme_bw() +
   theme(legend.position = "bottom")
 # ggsave(NWA_study_area, filename = "output/NWA_study_area.pdf", height = 5, width = 6)
+# ggsave(NWA_study_area, filename = "output/NWA_study_area.png", height = 5, width = 6)
 
 # Visualise
 NWA_study_area
