@@ -294,19 +294,19 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="polygon-prep.html">Polygon preparation</a>
+      <a href="polygon-prep.html">Study area and regions</a>
     </li>
     <li>
-      <a href="sst-prep.html">SST preparation</a>
+      <a href="sst-prep.html">MHW detection</a>
     </li>
     <li>
-      <a href="var-prep.html">Variable preparation</a>
+      <a href="var-prep.html">Heat budget data preparation</a>
     </li>
     <li>
       <a href="som.html">SOM analysis</a>
     </li>
     <li>
-      <a href="node-summary.html">Node summary</a>
+      <a href="node-summary.html">Node summaries</a>
     </li>
   </ul>
 </li>
@@ -345,7 +345,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-08-15</p>
+<p><strong>Last updated:</strong> 2019-08-28</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -374,83 +374,91 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/a226aa66a97f579750151882984241de8e0ed0fa" target="_blank">a226aa6</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/454b53b90a81ee54136eed5ef66132af0787d3d3" target="_blank">454b53b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    data/ALL_anom.Rda
-    Ignored:    data/ALL_clim.Rda
-    Ignored:    data/ERA5_lhf.Rda
-    Ignored:    data/ERA5_lwr.Rda
-    Ignored:    data/ERA5_qnet.Rda
-    Ignored:    data/ERA5_qnet_anom.Rda
-    Ignored:    data/ERA5_qnet_clim.Rda
-    Ignored:    data/ERA5_shf.Rda
-    Ignored:    data/ERA5_swr.Rda
-    Ignored:    data/ERA5_t2m.Rda
-    Ignored:    data/ERA5_t2m_anom.Rda
-    Ignored:    data/ERA5_t2m_clim.Rda
-    Ignored:    data/ERA5_u.Rda
-    Ignored:    data/ERA5_u_anom.Rda
-    Ignored:    data/ERA5_u_clim.Rda
-    Ignored:    data/ERA5_v.Rda
-    Ignored:    data/ERA5_v_anom.Rda
-    Ignored:    data/ERA5_v_clim.Rda
-    Ignored:    data/GLORYS_mld.Rda
-    Ignored:    data/GLORYS_mld_anom.Rda
-    Ignored:    data/GLORYS_mld_clim.Rda
-    Ignored:    data/GLORYS_u.Rda
-    Ignored:    data/GLORYS_u_anom.Rda
-    Ignored:    data/GLORYS_u_clim.Rda
-    Ignored:    data/GLORYS_v.Rda
-    Ignored:    data/GLORYS_v_anom.Rda
-    Ignored:    data/GLORYS_v_clim.Rda
-    Ignored:    data/NAPA_clim_U.Rda
-    Ignored:    data/NAPA_clim_V.Rda
-    Ignored:    data/NAPA_clim_W.Rda
-    Ignored:    data/NAPA_clim_emp_ice.Rda
-    Ignored:    data/NAPA_clim_emp_oce.Rda
-    Ignored:    data/NAPA_clim_fmmflx.Rda
-    Ignored:    data/NAPA_clim_mldkz5.Rda
-    Ignored:    data/NAPA_clim_mldr10_1.Rda
-    Ignored:    data/NAPA_clim_qemp_oce.Rda
-    Ignored:    data/NAPA_clim_qla_oce.Rda
-    Ignored:    data/NAPA_clim_qns.Rda
-    Ignored:    data/NAPA_clim_qsb_oce.Rda
-    Ignored:    data/NAPA_clim_qt.Rda
-    Ignored:    data/NAPA_clim_runoffs.Rda
-    Ignored:    data/NAPA_clim_ssh.Rda
-    Ignored:    data/NAPA_clim_sss.Rda
-    Ignored:    data/NAPA_clim_sst.Rda
-    Ignored:    data/NAPA_clim_taum.Rda
-    Ignored:    data/NAPA_clim_vars.Rda
-    Ignored:    data/NAPA_clim_vecs.Rda
-    Ignored:    data/OAFlux.Rda
-    Ignored:    data/OISST_sst.Rda
-    Ignored:    data/OISST_sst_anom.Rda
-    Ignored:    data/OISST_sst_clim.Rda
-    Ignored:    data/node_mean_all_anom.Rda
-    Ignored:    data/packet_all.Rda
-    Ignored:    data/packet_all_anom.Rda
-    Ignored:    data/packet_nolab.Rda
-    Ignored:    data/packet_nolab14.Rda
-    Ignored:    data/packet_nolabgsl.Rda
-    Ignored:    data/packet_nolabmod.Rda
-    Ignored:    data/som_all.Rda
-    Ignored:    data/som_all_anom.Rda
-    Ignored:    data/som_nolab.Rda
-    Ignored:    data/som_nolab14.Rda
-    Ignored:    data/som_nolab_16.Rda
-    Ignored:    data/som_nolab_9.Rda
-    Ignored:    data/som_nolabgsl.Rda
-    Ignored:    data/som_nolabmod.Rda
-    Ignored:    data/synoptic_states.Rda
-    Ignored:    data/synoptic_vec_states.Rda
+    Ignored:    LaTeX/SOM_node_summary.docx
+    Ignored:    LaTeX/SOM_node_summary.pdf
+    Ignored:    data/NAPA/NAPA_clim_U.Rda
+    Ignored:    data/NAPA/NAPA_clim_V.Rda
+    Ignored:    data/NAPA/NAPA_clim_W.Rda
+    Ignored:    data/NAPA/NAPA_clim_emp_ice.Rda
+    Ignored:    data/NAPA/NAPA_clim_emp_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_fmmflx.Rda
+    Ignored:    data/NAPA/NAPA_clim_mldkz5.Rda
+    Ignored:    data/NAPA/NAPA_clim_mldr10_1.Rda
+    Ignored:    data/NAPA/NAPA_clim_qemp_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_qla_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_qns.Rda
+    Ignored:    data/NAPA/NAPA_clim_qsb_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_qt.Rda
+    Ignored:    data/NAPA/NAPA_clim_runoffs.Rda
+    Ignored:    data/NAPA/NAPA_clim_ssh.Rda
+    Ignored:    data/NAPA/NAPA_clim_sss.Rda
+    Ignored:    data/NAPA/NAPA_clim_sst.Rda
+    Ignored:    data/NAPA/NAPA_clim_taum.Rda
+    Ignored:    data/NAPA/NAPA_clim_vars.Rda
+    Ignored:    data/NAPA/NAPA_clim_vecs.Rda
+    Ignored:    data/NAPA/synoptic_vec_states.Rda
+    Ignored:    data/SOM/packet.Rda
+    Ignored:    data/SOM/synoptic_states.Rda
+    Ignored:    data/SOM/synoptic_states_other.Rda
+    Ignored:    data/anom/ALL_anom.Rda
+    Ignored:    data/anom/ALL_other.Rda
+    Ignored:    data/anom/ERA5_mslp_anom.Rda
+    Ignored:    data/anom/ERA5_qnet_anom.Rda
+    Ignored:    data/anom/ERA5_t2m_anom.Rda
+    Ignored:    data/anom/ERA5_u_anom.Rda
+    Ignored:    data/anom/ERA5_v_anom.Rda
+    Ignored:    data/anom/GLORYS_mld_anom.Rda
+    Ignored:    data/anom/GLORYS_u_anom.Rda
+    Ignored:    data/anom/GLORYS_v_anom.Rda
+    Ignored:    data/anom/OISST_sst_anom.Rda
+    Ignored:    data/base/ERA5_lhf.Rda
+    Ignored:    data/base/ERA5_lwr.Rda
+    Ignored:    data/base/ERA5_mslp.Rda
+    Ignored:    data/base/ERA5_qnet.Rda
+    Ignored:    data/base/ERA5_shf.Rda
+    Ignored:    data/base/ERA5_swr.Rda
+    Ignored:    data/base/ERA5_t2m.Rda
+    Ignored:    data/base/ERA5_u.Rda
+    Ignored:    data/base/ERA5_v.Rda
+    Ignored:    data/base/GLORYS_mld.Rda
+    Ignored:    data/base/GLORYS_u.Rda
+    Ignored:    data/base/GLORYS_v.Rda
+    Ignored:    data/base/OAFlux.Rda
+    Ignored:    data/base/OISST_sst.Rda
+    Ignored:    data/clim/ALL_clim.Rda
+    Ignored:    data/clim/ERA5_mslp_clim.Rda
+    Ignored:    data/clim/ERA5_qnet_clim.Rda
+    Ignored:    data/clim/ERA5_t2m_clim.Rda
+    Ignored:    data/clim/ERA5_u_clim.Rda
+    Ignored:    data/clim/ERA5_v_clim.Rda
+    Ignored:    data/clim/GLORYS_mld_clim.Rda
+    Ignored:    data/clim/GLORYS_u_clim.Rda
+    Ignored:    data/clim/GLORYS_v_clim.Rda
+    Ignored:    data/clim/OISST_sst_clim.Rda
+    Ignored:    data/comparison/node_mean_all_anom.Rda
+    Ignored:    data/comparison/packet_all.Rda
+    Ignored:    data/comparison/packet_all_anom.Rda
+    Ignored:    data/comparison/packet_nolab.Rda
+    Ignored:    data/comparison/packet_nolab14.Rda
+    Ignored:    data/comparison/packet_nolabgsl.Rda
+    Ignored:    data/comparison/packet_nolabmod.Rda
+    Ignored:    data/comparison/som_all.Rda
+    Ignored:    data/comparison/som_all_anom.Rda
+    Ignored:    data/comparison/som_nolab.Rda
+    Ignored:    data/comparison/som_nolab14.Rda
+    Ignored:    data/comparison/som_nolab_16.Rda
+    Ignored:    data/comparison/som_nolab_9.Rda
+    Ignored:    data/comparison/som_nolabgsl.Rda
+    Ignored:    data/comparison/som_nolabmod.Rda
 
-Untracked files:
-    Untracked:  LaTeX/
+Unstaged changes:
+    Modified:   code/functions.R
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -481,6 +489,91 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/d980be6bf65f960a1d724eab9b72a9d087f89a43/analysis/som.Rmd" target="_blank">d980be6</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-26
+</td>
+<td style="text-align:left;">
+Working towards the node summary figure pipeline update
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/27b124ba6b6dd172d712e6f14a19b14e2ebf0d5a/analysis/som.Rmd" target="_blank">27b124b</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-23
+</td>
+<td style="text-align:left;">
+Working on code to smoothly introduce the other data needed for creating summary figures but that aren’t used in the SOM calculation
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/9c4a1d86263dccc258e1bd93ad227921b44b694f/analysis/som.Rmd" target="_blank">9c4a1d8</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-21
+</td>
+<td style="text-align:left;">
+An additional thought
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/ac54ed032a23bbdade795c5a84154866a6049a93/analysis/som.Rmd" target="_blank">ac54ed0</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-21
+</td>
+<td style="text-align:left;">
+Another round of figure creation
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/826c73d93c73c8f65cc42b69942163def63cd437/docs/som.html" target="_blank">826c73d</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-15
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -1231,308 +1324,51 @@ library(lubridate) # For convenient date manipulation
 library(yasomi, lib.loc = &quot;../R-packages/&quot;) # The SOM package of choice due to PCI compliance
 library(data.table) # For working with massive dataframes
 
-# Set number of cores
-doMC::registerDoMC(cores = 50)
-
-# Disable scientific notation for numeric values
-  # I just find it annoying
-options(scipen = 999)
-
-# Set number of cores
-doMC::registerDoMC(cores = 50)
-
-# Disable scientific notation for numeric values
-  # I just find it annoying
-options(scipen = 999)
-
-# Individual regions
-NWA_coords &lt;- readRDS(&quot;data/NWA_coords_cabot.Rda&quot;)
-
-# Corners of the study area
-NWA_corners &lt;- readRDS(&quot;data/NWA_corners.Rda&quot;)
-
-# The base map
-map_base &lt;- ggplot2::fortify(maps::map(fill = TRUE, col = &quot;grey80&quot;, plot = FALSE)) %&gt;%
-  dplyr::rename(lon = long) %&gt;%
-  mutate(group = ifelse(lon &gt; 180, group+9999, group),
-         lon = ifelse(lon &gt; 180, lon-360, lon)) %&gt;% 
-  select(-region, -subregion)
-
-# MHW results
-OISST_region_MHW &lt;- readRDS(&quot;data/OISST_region_MHW.Rda&quot;)
-
-# MHW Events
-OISST_MHW_event &lt;- OISST_region_MHW %&gt;%
-  select(-cats) %&gt;%
-  unnest(events) %&gt;%
-  filter(row_number() %% 2 == 0) %&gt;%
-  unnest(events)
-
-# MHW Categories
-suppressWarnings( # Don&#39;t need warning about different names for events
-OISST_MHW_cats &lt;- OISST_region_MHW %&gt;%
-  select(-events) %&gt;%
-  unnest(cats) 
-)</code></pre>
+# Load functions and objects to be used below
+source(&quot;code/functions.R&quot;)</code></pre>
 </div>
-<div id="tailored-data-packets" class="section level2">
-<h2>Tailored data packets</h2>
-<p>In this last stage before running our SOM analyses we will create data packets that can be fed directly into the SOM algorithm. These data packets will vary based on the exclusion of certain regions in the study area. In the first run of this analysis on the NAPA model data it was found that the inclusion of the Labrador Sea complicated the results quite a bit. It is also unclear whether or not the Gulf of St Lawrence region should be included in the analysis. While creating whatever packets we desire we will also be converting them into the super-wide matrix format that the SOM model desires.</p>
+<div id="data-packet" class="section level2">
+<h2>Data packet</h2>
+<p>In this last stage before running our SOM analysis we will create a data packet that can be fed directly into the SOM algorithm. This means that it must be converted into a super-wide matrix format. In the first run of this analysis on the NAPA model data it was found that the inclusion of the Labrador Sea complicated the results quite a bit. It was also unclear whether or not the Gulf of St Lawrence region should be included in the analysis. So in the second run of this analysis multiple different SOM variations were employed and it was decided that the gsl region should be included.</p>
 <div id="unnest-synoptic-state-packets" class="section level3">
 <h3>Unnest synoptic state packets</h3>
 <p>Up first we must simply load and unnest the synoptic state packets made previously.</p>
 <pre class="r"><code># Load the synoptic states data packet
 system.time(
-synoptic_states &lt;- readRDS(&quot;data/synoptic_states.Rda&quot;)
+  synoptic_states &lt;- readRDS(&quot;data/SOM/synoptic_states.Rda&quot;)
 ) # 3 seconds
 
 # Unnest the synoptic data
 system.time(
-synoptic_states_unnest &lt;- synoptic_states %&gt;% 
-  select(region, event_no, synoptic) %&gt;% 
-  unnest()
-) # 8 seconds</code></pre>
+  synoptic_states_unnest &lt;- synoptic_states %&gt;% 
+    select(region, event_no, synoptic) %&gt;% 
+    unnest()
+) # 4 seconds</code></pre>
 </div>
-<div id="custom-packets" class="section level3">
-<h3>Custom packets</h3>
-<p>With all of our data ready we may now trim them as we see fit before saving them for the SOM.</p>
-<pre class="r"><code># The study area size when the Labrador region is excluded
-NWA_coords_nolab &lt;- NWA_coords %&gt;% 
-  filter(region != &quot;ls&quot;)
-
-# The study area size when the Labrador and GSL regions are excluded
-NWA_coords_nolabgsl &lt;- NWA_coords %&gt;% 
-  filter(!region %in% c(&quot;ls&quot;, &quot;gsl&quot;))
-
-# Test visuals of reduced study areas
-# synoptic_states[1,] %&gt;% 
-#   unnest() %&gt;% 
-#   filter(lat &lt;= round(max(NWA_coords_nolabgsl$lat))+0.5) %&gt;% 
-#   ggplot(aes(x = lon, y = lat)) +
-#   geom_raster(aes(fill = sst_anom)) +
-#   geom_polygon(data = NWA_coords_nolabgsl, aes(colour = region), fill = NA)
-
-# Function for casting wide the custom packets
-wide_packet_func &lt;- function(df){
-  
-  # Cast the data to a single row
-  res &lt;- data.table::data.table(df) %&gt;% 
-    select(-t) %&gt;% 
-    reshape2::melt(id = c(&quot;region&quot;, &quot;event_no&quot;, &quot;lon&quot;, &quot;lat&quot;),
-                   measure = c(colnames(.)[-c(1:4)]), 
-                   variable.name = &quot;var&quot;, value.name = &quot;val&quot;) %&gt;% 
-    dplyr::arrange(var, lon, lat) %&gt;%
-    unite(coords, c(lon, lat, var), sep = &quot;BBB&quot;) %&gt;%
-    unite(event_ID, c(region, event_no), sep = &quot;BBB&quot;) %&gt;%
-    reshape2::dcast(event_ID ~ coords, value.var = &quot;val&quot;)
-  
-  # Remove columns (pixels) with missing data
-  res_fix &lt;- res[,colSums(is.na(res))&lt;1]
-  
-  # Remove columns (pixels) with no variance
-  # This may occur in pixels where there is no variance in MLD anomaly
-  no_var &lt;- data.frame(min = sapply(res_fix[,-1], min),
-                       max = sapply(res_fix[,-1], max)) %&gt;% 
-    mutate(col_name = row.names(.)) %&gt;% 
-    filter(min == max)
-  res_filter &lt;- res_fix[,!(colnames(res_fix) %in% no_var$col_name)]
-  
-  # Exit
-  return(res_filter)
-}
-
-# Packet for entire study region
+<div id="create-packet" class="section level3">
+<h3>Create packet</h3>
+<p>With all of our data ready we may now prepare and save them for the SOM.</p>
+<pre class="r"><code># Packet for entire study region
 system.time(
-  packet_all &lt;- wide_packet_func(synoptic_states_unnest)
-) # 182 seconds
-saveRDS(packet_all, &quot;data/packet_all.Rda&quot;)
-
-# Exclude Labrador region
-system.time(
-  packet_nolab &lt;- synoptic_states_unnest %&gt;% 
-    filter(region != &quot;ls&quot;,
-           lat &lt;= round(max(NWA_coords_nolab$lat))+0.5) %&gt;% 
-    wide_packet_func()
-) # 103 seconds
-saveRDS(packet_nolab, &quot;data/packet_nolab.Rda&quot;)
-
-# Exclude Labrador and Gulf of St Lawrence regions
-system.time(
-  packet_nolabgsl &lt;- synoptic_states_unnest %&gt;% 
-    filter(!region %in% c(&quot;ls&quot;, &quot;gsl&quot;),
-           lat &lt;= round(max(NWA_coords_nolabgsl$lat))+0.5) %&gt;% 
-    wide_packet_func()
-) # 82 seconds
-saveRDS(packet_nolabgsl, &quot;data/packet_nolabgsl.Rda&quot;)
-
-# Exclude Labrador region and moderate events
-system.time(
-  packet_nolabmod &lt;- synoptic_states_unnest %&gt;% 
-    filter(region != &quot;ls&quot;,
-           lat &lt;= round(max(NWA_coords_nolab$lat))+0.5) %&gt;% 
-    left_join(select(OISST_MHW_cats, region, event_no, category), by = c(&quot;region&quot;, &quot;event_no&quot;)) %&gt;% 
-    filter(category != &quot;I Moderate&quot;) %&gt;% 
-    select(-category) %&gt;% 
-    wide_packet_func()
-) # 14 seconds
-saveRDS(packet_nolabmod, &quot;data/packet_nolabmod.Rda&quot;)
-
-# Exclude Labrador region and moderate events
-system.time(
-  packet_nolab14 &lt;- synoptic_states_unnest %&gt;% 
-    filter(region != &quot;ls&quot;,
-           lat &lt;= round(max(NWA_coords_nolab$lat))+0.5) %&gt;% 
-    left_join(select(OISST_MHW_cats, region, event_no, duration), by = c(&quot;region&quot;, &quot;event_no&quot;)) %&gt;% 
-    filter(duration &gt;= 14) %&gt;% 
-    select(-duration) %&gt;% 
-    wide_packet_func()
-) # 40 seconds
-saveRDS(packet_nolab14, &quot;data/packet_nolab14.Rda&quot;)
-
-# A packet for events with a cummulative intensity of at least 100</code></pre>
+  packet &lt;- wide_packet_func(synoptic_states_unnest)
+) # 179 seconds
+saveRDS(packet, &quot;data/SOM/packet.Rda&quot;)</code></pre>
 </div>
 </div>
 <div id="run-som-models" class="section level2">
 <h2>Run SOM models</h2>
-<p>Now that we have our data packets to feed the SOM, we need a function that will ingest them and produce results for us. The function below has been greatly expanded on from the previous version of this project and now performs all of the SOM related work in one go. This allowed me to remove a couple hundreds lines of code and text from this vignette.</p>
-<pre class="r"><code># Function for calculating SOMs using PCI
-# This outputs the mean values for each SOM as well
-som_model_PCI &lt;- function(data_packet, xdim = 4, ydim = 3){
-  # Create a scaled matrix for the SOM
-  # Cancel out first column as this is the reference ID of the event per row
-  data_packet_matrix &lt;- as.matrix(scale(data_packet[,-1]))
-
-  # Create the grid that the SOM will use to determine the number of nodes
-  som_grid &lt;- somgrid(xdim = xdim, ydim = ydim, topo = &quot;hexagonal&quot;)
-
-  # Run the SOM with PCI
-  som_model &lt;- batchsom(data_packet_matrix,
-                        somgrid = som_grid,
-                        init = &quot;pca&quot;,
-                        max.iter = 100)
-  
-  # Create a data.frame of info
-  node_info &lt;- data.frame(event_ID = data_packet[,&quot;event_ID&quot;],
-                           node = som_model$classif) %&gt;% 
-    separate(event_ID, into = c(&quot;region&quot;, &quot;event_no&quot;), sep = &quot;BBB&quot;) %&gt;% 
-    group_by(node) %&gt;% 
-    mutate(count = n()) %&gt;% 
-    ungroup() %&gt;% 
-    mutate(event_no = as.numeric(as.character(event_no))) %&gt;%
-    left_join(select(OISST_MHW_cats, region, event_no, category, peak_date), 
-              by = c(&quot;region&quot;, &quot;event_no&quot;)) %&gt;% 
-    mutate(month_peak = lubridate::month(peak_date, label = T),
-           season_peak = case_when(month_peak %in% c(&quot;Jan&quot;, &quot;Feb&quot;, &quot;Mar&quot;) ~ &quot;Winter&quot;,
-                                   month_peak %in% c(&quot;Apr&quot;, &quot;May&quot;, &quot;Jun&quot;) ~ &quot;Spring&quot;,
-                                   month_peak %in% c(&quot;Jul&quot;, &quot;Aug&quot;, &quot;Sep&quot;) ~ &quot;Summer&quot;,
-                                   month_peak %in% c(&quot;Oct&quot;, &quot;Nov&quot;, &quot;Dec&quot;) ~ &quot;Autumn&quot;)) %&gt;% 
-    select(-peak_date, -month_peak)
-  
-  # Determine which event goes in which node and melt
-  data_packet_long &lt;- cbind(node = som_model$classif, data_packet) %&gt;% 
-    separate(event_ID, into = c(&quot;region&quot;, &quot;event_no&quot;), sep = &quot;BBB&quot;) %&gt;% 
-    data.table() %&gt;% 
-    reshape2::melt(id = c(&quot;node&quot;, &quot;region&quot;, &quot;event_no&quot;),
-                   measure = c(colnames(.)[-c(1:3)]), 
-                   variable.name = &quot;variable&quot;, value.name = &quot;value&quot;)
-  
-  # Create the mean values that serve as the unscaled results from the SOM
-  node_data &lt;- data_packet_long[, .(val = mean(value, na.rm = TRUE)),
-                                   by = .(node, variable)] %&gt;% 
-    separate(variable, into = c(&quot;lon&quot;, &quot;lat&quot;, &quot;var&quot;), sep = &quot;BBB&quot;) %&gt;%
-    dplyr::arrange(node, var, lon, lat) %&gt;% 
-    mutate(lon = as.numeric(lon),
-           lat = as.numeric(lat),
-           val = round(val, 4))
-  
-  ## ANOSIM for goodness of fit for node count
-  node_data_wide &lt;- node_data %&gt;%
-    unite(coords, c(lon, lat, var), sep = &quot;BBB&quot;) %&gt;% 
-    data.table() %&gt;% 
-    dcast(node~coords, value.var = &quot;val&quot;)
-
-  # Calculate similarity
-  som_anosim &lt;- vegan::anosim(as.matrix(node_data_wide[,-1]), 
-                              node_data_wide$node, distance = &quot;euclidean&quot;)$signif
-  
-  # Combine and exit
-  res &lt;- list(data = node_data, info = node_info, ANOSIM = paste0(&quot;p = &quot;,round(som_anosim, 4)))
-  return(res)
-}</code></pre>
-<p>With the function sorted, we now feed it the data packets.</p>
+<p>Now that we have our data packet to feed the SOM with a function that ingests them and produces results for us. The function below has been greatly expanded on from the previous version of this project and now performs all of the SOM related work in one go. This allowed me to remove a couple hundreds lines of code and text from this vignette.</p>
 <pre class="r"><code># The SOM on the entire study area
-packet_all &lt;- readRDS(&quot;data/packet_all.Rda&quot;)
-system.time(som_all &lt;- som_model_PCI(packet_all)) # 132 seconds
-# som_all$ANOSIM # p = 0.001
-saveRDS(som_all, file = &quot;data/som_all.Rda&quot;)
-
-# The SOM excluding the Labrador Sea region
-packet_nolab &lt;- readRDS(&quot;data/packet_nolab.Rda&quot;)
-system.time(som_nolab &lt;- som_model_PCI(packet_nolab)) # 63 seconds
-# som_nolab$ANOSIM # p = 0.001
-saveRDS(som_nolab, file = &quot;data/som_nolab.Rda&quot;)
-
-# The SOM excluding the Labrador Sea and Gulf of St Lawrence regions
-packet_nolabgsl &lt;- readRDS(&quot;data/packet_nolabgsl.Rda&quot;)
-system.time(som_nolabgsl &lt;- som_model_PCI(packet_nolabgsl)) # 52 seconds
-# som_nolabgsl$ANOSIM # p = 0.001
-saveRDS(som_nolabgsl, file = &quot;data/som_nolabgsl.Rda&quot;)
-
-# We see below that the results are crisper when we leave the Gulf of St Lawrence in,
-# so we will proceed with the rest of the experiments only excluding the Labrador Shelf
-
-# A 9 node SOM
-system.time(som_nolab_9 &lt;- som_model_PCI(packet_nolab, xdim = 3,  ydim = 3)) # 53 seconds
-# som_nolab_9$ANOSIM # p = 0.001
-saveRDS(som_nolab_9, file = &quot;data/som_nolab_9.Rda&quot;)
-
-# The 9 node results are perhaps easier to make sense of than 12 nodes, but it&#39;s not certain
-
-# A 16 node SOM
-system.time(som_nolab_16 &lt;- som_model_PCI(packet_nolab, xdim = 4, ydim = 4)) # 86 seconds
-# som_nolab_16$ANOSIM # p = 0.001
-saveRDS(som_nolab_16, file = &quot;data/som_nolab_16.Rda&quot;)
-
-# 16 nodes seems unnecessary...
-
-# A SOM without moderate events
-packet_nolabmod &lt;- readRDS(&quot;data/packet_nolabmod.Rda&quot;)
-system.time(som_nolabmod &lt;- som_model_PCI(packet_nolabmod, xdim = 2, ydim = 2)) # 12 seconds
-# som_nolabmod$ANOSIM # p = 0.0417
-saveRDS(som_nolabmod, file = &quot;data/som_nolabmod.Rda&quot;)
-
-# There are fewer than 40 category &quot;II Strong&quot; and larger MHWs so using more than 4 nodes wouldn&#39;t be appropriate
-# These results are defintely too sparse to use for a publication
-
-# A SOM without events shorter than 14 days
-packet_nolab14 &lt;- readRDS(&quot;data/packet_nolab14.Rda&quot;)
-system.time(som_nolab14 &lt;- som_model_PCI(packet_nolab14, xdim = 3, ydim = 3)) # 12 seconds
-# som_nolab14$ANOSIM # p = 0.001
-saveRDS(som_nolab14, file = &quot;data/som_nolab14.Rda&quot;)</code></pre>
-<p>As simple as that we now have a range of results from our SOM experiments. Up next in the <a href="https://robwschlegel.github.io/MHWNWA/node-summary.html">Node summary vignette</a> we will show the results with a range of visuals.</p>
-</div>
-<div id="musings" class="section level2">
-<h2>Musings</h2>
-<div id="possible-mechanisms" class="section level3">
-<h3>Possible mechanisms</h3>
-<p>“Finally, Shearman and Lentz (2010) showed that century-long ocean warming trends observed along the entire northeast U.S. coast are not related to local atmospheric forcing but driven by atmospheric warming of source waters in the Labrador Sea and the Arctic, which are advected into the region.” <span class="citation">(Richaud et al., 2016)</span></p>
-<p>Downwelling</p>
-<p>Net heatflux (OAFlux) doesn’t line up perfectly with seasonal SST signal, but is very close, with heat flux tending to lead SST by 2 – 3 months <span class="citation">(Richaud et al., 2016)</span>. It is therefore likely one of the primary drivers of SST and should therefore be strongly considered when constructing SOMs.</p>
-<p>There is almost no seasonal cycle for slope waters in any of the regions <span class="citation">(Richaud et al., 2016)</span>.</p>
-</div>
-<div id="more-ideas" class="section level3">
-<h3>More ideas</h3>
-<p>It would be interesting to see if the SOM outputs differ in any meaningful ways when only data from the first half of the study time period are used compared against the second half.</p>
-<p>The output of the SOMs could likely be more meaningfully conveyed from the point of view of the regions. What I mean by this is to take the summary of the nodes, convey them into a table, and then use that table to inform a series of information bits that is focused around each region. Some sort of interactive visual may be useful for this. Showing the percentage that each region has in each node would be a good start. This would allow for a more meaningful further explanation for which drivers affect which regions during which seasons and over which years.</p>
-<p>Once this summary is worked out it would then follow that the same analysis be run 1, 2, 3 etc. months in the past and see what the same information format provides w.r.t. a sort of predictive capacity. All of this can then be used to check other data products with a more focused lens in order to maximise the utility of the output.</p>
-</div>
+packet &lt;- readRDS(&quot;data/SOM/packet.Rda&quot;)
+system.time(som &lt;- som_model_PCI(packet)) # 69 seconds
+# som$ANOSIM # p = 0.001
+saveRDS(som, file = &quot;data/SOM/som.Rda&quot;)</code></pre>
+<p>And there we have our SOM results. Up next in the <a href="https://robwschlegel.github.io/MHWNWA/node-summary.html">Node summary vignette</a> we will show the results with a range of visuals.</p>
 </div>
 <div id="references" class="section level2">
 <h2>References</h2>
 <div id="refs">
-<div id="ref-Richaud2016">
-<p>Richaud, B., Kwon, Y.-O., Joyce, T. M., Fratantoni, P. S., and Lentz, S. J. (2016). Surface and bottom temperature and salinity climatology along the continental shelf off the canadian and us east coasts. <em>Continental Shelf Research</em> 124, 165–181.</p>
-</div>
+
 </div>
 </div>
 <div id="session-information" class="section level2">
@@ -1540,7 +1376,7 @@ saveRDS(som_nolab14, file = &quot;data/som_nolab14.Rda&quot;)</code></pre>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.6.1 (2019-07-05)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 16.04.5 LTS
+Running under: Ubuntu 16.04.6 LTS
 
 Matrix products: default
 BLAS:   /usr/lib/openblas-base/libblas.so.3
@@ -1558,33 +1394,35 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] bindrcpp_0.2.2    data.table_1.11.6 yasomi_0.3       
- [4] proxy_0.4-22      e1071_1.7-0       lubridate_1.7.4  
- [7] forcats_0.3.0     stringr_1.3.1     dplyr_0.7.6      
-[10] purrr_0.2.5       readr_1.1.1       tidyr_0.8.1      
-[13] tibble_1.4.2      ggplot2_3.0.0     tidyverse_1.2.1  
-[16] jsonlite_1.6     
+ [1] bindrcpp_0.2.2    tidync_0.2.1      heatwaveR_0.4.0  
+ [4] data.table_1.11.6 yasomi_0.3        proxy_0.4-22     
+ [7] e1071_1.7-0       lubridate_1.7.4   forcats_0.3.0    
+[10] stringr_1.3.1     dplyr_0.7.6       purrr_0.2.5      
+[13] readr_1.1.1       tidyr_0.8.1       tibble_1.4.2     
+[16] ggplot2_3.0.0     tidyverse_1.2.1   jsonlite_1.6     
 
 loaded via a namespace (and not attached):
- [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
- [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
- [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
-[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
-[13] doMC_1.3.5        modelr_0.1.2      readxl_1.1.0     
-[16] foreach_1.4.4     bindr_0.1.1       plyr_1.8.4       
-[19] munsell_0.5.0     gtable_0.2.0      workflowr_1.1.1  
-[22] cellranger_1.1.0  rvest_0.3.2       R.methodsS3_1.7.1
-[25] codetools_0.2-15  evaluate_0.11     knitr_1.20       
-[28] parallel_3.6.1    class_7.3-14      broom_0.5.0      
-[31] Rcpp_0.12.18      backports_1.1.2   scales_1.0.0     
-[34] hms_0.4.2         digest_0.6.16     stringi_1.2.4    
-[37] grid_3.6.1        rprojroot_1.3-2   cli_1.0.0        
-[40] tools_3.6.1       maps_3.3.0        magrittr_1.5     
-[43] lazyeval_0.2.1    crayon_1.3.4      whisker_0.3-2    
-[46] pkgconfig_2.0.2   xml2_1.2.0        iterators_1.0.10 
-[49] assertthat_0.2.0  rmarkdown_1.10    httr_1.3.1       
-[52] rstudioapi_0.7    R6_2.2.2          nlme_3.1-137     
-[55] git2r_0.23.0      compiler_3.6.1   </code></pre>
+ [1] Rcpp_0.12.18      lattice_0.20-35   class_7.3-14     
+ [4] assertthat_0.2.0  rprojroot_1.3-2   digest_0.6.16    
+ [7] foreach_1.4.4     R6_2.2.2          cellranger_1.1.0 
+[10] plyr_1.8.4        backports_1.1.2   evaluate_0.11    
+[13] httr_1.3.1        pillar_1.3.0      rlang_0.2.2      
+[16] lazyeval_0.2.1    readxl_1.1.0      ncmeta_0.0.4     
+[19] rstudioapi_0.7    whisker_0.3-2     R.utils_2.7.0    
+[22] R.oo_1.22.0       rmarkdown_1.10    htmlwidgets_1.3  
+[25] munsell_0.5.0     broom_0.5.0       compiler_3.6.1   
+[28] modelr_0.1.2      pkgconfig_2.0.2   htmltools_0.3.6  
+[31] tidyselect_0.2.4  workflowr_1.1.1   codetools_0.2-15 
+[34] doMC_1.3.5        viridisLite_0.3.0 crayon_1.3.4     
+[37] withr_2.1.2       R.methodsS3_1.7.1 grid_3.6.1       
+[40] nlme_3.1-137      gtable_0.2.0      git2r_0.23.0     
+[43] magrittr_1.5      scales_1.0.0      ncdf4_1.16.1     
+[46] cli_1.0.0         stringi_1.2.4     xml2_1.2.0       
+[49] iterators_1.0.10  tools_3.6.1       glue_1.3.0       
+[52] RNetCDF_1.9-1     hms_0.4.2         parallel_3.6.1   
+[55] yaml_2.2.0        colorspace_1.3-2  rvest_0.3.2      
+[58] plotly_4.9.0      knitr_1.20        bindr_0.1.1      
+[61] haven_1.1.2      </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using

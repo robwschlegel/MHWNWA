@@ -11,7 +11,7 @@
 
 <meta name="author" content="Robert Schlegel" />
 
-<meta name="date" content="2019-07-25" />
+<meta name="date" content="2019-08-22" />
 
 <title>Variable preparation</title>
 
@@ -294,19 +294,19 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="polygon-prep.html">Polygon preparation</a>
+      <a href="polygon-prep.html">Study area and regions</a>
     </li>
     <li>
-      <a href="sst-prep.html">SST preparation</a>
+      <a href="sst-prep.html">MHW detection</a>
     </li>
     <li>
-      <a href="var-prep.html">Variable preparation</a>
+      <a href="var-prep.html">Heat budget data preparation</a>
     </li>
     <li>
       <a href="som.html">SOM analysis</a>
     </li>
     <li>
-      <a href="node-summary.html">Node summary</a>
+      <a href="node-summary.html">Node summaries</a>
     </li>
   </ul>
 </li>
@@ -340,12 +340,12 @@ div.section {
 
 <h1 class="title toc-ignore">Variable preparation</h1>
 <h4 class="author"><em>Robert Schlegel</em></h4>
-<h4 class="date"><em>2019-07-25</em></h4>
+<h4 class="date"><em>2019-08-22</em></h4>
 
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-08-15</p>
+<p><strong>Last updated:</strong> 2019-08-28</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -374,83 +374,91 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/a226aa66a97f579750151882984241de8e0ed0fa" target="_blank">a226aa6</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/454b53b90a81ee54136eed5ef66132af0787d3d3" target="_blank">454b53b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    data/ALL_anom.Rda
-    Ignored:    data/ALL_clim.Rda
-    Ignored:    data/ERA5_lhf.Rda
-    Ignored:    data/ERA5_lwr.Rda
-    Ignored:    data/ERA5_qnet.Rda
-    Ignored:    data/ERA5_qnet_anom.Rda
-    Ignored:    data/ERA5_qnet_clim.Rda
-    Ignored:    data/ERA5_shf.Rda
-    Ignored:    data/ERA5_swr.Rda
-    Ignored:    data/ERA5_t2m.Rda
-    Ignored:    data/ERA5_t2m_anom.Rda
-    Ignored:    data/ERA5_t2m_clim.Rda
-    Ignored:    data/ERA5_u.Rda
-    Ignored:    data/ERA5_u_anom.Rda
-    Ignored:    data/ERA5_u_clim.Rda
-    Ignored:    data/ERA5_v.Rda
-    Ignored:    data/ERA5_v_anom.Rda
-    Ignored:    data/ERA5_v_clim.Rda
-    Ignored:    data/GLORYS_mld.Rda
-    Ignored:    data/GLORYS_mld_anom.Rda
-    Ignored:    data/GLORYS_mld_clim.Rda
-    Ignored:    data/GLORYS_u.Rda
-    Ignored:    data/GLORYS_u_anom.Rda
-    Ignored:    data/GLORYS_u_clim.Rda
-    Ignored:    data/GLORYS_v.Rda
-    Ignored:    data/GLORYS_v_anom.Rda
-    Ignored:    data/GLORYS_v_clim.Rda
-    Ignored:    data/NAPA_clim_U.Rda
-    Ignored:    data/NAPA_clim_V.Rda
-    Ignored:    data/NAPA_clim_W.Rda
-    Ignored:    data/NAPA_clim_emp_ice.Rda
-    Ignored:    data/NAPA_clim_emp_oce.Rda
-    Ignored:    data/NAPA_clim_fmmflx.Rda
-    Ignored:    data/NAPA_clim_mldkz5.Rda
-    Ignored:    data/NAPA_clim_mldr10_1.Rda
-    Ignored:    data/NAPA_clim_qemp_oce.Rda
-    Ignored:    data/NAPA_clim_qla_oce.Rda
-    Ignored:    data/NAPA_clim_qns.Rda
-    Ignored:    data/NAPA_clim_qsb_oce.Rda
-    Ignored:    data/NAPA_clim_qt.Rda
-    Ignored:    data/NAPA_clim_runoffs.Rda
-    Ignored:    data/NAPA_clim_ssh.Rda
-    Ignored:    data/NAPA_clim_sss.Rda
-    Ignored:    data/NAPA_clim_sst.Rda
-    Ignored:    data/NAPA_clim_taum.Rda
-    Ignored:    data/NAPA_clim_vars.Rda
-    Ignored:    data/NAPA_clim_vecs.Rda
-    Ignored:    data/OAFlux.Rda
-    Ignored:    data/OISST_sst.Rda
-    Ignored:    data/OISST_sst_anom.Rda
-    Ignored:    data/OISST_sst_clim.Rda
-    Ignored:    data/node_mean_all_anom.Rda
-    Ignored:    data/packet_all.Rda
-    Ignored:    data/packet_all_anom.Rda
-    Ignored:    data/packet_nolab.Rda
-    Ignored:    data/packet_nolab14.Rda
-    Ignored:    data/packet_nolabgsl.Rda
-    Ignored:    data/packet_nolabmod.Rda
-    Ignored:    data/som_all.Rda
-    Ignored:    data/som_all_anom.Rda
-    Ignored:    data/som_nolab.Rda
-    Ignored:    data/som_nolab14.Rda
-    Ignored:    data/som_nolab_16.Rda
-    Ignored:    data/som_nolab_9.Rda
-    Ignored:    data/som_nolabgsl.Rda
-    Ignored:    data/som_nolabmod.Rda
-    Ignored:    data/synoptic_states.Rda
-    Ignored:    data/synoptic_vec_states.Rda
+    Ignored:    LaTeX/SOM_node_summary.docx
+    Ignored:    LaTeX/SOM_node_summary.pdf
+    Ignored:    data/NAPA/NAPA_clim_U.Rda
+    Ignored:    data/NAPA/NAPA_clim_V.Rda
+    Ignored:    data/NAPA/NAPA_clim_W.Rda
+    Ignored:    data/NAPA/NAPA_clim_emp_ice.Rda
+    Ignored:    data/NAPA/NAPA_clim_emp_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_fmmflx.Rda
+    Ignored:    data/NAPA/NAPA_clim_mldkz5.Rda
+    Ignored:    data/NAPA/NAPA_clim_mldr10_1.Rda
+    Ignored:    data/NAPA/NAPA_clim_qemp_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_qla_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_qns.Rda
+    Ignored:    data/NAPA/NAPA_clim_qsb_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_qt.Rda
+    Ignored:    data/NAPA/NAPA_clim_runoffs.Rda
+    Ignored:    data/NAPA/NAPA_clim_ssh.Rda
+    Ignored:    data/NAPA/NAPA_clim_sss.Rda
+    Ignored:    data/NAPA/NAPA_clim_sst.Rda
+    Ignored:    data/NAPA/NAPA_clim_taum.Rda
+    Ignored:    data/NAPA/NAPA_clim_vars.Rda
+    Ignored:    data/NAPA/NAPA_clim_vecs.Rda
+    Ignored:    data/NAPA/synoptic_vec_states.Rda
+    Ignored:    data/SOM/packet.Rda
+    Ignored:    data/SOM/synoptic_states.Rda
+    Ignored:    data/SOM/synoptic_states_other.Rda
+    Ignored:    data/anom/ALL_anom.Rda
+    Ignored:    data/anom/ALL_other.Rda
+    Ignored:    data/anom/ERA5_mslp_anom.Rda
+    Ignored:    data/anom/ERA5_qnet_anom.Rda
+    Ignored:    data/anom/ERA5_t2m_anom.Rda
+    Ignored:    data/anom/ERA5_u_anom.Rda
+    Ignored:    data/anom/ERA5_v_anom.Rda
+    Ignored:    data/anom/GLORYS_mld_anom.Rda
+    Ignored:    data/anom/GLORYS_u_anom.Rda
+    Ignored:    data/anom/GLORYS_v_anom.Rda
+    Ignored:    data/anom/OISST_sst_anom.Rda
+    Ignored:    data/base/ERA5_lhf.Rda
+    Ignored:    data/base/ERA5_lwr.Rda
+    Ignored:    data/base/ERA5_mslp.Rda
+    Ignored:    data/base/ERA5_qnet.Rda
+    Ignored:    data/base/ERA5_shf.Rda
+    Ignored:    data/base/ERA5_swr.Rda
+    Ignored:    data/base/ERA5_t2m.Rda
+    Ignored:    data/base/ERA5_u.Rda
+    Ignored:    data/base/ERA5_v.Rda
+    Ignored:    data/base/GLORYS_mld.Rda
+    Ignored:    data/base/GLORYS_u.Rda
+    Ignored:    data/base/GLORYS_v.Rda
+    Ignored:    data/base/OAFlux.Rda
+    Ignored:    data/base/OISST_sst.Rda
+    Ignored:    data/clim/ALL_clim.Rda
+    Ignored:    data/clim/ERA5_mslp_clim.Rda
+    Ignored:    data/clim/ERA5_qnet_clim.Rda
+    Ignored:    data/clim/ERA5_t2m_clim.Rda
+    Ignored:    data/clim/ERA5_u_clim.Rda
+    Ignored:    data/clim/ERA5_v_clim.Rda
+    Ignored:    data/clim/GLORYS_mld_clim.Rda
+    Ignored:    data/clim/GLORYS_u_clim.Rda
+    Ignored:    data/clim/GLORYS_v_clim.Rda
+    Ignored:    data/clim/OISST_sst_clim.Rda
+    Ignored:    data/comparison/node_mean_all_anom.Rda
+    Ignored:    data/comparison/packet_all.Rda
+    Ignored:    data/comparison/packet_all_anom.Rda
+    Ignored:    data/comparison/packet_nolab.Rda
+    Ignored:    data/comparison/packet_nolab14.Rda
+    Ignored:    data/comparison/packet_nolabgsl.Rda
+    Ignored:    data/comparison/packet_nolabmod.Rda
+    Ignored:    data/comparison/som_all.Rda
+    Ignored:    data/comparison/som_all_anom.Rda
+    Ignored:    data/comparison/som_nolab.Rda
+    Ignored:    data/comparison/som_nolab14.Rda
+    Ignored:    data/comparison/som_nolab_16.Rda
+    Ignored:    data/comparison/som_nolab_9.Rda
+    Ignored:    data/comparison/som_nolabgsl.Rda
+    Ignored:    data/comparison/som_nolabmod.Rda
 
-Untracked files:
-    Untracked:  LaTeX/
+Unstaged changes:
+    Modified:   code/functions.R
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -481,6 +489,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/59cf7715da1a80c56c212f001f0449dee6c1b875/analysis/var-prep.Rmd" target="_blank">59cf771</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-22
+</td>
+<td style="text-align:left;">
+Polished up the variable prep vignette
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/826c73d93c73c8f65cc42b69942163def63cd437/docs/var-prep.html" target="_blank">826c73d</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-15
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -1066,20 +1108,19 @@ Finished initial creation of SST prep vignette.
 <hr />
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>This vignette will walk through the steps needed to create mean ‘whatever’ states during all of the MHWs detected in the previous <a href="https://robwschlegel.github.io/MHWNWA/sst-prep.html">SST preparation</a> vignette. These ‘whatever’ states are any of the abiotic variables that have a presence in the ocean heat budget equation and that have been deemed relevant w.r.t. forcing of extreme ocean surface temperatures.</p>
-<p>After first going through this entire process with the NAPA model output it become clear that this analysis should be run first with obs/reanalysis data, and the NAPA model results may be compared against this as desired. To this end we will now use the following variables as found in the following data products:</p>
+<p>This vignette walks through the steps needed to create mean synoptic states during all of the <a href="https://robwschlegel.github.io/MHWNWA/sst-prep.html">MHWs detected</a> in the previous vignette. These synoptic states consist of the variables in the ocean heat budget equation.</p>
+<p>After first going through this entire process with the NAPA model output it became clear that this analysis should actually be run with obs/reanalysis data, and the NAPA model results may be compared against this as desired. To this end we will use the following variables as found in the following data products:</p>
 <ul>
-<li>NOAA OISST: SST</li>
-<li>GLORYS: Mixed layer depth, U &amp; V current vectors (~0.5m)</li>
-<li>ERA 5: U &amp; V wind vectors (10m), air temperature (2m)
+<li>NOAA: (optimally interpolated) SST</li>
+<li>GLORYS: Mixed layer depth (metres), U &amp; V current vectors (~0.5m)</li>
+<li>ERA 5: U &amp; V wind vectors (10m), air temperature (2m), net heat flux:
 <ul>
-<li>Net heat flux term: Latent &amp; sensible heat flux, shortwave and longwave radiation</li>
+<li>latent &amp; sensible heat flux, shortwave &amp; longwave radiation</li>
 </ul></li>
 </ul>
-<p>All of these variables have a daily resolution from at least 1993 – 2018. The spatial resolution varies from a standard 1/4 degree data to everything except for the hi-res (1/12 degree) GLORYS data from 2016 – 2018. The OISST, ERA 5, and GLORYS (1993 – 2015) data are natively at 1/4 degree, though the coordinates are slightly off between OISST and ERA 5 + GLORYS. The ERA5 data are also hourly, so will need to be binned into mean daily values. In order to trade between efficiency and accuracy we will be converting everything to the 1/4 degree grid of the GLORYS/ERA 5 data.</p>
-<p>In order to compare the OISST dataset to the other 1/4 degree products the lat values for OISST will have 0.125 added to them, and the longitude values will have 0.125 subtracted from them. This is because the OISST coordinates give the centre value of each pixel, whereas the other coordinate system gives the top left corner (north-west corner).</p>
+<p>All of these products and variables have a shared daily resolution period from 1993 – 2018. The spatial resolutions for NOAA and ERA 5 are 1/4 degrees and the GLORYS data are 1/12 degree. The coordinates are slightly off between OISST and ERA 5 &amp; GLORYS, with the coordinate system for NOAA being centred per pixel while the other two products have their coordinate system based on the northwest corner. In order to compare the OISST dataset to the other 1/4 degree products the lat values for OISST will have 0.125 added to them, and the longitude values will have 0.125 subtracted from them. The ERA5 data are hourly, so will need to be binned into mean daily values. In order to trade between efficiency and accuracy we will be converting everything to the 1/4 degree grid of the GLORYS/ERA 5 data at a daily temporal resolution.</p>
 <pre class="r"><code># Packages used in this vignette
-library(jsonlite, lib.loc = &quot;../R-packages/&quot;)
+library(jsonlite, lib.loc = &quot;../R-packages/&quot;) # Necessary for some version mismatches...
 library(tidyverse) # Base suite of functions
 library(tidync, lib.loc = &quot;../R-packages/&quot;)
 library(lubridate) # For convenient date manipulation
@@ -1097,12 +1138,6 @@ NWA_corners &lt;- readRDS(&quot;data/NWA_corners.Rda&quot;)
 # The region pixel lon/lat values
 NWA_info &lt;- readRDS(&quot;data/NWA_info.Rda&quot;)
 
-# Load the OISST grid
-OISST_grid &lt;- readRDS(&quot;data/OISST_grid.Rda&quot;)
-
-# Load the OISST grid trimmed to the region coords
-OISST_grid_region &lt;- readRDS(&quot;data/OISST_grid_region.Rda&quot;)
-
 # Load MHW results
 OISST_region_MHW &lt;- readRDS(&quot;data/OISST_region_MHW.Rda&quot;)
 
@@ -1112,123 +1147,37 @@ MHW_event &lt;- OISST_region_MHW %&gt;%
   unnest(events) %&gt;%
   filter(row_number() %% 2 == 0) %&gt;%
   unnest(events)</code></pre>
-<p>For the upcoming variable prep we are also going to want the OISST coordinates that are within our chosen study area as seen with <code>NWA_corners</code>. <!-- We will also create a subsetted bathy coord file, too, so as to have an effective land mask. This will help us to reduce a lot of computational cost as we go along because many of the pixels over land are given 0 values, rather than missing values, which is a strange choice... --></p>
-<pre class="r"><code># The OISST coordinates for the study area only
-OISST_grid_study &lt;- OISST_grid %&gt;% 
-  filter(lon &gt;= NWA_corners[1], lon &lt;= NWA_corners[2],
-           lat &gt;= NWA_corners[3], lat &lt;= NWA_corners[4])
-# saveRDS(OISST_grid_study, &quot;data/OISST_grid_study.Rda&quot;)</code></pre>
 </div>
 <div id="base-datasets" class="section level2">
 <h2>Base datasets</h2>
-<p>Rather than go about performing all of the calculations below on piecemeal bits of data, it should be possible to load the entire datasets for each variable into memory at once. So in this section we will create functions that load each of the variables for the different data products. We will then create and save these complete datasets for ease of use later on.</p>
+<p>Rather than go about performing all of the calculations below on piecemeal bits of data, we will load each variable into memory at once. The following code chunk shows how we create functions that load each of the variables from the different data products. We will then create and save this complete dataset for ease of use later on.</p>
 <pre class="r"><code># Load the functions used below
-  # I&#39;ve chosen to house a lot of code here to keep this vignette tidier
+  # I&#39;ve chosen to house the functions  in the following script
+  # in order to keep this vignette tidier
 source(&quot;code/functions.R&quot;)
-
-## SST
-# The files with data in the study area
-OISST_sst_files &lt;- data.frame(files = dir(&quot;../../data/OISST&quot;, full.names = T),
-                              lon = c(seq(0.125, 179.875, by = 0.25), seq(-179.875, -0.125, by = 0.25))) %&gt;% 
-  filter(lon &gt;= NWA_corners[1]+0.125, lon &lt;= NWA_corners[2]+0.125) %&gt;% 
-  mutate(files = as.character(files))
-OISST_sst_files &lt;- as.vector(OISST_sst_files$files)
-
-# Aggregate data
-system.time(
-OISST_sst &lt;- load_all_OISST(OISST_sst_files) %&gt;% 
-  dplyr::rename(sst = temp)
-) # 41 seconds
-
-# save
-saveRDS(OISST_sst, &quot;data/OISST_sst.Rda&quot;)
-
-# The code used to create the rest of the base files may be seen in code/workflow.R</code></pre>
+# See the code/workflow.R script for the exact code used for this step</code></pre>
 <div id="net-heat-flux" class="section level3">
 <h3>Net heat flux</h3>
-<p>This is the one variable I was not able to source. The OAFlux product does have a net heat flux layer, but it ends in 2009. This is not long enough so we are going to create our own net heat flux layer by adding together the latent &amp; sensible heat flux layers with the short &amp; long wave radiation layers all from the ERA 5 product. When doing so we must ensure that the directions of the terms are matched correctly (i.e. that they all represent positive downward flux).</p>
+<p>This is the one variable I was not able to source. The OAFlux product does have a net heat flux layer, but it ends in 2009. This is not long enough so we are going to create our own net heat flux layer by adding together the latent &amp; sensible heat flux layers with the shortwave &amp; longwave radiation layers from the ERA 5 product. When doing so we must ensure that the directions of the terms are matched correctly (i.e. that they all represent positive downward flux). Reading through the available meta-data I was not able to verify this, but it appears as though these area all positive downward flux terms.</p>
 <pre class="r"><code># The code used to perform these steps may be seen in code/workflow.R</code></pre>
 </div>
 </div>
 <div id="climatologies" class="section level2">
 <h2>Climatologies</h2>
-<p>In the data packets we need to create for the SOMs (see below) we will need to include anomaly values. In order to do this we need to first create daily climatology values for each variable for each pixel. In order to create a climatology of values we will need to load all of the files and then pixel-wise go about getting the seasonal (daily) climatologies. This will be done with the same function (<code>ts2clm()</code>) that is used for the MHW climatologies. One-by-one we will load an entire dataset (created above) into memory so that we can perform the necessary calculations. Hold on to your hats, this is going to be RAM heavy…</p>
-<pre class="r"><code># Load functions required below
-source(&quot;code/functions.R&quot;)
-
-## SST
-# Load
-OISST_sst &lt;- readRDS(&quot;data/OISST_sst.Rda&quot;)
-# Calculate clims
-system.time(
-OISST_sst_clim &lt;- ts2clm_one(OISST_sst)
-) # 1139 seconds
-
-# Save
-saveRDS(OISST_sst_clim, &quot;data/OISST_sst_clim.Rda&quot;)
-
-# The code used to create the other climatologies may be found in code/workflow.R</code></pre>
+<p>In the data packets we need to create for the <a href="https://robwschlegel.github.io/MHWNWA/som.html">SOM</a> we will need to include anomaly values. In order to do this we need to first create daily climatologies for each variable for each pixel. To do so we will need to load all of the files and then pixel-wise go about getting the seasonal (mean daily) climatologies. This will be done with the same function (<code>ts2clm()</code>) that is used for the MHW climatologies. One-by-one we will load an entire dataset (created above) into memory so that we can perform the necessary calculations. Hold on to your hats, this is going to be RAM heavy…</p>
+<pre class="r"><code># The code used to create the climatologies may be found in code/workflow.R</code></pre>
 </div>
 <div id="anomalies" class="section level2">
 <h2>Anomalies</h2>
-<p>The last step before we can begin creating our data packets is to now subtract our climatology data from our base data for each of the variables used in this study. We will then save this large anomaly cubes to allow for easy synoptic state creation.</p>
-<pre class="r"><code># Calculate SST anomalies
-system.time(
-OISST_sst_anom &lt;- anom_one(OISST_sst, OISST_sst_clim, 2)
-) # 83 seconds
-
-# Save
-saveRDS(OISST_sst_anom, &quot;data/OISST_sst_anom.Rda&quot;)
-
-# The code used to create the rest of the anomalies may be found in code/workflow.R</code></pre>
+<p>The last step before we can begin creating our data packets is to subtract our climatology data from our base data for each of the variables used in this study. We then save these large anomaly cubes to allow for easier synoptic state creation later on.</p>
+<pre class="r"><code># The code used to create the rest of the anomalies may be found in code/workflow.R</code></pre>
 </div>
 <div id="synoptic-states" class="section level2">
 <h2>Synoptic states</h2>
 <p>The next step is to create mean synoptic states for each variable during each of the MHWs detected in each region. To do this we simply load the combined anomaly dataset of all of our chosen variables and slice off only the bits we need during each of the observed MHWs. These slices are then meaned, pixel-wise, to create the synoptic states during each event.</p>
-<p>One thing to note here is that during this process, before the slices are created, each pixel for the mixed layer depth anomaly is divided by the max value observed at that pixel, scaling these values to 1. This is done as the range of MLD can vary dramatically over the Labrador sea and we want to avoid this from influencing the results.</p>
-<pre class="r"><code># Load anomalies and scale MLD
-system.time(
-  if(!exists(&quot;ALL_anom&quot;)) ALL_anom &lt;- readRDS(&quot;data/ALL_anom.Rda&quot;) %&gt;%
-    group_by(lon, lat) %&gt;%
-    mutate(mld_anom = mld_anom/max(abs(mld_anom), na.rm = T)) %&gt;%
-    ungroup()
-) # 99 seconds
-
-# Function for creating packets
-data_packet_func &lt;- function(event_sub){
-
-  # Filter base anomally range
-  packet_base &lt;- ALL_anom %&gt;%
-    filter(t &gt;= event_sub$date_start, t &lt;= event_sub$date_end)
-
-  # Create mean synoptic values
-  packet_mean &lt;- packet_base %&gt;%
-    select(-t) %&gt;%
-    group_by(lon, lat) %&gt;%
-    summarise_all(mean, na.rm = T) %&gt;%
-    arrange(lon, lat) %&gt;%
-    ungroup()
-  packet_mean[is.na(packet_mean)] &lt;- NA
-  packet_mean &lt;- nest(packet_mean, .key = &quot;synoptic&quot;)
-
-  # Combine results with MHW dataframe
-  packet_res &lt;- cbind(event_sub, packet_mean)
-
-  # Exit
-  return(packet_res)
-}
-
-# Set number of cores
-doMC::registerDoMC(cores = 25)
-
-# Create one big packet
-system.time(
-synoptic_states &lt;- plyr::ddply(OISST_MHW_event, c(&quot;region&quot;, &quot;event_no&quot;), data_packet_func, .parallel = T)
-) # 3 seconds for first event, 50 for all events
-
-# Save
-saveRDS(synoptic_states, &quot;data/synoptic_states.Rda&quot;)</code></pre>
-<p>With all of our mean synoptic states created it is now time to feed them to the <a href="https://robwschlegel.github.io/MHWNWA/som.html">Self-organising map (SOM) analysis</a>.</p>
+<!-- One thing to note here is that during this process, before the slices are created, each pixel for the mixed layer depth anomaly is divided by the max value observed at that pixel, scaling these values to 1. This is done as the range of MLD can vary dramatically over the Labrador sea and we want to avoid this from influencing the results. -->
+<pre class="r"><code># This code may be found in code/workflow.R</code></pre>
+<p>With all of our mean synoptic states created it is now time to feed them to the <a href="https://robwschlegel.github.io/MHWNWA/som.html">Self-organising map (SOM)</a>.</p>
 <div id="refs">
 
 </div>
@@ -1238,7 +1187,7 @@ saveRDS(synoptic_states, &quot;data/synoptic_states.Rda&quot;)</code></pre>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.6.1 (2019-07-05)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 16.04.5 LTS
+Running under: Ubuntu 16.04.6 LTS
 
 Matrix products: default
 BLAS:   /usr/lib/openblas-base/libblas.so.3

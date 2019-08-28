@@ -11,9 +11,9 @@
 
 <meta name="author" content="Robert Schlegel" />
 
-<meta name="date" content="2019-07-24" />
+<meta name="date" content="2019-08-22" />
 
-<title>SST preparation</title>
+<title>MHW detection</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -294,19 +294,19 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="polygon-prep.html">Polygon preparation</a>
+      <a href="polygon-prep.html">Study area and regions</a>
     </li>
     <li>
-      <a href="sst-prep.html">SST preparation</a>
+      <a href="sst-prep.html">MHW detection</a>
     </li>
     <li>
-      <a href="var-prep.html">Variable preparation</a>
+      <a href="var-prep.html">Heat budget data preparation</a>
     </li>
     <li>
       <a href="som.html">SOM analysis</a>
     </li>
     <li>
-      <a href="node-summary.html">Node summary</a>
+      <a href="node-summary.html">Node summaries</a>
     </li>
   </ul>
 </li>
@@ -338,14 +338,14 @@ div.section {
 
 
 
-<h1 class="title toc-ignore">SST preparation</h1>
+<h1 class="title toc-ignore">MHW detection</h1>
 <h4 class="author"><em>Robert Schlegel</em></h4>
-<h4 class="date"><em>2019-07-24</em></h4>
+<h4 class="date"><em>2019-08-22</em></h4>
 
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-08-15</p>
+<p><strong>Last updated:</strong> 2019-08-28</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -374,83 +374,91 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/a226aa66a97f579750151882984241de8e0ed0fa" target="_blank">a226aa6</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/454b53b90a81ee54136eed5ef66132af0787d3d3" target="_blank">454b53b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    data/ALL_anom.Rda
-    Ignored:    data/ALL_clim.Rda
-    Ignored:    data/ERA5_lhf.Rda
-    Ignored:    data/ERA5_lwr.Rda
-    Ignored:    data/ERA5_qnet.Rda
-    Ignored:    data/ERA5_qnet_anom.Rda
-    Ignored:    data/ERA5_qnet_clim.Rda
-    Ignored:    data/ERA5_shf.Rda
-    Ignored:    data/ERA5_swr.Rda
-    Ignored:    data/ERA5_t2m.Rda
-    Ignored:    data/ERA5_t2m_anom.Rda
-    Ignored:    data/ERA5_t2m_clim.Rda
-    Ignored:    data/ERA5_u.Rda
-    Ignored:    data/ERA5_u_anom.Rda
-    Ignored:    data/ERA5_u_clim.Rda
-    Ignored:    data/ERA5_v.Rda
-    Ignored:    data/ERA5_v_anom.Rda
-    Ignored:    data/ERA5_v_clim.Rda
-    Ignored:    data/GLORYS_mld.Rda
-    Ignored:    data/GLORYS_mld_anom.Rda
-    Ignored:    data/GLORYS_mld_clim.Rda
-    Ignored:    data/GLORYS_u.Rda
-    Ignored:    data/GLORYS_u_anom.Rda
-    Ignored:    data/GLORYS_u_clim.Rda
-    Ignored:    data/GLORYS_v.Rda
-    Ignored:    data/GLORYS_v_anom.Rda
-    Ignored:    data/GLORYS_v_clim.Rda
-    Ignored:    data/NAPA_clim_U.Rda
-    Ignored:    data/NAPA_clim_V.Rda
-    Ignored:    data/NAPA_clim_W.Rda
-    Ignored:    data/NAPA_clim_emp_ice.Rda
-    Ignored:    data/NAPA_clim_emp_oce.Rda
-    Ignored:    data/NAPA_clim_fmmflx.Rda
-    Ignored:    data/NAPA_clim_mldkz5.Rda
-    Ignored:    data/NAPA_clim_mldr10_1.Rda
-    Ignored:    data/NAPA_clim_qemp_oce.Rda
-    Ignored:    data/NAPA_clim_qla_oce.Rda
-    Ignored:    data/NAPA_clim_qns.Rda
-    Ignored:    data/NAPA_clim_qsb_oce.Rda
-    Ignored:    data/NAPA_clim_qt.Rda
-    Ignored:    data/NAPA_clim_runoffs.Rda
-    Ignored:    data/NAPA_clim_ssh.Rda
-    Ignored:    data/NAPA_clim_sss.Rda
-    Ignored:    data/NAPA_clim_sst.Rda
-    Ignored:    data/NAPA_clim_taum.Rda
-    Ignored:    data/NAPA_clim_vars.Rda
-    Ignored:    data/NAPA_clim_vecs.Rda
-    Ignored:    data/OAFlux.Rda
-    Ignored:    data/OISST_sst.Rda
-    Ignored:    data/OISST_sst_anom.Rda
-    Ignored:    data/OISST_sst_clim.Rda
-    Ignored:    data/node_mean_all_anom.Rda
-    Ignored:    data/packet_all.Rda
-    Ignored:    data/packet_all_anom.Rda
-    Ignored:    data/packet_nolab.Rda
-    Ignored:    data/packet_nolab14.Rda
-    Ignored:    data/packet_nolabgsl.Rda
-    Ignored:    data/packet_nolabmod.Rda
-    Ignored:    data/som_all.Rda
-    Ignored:    data/som_all_anom.Rda
-    Ignored:    data/som_nolab.Rda
-    Ignored:    data/som_nolab14.Rda
-    Ignored:    data/som_nolab_16.Rda
-    Ignored:    data/som_nolab_9.Rda
-    Ignored:    data/som_nolabgsl.Rda
-    Ignored:    data/som_nolabmod.Rda
-    Ignored:    data/synoptic_states.Rda
-    Ignored:    data/synoptic_vec_states.Rda
+    Ignored:    LaTeX/SOM_node_summary.docx
+    Ignored:    LaTeX/SOM_node_summary.pdf
+    Ignored:    data/NAPA/NAPA_clim_U.Rda
+    Ignored:    data/NAPA/NAPA_clim_V.Rda
+    Ignored:    data/NAPA/NAPA_clim_W.Rda
+    Ignored:    data/NAPA/NAPA_clim_emp_ice.Rda
+    Ignored:    data/NAPA/NAPA_clim_emp_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_fmmflx.Rda
+    Ignored:    data/NAPA/NAPA_clim_mldkz5.Rda
+    Ignored:    data/NAPA/NAPA_clim_mldr10_1.Rda
+    Ignored:    data/NAPA/NAPA_clim_qemp_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_qla_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_qns.Rda
+    Ignored:    data/NAPA/NAPA_clim_qsb_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_qt.Rda
+    Ignored:    data/NAPA/NAPA_clim_runoffs.Rda
+    Ignored:    data/NAPA/NAPA_clim_ssh.Rda
+    Ignored:    data/NAPA/NAPA_clim_sss.Rda
+    Ignored:    data/NAPA/NAPA_clim_sst.Rda
+    Ignored:    data/NAPA/NAPA_clim_taum.Rda
+    Ignored:    data/NAPA/NAPA_clim_vars.Rda
+    Ignored:    data/NAPA/NAPA_clim_vecs.Rda
+    Ignored:    data/NAPA/synoptic_vec_states.Rda
+    Ignored:    data/SOM/packet.Rda
+    Ignored:    data/SOM/synoptic_states.Rda
+    Ignored:    data/SOM/synoptic_states_other.Rda
+    Ignored:    data/anom/ALL_anom.Rda
+    Ignored:    data/anom/ALL_other.Rda
+    Ignored:    data/anom/ERA5_mslp_anom.Rda
+    Ignored:    data/anom/ERA5_qnet_anom.Rda
+    Ignored:    data/anom/ERA5_t2m_anom.Rda
+    Ignored:    data/anom/ERA5_u_anom.Rda
+    Ignored:    data/anom/ERA5_v_anom.Rda
+    Ignored:    data/anom/GLORYS_mld_anom.Rda
+    Ignored:    data/anom/GLORYS_u_anom.Rda
+    Ignored:    data/anom/GLORYS_v_anom.Rda
+    Ignored:    data/anom/OISST_sst_anom.Rda
+    Ignored:    data/base/ERA5_lhf.Rda
+    Ignored:    data/base/ERA5_lwr.Rda
+    Ignored:    data/base/ERA5_mslp.Rda
+    Ignored:    data/base/ERA5_qnet.Rda
+    Ignored:    data/base/ERA5_shf.Rda
+    Ignored:    data/base/ERA5_swr.Rda
+    Ignored:    data/base/ERA5_t2m.Rda
+    Ignored:    data/base/ERA5_u.Rda
+    Ignored:    data/base/ERA5_v.Rda
+    Ignored:    data/base/GLORYS_mld.Rda
+    Ignored:    data/base/GLORYS_u.Rda
+    Ignored:    data/base/GLORYS_v.Rda
+    Ignored:    data/base/OAFlux.Rda
+    Ignored:    data/base/OISST_sst.Rda
+    Ignored:    data/clim/ALL_clim.Rda
+    Ignored:    data/clim/ERA5_mslp_clim.Rda
+    Ignored:    data/clim/ERA5_qnet_clim.Rda
+    Ignored:    data/clim/ERA5_t2m_clim.Rda
+    Ignored:    data/clim/ERA5_u_clim.Rda
+    Ignored:    data/clim/ERA5_v_clim.Rda
+    Ignored:    data/clim/GLORYS_mld_clim.Rda
+    Ignored:    data/clim/GLORYS_u_clim.Rda
+    Ignored:    data/clim/GLORYS_v_clim.Rda
+    Ignored:    data/clim/OISST_sst_clim.Rda
+    Ignored:    data/comparison/node_mean_all_anom.Rda
+    Ignored:    data/comparison/packet_all.Rda
+    Ignored:    data/comparison/packet_all_anom.Rda
+    Ignored:    data/comparison/packet_nolab.Rda
+    Ignored:    data/comparison/packet_nolab14.Rda
+    Ignored:    data/comparison/packet_nolabgsl.Rda
+    Ignored:    data/comparison/packet_nolabmod.Rda
+    Ignored:    data/comparison/som_all.Rda
+    Ignored:    data/comparison/som_all_anom.Rda
+    Ignored:    data/comparison/som_nolab.Rda
+    Ignored:    data/comparison/som_nolab14.Rda
+    Ignored:    data/comparison/som_nolab_16.Rda
+    Ignored:    data/comparison/som_nolab_9.Rda
+    Ignored:    data/comparison/som_nolabgsl.Rda
+    Ignored:    data/comparison/som_nolabmod.Rda
 
-Untracked files:
-    Untracked:  LaTeX/
+Unstaged changes:
+    Modified:   code/functions.R
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -481,6 +489,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/59cf7715da1a80c56c212f001f0449dee6c1b875/analysis/sst-prep.Rmd" target="_blank">59cf771</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-22
+</td>
+<td style="text-align:left;">
+Polished up the variable prep vignette
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/e9767c75a4c42561bb74ffe25ac487d99c37f6de/analysis/sst-prep.Rmd" target="_blank">e9767c7</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-22
+</td>
+<td style="text-align:left;">
+Working through the pipeline to adapt to the decided methodoloy
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/826c73d93c73c8f65cc42b69942163def63cd437/docs/sst-prep.html" target="_blank">826c73d</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-15
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -1015,14 +1074,13 @@ Updating work done on the polygon prep vignette.
 <hr />
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>Building on the work performed in the <a href="https://robwschlegel.github.io/MHWNWA/polygon-prep.html">Polygon preparation</a> vignette, we will now create grouped SST time series for the regions in our study area. We will do this by finding which NOAA OISST pixels fall within each of the region polygons. Also note that throughout this vignette (and this entire project) we will use the climatology period of 1993 – 2018 as this is the shortest time limiting us by the data products used for the various abiotic variables needed for the SOM.</p>
+<p>Building on the work performed in the <a href="https://robwschlegel.github.io/MHWNWA/polygon-prep.html">study area</a> vignette, we will now create grouped SST time series for the six regions in our study area. We will do this by finding which NOAA OISST pixels fall within each of the region polygons. Also note that throughout this vignette (and this entire project) we will use the climatology period of 1993 – 2018 as this is the shortest time limiting us by the data products used for the various <a href="https://robwschlegel.github.io/MHWNWA/var-prep.html">heat budget variables</a> needed for the <a href="https://robwschlegel.github.io/MHWNWA/som.html">SOM</a>.</p>
 <pre class="r"><code># Packages used in this vignette
 library(jsonlite, lib.loc = &quot;../R-packages/&quot;)
 library(tidyverse) # Base suite of functions
 library(heatwaveR, lib.loc = &quot;../R-packages/&quot;) # For detecting MHWs
 # cat(paste0(&quot;heatwaveR version = &quot;, packageDescription(&quot;heatwaveR&quot;)$Version))
 library(FNN) # For fastest nearest neighbour searches
-# library(ncdf4) # For opening and working with NetCDF files
 library(tidync, lib.loc = &quot;../R-packages/&quot;) # For a more tidy approach to managing NetCDF data
 library(SDMTools) # For finding points within polygons
 library(lubridate) # For convenient date manipulation
@@ -1038,25 +1096,19 @@ options(scipen = 999)
 NWA_corners &lt;- readRDS(&quot;data/NWA_corners.Rda&quot;)
 
 # Individual regions
-NWA_coords &lt;- readRDS(&quot;data/NWA_coords_cabot.Rda&quot;)
+NWA_coords &lt;- readRDS(&quot;data/NWA_coords.Rda&quot;)
 
 # The base map
-map_base &lt;- ggplot2::fortify(maps::map(fill = TRUE, col = &quot;grey80&quot;, plot = FALSE)) %&gt;%
-  dplyr::rename(lon = long) %&gt;%
-  mutate(group = ifelse(lon &gt; 180, group+9999, group),
-         lon = ifelse(lon &gt; 180, lon-360, lon)) %&gt;% 
-  select(-region, -subregion)</code></pre>
+map_base &lt;- readRDS(&quot;data/map_base.Rda&quot;)</code></pre>
 </div>
 <div id="pixel-prep" class="section level2">
 <h2>Pixel prep</h2>
 <p>Up first we take the lon/lat grid from the 1/4 degree daily NOAA OISST product and find which points fall within each region. We will save this information to allow us to then easily pull out the desired pixels from the cube of OISST data.</p>
-<pre class="r"><code># Load NAPA bathymetry
-# NAPA_bathy &lt;- readRDS(&quot;data/NAPA_bathy.Rda&quot;)# %&gt;% 
-  # mutate(index = paste0(lon, lat))
-OISST_grid &lt;- data.frame(expand.grid(c(seq(0.125, 179.875, by = 0.25), seq(-179.875, -0.125, by = 0.25)),
-                                        seq(-89.875, 89.875, by = 0.25)))
+<pre class="r"><code># Create the OISST lon/lat grid
+OISST_grid &lt;- data.frame(expand.grid(c(seq(0.125, 179.875, by = 0.25), 
+                                       seq(-179.875, -0.125, by = 0.25)),
+                                     seq(-89.875, 89.875, by = 0.25)))
 colnames(OISST_grid) &lt;- c(&quot;lon&quot;, &quot;lat&quot;)
-# saveRDS(OISST_grid, &quot;data/OISST_grid.Rda&quot;)
 
 # Trim down OISST grid for faster processing
 OISST_grid_region &lt;- OISST_grid %&gt;% 
@@ -1064,7 +1116,6 @@ OISST_grid_region &lt;- OISST_grid %&gt;%
          lon &lt;= max(NWA_coords$lon),
          lat &gt;= min(NWA_coords$lat),
          lat &lt;= max(NWA_coords$lat))
-# saveRDS(OISST_grid_region, &quot;data/OISST_grid_region.Rda&quot;)
 
 # Function for finding and cleaning up points within a given region polygon
 pnts_in_region &lt;- function(region_in){
@@ -1174,12 +1225,12 @@ OISST_files &lt;- dir(&quot;../../data/OISST&quot;, full.names = T)
 
 # The files with data in the study area
 OISST_files_sub &lt;- data.frame(files = OISST_files,
-                              lon = c(seq(0.125, 179.875, by = 0.25), seq(-179.875, -0.125, by = 0.25))) %&gt;% 
+                              lon = c(seq(0.125, 179.875, by = 0.25), 
+                                      seq(-179.875, -0.125, by = 0.25))) %&gt;% 
   filter(lon &gt;= min(NWA_info$lon), lon &lt;= max(NWA_info$lon)) %&gt;% 
   mutate(files = as.character(files))
 
 # Function for loading the individual OISST NetCDF files and subsetting SST accordingly
-# file_name &lt;- OISST_files_sub$files[1]
 load_OISST_sub &lt;- function(file_name, coords = NWA_info){
   res &lt;- tidync(file_name) %&gt;%
     hyper_filter(lat = dplyr::between(lat, min(coords$lat), max(coords$lat)),
@@ -1191,16 +1242,17 @@ load_OISST_sub &lt;- function(file_name, coords = NWA_info){
     select(lon, lat, t, temp) %&gt;% 
     left_join(coords, by = c(&quot;lon&quot;, &quot;lat&quot;)) %&gt;% 
     filter(!is.na(region))
-  # return(res)
+  return(res)
 }
 
-# Clomp&#39;em 
+# Put it all together
 system.time(
   OISST_region &lt;- plyr::ldply(OISST_files_sub$files,
-                           .fun = load_OISST_sub,
-                           .parallel = TRUE) %&gt;% 
+                              .fun = load_OISST_sub,
+                              .parallel = TRUE) %&gt;% 
     group_by(region, t) %&gt;% 
-    summarise(temp = mean(temp, na.rm = T))
+    summarise(temp = mean(temp, na.rm = T)) %&gt;% 
+    ungroup()
 ) # 18 seconds
 
 # Save
@@ -1212,16 +1264,16 @@ system.time(
 <pre class="r"><code># Load the time series data
 OISST_region &lt;- readRDS(&quot;data/OISST_region.Rda&quot;)
 
-# Calculate base results
+# Calculate MHWs
 system.time(
-OISST_region_MHW &lt;- OISST_region %&gt;%
-  group_by(region) %&gt;%
-  nest() %&gt;%
-  mutate(clims = map(data, ts2clm,
-                     climatologyPeriod = c(&quot;1993-01-01&quot;, &quot;2018-12-31&quot;)),
-         events = map(clims, detect_event),
-         cats = map(events, category, S = FALSE)) %&gt;%
-  select(-data, -clims)
+  OISST_region_MHW &lt;- OISST_region %&gt;%
+    group_by(region) %&gt;%
+    nest() %&gt;%
+    mutate(clims = map(data, ts2clm,
+                       climatologyPeriod = c(&quot;1993-01-01&quot;, &quot;2018-12-31&quot;)),
+           events = map(clims, detect_event),
+           cats = map(events, category, S = FALSE)) %&gt;%
+    select(-data, -clims)
 ) # 2 seconds
 # saveRDS(OISST_region_MHW, &quot;data/OISST_region_MHW.Rda&quot;)</code></pre>
 <p>With the MHWs detected, let’s visualise the results to ensure everything worked as expected.</p>
@@ -1235,15 +1287,15 @@ OISST_MHW_event &lt;- OISST_region_MHW %&gt;%
   filter(row_number() %% 2 == 0) %&gt;%
   unnest(events)
 
-event_lolli_plot &lt;- ggplot(data = OISST_MHW_event , aes(x = date_peak, y = intensity_max)) + 
+MHW_lolli_plot &lt;- ggplot(data = OISST_MHW_event , aes(x = date_peak, y = intensity_max)) + 
         geom_lolli(colour = &quot;salmon&quot;, colour_n = &quot;red&quot;, n = 3) + 
   labs(x = &quot;Peak Date&quot;, y = &quot;Max. Intensity (°C)&quot;) +
   # scale_y_continuous(expand = c(0, 0))+
   facet_wrap(~region)
-# ggsave(plot = event_lolli_plot, filename = &quot;output/event_lolli_plot.pdf&quot;, height = 7, width = 13)
+# ggsave(plot = MHW_lolli_plot, filename = &quot;output/MHW_lolli_plot.pdf&quot;, height = 7, width = 13)
 
 # Visualise
-event_lolli_plot</code></pre>
+MHW_lolli_plot</code></pre>
 <p><img src="figure/sst-prep.Rmd/MHW-vis-1.png" width="768" style="display: block; margin: auto;" /></p>
 <details>
 <summary><em>Expand here to see past versions of MHW-vis-1.png:</em></summary>
@@ -1309,7 +1361,8 @@ robwschlegel
 </tbody>
 </table>
 </details>
-<p>Everything appears to check out. Up next in the <a href="https://robwschlegel.github.io/MHWNWA/var-prep.html">Variable preparation</a> vignette we will go through the steps necessary to build the data that will be fed into our self-organising maps as seen in the <a href="https://robwschlegel.github.io/MHWNWA/som.html">Self-organising map (SOM) analysis</a> vignette.</p>
+<p>The lolliplot above shows us that the occurrence of MHWs differs visually between the regions, which is good. A striking early result from this figure is that the distribution of MHWs in every region is wildly left skewed. This means that most of the MHWs are happening later on in the time series. In fact, there are <em>no</em> MHWs detected in the first year of the time series (1993), and only two MHWs detected in the second year (1994). We don’t start to see regular annual occurrence of MHWs until ~1999. This is a classic climate change signal. But it is important to note again that we are using a climatology period of 1993 – 2018 due to other data limitations. This will have the effect of raising the mean climate signal up more than the established WMO period of 1981 – 2010. The practical effect of this is that we will have an even more pronounced skewness of extreme events towards the end of the time series and the overall intensities of events will be slightly lower.</p>
+<p>Up next in the <a href="https://robwschlegel.github.io/MHWNWA/var-prep.html">heat budhet variable preparation</a> vignette we will go through the steps necessary to build the data that will be fed into our self-organising map (SOM) as seen in the <a href="https://robwschlegel.github.io/MHWNWA/som.html">SOM analysis</a> vignette.</p>
 <!-- One last point however is that according to @Richaud2016 the different slopebreaks for the different regions occur at different depths, from 50 m to 400 m depending. They do however note that using a static definition of 200 m for the break does not produce significantly different results. Therefore, for the time being we will maintain the spatial breaks used above. -->
 </div>
 <div id="references" class="section level2">
@@ -1323,7 +1376,7 @@ robwschlegel
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.6.1 (2019-07-05)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 16.04.5 LTS
+Running under: Ubuntu 16.04.6 LTS
 
 Matrix products: default
 BLAS:   /usr/lib/openblas-base/libblas.so.3
@@ -1364,10 +1417,10 @@ loaded via a namespace (and not attached):
 [43] git2r_0.23.0      magrittr_1.5      scales_1.0.0     
 [46] ncdf4_1.16.1      cli_1.0.0         stringi_1.2.4    
 [49] xml2_1.2.0        iterators_1.0.10  tools_3.6.1      
-[52] glue_1.3.0        RNetCDF_1.9-1     maps_3.3.0       
-[55] hms_0.4.2         parallel_3.6.1    yaml_2.2.0       
-[58] colorspace_1.3-2  rvest_0.3.2       plotly_4.9.0     
-[61] knitr_1.20        bindr_0.1.1       haven_1.1.2      </code></pre>
+[52] glue_1.3.0        RNetCDF_1.9-1     hms_0.4.2        
+[55] parallel_3.6.1    yaml_2.2.0        colorspace_1.3-2 
+[58] rvest_0.3.2       plotly_4.9.0      knitr_1.20       
+[61] bindr_0.1.1       haven_1.1.2      </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using

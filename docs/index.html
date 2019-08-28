@@ -194,19 +194,19 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="polygon-prep.html">Polygon preparation</a>
+      <a href="polygon-prep.html">Study area and regions</a>
     </li>
     <li>
-      <a href="sst-prep.html">SST preparation</a>
+      <a href="sst-prep.html">MHW detection</a>
     </li>
     <li>
-      <a href="var-prep.html">Variable preparation</a>
+      <a href="var-prep.html">Heat budget data preparation</a>
     </li>
     <li>
       <a href="som.html">SOM analysis</a>
     </li>
     <li>
-      <a href="node-summary.html">Node summary</a>
+      <a href="node-summary.html">Node summaries</a>
     </li>
   </ul>
 </li>
@@ -243,7 +243,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-08-15</p>
+<p><strong>Last updated:</strong> 2019-08-28</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -254,83 +254,91 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/a226aa66a97f579750151882984241de8e0ed0fa" target="_blank">a226aa6</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/454b53b90a81ee54136eed5ef66132af0787d3d3" target="_blank">454b53b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    data/ALL_anom.Rda
-    Ignored:    data/ALL_clim.Rda
-    Ignored:    data/ERA5_lhf.Rda
-    Ignored:    data/ERA5_lwr.Rda
-    Ignored:    data/ERA5_qnet.Rda
-    Ignored:    data/ERA5_qnet_anom.Rda
-    Ignored:    data/ERA5_qnet_clim.Rda
-    Ignored:    data/ERA5_shf.Rda
-    Ignored:    data/ERA5_swr.Rda
-    Ignored:    data/ERA5_t2m.Rda
-    Ignored:    data/ERA5_t2m_anom.Rda
-    Ignored:    data/ERA5_t2m_clim.Rda
-    Ignored:    data/ERA5_u.Rda
-    Ignored:    data/ERA5_u_anom.Rda
-    Ignored:    data/ERA5_u_clim.Rda
-    Ignored:    data/ERA5_v.Rda
-    Ignored:    data/ERA5_v_anom.Rda
-    Ignored:    data/ERA5_v_clim.Rda
-    Ignored:    data/GLORYS_mld.Rda
-    Ignored:    data/GLORYS_mld_anom.Rda
-    Ignored:    data/GLORYS_mld_clim.Rda
-    Ignored:    data/GLORYS_u.Rda
-    Ignored:    data/GLORYS_u_anom.Rda
-    Ignored:    data/GLORYS_u_clim.Rda
-    Ignored:    data/GLORYS_v.Rda
-    Ignored:    data/GLORYS_v_anom.Rda
-    Ignored:    data/GLORYS_v_clim.Rda
-    Ignored:    data/NAPA_clim_U.Rda
-    Ignored:    data/NAPA_clim_V.Rda
-    Ignored:    data/NAPA_clim_W.Rda
-    Ignored:    data/NAPA_clim_emp_ice.Rda
-    Ignored:    data/NAPA_clim_emp_oce.Rda
-    Ignored:    data/NAPA_clim_fmmflx.Rda
-    Ignored:    data/NAPA_clim_mldkz5.Rda
-    Ignored:    data/NAPA_clim_mldr10_1.Rda
-    Ignored:    data/NAPA_clim_qemp_oce.Rda
-    Ignored:    data/NAPA_clim_qla_oce.Rda
-    Ignored:    data/NAPA_clim_qns.Rda
-    Ignored:    data/NAPA_clim_qsb_oce.Rda
-    Ignored:    data/NAPA_clim_qt.Rda
-    Ignored:    data/NAPA_clim_runoffs.Rda
-    Ignored:    data/NAPA_clim_ssh.Rda
-    Ignored:    data/NAPA_clim_sss.Rda
-    Ignored:    data/NAPA_clim_sst.Rda
-    Ignored:    data/NAPA_clim_taum.Rda
-    Ignored:    data/NAPA_clim_vars.Rda
-    Ignored:    data/NAPA_clim_vecs.Rda
-    Ignored:    data/OAFlux.Rda
-    Ignored:    data/OISST_sst.Rda
-    Ignored:    data/OISST_sst_anom.Rda
-    Ignored:    data/OISST_sst_clim.Rda
-    Ignored:    data/node_mean_all_anom.Rda
-    Ignored:    data/packet_all.Rda
-    Ignored:    data/packet_all_anom.Rda
-    Ignored:    data/packet_nolab.Rda
-    Ignored:    data/packet_nolab14.Rda
-    Ignored:    data/packet_nolabgsl.Rda
-    Ignored:    data/packet_nolabmod.Rda
-    Ignored:    data/som_all.Rda
-    Ignored:    data/som_all_anom.Rda
-    Ignored:    data/som_nolab.Rda
-    Ignored:    data/som_nolab14.Rda
-    Ignored:    data/som_nolab_16.Rda
-    Ignored:    data/som_nolab_9.Rda
-    Ignored:    data/som_nolabgsl.Rda
-    Ignored:    data/som_nolabmod.Rda
-    Ignored:    data/synoptic_states.Rda
-    Ignored:    data/synoptic_vec_states.Rda
+    Ignored:    LaTeX/SOM_node_summary.docx
+    Ignored:    LaTeX/SOM_node_summary.pdf
+    Ignored:    data/NAPA/NAPA_clim_U.Rda
+    Ignored:    data/NAPA/NAPA_clim_V.Rda
+    Ignored:    data/NAPA/NAPA_clim_W.Rda
+    Ignored:    data/NAPA/NAPA_clim_emp_ice.Rda
+    Ignored:    data/NAPA/NAPA_clim_emp_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_fmmflx.Rda
+    Ignored:    data/NAPA/NAPA_clim_mldkz5.Rda
+    Ignored:    data/NAPA/NAPA_clim_mldr10_1.Rda
+    Ignored:    data/NAPA/NAPA_clim_qemp_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_qla_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_qns.Rda
+    Ignored:    data/NAPA/NAPA_clim_qsb_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_qt.Rda
+    Ignored:    data/NAPA/NAPA_clim_runoffs.Rda
+    Ignored:    data/NAPA/NAPA_clim_ssh.Rda
+    Ignored:    data/NAPA/NAPA_clim_sss.Rda
+    Ignored:    data/NAPA/NAPA_clim_sst.Rda
+    Ignored:    data/NAPA/NAPA_clim_taum.Rda
+    Ignored:    data/NAPA/NAPA_clim_vars.Rda
+    Ignored:    data/NAPA/NAPA_clim_vecs.Rda
+    Ignored:    data/NAPA/synoptic_vec_states.Rda
+    Ignored:    data/SOM/packet.Rda
+    Ignored:    data/SOM/synoptic_states.Rda
+    Ignored:    data/SOM/synoptic_states_other.Rda
+    Ignored:    data/anom/ALL_anom.Rda
+    Ignored:    data/anom/ALL_other.Rda
+    Ignored:    data/anom/ERA5_mslp_anom.Rda
+    Ignored:    data/anom/ERA5_qnet_anom.Rda
+    Ignored:    data/anom/ERA5_t2m_anom.Rda
+    Ignored:    data/anom/ERA5_u_anom.Rda
+    Ignored:    data/anom/ERA5_v_anom.Rda
+    Ignored:    data/anom/GLORYS_mld_anom.Rda
+    Ignored:    data/anom/GLORYS_u_anom.Rda
+    Ignored:    data/anom/GLORYS_v_anom.Rda
+    Ignored:    data/anom/OISST_sst_anom.Rda
+    Ignored:    data/base/ERA5_lhf.Rda
+    Ignored:    data/base/ERA5_lwr.Rda
+    Ignored:    data/base/ERA5_mslp.Rda
+    Ignored:    data/base/ERA5_qnet.Rda
+    Ignored:    data/base/ERA5_shf.Rda
+    Ignored:    data/base/ERA5_swr.Rda
+    Ignored:    data/base/ERA5_t2m.Rda
+    Ignored:    data/base/ERA5_u.Rda
+    Ignored:    data/base/ERA5_v.Rda
+    Ignored:    data/base/GLORYS_mld.Rda
+    Ignored:    data/base/GLORYS_u.Rda
+    Ignored:    data/base/GLORYS_v.Rda
+    Ignored:    data/base/OAFlux.Rda
+    Ignored:    data/base/OISST_sst.Rda
+    Ignored:    data/clim/ALL_clim.Rda
+    Ignored:    data/clim/ERA5_mslp_clim.Rda
+    Ignored:    data/clim/ERA5_qnet_clim.Rda
+    Ignored:    data/clim/ERA5_t2m_clim.Rda
+    Ignored:    data/clim/ERA5_u_clim.Rda
+    Ignored:    data/clim/ERA5_v_clim.Rda
+    Ignored:    data/clim/GLORYS_mld_clim.Rda
+    Ignored:    data/clim/GLORYS_u_clim.Rda
+    Ignored:    data/clim/GLORYS_v_clim.Rda
+    Ignored:    data/clim/OISST_sst_clim.Rda
+    Ignored:    data/comparison/node_mean_all_anom.Rda
+    Ignored:    data/comparison/packet_all.Rda
+    Ignored:    data/comparison/packet_all_anom.Rda
+    Ignored:    data/comparison/packet_nolab.Rda
+    Ignored:    data/comparison/packet_nolab14.Rda
+    Ignored:    data/comparison/packet_nolabgsl.Rda
+    Ignored:    data/comparison/packet_nolabmod.Rda
+    Ignored:    data/comparison/som_all.Rda
+    Ignored:    data/comparison/som_all_anom.Rda
+    Ignored:    data/comparison/som_nolab.Rda
+    Ignored:    data/comparison/som_nolab14.Rda
+    Ignored:    data/comparison/som_nolab_16.Rda
+    Ignored:    data/comparison/som_nolab_9.Rda
+    Ignored:    data/comparison/som_nolabgsl.Rda
+    Ignored:    data/comparison/som_nolabmod.Rda
 
-Untracked files:
-    Untracked:  LaTeX/
+Unstaged changes:
+    Modified:   code/functions.R
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -361,6 +369,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/59cf7715da1a80c56c212f001f0449dee6c1b875/analysis/index.Rmd" target="_blank">59cf771</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-22
+</td>
+<td style="text-align:left;">
+Polished up the variable prep vignette
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/826c73d93c73c8f65cc42b69942163def63cd437/docs/index.html" target="_blank">826c73d</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-15
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -724,7 +766,7 @@ First push
 </details>
 <hr />
 <p>This website contains the version controlled analyses used to determine the primary drivers of marine heatwaves (MHWs) in the Northwest Atlantic Ocean.</p>
-<p>Please use the tabs above to navigate the site. The “Analyses” tabs contain workflows for discrete portions of the overall analysis.</p>
+<p>Please use the tabs above to navigate the site. The “Analyses” tabs contain workflows for discrete portions of the overall analysis. To see the raw code used for the workflow/pipeline of this project please follow the link in the top right of this page to the <code>source code</code> for this project. Once there the raw workflow code may be found in the <code>code/workflow.R</code> script. The functions etc. that this script relies on may be found in the <code>code/functions.R</code> script.</p>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see

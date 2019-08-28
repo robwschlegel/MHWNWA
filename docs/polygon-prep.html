@@ -11,9 +11,9 @@
 
 <meta name="author" content="Robert Schlegel" />
 
-<meta name="date" content="2019-07-24" />
+<meta name="date" content="2019-08-22" />
 
-<title>Polygon preparation</title>
+<title>Study area and regions</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -294,19 +294,19 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="polygon-prep.html">Polygon preparation</a>
+      <a href="polygon-prep.html">Study area and regions</a>
     </li>
     <li>
-      <a href="sst-prep.html">SST preparation</a>
+      <a href="sst-prep.html">MHW detection</a>
     </li>
     <li>
-      <a href="var-prep.html">Variable preparation</a>
+      <a href="var-prep.html">Heat budget data preparation</a>
     </li>
     <li>
       <a href="som.html">SOM analysis</a>
     </li>
     <li>
-      <a href="node-summary.html">Node summary</a>
+      <a href="node-summary.html">Node summaries</a>
     </li>
   </ul>
 </li>
@@ -338,14 +338,14 @@ div.section {
 
 
 
-<h1 class="title toc-ignore">Polygon preparation</h1>
+<h1 class="title toc-ignore">Study area and regions</h1>
 <h4 class="author"><em>Robert Schlegel</em></h4>
-<h4 class="date"><em>2019-07-24</em></h4>
+<h4 class="date"><em>2019-08-22</em></h4>
 
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-08-15</p>
+<p><strong>Last updated:</strong> 2019-08-28</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -374,83 +374,91 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/a226aa66a97f579750151882984241de8e0ed0fa" target="_blank">a226aa6</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/454b53b90a81ee54136eed5ef66132af0787d3d3" target="_blank">454b53b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    data/ALL_anom.Rda
-    Ignored:    data/ALL_clim.Rda
-    Ignored:    data/ERA5_lhf.Rda
-    Ignored:    data/ERA5_lwr.Rda
-    Ignored:    data/ERA5_qnet.Rda
-    Ignored:    data/ERA5_qnet_anom.Rda
-    Ignored:    data/ERA5_qnet_clim.Rda
-    Ignored:    data/ERA5_shf.Rda
-    Ignored:    data/ERA5_swr.Rda
-    Ignored:    data/ERA5_t2m.Rda
-    Ignored:    data/ERA5_t2m_anom.Rda
-    Ignored:    data/ERA5_t2m_clim.Rda
-    Ignored:    data/ERA5_u.Rda
-    Ignored:    data/ERA5_u_anom.Rda
-    Ignored:    data/ERA5_u_clim.Rda
-    Ignored:    data/ERA5_v.Rda
-    Ignored:    data/ERA5_v_anom.Rda
-    Ignored:    data/ERA5_v_clim.Rda
-    Ignored:    data/GLORYS_mld.Rda
-    Ignored:    data/GLORYS_mld_anom.Rda
-    Ignored:    data/GLORYS_mld_clim.Rda
-    Ignored:    data/GLORYS_u.Rda
-    Ignored:    data/GLORYS_u_anom.Rda
-    Ignored:    data/GLORYS_u_clim.Rda
-    Ignored:    data/GLORYS_v.Rda
-    Ignored:    data/GLORYS_v_anom.Rda
-    Ignored:    data/GLORYS_v_clim.Rda
-    Ignored:    data/NAPA_clim_U.Rda
-    Ignored:    data/NAPA_clim_V.Rda
-    Ignored:    data/NAPA_clim_W.Rda
-    Ignored:    data/NAPA_clim_emp_ice.Rda
-    Ignored:    data/NAPA_clim_emp_oce.Rda
-    Ignored:    data/NAPA_clim_fmmflx.Rda
-    Ignored:    data/NAPA_clim_mldkz5.Rda
-    Ignored:    data/NAPA_clim_mldr10_1.Rda
-    Ignored:    data/NAPA_clim_qemp_oce.Rda
-    Ignored:    data/NAPA_clim_qla_oce.Rda
-    Ignored:    data/NAPA_clim_qns.Rda
-    Ignored:    data/NAPA_clim_qsb_oce.Rda
-    Ignored:    data/NAPA_clim_qt.Rda
-    Ignored:    data/NAPA_clim_runoffs.Rda
-    Ignored:    data/NAPA_clim_ssh.Rda
-    Ignored:    data/NAPA_clim_sss.Rda
-    Ignored:    data/NAPA_clim_sst.Rda
-    Ignored:    data/NAPA_clim_taum.Rda
-    Ignored:    data/NAPA_clim_vars.Rda
-    Ignored:    data/NAPA_clim_vecs.Rda
-    Ignored:    data/OAFlux.Rda
-    Ignored:    data/OISST_sst.Rda
-    Ignored:    data/OISST_sst_anom.Rda
-    Ignored:    data/OISST_sst_clim.Rda
-    Ignored:    data/node_mean_all_anom.Rda
-    Ignored:    data/packet_all.Rda
-    Ignored:    data/packet_all_anom.Rda
-    Ignored:    data/packet_nolab.Rda
-    Ignored:    data/packet_nolab14.Rda
-    Ignored:    data/packet_nolabgsl.Rda
-    Ignored:    data/packet_nolabmod.Rda
-    Ignored:    data/som_all.Rda
-    Ignored:    data/som_all_anom.Rda
-    Ignored:    data/som_nolab.Rda
-    Ignored:    data/som_nolab14.Rda
-    Ignored:    data/som_nolab_16.Rda
-    Ignored:    data/som_nolab_9.Rda
-    Ignored:    data/som_nolabgsl.Rda
-    Ignored:    data/som_nolabmod.Rda
-    Ignored:    data/synoptic_states.Rda
-    Ignored:    data/synoptic_vec_states.Rda
+    Ignored:    LaTeX/SOM_node_summary.docx
+    Ignored:    LaTeX/SOM_node_summary.pdf
+    Ignored:    data/NAPA/NAPA_clim_U.Rda
+    Ignored:    data/NAPA/NAPA_clim_V.Rda
+    Ignored:    data/NAPA/NAPA_clim_W.Rda
+    Ignored:    data/NAPA/NAPA_clim_emp_ice.Rda
+    Ignored:    data/NAPA/NAPA_clim_emp_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_fmmflx.Rda
+    Ignored:    data/NAPA/NAPA_clim_mldkz5.Rda
+    Ignored:    data/NAPA/NAPA_clim_mldr10_1.Rda
+    Ignored:    data/NAPA/NAPA_clim_qemp_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_qla_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_qns.Rda
+    Ignored:    data/NAPA/NAPA_clim_qsb_oce.Rda
+    Ignored:    data/NAPA/NAPA_clim_qt.Rda
+    Ignored:    data/NAPA/NAPA_clim_runoffs.Rda
+    Ignored:    data/NAPA/NAPA_clim_ssh.Rda
+    Ignored:    data/NAPA/NAPA_clim_sss.Rda
+    Ignored:    data/NAPA/NAPA_clim_sst.Rda
+    Ignored:    data/NAPA/NAPA_clim_taum.Rda
+    Ignored:    data/NAPA/NAPA_clim_vars.Rda
+    Ignored:    data/NAPA/NAPA_clim_vecs.Rda
+    Ignored:    data/NAPA/synoptic_vec_states.Rda
+    Ignored:    data/SOM/packet.Rda
+    Ignored:    data/SOM/synoptic_states.Rda
+    Ignored:    data/SOM/synoptic_states_other.Rda
+    Ignored:    data/anom/ALL_anom.Rda
+    Ignored:    data/anom/ALL_other.Rda
+    Ignored:    data/anom/ERA5_mslp_anom.Rda
+    Ignored:    data/anom/ERA5_qnet_anom.Rda
+    Ignored:    data/anom/ERA5_t2m_anom.Rda
+    Ignored:    data/anom/ERA5_u_anom.Rda
+    Ignored:    data/anom/ERA5_v_anom.Rda
+    Ignored:    data/anom/GLORYS_mld_anom.Rda
+    Ignored:    data/anom/GLORYS_u_anom.Rda
+    Ignored:    data/anom/GLORYS_v_anom.Rda
+    Ignored:    data/anom/OISST_sst_anom.Rda
+    Ignored:    data/base/ERA5_lhf.Rda
+    Ignored:    data/base/ERA5_lwr.Rda
+    Ignored:    data/base/ERA5_mslp.Rda
+    Ignored:    data/base/ERA5_qnet.Rda
+    Ignored:    data/base/ERA5_shf.Rda
+    Ignored:    data/base/ERA5_swr.Rda
+    Ignored:    data/base/ERA5_t2m.Rda
+    Ignored:    data/base/ERA5_u.Rda
+    Ignored:    data/base/ERA5_v.Rda
+    Ignored:    data/base/GLORYS_mld.Rda
+    Ignored:    data/base/GLORYS_u.Rda
+    Ignored:    data/base/GLORYS_v.Rda
+    Ignored:    data/base/OAFlux.Rda
+    Ignored:    data/base/OISST_sst.Rda
+    Ignored:    data/clim/ALL_clim.Rda
+    Ignored:    data/clim/ERA5_mslp_clim.Rda
+    Ignored:    data/clim/ERA5_qnet_clim.Rda
+    Ignored:    data/clim/ERA5_t2m_clim.Rda
+    Ignored:    data/clim/ERA5_u_clim.Rda
+    Ignored:    data/clim/ERA5_v_clim.Rda
+    Ignored:    data/clim/GLORYS_mld_clim.Rda
+    Ignored:    data/clim/GLORYS_u_clim.Rda
+    Ignored:    data/clim/GLORYS_v_clim.Rda
+    Ignored:    data/clim/OISST_sst_clim.Rda
+    Ignored:    data/comparison/node_mean_all_anom.Rda
+    Ignored:    data/comparison/packet_all.Rda
+    Ignored:    data/comparison/packet_all_anom.Rda
+    Ignored:    data/comparison/packet_nolab.Rda
+    Ignored:    data/comparison/packet_nolab14.Rda
+    Ignored:    data/comparison/packet_nolabgsl.Rda
+    Ignored:    data/comparison/packet_nolabmod.Rda
+    Ignored:    data/comparison/som_all.Rda
+    Ignored:    data/comparison/som_all_anom.Rda
+    Ignored:    data/comparison/som_nolab.Rda
+    Ignored:    data/comparison/som_nolab14.Rda
+    Ignored:    data/comparison/som_nolab_16.Rda
+    Ignored:    data/comparison/som_nolab_9.Rda
+    Ignored:    data/comparison/som_nolabgsl.Rda
+    Ignored:    data/comparison/som_nolabmod.Rda
 
-Untracked files:
-    Untracked:  LaTeX/
+Unstaged changes:
+    Modified:   code/functions.R
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -481,6 +489,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/analysis/polygon-prep.Rmd" target="_blank">600a1ae</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-27
+</td>
+<td style="text-align:left;">
+Re-edited SOM node summary text for the figures that show all of the nodes together
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/robwschlegel/MHWNWA/blob/e9767c75a4c42561bb74ffe25ac487d99c37f6de/analysis/polygon-prep.Rmd" target="_blank">e9767c7</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-22
+</td>
+<td style="text-align:left;">
+Working through the pipeline to adapt to the decided methodoloy
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/826c73d93c73c8f65cc42b69942163def63cd437/docs/polygon-prep.html" target="_blank">826c73d</a>
+</td>
+<td style="text-align:left;">
+robwschlegel
+</td>
+<td style="text-align:left;">
+2019-08-15
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -998,18 +1057,15 @@ Working on polygon vignette
 <hr />
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>This markdown file contains all of the code that prepares the polygons used to define the different regions in the Northwest Atlantic. These different regions then have their SST pixels spatially averaged to create a single time series per region. This is done so that the MHW detection algorithm may then be run on these individual time series as a general representation of the SST in those regions, rather than running the algorithm on each pixel individually, which would introduce a host of problems.</p>
-<pre class="r"><code># Packages used in this vignette
-library(jsonlite, lib.loc = &quot;../R-packages/&quot;)
+<p>This markdown file contains all of the code that prepares the polygons used to define the different regions in the Northwest Atlantic. These different regions then have the NOAA OISST pixels found therein spatially averaged to create a single time series per region in the <a href="https://robwschlegel.github.io/MHWNWA/sst-prep.html">SST preparation</a> vignette. This is done so that the MHW detection algorithm may then be run on these individual time series as a general representation of the SST in those regions, rather than running the algorithm on each pixel individually, which would introduce a host of technical and philosophical problems that I won’t go into here.</p>
+<pre class="r"><code># Packages used in this vignette\
 library(tidyverse) # Base suite of functions
 library(R.matlab) # For dealing with MATLAB files
-# library(marmap) # For bathymetry
-# library(maptools) # Contour tools
-# library(rgeos) # For intersections</code></pre>
+# library(marmap) # For bathymetry, but not currently used</code></pre>
 </div>
 <div id="coastal-region-polygons" class="section level2">
 <h2>Coastal region polygons</h2>
-<p>The first step in this analysis is to broadly define the coastal regions based on previous research into thermally relevant boundaries. We have chosen to use a paper by <span class="citation">Richaud et al. (2016)</span> to do this (<a href="https://www.sciencedirect.com/science/article/pii/S0278434316303181#f0010" class="uri">https://www.sciencedirect.com/science/article/pii/S0278434316303181#f0010</a>). Being the kind-hearted man that he is, Benjamin forwarded us the polygons [<span class="citation">Richaud et al. (2016)</span>; Figure 2] from this work as a MATLAB file. In order to use this here we must first open the file and convert it to an R format. It should be noted that these areas were designed to not encompass depths deeper than 600 m as the investigators were interested in characterising the climatologies for the shelf and upper slope regions of the north east coast of North America.</p>
+<p>The first step in this analysis is to broadly define the coastal regions based on previous research into thermally relevant boundaries. We have chosen to use a paper by <span class="citation">Richaud et al. (2016)</span> to do this (<a href="https://www.sciencedirect.com/science/article/pii/S0278434316303181#f0010" class="uri">https://www.sciencedirect.com/science/article/pii/S0278434316303181#f0010</a>). Being the wonderful person that he is, Benjamin forwarded us the polygons [<span class="citation">Richaud et al. (2016)</span>; Figure 2] from this paper. The only hiccup being that they are a MATLAB file so we must first convert them to an R format. It should be noted that these areas were designed to not encompass depths deeper than 600 m as the investigators were interested in characterising the climatologies for the shelf and upper slope regions of the north east coast of North America. This works for our research purposes as well.</p>
 <pre class="r"><code># Load the file
 NWA_polygons &lt;- readMat(&quot;data/boundaries.mat&quot;)
 
@@ -1018,7 +1074,6 @@ NWA_polygons[grepl(&quot;[.]&quot;,names(NWA_polygons))] &lt;- NULL
 # attributes(NWA_polygons) &lt;- NULL
 
 # Function for neatly converting list items into a dataframe
-# vec &lt;- NWA_polygons[1]
 mat_col &lt;- function(vec){
   df &lt;- as.data.frame(vec)
   df$region &lt;- substr(colnames(df)[1], 2, nchar(colnames(df)[1]))
@@ -1036,32 +1091,25 @@ coords_5 &lt;- cbind(mat_col(NWA_polygons[9]), mat_col(NWA_polygons[10])[2])
 coords_6 &lt;- cbind(mat_col(NWA_polygons[11]), mat_col(NWA_polygons[12])[2])
 
 # Combine them into one full dataframe and save
-NWA_coords &lt;- rbind(coords_1, coords_2, coords_3, coords_4, coords_5, coords_6)
-colnames(NWA_coords) &lt;- c(&quot;region&quot;, &quot;lon&quot;, &quot;lat&quot;)
-# saveRDS(NWA_coords, &quot;data/NWA_coords.Rda&quot;)</code></pre>
+NWA_coords_base &lt;- rbind(coords_1, coords_2, coords_3, coords_4, coords_5, coords_6)
+colnames(NWA_coords_base) &lt;- c(&quot;region&quot;, &quot;lon&quot;, &quot;lat&quot;)</code></pre>
 <p>With our polygons switched over from MATLAB to R we now want to visualise them to ensure that everything has gone smoothly.</p>
-<pre class="r"><code># Load polygon coordinates
-NWA_coords &lt;- readRDS(&quot;data/NWA_coords.Rda&quot;)
-
-# The base map
+<pre class="r"><code># The base map
 map_base &lt;- ggplot2::fortify(maps::map(fill = TRUE, col = &quot;grey80&quot;, plot = FALSE)) %&gt;%
   dplyr::rename(lon = long) %&gt;%
   mutate(group = ifelse(lon &gt; 180, group+9999, group),
          lon = ifelse(lon &gt; 180, lon-360, lon)) %&gt;% 
   select(-region, -subregion)
+# saveRDS(map_base, &quot;data/map_base.Rda&quot;)
 
 # Quick map
-NWA_coords_plot &lt;- ggplot(data = NWA_coords, aes(x = lon, y = lat)) +
+ggplot(data = NWA_coords_base, aes(x = lon, y = lat)) +
   geom_polygon(aes(colour = region, fill = region), size = 1.5, alpha = 0.2) +
   geom_polygon(data = map_base, aes(group = group), show.legend = F) +
-  coord_cartesian(xlim = c(min(NWA_coords$lon)-2, max(NWA_coords$lon)+2),
-                  ylim = c(min(NWA_coords$lat)-2, max(NWA_coords$lat)+2)) +
+  coord_cartesian(xlim = c(min(NWA_coords_base$lon)-2, max(NWA_coords_base$lon)+2),
+                  ylim = c(min(NWA_coords_base$lat)-2, max(NWA_coords_base$lat)+2)) +
   labs(x = NULL, y = NULL, colour = &quot;Region&quot;, fill = &quot;Region&quot;) +
-  theme(legend.position = &quot;bottom&quot;)
-# ggsave(NWA_coords_plot, filename = &quot;output/NWA_coords_plot.pdf&quot;, height = 5, width = 6)
-
-# Visualise
-NWA_coords_plot</code></pre>
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
 <p><img src="figure/polygon-prep.Rmd/poly-vis-1.png" width="768" style="display: block; margin: auto;" /></p>
 <details>
 <summary><em>Expand here to see past versions of poly-vis-1.png:</em></summary>
@@ -1128,21 +1176,11 @@ robwschlegel
 </table>
 </details>
 <p>The region abbreviations are: “gm” for Gulf of Maine, “gls” for Gulf of St. Lawrence, “ls” for Labrador Shelf, “mab” for Mid-Atlantic Bight, “nfs” for Newfoundland Shelf and “ss” for Scotian Shelf.</p>
-<p>Before we move on, we’ll do a bit of house keeping to establish a consistent study area for this project based on our polygons. We’ll simply extend the study area by the nearest 2 whole degrees of longitude and latitude from the furthest edges of the polygons, as seen in the figure above. This will encompass broad synoptic scale variables that may be driving MHWs in our study regions, but should not be so broad as to begin to account for teleconnections, which are currently beyond the scope of this project.</p>
-<pre class="r"><code># Set the max/min lon/at values
-lon_min &lt;- round(min(NWA_coords$lon)-2)
-lon_max &lt;- round(max(NWA_coords$lon)+2)
-lat_min &lt;- round(min(NWA_coords$lat)-2)
-lat_max &lt;- round(max(NWA_coords$lat)+2)
-
-# Combine and save
-NWA_corners &lt;- c(lon_min, lon_max, lat_min, lat_max)
-# saveRDS(NWA_corners, file = &quot;data/NWA_corners.Rda&quot;)</code></pre>
 <div id="cabot-strait" class="section level3">
 <h3>Cabot Strait</h3>
 <p>It was decided that because we are interested in the geography of the regions, and not just their temperature regimes, the Cabot Strait needed to be defined apart from the Gulf of St. Lawrence region. To do this we will simply snip the “gsl” polygon into two pieces at its narrowest point.</p>
 <pre class="r"><code># Extract the gsl region only
-gsl_sub &lt;- NWA_coords[NWA_coords$region == &quot;gsl&quot;,]
+gsl_sub &lt;- NWA_coords_base[NWA_coords_base$region == &quot;gsl&quot;,]
 
 # Add a simple integer column for ease of plotting
 gsl_sub$row_count &lt;- 1:nrow(gsl_sub)
@@ -1207,32 +1245,28 @@ robwschlegel
 </details>
 <p>It appears from the crude figure above that we should pinch the polygon off into two separate shapes at row 6 and 10.</p>
 <pre class="r"><code># Create smaller gsl polygon
-gsl_new &lt;- NWA_coords[NWA_coords$region == &quot;gsl&quot;,] %&gt;% 
+gsl_new &lt;- NWA_coords_base[NWA_coords_base$region == &quot;gsl&quot;,] %&gt;% 
   slice(-c(7:9))
 
 # Create new cbs (Cabot Strait) polygon
-cbs &lt;- NWA_coords[NWA_coords$region == &quot;gsl&quot;,] %&gt;% 
+cbs &lt;- NWA_coords_base[NWA_coords_base$region == &quot;gsl&quot;,] %&gt;% 
   slice(6:10) %&gt;% 
   mutate(region = &quot;cbs&quot;)
 
 # Attach the new polygons to the original polygons
-NWA_coords_cabot &lt;- NWA_coords %&gt;% 
+NWA_coords_cabot &lt;- NWA_coords_base %&gt;% 
   filter(region != &quot;gsl&quot;) %&gt;% 
   rbind(., gsl_new, cbs)
 # saveRDS(NWA_coords_cabot, &quot;data/NWA_coords_cabot.Rda&quot;)
 
 # Plot the new areas to ensure everything worked
-NWA_coords_cabot_plot &lt;- ggplot(data = NWA_coords_cabot, aes(x = lon, y = lat)) +
+ggplot(data = NWA_coords_cabot, aes(x = lon, y = lat)) +
   geom_polygon(aes(colour = region, fill = region), size = 1.5, alpha = 0.2) +
   geom_polygon(data = map_base, aes(group = group), show.legend = F) +
-  coord_cartesian(xlim = NWA_corners[1:2],
-                  ylim = NWA_corners[3:4]) +
+  coord_cartesian(xlim = c(min(NWA_coords_cabot$lon)-2, max(NWA_coords_cabot$lon)+2),
+                  ylim = c(min(NWA_coords_cabot$lat)-2, max(NWA_coords_cabot$lat)+2)) +
   labs(x = NULL, y = NULL, colour = &quot;Region&quot;, fill = &quot;Region&quot;) +
-  theme(legend.position = &quot;bottom&quot;)
-# ggsave(NWA_coords_cabot_plot, filename = &quot;output/NWA_coords_cabot_plot.pdf&quot;, height = 5, width = 6)
-
-# Visualise
-NWA_coords_cabot_plot</code></pre>
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
 <p><img src="figure/polygon-prep.Rmd/cabot-strait-2-1.png" width="768" style="display: block; margin: auto;" /></p>
 <details>
 <summary><em>Expand here to see past versions of cabot-strait-2-1.png:</em></summary>
@@ -1309,9 +1343,57 @@ robwschlegel
 </tbody>
 </table>
 </details>
-<p>Everything is looking good, but we may want to divide the Gulf of Maine (gm) into two polygons as well. This would make the Bay of Fundy in it’s own region. For now however we will move on to the next step, which is dividing the current polygons by bathymetry.</p>
-<p>We will now go about creating SST time series for each of the regions. This work is continued in the <a href="https://robwschlegel.github.io/MHWNWA/sst-prep.html">SST preparation</a> vignette.</p>
 </div>
+<div id="labrador-shelf" class="section level3">
+<h3>Labrador Shelf</h3>
+<p>After running through a series of slef-roganising map (SOM) experiments in the previous iteration of this project it was decided that the Labrador Shelf (ls) region needs to be excluded from the study. This is predominantly because the inclusion of this region into the SOM study makes it too difficult for the machine to make sense of the patterns it is seeing. We concluded that this was because of the strong, sometimes unrelated processes happening in the Gulf Stream vs. the Labrador Sea. Because we are primarily concerned with the Atlantic coast, we prioritised the more southern regions over the Labrador shelf region. The code below shows what these final regions look like.</p>
+<pre class="r"><code># FIlter out the ls region
+NWA_coords &lt;- NWA_coords_cabot %&gt;% 
+  filter(region != &quot;ls&quot;)
+
+# Save these final study region coordinates
+# saveRDS(NWA_coords, &quot;data/NWA_coords.Rda&quot;)
+
+# Plot the new areas to ensure everything worked
+NWA_study_area &lt;- ggplot(data = NWA_coords, aes(x = lon, y = lat)) +
+  geom_polygon(aes(colour = region, fill = region), size = 1.5, alpha = 0.2) +
+  geom_polygon(data = map_base, aes(group = group), show.legend = F) +
+  coord_cartesian(xlim = c(min(NWA_coords$lon)-2, max(NWA_coords$lon)+2),
+                  ylim = c(min(NWA_coords$lat)-2, max(NWA_coords$lat)+0.5),
+                  expand = FALSE) +
+    scale_x_continuous(breaks = seq(-70, -50, 10),
+                     labels = c(&quot;70°W&quot;, &quot;60°W&quot;, &quot;50°W&quot;),
+                     position = &quot;top&quot;) +
+  scale_y_continuous(breaks = c(40, 50),
+                     labels = scales::unit_format(suffix = &quot;°N&quot;, sep = &quot;&quot;)) +
+  labs(x = NULL, y = NULL, colour = &quot;Region&quot;, fill = &quot;Region&quot;) +
+  theme_bw() +
+  theme(legend.position = &quot;bottom&quot;)
+# ggsave(NWA_study_area, filename = &quot;output/NWA_study_area.pdf&quot;, height = 5, width = 6)
+# ggsave(NWA_study_area, filename = &quot;output/NWA_study_area.png&quot;, height = 5, width = 6)
+
+# Visualise
+NWA_study_area</code></pre>
+<p><img src="figure/polygon-prep.Rmd/no-ls-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="study-area-extent" class="section level2">
+<h2>Study area extent</h2>
+<p>The final step in this vignette is to establish a consistent study area for this project based on our regions. We’ll simply extend the study area by the nearest 2 whole degrees of longitude and latitude from the furthest edges of the polygons, as seen in the figure above. This will encompass broad synoptic scale variables that may be driving MHWs in our study regions, but should not be so broad as to begin to account for teleconnections, which are currently beyond the scope of this project. The exception to this being that because we want to exclude as much of the Labrador Sea as possible, we will only extend the northern edge of the study area by 0.5 degrees of latitude from the northernmost point of our study regions.</p>
+<pre class="r"><code># Set the max/min lon/at values
+lon_min &lt;- round(min(NWA_coords$lon)-2)
+lon_max &lt;- round(max(NWA_coords$lon)+2)
+lat_min &lt;- round(min(NWA_coords$lat)-2)
+lat_max &lt;- round(max(NWA_coords$lat)+0.5)
+
+# Combine and save
+NWA_corners &lt;- c(lon_min, lon_max, lat_min, lat_max)
+# saveRDS(NWA_corners, file = &quot;data/NWA_corners.Rda&quot;)
+
+# Pront the values
+NWA_corners</code></pre>
+<pre><code>[1] -80 -41  32  52</code></pre>
+<p>We will now go about creating SST time series for each of the regions and calculate marine heatwaves (MHWs) from them. This work is continued in the <a href="https://robwschlegel.github.io/MHWNWA/sst-prep.html">SST preparation and MHW detection</a> vignette.</p>
 </div>
 <div id="references" class="section level2">
 <h2>References</h2>
@@ -1326,7 +1408,7 @@ robwschlegel
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.6.1 (2019-07-05)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 16.04.5 LTS
+Running under: Ubuntu 16.04.6 LTS
 
 Matrix products: default
 BLAS:   /usr/lib/openblas-base/libblas.so.3
@@ -1346,7 +1428,7 @@ attached base packages:
 other attached packages:
  [1] bindrcpp_0.2.2  R.matlab_3.6.1  forcats_0.3.0   stringr_1.3.1  
  [5] dplyr_0.7.6     purrr_0.2.5     readr_1.1.1     tidyr_0.8.1    
- [9] tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1 jsonlite_1.6   
+ [9] tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
 
 loaded via a namespace (and not attached):
  [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
@@ -1358,15 +1440,15 @@ loaded via a namespace (and not attached):
 [19] workflowr_1.1.1   cellranger_1.1.0  rvest_0.3.2      
 [22] R.methodsS3_1.7.1 evaluate_0.11     labeling_0.3     
 [25] knitr_1.20        broom_0.5.0       Rcpp_0.12.18     
-[28] backports_1.1.2   scales_1.0.0      hms_0.4.2        
-[31] digest_0.6.16     stringi_1.2.4     grid_3.6.1       
-[34] rprojroot_1.3-2   cli_1.0.0         tools_3.6.1      
-[37] maps_3.3.0        magrittr_1.5      lazyeval_0.2.1   
-[40] crayon_1.3.4      whisker_0.3-2     pkgconfig_2.0.2  
-[43] xml2_1.2.0        lubridate_1.7.4   assertthat_0.2.0 
-[46] rmarkdown_1.10    httr_1.3.1        rstudioapi_0.7   
-[49] R6_2.2.2          nlme_3.1-137      git2r_0.23.0     
-[52] compiler_3.6.1   </code></pre>
+[28] scales_1.0.0      backports_1.1.2   jsonlite_1.5     
+[31] hms_0.4.2         digest_0.6.16     stringi_1.2.4    
+[34] grid_3.6.1        rprojroot_1.3-2   cli_1.0.0        
+[37] tools_3.6.1       maps_3.3.0        magrittr_1.5     
+[40] lazyeval_0.2.1    crayon_1.3.4      whisker_0.3-2    
+[43] pkgconfig_2.0.2   xml2_1.2.0        lubridate_1.7.4  
+[46] assertthat_0.2.0  rmarkdown_1.10    httr_1.3.1       
+[49] rstudioapi_0.7    R6_2.2.2          nlme_3.1-137     
+[52] git2r_0.23.0      compiler_3.6.1   </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
