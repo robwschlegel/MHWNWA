@@ -169,12 +169,13 @@ OISST_MHW_event <- OISST_region_MHW %>%
   filter(row_number() %% 2 == 0) %>%
   unnest(events)
 
-MHW_lolli_plot <- ggplot(data = OISST_MHW_event , aes(x = date_peak, y = intensity_max)) + 
+MHW_lolli_plot <- ggplot(data = OISST_MHW_event , aes(x = date_peak, y = intensity_cumulative)) + 
         geom_lolli(colour = "salmon", colour_n = "red", n = 3) + 
-  labs(x = "Peak Date", y = "Max. Intensity (°C)") +
+  labs(x = "Peak Date", y = "Cum. Intensity (°C x days)") +
   # scale_y_continuous(expand = c(0, 0))+
   facet_wrap(~region)
 # ggsave(plot = MHW_lolli_plot, filename = "output/MHW_lolli_plot.pdf", height = 7, width = 13)
+# ggsave(plot = MHW_lolli_plot, filename = "output/MHW_lolli_plot.png", height = 7, width = 13)
 
 # Visualise
 MHW_lolli_plot

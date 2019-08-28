@@ -4,7 +4,7 @@
 
 # Required bits -----------------------------------------------------------
 
-# .libPaths(c("~/R-packages", .libPaths()))
+.libPaths(c("~/R-packages", .libPaths()))
 
 # Packages used in this script
 # library(rlang)
@@ -16,6 +16,7 @@ library(heatwaveR, lib.loc = "../R-packages/")
 # cat(paste0("heatwaveR version = ", packageDescription("heatwaveR")$Version))
 library(tidync, lib.loc = "../R-packages/")
 library(yasomi, lib.loc = "../R-packages/")
+library(ggforce, lib.loc = "../R-packages/")
 
 # Set number of cores
 doMC::registerDoMC(cores = 50)
@@ -1000,3 +1001,77 @@ fig_duration_rate_onset <- function(fig_data, col_num){
   return(duration_rate_onset)
 }
 
+
+# Summary stat heat map ---------------------------------------------------
+
+# Show with this figure the different mean and median values for the main
+# summary stats as a proportion (0 -- 1) so that nodes may be quickly
+# compared visually
+fig_heat_stat <- function(){
+  heat_data <- fig_data_prep(readRDS("data/SOM/som.Rda"))$node_h_lines
+  heat_data_long <- heat_data %>%
+    gather(key = "stat", value = "val", -node) %>%
+    group_by(stat) %>%
+    mutate(prop = val/max(val))
+  heat_stat <- ggplot(heat_data_long, aes(x = 1, y = stat)) +
+    geom_tile(aes(fill = prop), colour = "black") +
+    geom_hline(aes(yintercept = 3.5)) +
+    scale_fill_gradient(low = "white", high = "red") +
+    facet_wrap(~node, ncol = 4) +
+    labs(y = NULL, x = "Statistic", fill = "prop.") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank())
+  heat_stat
+}
+# fig_heat_stat()
+# ggsave("output/SOM/heat_stat.pdf", height = 6, width = 6)
+# ggsave("output/SOM/heat_stat.png", height = 6, width = 6)
+# ggsave("docs/assets/SOM/heat_stat.png", height = 6, width = 6)
+
+
+# Schematic of all variables at once --------------------------------------
+
+# Create custom data.frames to create schematic figure
+# This will use a series of different types of shapes to denote the primary pattern seen in each of the important abiotic variables
+# Use an ellipse to show where the occurrence of MHWs is centred
+# Could use colour fill gradient to make it more apparent
+# Use two centre points to stretch the ellipse, with one of them always on the ss region
+# Use curvy arrows to show general wind patterns
+# Use coloured contours to show QNET and/or MSLP
+# Use +&- signs to show MLD
+# Perhaps denote current anomalies, but they aren’t very remarkable
+# The broad changes in patterns can be shown with large arrows running along the sides of the figure
+# Look into the possibility of using different types of cross-hatching within ellipses
+# To show the season of occurrence include a rug plot or density polygon at the bottom of the season/date_peak of each event
+# May be good to include a label showing summary stats somehow
+# First copy into code the stuff written on the white board
+# Then draw pre-renders on the white boars based on the node summary text written down
+
+fig_schematic <- function(){
+  region_data <- data.frame(node = 1,
+                            lon = -56,
+                            lat = 47,
+                            a = 15,
+                            b = 5,
+                            angle = 170)
+
+  # schematic_data <- dta.frame(node = 1,
+  #                             region = c(),
+  #                             wind_arrows(),
+  #                             mslp = c(),
+  #                             qnet = c(),
+  #                             mld = c())
+  schematic <- frame_base +
+  # schematic <- ggplot() +
+    # The land mass
+    geom_polygon(data = map_base, aes(x = lon, y = lat, group = group), alpha = 0.9,
+                 fill = NA, colour = "black", size = 0.5, show.legend = FALSE) +
+    # stat_ellipse(data = region_data) +
+    geom_ellipse(data = region_data, aes(x0 = lon, y0 = lat, a = a, b = b, angle = angle*pi/180), fill = "purple", alpha = 0.2) +
+    # geom_polygon() +
+    # ggforce::geom_circle(data = region_data, aes(x0 = lon, y0 = lat, r = r), fill = "black") +
+    facet_wrap(~node)
+  schematic
+
+
+}
