@@ -80,9 +80,9 @@ The written summary of each individual node below is broken into three pieces:
 
 There are a total of 289 MHWs considered when putting this 12 node (4x3) SOM together. The largest concentration of MHWs is into the middle two SOM nodes (6 + 7), where there are twice as many events as some of the side and corner nodes. The top left corner, node 1, also has a large amount of events placed within it and the diagonally opposite node (12) has a decent number. Overall I would not have said that any of the nodes have a questionable allotment of events, but further analysis shows that node 8 (middle right) is mostly populated by MHWs from one large event.
 
-### Node summary table
+### Node summary tables
 
-The table below contains a concise summary of the nodes following Table 4 in @Oliver2018tasmania. The following sub-sections provide more in-depth explanations.
+The tables below contain a concise summary of the nodes following Table 4 in @Oliver2018tasmania. The following sub-sections provide more in-depth explanations.
 
 ```{r, echo=FALSE}
 # knitr::kable(x = data.frame(node = c(1:12),
@@ -109,7 +109,6 @@ node_region <- data.frame(Node = c(1:12),
                                      "gsl focus; little cbs",
                                      "mab focus; 1 nfs"),
                           stringsAsFactors = F)
-knitr::kable(node_region)
 
 # Season info
 node_season <- data.frame(Node = c(1:12),
@@ -126,7 +125,6 @@ node_season <- data.frame(Node = c(1:12),
                                      "Spring + Summer; no Autumn",
                                      "Autumn + Winter; little else"),
                           stringsAsFactors = F)
-knitr::kable(node_season)
 
 # Count and years of occurrence info
 node_meta <- data.frame(Node = c(1:12),
@@ -142,8 +140,13 @@ node_meta <- data.frame(Node = c(1:12),
                                  "35; 1999 - 2017",
                                  "25; 1994 - 2015",
                                  "31; 1999 - 2017"),
-                        stringsAsFactors = F)
-knitr::kable(node_meta)
+                        stringsAsFactors = F) %>% 
+  separate(Meta, into = c("Count", "Years"), sep = ";")
+
+# Plot the briefer info
+left_join(node_meta, node_season, by = "Node") %>% 
+  left_join(node_region, by = "Node") %>% 
+  knitr::kable()
 
 # Summary of the cause of the event
 node_cause <- data.frame(Node = c(1:12),
@@ -167,20 +170,14 @@ node_stats <- fig_data_prep(readRDS("data/SOM/som.Rda"))$node_h_lines
 knitr::kable(node_stats)
 ```
 
-<!-- |Node|Region    |Season    |MHW Properties    |Conditions       |Range       | -->
-<!-- |----|----------|----------|------------------|-----------------|------------| -->
-<!-- |1   |nfs, gsl, cbs |Summer -- Spring, some winter, little Autumn |small - medium |Cyclonic storm drawing warm air southwards |1999 - 2018 | -->
-<!-- |2   |All |Summer - Spring |small - medium |Cyclonic storm drawing warm air southwards |2000 - 2016 | -->
-<!-- |3   |gsl> |Winter, Summer |small | Anticyclone and cyclone pushing air overland onto shelf |2007 - 2017 | -->
-<!-- |4   | mab> |Spring>   |smaller |Strong GS during cold southward LS winds |1994 - 2018 | -->
-<!-- |5   |nfs> |Summer, Autumn |small - medium | Cyclone that brings warm air first to nfs | 2012 - 2017 | -->
-<!-- |6   | |   |    |   | -->
-<!-- |7   | |   |    |   | -->
-<!-- |8   | |   |    |   | -->
-<!-- |9   | |   |    |   | -->
-<!-- |10   | |   |    |   | -->
-<!-- |11   | |   |    |   | -->
-<!-- |12   | |   |    |   | -->
+### Schematic summary
+
+The following figure shows an overall visual summary of all of the variables for all of the nodes at once. Along the edges are arrows indicating the overall trends in change of variables as one moves across the nodes.
+
+```{r schematic, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/node_schematic_summary.jpg")
+```
+
 
 ### Region + season
 
@@ -226,6 +223,14 @@ The MLD in the AO in the top nodes is generally deeper, and shoals as we move to
 knitr::include_graphics("assets/SOM/qnet_mld_anom.png")
 ```
 
+### Heatmap of summary statistics
+
+The figure below shows a heatmap of the median and mean of: max intensity, cumulative intensity, and duration of the MHWs clustered into each node. Note that the overall largest MHWs are found in the middle two nodes (6 + 7), but that the median duration/cumulative intensity of the MHWs in node 5 are the largest.
+
+```{r heat-stat, out.width='100%', fig.align='center'}
+knitr::include_graphics("assets/SOM/heat_stat.png")
+```
+
 ### Cumulative intensity
 
 The centre two nodes clearly have the largest individual MHWs w.r.t. cumulative intensity. They also have the largest mean intensity and almost the largest median intensities, but node 5 comes out just ahead because it has fewer small events. The top middle two nodes, and bottom outside two nodes have MHWs with much smaller cumulative intensities. The median (mean) intensities of the bottom middle two events are greater (less) than the top outside two nodes.
@@ -249,8 +254,6 @@ Again the same pattern. Except now node 11 has a low median duration and node 5 
 ```{r dur-summary, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/SOM/duration_rate_onset.png")
 ```
-
-### Heatmap of summary statistics
 
 ### Node 1
 
