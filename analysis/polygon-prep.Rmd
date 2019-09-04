@@ -68,7 +68,7 @@ map_base <- ggplot2::fortify(maps::map(fill = TRUE, col = "grey80", plot = FALSE
   dplyr::rename(lon = long) %>%
   mutate(group = ifelse(lon > 180, group+9999, group),
          lon = ifelse(lon > 180, lon-360, lon)) %>% 
-  select(-region, -subregion)
+  dplyr::select(-region, -subregion)
 # saveRDS(map_base, "data/map_base.Rda")
 
 # Quick map

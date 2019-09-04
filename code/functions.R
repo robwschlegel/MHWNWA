@@ -1018,15 +1018,15 @@ fig_heat_stat <- function(){
     geom_hline(aes(yintercept = 3.5)) +
     scale_fill_gradient(low = "white", high = "red") +
     facet_wrap(~node, ncol = 4) +
-    labs(y = NULL, x = "Statistic", fill = "prop.") +
+    labs(y = NULL, x = NULL, fill = "prop.") +
     theme(axis.text.x = element_blank(),
           axis.ticks.x = element_blank())
   heat_stat
 }
 # fig_heat_stat()
-# ggsave("output/SOM/heat_stat.pdf", height = 6, width = 6)
-# ggsave("output/SOM/heat_stat.png", height = 6, width = 6)
-# ggsave("docs/assets/SOM/heat_stat.png", height = 6, width = 6)
+# ggsave("output/SOM/heat_stat.pdf", height = 4, width = 6)
+# ggsave("output/SOM/heat_stat.png", height = 4, width = 6)
+# ggsave("docs/assets/SOM/heat_stat.png", height = 4, width = 6)
 
 
 # Schematic of all variables at once --------------------------------------
