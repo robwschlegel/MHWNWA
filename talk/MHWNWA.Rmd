@@ -105,7 +105,7 @@ Surface temperature:
 
 ***
 
-# What is problematic with the current method?
+# What is problematic with the current methodology?
 
 * Large MHWs are happening too rapidly to spend a year working on them one at a time
 * Smaller events may also be important
@@ -131,7 +131,7 @@ It is necessary to use three different remote/reanalysis products in order to in
 - GLORYS
   - Mixed layer depth (MLD; -m)
   - Surface ocean currents (U and V; m/s)
-  - Mean sea level pressure (MSLP) **not used in SOM**
+  - Mean sea level pressure (MSLP) **- NOT USED IN SOM**
 - ERA 5
   - Surface air temperature (t2m; °C)
   - Net positive downward heat flux (Q~net~; W/m2)
@@ -147,7 +147,7 @@ The spatial grid resolution is 0.25 lon/lat and the temporal resolution is daily
 ![](graph/NWA_study_area.png)
 
 - The region abbreviations are: 
-  - `cbs` = Cabot Strait
+  - `cbs` = Cabot Strait **- CREATED FOR THIS PROJECT**
   - `gm` = Gulf of Maine 
   - `gls` = Gulf of St. Lawrence
   - `ls` = Labrador Shelf **- NO LONGER USED**
@@ -192,7 +192,7 @@ General patterns:
 * Columns: 
   * Northeastern regions affected in the left columns, southwestern regions to the right  
   * Low pressure (storms) to the left, high pressure (blocking) to the right  
-  * Cyclonic wind movement to left, anticyconic to right
+  * Cyclonic wind movement to left, anticyclonic to right
   * Cold (warm) air over land (ocean) to the left, roughly opposite to the right  
   * Deeper (shallower) GS (LS) with positive (negative) Q~net~ to the left, roughly transitions to the opposite state to the right  
   
@@ -376,42 +376,43 @@ knitr::kable(node_stats)
 
 ***
 
-# What next for this research?
+# What's next for this research?
 
+* Layer eddy tracks over the SOM nodes to see if they are more numerous in the GS nodes
 * Extend the methodology seen here into the third and fourth dimensions of the data
 * Run this same analysis 1, 2, 3, etc. weeks prior to see how well it works
 * Test these drivers (node synoptic states) as predictors for events in different data products
 * Rank the drivers by their predictive accuracy
 * Create operational prediction data layer for public use/consumption
 
-***
+<!-- *** -->
 
-# Next steps in postdoc research
+<!-- # Next steps in postdoc research -->
 
-* Incorporate research back into __`heatwaveR`__ software package
-* Overall I would like to be able to spend more time focussing on the creation of operational products/tools
-* I would also like to move the research I have been doing back towards it's links/applications to ecology
-* I don't think that my time is well spent on the 'predictability' of MHWs as there are other groups already working on this
-* Current projects:
-  * Software:
-    * __`heatwaveR`__ software package - Ongoing
-  * Products/tools:
-    * MHW Tracker - Ongoing
-  * Papers:
-    * Detection of MHWs with sub-optimal data - Answering first round of reviewer comments
-    * Primary drivers of MHWs in the NW Atlantic - Data analysis/pre-write-up
-* New project ideas:
-  * Papers:
-    * The rate of MHWs inside vs. outside MPAs  
-    * Fisheries efforts in relation to MHW occurrence/intensity  
-    * Look at rates of change of MHWs in the Arctic
-      * Occurrence, intensity, drivers, long-term trends, phenological shifts
-      * Relate these to the presence/absence of kelp forests
-  * Products/tools:
-    * Most of the above proposed papers could be turned into data layers for the MHW Tracker
-    * Link the MHW Tracker to an SST product that provides a two week forecast
-      * I think this is a better method of near future MHW detection than me reinventing the wheel
-      * This can also be layered over an MPA layer to provide a warning layer for MPA managers
+<!-- * Incorporate research back into __`heatwaveR`__ software package -->
+<!-- * Overall I would like to be able to spend more time focussing on the creation of operational products/tools -->
+<!-- * I would also like to move the research I have been doing back towards it's links/applications to ecology -->
+<!-- * I don't think that my time is well spent on the 'predictability' of MHWs as there are other groups already working on this -->
+<!-- * Current projects: -->
+<!--   * Software: -->
+<!--     * __`heatwaveR`__ software package - Ongoing -->
+<!--   * Products/tools: -->
+<!--     * MHW Tracker - Ongoing -->
+<!--   * Papers: -->
+<!--     * Detection of MHWs with sub-optimal data - Answering first round of reviewer comments -->
+<!--     * Primary drivers of MHWs in the NW Atlantic - Data analysis/pre-write-up -->
+<!-- * New project ideas: -->
+<!--   * Papers: -->
+<!--     * The rate of MHWs inside vs. outside MPAs   -->
+<!--     * Fisheries efforts in relation to MHW occurrence/intensity   -->
+<!--     * Look at rates of change of MHWs in the Arctic -->
+<!--       * Occurrence, intensity, drivers, long-term trends, phenological shifts -->
+<!--       * Relate these to the presence/absence of kelp forests -->
+<!--   * Products/tools: -->
+<!--     * Most of the above proposed papers could be turned into data layers for the MHW Tracker -->
+<!--     * Link the MHW Tracker to an SST product that provides a two week forecast -->
+<!--       * I think this is a better method of near future MHW detection than me reinventing the wheel -->
+<!--       * This can also be layered over an MPA layer to provide a warning layer for MPA managers -->
 
 ***
 
