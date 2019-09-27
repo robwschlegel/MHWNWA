@@ -35,6 +35,9 @@ library(tidyverse, quietly = T)
 ```
 
 
+![](graph/natural_world.png)
+
+
 # What are marine heatwaves? 
 
 <!-- ## Definition -->
