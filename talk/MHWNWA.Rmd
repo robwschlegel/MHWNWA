@@ -1,7 +1,7 @@
 ---
 title: '**Primary drivers of marine heatwaves in the Northwest Atlantic**'
 author: "Robert W. Schlegel and Eric C. J. Oliver"
-date: "September 4th, 2019"
+date: "September 27th, 2019"
 output:
   html_document:
     # code_folding: show
@@ -37,6 +37,7 @@ library(tidyverse, quietly = T)
 
 ![](graph/natural_world.png)
 
+***
 
 # What are marine heatwaves? 
 
