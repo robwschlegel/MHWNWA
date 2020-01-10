@@ -32,7 +32,7 @@ source("code/functions.R")
 
 # MHW detection -----------------------------------------------------------
 
-# See the "MHW detection" vignette
+# See the "MHW detection" vignette (analysis/sst-prep.Rmd)
 
 
 # Create net heat flux (qnet) variable ------------------------------------
@@ -413,6 +413,6 @@ source("code/functions.R")
 
 # Visuals -----------------------------------------------------------------
 
-# som <- readRDS("data/SOM/som.Rda")
-# som_node_visualise(som)
+som <- readRDS("data/SOM/som.Rda")
+fig_all_som(som)
 

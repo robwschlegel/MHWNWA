@@ -9,3 +9,4 @@ ERA5*
 GLORYS*
 ALL_clim.Rda
 ALL_anom.Rda
+*.nc

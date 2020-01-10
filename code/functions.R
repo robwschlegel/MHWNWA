@@ -14,6 +14,7 @@ library(lubridate) # For convenient date manipulation
 library(data.table) # For faster mean values
 library(heatwaveR, lib.loc = "../R-packages/")
 # cat(paste0("heatwaveR version = ", packageDescription("heatwaveR")$Version))
+library(ncdf4)
 library(tidync, lib.loc = "../R-packages/")
 library(yasomi, lib.loc = "../R-packages/")
 library(ggforce, lib.loc = "../R-packages/")
@@ -111,6 +112,39 @@ bathy <- readRDS("data/NWA_bathy_lowres.Rda")
 # land_mask_OISST_sub <- land_mask_OISST%>%
 #   filter(lon >= NWA_corners[1], lon <= NWA_corners[2],
 #          lat >= NWA_corners[3], lat <= NWA_corners[4])
+
+
+# Filter out desired eddy trajectories ------------------------------------
+
+# nc <- nc_open("data/eddy_trajectory_2.0exp_19930101_20180118.nc")
+# eddies <- tibble(lat = round(ncvar_get(nc, varid = "latitude"), 4), # observation longitude
+#                  lon = round(ncvar_get(nc, varid = "longitude"), 4), # observation latitude
+#                  # days since 1950-01-01 00:00:00 UTC:
+#                  time = as.Date(ncvar_get(nc, varid = "time"), origin = "1950-01-01"),
+#                  # magnitude of the height difference between (Obs) cm the extremum
+#                  # of SLA within the eddy andthe SLA around the contour defining the
+#                  # eddy perimeter:
+#                  amplitude = round(ncvar_get(nc, varid = "amplitude"), 3),
+#                  # flow orientation of eddies -1 is Cyclonic and 1 is Anticyclonic:
+#                  cyclonic_type = ncvar_get(nc, varid = "cyclonic_type"),
+#                  # observation sequence number, days from eddy start:
+#                  observation_number = ncvar_get(nc, varid = "observation_number"),
+#                  # flag indicating if the value is interpolated between two observations
+#                  # or not (0: observed, 1: interpolated):
+#                  observed_flag = ncvar_get(nc, varid = "observed_flag"),
+#                  # average speed of the contour defining the radius scale L:
+#                  speed_average = ncvar_get(nc, varid = "speed_average"),
+#                  # radius of a circle whose area is equal to that enclosed by the
+#                  # contour of maximum circum-average speed:
+#                  speed_radius = ncvar_get(nc, varid = "speed_radius"),
+#                  # eddy identification number:
+#                  track = ncvar_get(nc, varid = "track")) %>%
+#   mutate(lon = ifelse(lon > 180, lon - 360, lon)) %>%
+#   filter(lon >= NWA_corners[1], lon <= NWA_corners[2],
+#          lat >= NWA_corners[3], lat <= NWA_corners[4],)
+# nc_close(nc); rm(nc)
+# saveRDS(eddies, "data/eddy_tracks.Rds")
+eddy_tracks <- readRDS("data/eddy_tracks.Rds")
 
 
 # Function to create the OISST landmask -----------------------------------
@@ -484,6 +518,15 @@ som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
 }
 
 
+# Exract eddy tracks by date range ----------------------------------------
+
+eddy_track_extract <- function(df){
+  date_range <- seq(df$date_start, df$date_end, by = "day")
+  eddy_track_sub <- filter(eddy_tracks, time %in% date_range)
+  return(eddy_track_sub)
+}
+
+
 # Figure data processing --------------------------------------------------
 
 fig_data_prep <- function(data_packet){
@@ -570,6 +613,24 @@ fig_data_prep <- function(data_packet){
               median_dur = median(duration, na.rm = T)) %>%
     mutate_all(round, digits = 2)
 
+  # Load MHW data
+  OISST_region_MHW <- readRDS("data/OISST_region_MHW.Rda")
+  OISST_MHW_event <- OISST_region_MHW %>%
+    select(-cats) %>%
+    unnest(events) %>%
+    filter(row_number() %% 2 == 0) %>%
+    unnest(events)
+
+  # Find the eddy tracks present during each MHW
+  eddy_data <- data_packet$info %>%
+    left_join(OISST_MHW_event, by = c("region", "event_no")) %>%
+    group_by(node, region, event_no) %>%
+    nest() %>%
+    mutate(res = map(data, eddy_track_extract)) %>%
+    select(-data) %>%
+    unnest(cols = "res") %>%
+    mutate(cyclonic_type = factor(cyclonic_type, labels = c("Cyclonic", "Anticyclonic")))
+
   # Combine and exit
   res <- list(som_data_wide = som_data_wide,
               som_data_sub = som_data_sub,
@@ -578,7 +639,8 @@ fig_data_prep <- function(data_packet){
               node_season_info = node_season_info,
               node_region_info = node_region_info,
               region_prop_label = region_prop_label,
-              node_h_lines = node_h_lines)
+              node_h_lines = node_h_lines,
+              eddy_data = eddy_data)
   return(res)
 }
 
@@ -591,9 +653,9 @@ fig_data_prep <- function(data_packet){
 # fig_height = 9
 # fig_width = 13
 fig_all_som <- function(som_packet,
-                               col_num = 4,
-                               fig_height = 9,
-                               fig_width = 13){
+                        col_num = 4,
+                        fig_height = 9,
+                        fig_width = 13){
 
   # Base data for all figures
   base_data <- fig_data_prep(data_packet = som_packet)
@@ -646,7 +708,7 @@ fig_all_som <- function(som_packet,
   # Create individual node summaries
   # doMC::registerDoMC(cores = 4)
   plyr::l_ply(1:max(base_data$OISST_MHW_meta$node, na.rm = T), .fun = fig_single_node,
-              .progress = "text", fig_packet = base_data)
+              .progress = "text", fig_packet = base_data, .parallel = T)
 }
 
 
@@ -667,6 +729,7 @@ fig_single_node <- function(node_number, fig_packet){
   fig_packet$node_region_info <- filter(fig_packet$node_region_info, node == node_number)
   fig_packet$region_prop_label <- filter(fig_packet$region_prop_label, node == node_number)
   fig_packet$node_h_lines <- filter(fig_packet$node_h_lines, node == node_number)
+  fig_packet$eddy_data <- filter(fig_packet$eddy_data, node == node_number)
 
   # Events per region and season per node
   region_season_sub <- fig_region_season(fig_packet, 1)
@@ -724,6 +787,9 @@ fig_region_season <- function(fig_data, col_num){
     # The regions
     geom_polygon(data = fig_data$region_prop_label,
                  aes(group = region, fill = node_region_prop), colour = "black") +
+    # Eddy tracks
+    geom_point(data = fig_data$eddy_data, aes(x = lon, y = lat),
+               colour = "darkorange", alpha = 0.3, size = 0.1) +
     # The base map
     geom_polygon(data = map_base, aes(group = group), show.legend = F) +
     # Count per region
