@@ -788,8 +788,9 @@ fig_region_season <- function(fig_data, col_num){
     geom_polygon(data = fig_data$region_prop_label,
                  aes(group = region, fill = node_region_prop), colour = "black") +
     # Eddy tracks
-    geom_point(data = fig_data$eddy_data, aes(x = lon, y = lat),
-               colour = "darkorange", alpha = 0.3, size = 0.1) +
+    # NB: This looks aweful. I turned it off for some figures for a talk
+    # geom_point(data = fig_data$eddy_data, aes(x = lon, y = lat),
+               # colour = "darkorange", alpha = 0.3, size = 0.1) +
     # The base map
     geom_polygon(data = map_base, aes(group = group), show.legend = F) +
     # Count per region
