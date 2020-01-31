@@ -404,10 +404,29 @@ source("code/functions.R")
 # saveRDS(packet, "data/SOM/packet.Rda")
 
 
+# Visualise data packets --------------------------------------------------
+
+# Look at event sizes etc.
+# OISST_MHW_event
+
+# NB: Just pick a region and event number to save a synoptic summary of it
+
+# The 2012 lobster MHW
+# fig_data_packet("gm",	14)
+# fig_data_packet("gsl",	39)
+
+# Smol MHWs
+# fig_data_packet("cbs",	14)
+# fig_data_packet("mab", 20)
+
+# Hecking big MHWs
+# fig_data_packet("mab",	23)
+
+
 # SOM analysis ------------------------------------------------------------
 
 # packet <- readRDS("data/SOM/packet.Rda")
-# system.time(som <- som_model_PCI(packet)) # 78 seconds
+# system.time(som <- som_model_PCI(packet)) # 83 seconds
 # saveRDS(som, file = "data/SOM/som.Rda")
 
 

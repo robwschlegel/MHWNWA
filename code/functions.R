@@ -426,6 +426,171 @@ wide_packet_func <- function(df){
 }
 
 
+# Visualise a single data packet ------------------------------------------
+
+# This function will create a summary figure for a single data packet
+# It is based on 'data/SOM/synoptic_states.Rda' and 'data/SOM/synoptic_states_other.Rda'
+#testers...
+# event_region <- "mab"
+# event_num <- 20
+fig_data_packet <- function(event_region, event_num){
+
+  # Load and prep mean anom states
+  if(!exists("synoptic_states")){
+    synoptic_states <- readRDS("data/SOM/synoptic_states.Rda")
+  }
+  if(!exists("synoptic_states_other")){
+    synoptic_states_other <- readRDS("data/SOM/synoptic_states_other.Rda")
+  }
+  single_packet <- synoptic_states %>%
+    filter(region == event_region,
+           event_no == event_num) %>%
+    unnest(cols = "synoptic")
+  single_packet_other <- synoptic_states_other %>%
+    filter(region == event_region,
+           event_no == event_num) %>%
+    unnest(cols = "synoptic")
+  single_packet_full <- left_join(single_packet, single_packet_other)
+
+  # Reduce wind/ current vectors
+  lon_sub <- seq(min(single_packet_full$lon), max(single_packet_full$lon), by = 1)
+  lat_sub <- seq(min(single_packet_full$lat), max(single_packet_full$lat), by = 1)
+  vec_sub <- single_packet_full %>%
+    filter(lon %in% lon_sub, lat %in% lat_sub) %>%
+    na.omit()
+
+  # Establish the vector scalar for the currents
+  current_uv_scalar <- 4
+
+  # SUbset region polygon
+  NWA_coords_sub <- NWA_coords %>%
+    filter(region == event_region)
+
+  # Load and prep SST time series
+  OISST_region <- readRDS("data/OISST_region.Rda")
+  OISST_region_sub <- OISST_region %>%
+    filter(region == event_region) %>%
+    ts2clm(climatologyPeriod = c("1993-01-01", "2018-12-31")) %>%
+    filter(t >= single_packet_full$date_start[1]-5,
+           t <= single_packet_full$date_end[1]+5)
+
+  # MHW segment data.frame
+  OISST_segments <- data.frame(date_start = single_packet_full$date_start[1],
+                               date_end = single_packet_full$date_end[1],
+                               date_peak = single_packet_full$date_peak[1],
+                               temp_start = OISST_region_sub$temp[OISST_region_sub$t == single_packet_full$date_start[1]],
+                               temp_end = OISST_region_sub$temp[OISST_region_sub$t == single_packet_full$date_end[1]],
+                               temp_peak = OISST_region_sub$temp[OISST_region_sub$t == single_packet_full$date_peak[1]])
+
+  # Determine date breaks
+  if(nrow(OISST_region_sub) < 60){
+    date_breaks_op <- "1 week"
+    date_labels_op <- "%d %b %Y"
+  } else if(nrow(OISST_region_sub) < 120){
+    date_breaks_op <- "1 month"
+    date_labels_op <- "%b %Y"
+  } else if(nrow(OISST_region_sub) >= 120){
+    date_breaks_op <- "2 months"
+    date_labels_op <- "%b %Y"
+  }
+
+  # SST ts
+  ts_panel <- ggplot(data = OISST_region_sub, aes(x = t, y = temp)) +
+    geom_flame(aes(y2 = thresh), fill = "salmon") +
+    geom_line() +
+    geom_line(aes(y = seas), col = "skyblue") +
+    geom_line(aes(y = thresh), col = "navy") +
+    geom_segment(data = OISST_segments, colour = "springgreen",
+                 aes(x = date_start-1, xend = date_start-1,
+                     y = temp_start-1, yend = temp_start+1)) +
+    geom_segment(data = OISST_segments, colour = "springgreen",
+                 aes(x = date_end+1, xend = date_end+1,
+                     y = temp_end-1, yend = temp_end+1)) +
+    geom_segment(data = OISST_segments, colour = "forestgreen",
+                 aes(x = date_peak, xend = date_peak,
+                     y = temp_peak-1, yend = temp_peak+1)) +
+    scale_x_date(expand = c(0, 0), date_breaks = date_breaks_op, date_labels = date_labels_op, ) +
+    labs(x = "Date", y = "Temp. (°C)  ")
+  # ts_panel
+
+  # SST + U + V (anom)
+  sst_u_v_anom <- frame_base +
+    geom_raster(data = single_packet_full, aes(fill = sst_anom)) +
+    # The bathymetry
+    stat_contour(data = bathy[bathy$depth > -2000,],
+    aes(x = lon, y = lat, z = depth), alpha = 0.5,
+    colour = "black", size = 0.5, binwidth = 200, na.rm = TRUE, show.legend = FALSE) +
+    # The current vectors
+    geom_segment(data = vec_sub,
+                 aes(xend = lon + u_anom * current_uv_scalar,
+                     yend = lat + v_anom * current_uv_scalar),
+                 arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
+                 linejoin = "mitre", size = 0.4, alpha = 0.8) +
+    # The land mass
+    geom_polygon(data = map_base, aes(group = group), alpha = 1,
+                 fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
+    # The region polygon
+    geom_polygon(data = NWA_coords_sub, aes(group = region),
+                 fill = NA, colour = "purple", size = 1.5, alpha = 1) +
+    # Diverging gradient
+    scale_fill_gradient2(name = "SST\nanom. (°C)", low = "blue", high = "red")
+  # sst_u_v_anom
+
+  # Air temp + U10 + V10 + MSLP
+  air_u_v_mslp_anom <- frame_base +
+    # The air temperature
+    geom_raster(data = single_packet_full, aes(fill = t2m_anom)) +
+    # The land mass
+    geom_polygon(data = map_base, aes(group = group), alpha = 1,
+                 fill = NA, colour = "black", size = 0.5, show.legend = FALSE) +
+    # The mean sea level pressure contours
+    geom_contour(data = single_packet_full,
+                 aes(z = msl_anom, colour = stat(level)), size = 1) +
+    # The wind vectors
+    geom_segment(data = vec_sub,
+                 aes(xend = lon + u10_anom * wind_uv_scalar,
+                     yend = lat + v10_anom * wind_uv_scalar),
+                 arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
+                 linejoin = "mitre", size = 0.4, alpha = 0.4) +
+    # The region polygon
+    geom_polygon(data = NWA_coords_sub, aes(group = region),
+                 fill = NA, colour = "purple", size = 1.5, alpha = 1) +
+    # Colour scale
+    scale_fill_gradient2(name = "Air temp.\nanom. (°C)", low = "blue", high = "red") +
+    scale_colour_gradient2("MSLP anom.\n(hPa)", guide = "legend",
+                           low = "green", mid = "grey", high = "yellow")
+  # air_u_v_mslp_anom
+
+  # Qnet + MLD
+  qnet_mld_anom <- frame_base +
+    # The MLD
+    geom_raster(data = single_packet_full, aes(fill = mld_anom)) +
+    # The land mass
+    geom_polygon(data = map_base, aes(group = group), alpha = 1,
+                 fill = "grey80", colour = "black", size = 0.5, show.legend = FALSE) +
+    # The net downward heat flux contours
+    geom_contour(data = single_packet_full, binwidth = 50,
+                 aes(z = qnet_anom, colour = stat(level)), size = 1) +
+    # The region polygon
+    geom_polygon(data = NWA_coords_sub, aes(group = region),
+                 fill = NA, colour = "purple", size = 1.5, alpha = 1) +
+    # Colour scale
+    scale_fill_gradient2("MLD anom. (m)",low = "blue", high = "red") +
+    scale_colour_gradient2("Net downward\nheat flux\nanom. (W/m2)", guide = "legend",
+                           low = "green", mid = "grey", high = "yellow")
+  # qnet_mld_anom
+
+  # Merge the panels together
+  bottom_row <- cowplot::plot_grid(sst_u_v_anom, air_u_v_mslp_anom, qnet_mld_anom, labels = c('B', 'C', 'D'),
+                                   align = 'h', rel_widths = c(1, 1, 1), nrow = 1)
+  top_row <- cowplot::plot_grid(NULL, ts_panel, NULL, labels = c('', 'A', ''), nrow = 1, rel_widths = c(1,2,1))
+  fig_all <- cowplot::plot_grid(top_row, bottom_row, ncol = 1, rel_heights = c(1.3, 3))
+  # fig_all
+  ggsave(fig_all, filename = paste0("talk/graph/synoptic_",event_region,"_",event_num,".png"), height = 6, width = 16)
+  # ggsave(fig_all, filename = paste0("talk/graph/synoptic_",event_region,"_",event_num,".pdf"), height = 6, width = 16)
+}
+
+
 # Run SOM and create summary output ---------------------------------------
 
 som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
@@ -468,20 +633,22 @@ som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
                    variable.name = "variable", value.name = "value")
 
   # Create the mean values that serve as the unscaled results from the SOM
-  node_data <- data_packet_long[, .(val = mean(value, na.rm = TRUE)),
+  node_data <- data_packet_long[, .(val = mean(value, na.rm = TRUE),
+                                    sd = sd(value, na.rm = TRUE)),
                                 by = .(node, variable)] %>%
     separate(variable, into = c("lon", "lat", "var"), sep = "BBB") %>%
     dplyr::arrange(node, var, lon, lat) %>%
     mutate(lon = as.numeric(lon),
            lat = as.numeric(lat),
-           val = round(val, 4))
+           val = round(val, 4),
+           sd = round(sd, 4))
 
   # Load the other synoptic state data as necessary
   if(!exists("synoptic_states_other_unnest")){
     # system.time(
     synoptic_states_other_unnest <- readRDS("data/SOM/synoptic_states_other.Rda") %>%
       select(region, event_no, synoptic) %>%
-      unnest()
+      unnest(cols = "synoptic")
     # ) # 5 seconds
   }
 
@@ -492,28 +659,33 @@ som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
     mutate(event_no = as.numeric(event_no)) %>%
     left_join(synoptic_states_other_unnest, by = c("region", "event_no")) %>%
     select(-t, -region, -event_no) %>%
-    group_by(node, lon, lat) %>%
-    summarise_all(mean, na.rm = T) %>%
     gather(key = "var", value = "val", -c(node:lat)) %>%
-    mutate(val = round(val, 4)) %>%
-    na.omit()
-    # mutate(val = replace_na(val, NA))
+    as.data.table() %>%
+    .[, .(val = mean(val, na.rm = TRUE),
+          sd = sd(val, na.rm = TRUE)),
+      by = .(node, lon, lat, var)] %>%
+    dplyr::arrange(node, var, lon, lat) %>%
+    mutate(val = round(val, 4),
+           sd = round(sd, 4))
 
   # ANOSIM for goodness of fit for node count
   node_data_wide <- node_data %>%
     unite(coords, c(lon, lat, var), sep = "BBB") %>%
+    dplyr::select(-sd) %>%
     data.table() %>%
     dcast(node~coords, value.var = "val")
 
   # Calculate similarity
-  som_anosim <- vegan::anosim(as.matrix(node_data_wide[,-"node"]),
-                              node_data_wide$node, distance = "euclidean")$signif
+  # NB: As of Nov 2019 Vegan changed the anosim function
+  # it will no longer run if all values are unique, which they are here
+  # som_anosim <- vegan::anosim(as.matrix(node_data_wide[,-"node"]),
+  #                             node_data_wide$node, distance = "euclidean")$signif
 
   # Combine and exit
   res <- list(data = node_data,
               other_data = other_data,
-              info = node_info,
-              ANOSIM = paste0("p = ",som_anosim))
+              info = node_info)#,
+              #ANOSIM = paste0("p = ",som_anosim))
   return(res)
 }
 
@@ -531,12 +703,23 @@ eddy_track_extract <- function(df){
 
 fig_data_prep <- function(data_packet){
 
-  # Cast the data wide
+  ## Cast the data wide
+  # Base data
   som_data_wide <- data_packet$data %>%
+    dplyr::select(-sd) %>%
     spread(var, val) #%>%
     # mutate(mld_anom_cut = cut(mld_anom, breaks = seq(-0.5, 0.5, 0.1)))
   other_data_wide <- data_packet$other_data %>%
+    dplyr::select(-sd) %>%
     spread(var, val)
+  # Variance data
+  som_sd_wide <- data_packet$data %>%
+    dplyr::select(-val) %>%
+    spread(var, sd) #%>%
+  # mutate(mld_anom_cut = cut(mld_anom, breaks = seq(-0.5, 0.5, 0.1)))
+  other_sd_wide <- data_packet$other_data %>%
+    dplyr::select(-val) %>%
+    spread(var, sd)
 
   # currents <- currents[(currents$lon %in% lon_sub & currents$lat %in% lat_sub),]
   som_data_sub <- som_data_wide %>%
@@ -635,6 +818,8 @@ fig_data_prep <- function(data_packet){
   res <- list(som_data_wide = som_data_wide,
               som_data_sub = som_data_sub,
               other_data_wide = other_data_wide,
+              som_sd_wide = som_sd_wide,
+              other_sd_wide = other_sd_wide,
               OISST_MHW_meta = OISST_MHW_meta,
               node_season_info = node_season_info,
               node_region_info = node_region_info,
@@ -662,48 +847,37 @@ fig_all_som <- function(som_packet,
 
   # Events per nregion and season per node
   region_season <- fig_region_season(base_data, col_num)
-  ggsave("output/SOM/region_season.pdf", region_season, height = fig_height, width = fig_width)
-  ggsave("output/SOM/region_season.png", region_season, height = fig_height, width = fig_width)
 
   # SST + U + V (anom)
   sst_u_v_anom <- fig_sst_u_v_anom(base_data, col_num)
-  ggsave("output/SOM/sst_u_v_anom.pdf", sst_u_v_anom, height = fig_height, width = fig_width)
-  ggsave("output/SOM/sst_u_v_anom.png", sst_u_v_anom, height = fig_height, width = fig_width)
 
   # Air Temp + U + V (anom)
   air_u_v_mslp_anom <- fig_air_u_v_mslp_anom(base_data, col_num)
-  ggsave("output/SOM/air_u_v_mslp_anom.pdf", air_u_v_mslp_anom, height = fig_height, width = fig_width)
-  ggsave("output/SOM/air_u_v_mslp_anom.png", air_u_v_mslp_anom, height = fig_height, width = fig_width)
 
   # Net downward heat flux and MLD (anom)
   qnet_mld_anom <- fig_qnet_mld_anom(base_data, col_num)
-  ggsave("output/SOM/qnet_mld_anom.pdf", qnet_mld_anom, height = fig_height, width = fig_width)
-  ggsave("output/SOM/qnet_mld_anom.png", qnet_mld_anom, height = fig_height, width = fig_width)
 
   # Lollis showing cum. int. + season
   cum_int_season <- fig_cum_int_season(base_data, col_num)
-  ggsave("output/SOM/cum_int_season.pdf", cum_int_season, height = fig_height, width = fig_width)
-  ggsave("output/SOM/cum_int_season.png", cum_int_season, height = fig_height, width = fig_width)
 
   # Lollis showing max. int. + region
   max_int_region <- fig_max_int_region(base_data, col_num)
-  ggsave("output/SOM/max_int_region.pdf", max_int_region, height = fig_height, width = fig_width)
-  ggsave("output/SOM/max_int_region.png", max_int_region, height = fig_height, width = fig_width)
 
   # SST + U + V (real)
   sst_u_v_real <- fig_sst_u_v_real(base_data, col_num)
-  ggsave("output/SOM/sst_u_v_real.pdf", sst_u_v_real, height = fig_height, width = fig_width)
-  ggsave("output/SOM/sst_u_v_real.png", sst_u_v_real, height = fig_height, width = fig_width)
 
   # Air Temp + U + V (real)
   air_u_v_mslp_real <- fig_air_u_v_mslp_real(base_data, col_num)
-  ggsave("output/SOM/air_u_v_mslp_real.pdf", air_u_v_mslp_real, height = fig_height, width = fig_width)
-  ggsave("output/SOM/air_u_v_mslp_real.png", air_u_v_mslp_real, height = fig_height, width = fig_width)
 
   # Lollis showing duration + rate onset
   duration_rate_onset <- fig_duration_rate_onset(base_data, col_num)
-  ggsave("output/SOM/duration_rate_onset.pdf", duration_rate_onset, height = fig_height, width = fig_width)
-  ggsave("output/SOM/duration_rate_onset.png", duration_rate_onset, height = fig_height, width = fig_width)
+
+  # Create SD per pixel plots for env. variables
+  sd_col_names <- c(colnames(base_data$som_data_wide),
+                    colnames(base_data$other_data_wide))
+  sd_col_names <- sd_col_names[-which(sd_col_names %in% c("node", "lon", "lat"))]
+  plyr::l_ply(sd_col_names, .fun = fig_sd, .parallel = T,
+              fig_data = base_data, col_num = col_num)
 
   # Create individual node summaries
   # doMC::registerDoMC(cores = 4)
@@ -820,6 +994,10 @@ fig_region_season <- function(fig_data, col_num){
                          palette = "BuPu", direction = 1) +
     # The facets
     facet_wrap(~node, ncol = col_num)
+  if(col_num != 1){
+    ggsave("output/SOM/region_season.pdf", region_season, height = fig_height, width = fig_width)
+    ggsave("output/SOM/region_season.png", region_season, height = fig_height, width = fig_width)
+  }
   return(region_season)
 }
 
@@ -851,6 +1029,10 @@ fig_sst_u_v_anom <- function(fig_data, col_num){
     scale_fill_gradient2(name = "SST\nanom. (°C)", low = "blue", high = "red") +
     # The facets
     facet_wrap(~node, ncol = col_num)
+  if(col_num != 1){
+    ggsave("output/SOM/sst_u_v_anom.pdf", sst_u_v_anom, height = fig_height, width = fig_width)
+    ggsave("output/SOM/sst_u_v_anom.png", sst_u_v_anom, height = fig_height, width = fig_width)
+  }
   return(sst_u_v_anom)
 }
 
@@ -880,6 +1062,10 @@ fig_air_u_v_mslp_anom <- function(fig_data, col_num){
                            low = "green", mid = "grey", high = "yellow") +
     # The facets
     facet_wrap(~node, ncol = col_num)
+  if(col_num != 1){
+    ggsave("output/SOM/air_u_v_mslp_anom.pdf", air_u_v_mslp_anom, height = fig_height, width = fig_width)
+    ggsave("output/SOM/air_u_v_mslp_anom.png", air_u_v_mslp_anom, height = fig_height, width = fig_width)
+  }
   return(air_u_v_mslp_anom)
 }
 
@@ -903,6 +1089,8 @@ fig_qnet_mld_anom <- function(fig_data, col_num){
                            low = "green", mid = "grey", high = "yellow") +
     # The facets
     facet_wrap(~node, ncol = col_num)
+  ggsave("output/SOM/qnet_mld_anom.pdf", qnet_mld_anom, height = fig_height, width = fig_width)
+  ggsave("output/SOM/qnet_mld_anom.png", qnet_mld_anom, height = fig_height, width = fig_width)
   return(qnet_mld_anom)
 }
 
@@ -931,6 +1119,10 @@ fig_sst_u_v_real <- function(fig_data, col_num){
     scale_fill_viridis_c(name = "SST (°C)", option = "D") +
     # The facets
     facet_wrap(~node, ncol = col_num)
+  if(col_num != 1){
+    ggsave("output/SOM/sst_u_v_real.pdf", sst_u_v_real, height = fig_height, width = fig_width)
+    ggsave("output/SOM/sst_u_v_real.png", sst_u_v_real, height = fig_height, width = fig_width)
+  }
   return(sst_u_v_real)
 }
 
@@ -959,7 +1151,44 @@ fig_air_u_v_mslp_real <- function(fig_data, col_num){
     scale_colour_gradient("MSLP", guide = "legend", low = "white", high =  "black") +
     # The facets
     facet_wrap(~node, ncol = col_num)
+  if(col_num != 1){
+    ggsave("output/SOM/air_u_v_mslp_real.pdf", air_u_v_mslp_real, height = fig_height, width = fig_width)
+    ggsave("output/SOM/air_u_v_mslp_real.png", air_u_v_mslp_real, height = fig_height, width = fig_width)
+  }
   return(air_u_v_mslp_real)
+}
+
+
+
+# SD figures --------------------------------------------------------------
+
+fig_sd <- function(col_name, fig_data, col_num){
+
+  # Pick correct data.frame from list
+  if({{col_name}} %in% colnames(fig_data$som_sd_wide)){
+    sub_data <- fig_data$som_sd_wide
+  } else{
+    sub_data <- fig_data$other_sd_wide
+  }
+
+  # The figure
+  sd_heat_map <- frame_base +
+    # The MLD
+    geom_raster(data = sub_data, aes_string(fill = {{col_name}})) +
+    # The land mass
+    geom_polygon(data = map_base, aes(group = group), alpha = 1,
+                 fill = "grey80", colour = "black", size = 0.5, show.legend = FALSE) +
+    # Colour scale
+    scale_fill_gradient2(paste0("SD: ",{{col_name}}),low = "white", high = "red") +
+    # The facets
+    facet_wrap(~node, ncol = col_num) +
+    # Etc.
+    theme(legend.position = "bottom")
+  if(col_num != 1){
+    ggsave(paste0("output/SOM/",col_name,"_sd.pdf"), sd_heat_map, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/",col_name,"_sd.png"), sd_heat_map, height = fig_height, width = fig_width)
+  }
+  # return(sd_heat_map)
 }
 
 
@@ -994,6 +1223,10 @@ fig_cum_int_season <- function(fig_data, col_num){
     theme(legend.position = "bottom",
           axis.text.x = element_text(angle = 30)) +
     facet_wrap(~node, ncol = col_num)
+  if(col_num != 1){
+    ggsave("output/SOM/cum_int_season.pdf", cum_int_season, height = fig_height, width = fig_width)
+    ggsave("output/SOM/cum_int_season.png", cum_int_season, height = fig_height, width = fig_width)
+  }
   return(cum_int_seas)
 }
 
@@ -1029,6 +1262,10 @@ fig_max_int_region <- function(fig_data, col_num){
     theme(legend.position = "bottom",
           axis.text.x = element_text(angle = 30)) +
     facet_wrap(~node, ncol = col_num)
+  if(col_num != 1){
+    ggsave("output/SOM/max_int_region.pdf", max_int_region, height = fig_height, width = fig_width)
+    ggsave("output/SOM/max_int_region.png", max_int_region, height = fig_height, width = fig_width)
+  }
   return(max_int_region)
 }
 
@@ -1065,6 +1302,10 @@ fig_duration_rate_onset <- function(fig_data, col_num){
     theme(legend.position = "bottom",
           axis.text.x = element_text(angle = 30)) +
     facet_wrap(~node, ncol = col_num)
+  if(col_num != 1){
+    ggsave("output/SOM/duration_rate_onset.pdf", duration_rate_onset, height = fig_height, width = fig_width)
+    ggsave("output/SOM/duration_rate_onset.png", duration_rate_onset, height = fig_height, width = fig_width)
+  }
   return(duration_rate_onset)
 }
 
