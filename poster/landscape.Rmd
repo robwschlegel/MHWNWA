@@ -1,28 +1,34 @@
 ---
-# PLEASE SEE THE README for in depth description github.com/brentthorne/posterdown
-# IUGG size: 90 x 45 inches or 228 x 114 cm (landscape orientation)
-poster_height: "45in"
-poster_width: "90in"
+# OSM poster guidelines: https://www.agu.org/Ocean-Sciences-Meeting/Pages/Presenter-Guidelines#1
+# Maximum Poster Dimensions: 45” x 45” (3.75 feet by 3.75 feet). 
+# Each presenter will share an 8’W x 4’H poster board.
+# Poster#: PC44C-1898
+poster_height: "30in" # A1 23.39
+poster_width: "45in" # A1 33.11
 font_family: 'Rasa'
 #ESSENTIALS
-title: '**Primary drivers of marine heatwaves in the Northwest Atlantic**'
+title: '**Primary Drivers of Marine Heatwaves in the Northwest Atlantic**'
 author:
   - name: '**Robert W. Schlegel**'
-    affil: 1,*
+    affil: 1,2,*
     main: true
     orcid: '0000-0002-0705-1287'
-    twitter: wiederweiter 
+    twitter: robwschlegel 
     email: robert.schlegel@dal.ca
+  - name: Ke Chen
+    affil: 2
   - name: Eric C. J. Oliver
     affil: 1
 affiliation:
   - num: 1
     address: Department of Oceanography, Dalhousie University, Halifax, Nova Scotia, Canada
+  - num: 2
+    address: Physical Oceanography Department, Woods Hole Oceanographic Institution, Woods Hole, Massachusetts, USA
 #STYLE & FORMATTING
-title_textsize: "155pt"
+title_textsize: "100pt"
 author_textsize: "1.17em"
-authorextra_textsize: "60px"
-affiliation_textsize: "40px"
+authorextra_textsize: "30px"
+affiliation_textsize: "20px"
 affiliation_textcol: '#00000060'
 caption_fontsize: "20pt"
 #Middle of the poster
@@ -30,17 +36,23 @@ middle_fontfamily: "Special Elite"
 middle_textcol: "#FFFFFF90"
 middle_fontsize: "170px"
 main_findings:
-  - "- __Marine heatwaves__ usually occur along the __Northwest Atlantic__ coast when the __Gulf Stream__ anomaly is __warm__ (cold) and the __Labrador Sea__ anomaly is __cold__ (warm)"
-  - "- The __Gulf Stream__ drives the __most intense__ __marine heatwaves__"
-  - "- Follow the __QR code__ for a __complete__ breakdown of the __predominant drivers__"
-logoleft_name: "Figures/MHWNWA_QR.png"
-logoright_name: "Figures/OFI_Dal_logo.png"
+  - "The most intense MHWs occur during Autumn/Winter when air/sea patterns match those normally seen in Summer"
+  # - "- Warm GS + air pushing up from south along coast"
+  # - "- Warm air sitting over entire coast"
+  # - "- Warm air being pushed over the AO from the South/Southeast onto the coast"
+  # - "- __Marine heatwaves__ usually occur along the __Northwest Atlantic__ coast when the __Gulf Stream__ anomaly is __warm__ (cold) and the __Labrador Sea__ anomaly is __cold__ (warm)"
+  # - "- The __Gulf Stream__ drives the __most intense__ __marine heatwaves__"
+  # - "- Follow the __QR code__ for a __complete__ breakdown of the __predominant drivers__"
+logoleft_name: '~/MHWNWA/poster/Figures/MHWNWA_QR.png{.main-img-left}'
+logoright_name: 'Figures/OFI_DAL_WHOI_logo.png{.main-img-right}'
+# logoleft_name: '![](https://raw.githubusercontent.com/brentthorne/posterdown/master/images/qr-code-black.png){.main-img-left}'
+# logoright_name: '![](https://raw.githubusercontent.com/brentthorne/posterdown/master/images/betterhexlogo.png){.main-img-right}'
 #---POSTER BODY OPTIONS---#
 primary_colour: '#0b4545'
 secondary_colour: '#008080' 
 accent_colour: "#cc0000"
 body_bgcol: "#FFFFFF"
-body_textsize: "45px"
+body_textsize: "32px"
 body_textcol: "#000000"
 #--Standard Options--#
 output: 
@@ -71,11 +83,11 @@ options(knitr.table.format = "html")
 
 # What are known drivers of past MHWs?
 
-Advection, heat flux, and intrinsic ocean modes are the primary drivers of sea surface temperature (SST) [@Deser2010].  
-Different regions of the world show different primary drivers for anomalously warm SST.  
-MHWs in the coastal oceans are primarily driven by abnormal movement of warm currents onto the coast [@Schlegel2017predominant; @Oliver2018tasmania].  
-For large seas like the Mediterranean, heat flux is dominant [@Garrabou2009].  
-Events in the open oceans tend to be driven by a combination of factors [@Bond2015a].
+- Advection, heat flux, and intrinsic ocean modes are the primary drivers of sea surface temperature (SST) [@Deser2010].  
+- Different regions of the world show different primary drivers for anomalously warm SST.  
+- MHWs in the coastal oceans are primarily driven by abnormal movement of warm currents onto the coast [@Schlegel2017predominant; @Oliver2018tasmania].  
+- For large seas like the Mediterranean, heat flux is dominant [@Garrabou2009].  
+- Events in the open oceans tend to be driven by a combination of factors [@Bond2015a].
 
 # Why use a new method to determine drivers?
 
@@ -87,7 +99,7 @@ Machine learning may be a better choice moving forwards.
 # Self-organising maps
 
 Are there recurrent environmental patterns during MHWs?  
-If so, can these be detected/quantified by a computer?  
+If so, can these be detected/quantified/clustered by a computer?  
 Environmental data during MHWs are fed to the SOM to produce 12 most common states (nodes).  
 
 # Calculating MHWs and creating synoptic states
@@ -106,12 +118,18 @@ No overall seasonality, but more recent events occurring in spring and increasin
 
 # Conclusions
 
-The SOM technique functions as expected in the Northwest Atlantic.  
-Each node tells a different complex story.  
-Many of the nodes show drivers that occurred over a few years or less.  
-Most of the nodes show drivers that occur during specific seasons.  
-Drivers usually affected multiple regions concurrently.  
-To see all of the results please follow the QR code.  
+- The SOM technique functions better in the Northwest Atlantic if the Labrador Sea is excluded from the study area
+  - This is important to note as it supports the argument that this methodology is limited in scale
+  - It is likely that this SOM technique will not work on scales larger than one meso-scale feature at a time
+- The nodes tell three main stories:
+  - Warm GS + air pushing up from south along coast
+  - Warm air sitting over entire coast
+  - Warm air being pushed over the AO from the South/Southeast onto the coast
+- A few nodes tell smaller stories:
+  - Short lived storms that barely manage to perturb T~mix~ for long enough to qualify as a MHW
+  - Distinct from the patterns that cause intense MHWs
+- Overall the most intense MHWs occur during Autumn/Winter when they match patterns that are normally seen in Summer
+- To see all of the results please follow the QR code.  
 
 # Future work
 
@@ -121,16 +139,16 @@ Test these drivers (node synoptic states) as predictors for events in different 
 Rank the drivers by their predictive accuracy.  
 Create operational prediction data layer for public use/consumption.  
 
-```{r fig-1, out.width='70%', fig.align='center', fig.cap='The regions of the coast were divided up by their temperature and salinity regimes based on work by @Richaud2016. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. The regions were furthered divided into sub-regions based on their depth.'}
-knitr::include_graphics("~/MHWNWA/talk/graph/fig_2.png")
+```{r fig-1, out.width='20%', fig.align='center', fig.cap='The regions of the coast were divided up by their temperature and salinity regimes based on work by @Richaud2016. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf.'}
+knitr::include_graphics("~/MHWNWA/talk/graph/NWA_study_area.png")
 ```
 
-```{r fig-2, out.width='90%', fig.align='center', fig.cap='An overview of the information contained in one MHW data packet. The region of the focus event is shown in black. A) The focus MHW is shown in red and other MHWs occurring within the same year are shown in salmon; the start and end dates of the focus event are marked in light green while the peak date is marked with dark green. B) The SST and surface current anomalies during the MHW. C) The anomalous net downward heat flux. D) The wind stress and relative mixed layer depth anomalies.'}
-knitr::include_graphics("~/MHWNWA/talk/graph/fig_3.png")
+```{r fig-2, out.width='30%', fig.align='center', fig.cap='An overview of the information contained in one MHW data packet. The region of the focus event is shown as purple polygon. A) The focual MHW shown in salmon; the start and end dates of the focal event are marked in light green while the peak date is marked in dark green. B) The SST and surface current anomalies during the MHW. C) The wind stress, mean sea level pressure, and air temperature anomalies. D) The net positive downward heat flux mixed layer depth anomalies.'}
+knitr::include_graphics("~/MHWNWA/talk/graph/synoptic_gm_14.png")
 ```
 
-```{r fig-3, out.width='90%', fig.align='center', fig.cap='Summary visuals for the results from node 5. A) The SST and surface current anomalies. B) The net downward heat flux anomaly. C) The wind stress and mixed layer depth anomalies. D) The proportion of events that occurred in each region. E) The cumulative intensity and season of occurrence for each MHW. F) The max intensity and region of occurrence for each MHW.'}
-knitr::include_graphics("~/MHWNWA/output/node_5_panels.png")
+```{r fig-3, out.width='30%', fig.align='center', fig.cap='Summary visuals for the results from node 9. The environmental states for all MHWs clustered into this node were meaned to create the images in panels B - F. A) Regions and seasons of occurrence for MHWs in node 9. B) Mean SST and surface current anomalies. Region polygons overlaid in black. C) Mean air temperature, MSLP, and surface wind anomalies. D) Mean mixed layer depth and net positive downware heat flux anomalies. E) Mean SST and surface currents. F) Mean Air temperature, MSLP, and surface winds. G) The cumulative intensity and season of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and the secular trend in their cumulative intensity. H) The max intensity and region of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and secular trend in max intensity. I) The duration and rate of onset for each MHW.'}
+knitr::include_graphics("~/MHWNWA/talk/graph/node_9_panels.png")
 ```
 
 # References
