@@ -83,6 +83,40 @@ knitr::opts_chunk$set(results = 'asis',
 options(knitr.table.format = "html") 
 ```
 
+# Introduction
+
+- Marine heatwaves (MHWs) are 5+ day long events when temperature anomalies exceed the 90th percentile climatolgy [].  
+- There are many known drivers of MHWs around the world [e.g. @Garrabou2009; @Deser2010; @Bond2015a; @Schlegel2017predominant; @Oliver2018tasmania].  
+- Are there common drivers of MHWs in the NW Atlantic?  
+- If so, can these be detected/quantified/clustered by a computer?  
+
+# Methods
+
+- SST pixels within each region of the coast (Figure \@ref(fig:fig-1)A) were averaged together into one time series.  
+- MHWs were calculated from these averaged time series (Figure \@ref(fig:fig-1)B).  
+- The start and end dates of each MHW were used to create a packet of synoptic air/sea information (Figure \@ref(fig:fig-2)).  
+- These data packets were fed to a self-organising map (SOM) to produce the 12 most common air/sea states (nodes). 
+
+# Results
+
+- Figure \@ref(fig:fig-3) shows the results from node 9 of the SOM.  
+- In this node we see a clear nor' easter pattern.  
+- The centre of the heat anomaly has a deeper mixed layer and negative downward heat flux.  
+- The MHWs occurred predominantly in the Mid-Atlantic Bight (mab) region.  
+- No overall seasonality, but more recent events occurring in spring and increasing in intensity.  
+
+# Conclusions
+
+- The SOM technique functions better in the Northwest Atlantic if the Labrador Sea is excluded from the study area
+  - This is important to note as it supports the argument that this methodology is limited in scale
+  - It is likely that this SOM technique will not work on scales larger than one meso-scale feature at a time
+- The nodes tell three main stories:
+  - Warm GS + air pushing up from south along coast
+  - Warm air sitting over entire coast
+  - Warm air being pushed over the AO from the South/Southeast onto the coast
+- Overall the most intense MHWs occur during Autumn/Winter when they match patterns that are normally seen in Summer
+- To see all of the results please follow the QR code.  
+
 <!-- # What are known drivers of past MHWs? -->
 
 <!-- - Advection, heat flux, and intrinsic ocean modes are the primary drivers of sea surface temperature (SST) [@Deser2010].   -->
