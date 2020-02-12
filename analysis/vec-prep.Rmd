@@ -16,6 +16,9 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
 ```
 
 
+<!-- NB: This markdown document refers to an earlier version of the project that used the NAPA model data, it is no longer relevant but has been left in this directory. -->
+
+
 ## Introduction
 
 It would seem logical that the U, V, and W vectors for water movement would be prepared at the same time as all of the other variables, as seen in the [Variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette. The issue we face with the vectors is that they are stored in the 3D version of the model, which has a 5 day temporal resolution. This means that they will need to be handled slightly differently from the rest of the variables. Largely though we should be able to adjust the functions previously created for the other variables.

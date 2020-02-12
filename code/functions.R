@@ -4,23 +4,27 @@
 
 # Required bits -----------------------------------------------------------
 
+# Insatll from GitHub
+# devtools::install_github("fabrice-rossi/yasomi")
+
+# Necessary when being run on a server without write privliges
 .libPaths(c("~/R-packages", .libPaths()))
 
 # Packages used in this script
 # library(rlang)
-library(jsonlite, lib.loc = "../R-packages/")
+# library(jsonlite, lib.loc = "../R-packages/")
 library(tidyverse) # Base suite of functions
 library(lubridate) # For convenient date manipulation
 library(data.table) # For faster mean values
-library(heatwaveR, lib.loc = "../R-packages/")
+library(heatwaveR)#, lib.loc = "../R-packages/")
 # cat(paste0("heatwaveR version = ", packageDescription("heatwaveR")$Version))
 library(ncdf4)
-library(tidync, lib.loc = "../R-packages/")
-library(yasomi, lib.loc = "../R-packages/")
-library(ggforce, lib.loc = "../R-packages/")
+library(tidync)#, lib.loc = "../R-packages/")
+library(yasomi)#, lib.loc = "../R-packages/")
+library(ggforce)#, lib.loc = "../R-packages/")
 
 # Set number of cores
-doMC::registerDoMC(cores = 50)
+doParallel::registerDoParallel(cores = 50)
 
 # Disable scientific notation for numeric values
 # I just find it annoying
@@ -525,7 +529,7 @@ fig_data_packet <- function(event_region, event_num){
                  aes(xend = lon + u_anom * current_uv_scalar,
                      yend = lat + v_anom * current_uv_scalar),
                  arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
-                 linejoin = "mitre", size = 0.4, alpha = 0.8) +
+                 linejoin = "mitre", size = 0.4, alpha = 0.4) +
     # The land mass
     geom_polygon(data = map_base, aes(group = group), alpha = 1,
                  fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
@@ -575,19 +579,19 @@ fig_data_packet <- function(event_region, event_num){
     geom_polygon(data = NWA_coords_sub, aes(group = region),
                  fill = NA, colour = "purple", size = 1.5, alpha = 1) +
     # Colour scale
-    scale_fill_gradient2("MLD anom. (m)",low = "blue", high = "red") +
+    scale_fill_gradient2("MLD\nanom. (m)",low = "blue", high = "red") +
     scale_colour_gradient2("Net downward\nheat flux\nanom. (W/m2)", guide = "legend",
                            low = "green", mid = "grey", high = "yellow")
   # qnet_mld_anom
 
   # Merge the panels together
-  bottom_row <- cowplot::plot_grid(sst_u_v_anom, air_u_v_mslp_anom, qnet_mld_anom, labels = c('B', 'C', 'D'),
+  bottom_row <- cowplot::plot_grid(sst_u_v_anom, air_u_v_mslp_anom, qnet_mld_anom, labels = c('B)', 'C)', 'D)'),
                                    align = 'h', rel_widths = c(1, 1, 1), nrow = 1)
-  top_row <- cowplot::plot_grid(NULL, ts_panel, NULL, labels = c('', 'A', ''), nrow = 1, rel_widths = c(1,2,1))
-  fig_all <- cowplot::plot_grid(top_row, bottom_row, ncol = 1, rel_heights = c(1.3, 3))
+  top_row <- cowplot::plot_grid(NULL, ts_panel, NULL, labels = c('', 'A)', ''), nrow = 1, rel_widths = c(1,2,1))
+  fig_all <- cowplot::plot_grid(top_row, bottom_row, ncol = 1, rel_heights = c(1.5, 3))
   # fig_all
-  ggsave(fig_all, filename = paste0("talk/graph/synoptic_",event_region,"_",event_num,".png"), height = 6, width = 16)
-  # ggsave(fig_all, filename = paste0("talk/graph/synoptic_",event_region,"_",event_num,".pdf"), height = 6, width = 16)
+  ggsave(fig_all, filename = paste0("talk/graph/synoptic_",event_region,"_",event_num,".png"), height = 4, width = 12)
+  # ggsave(fig_all, filename = paste0("talk/graph/synoptic_",event_region,"_",event_num,".pdf"), height = 4, width = 12)
 }
 
 
@@ -946,8 +950,8 @@ fig_single_node <- function(node_number, fig_packet, fig_height, fig_width){
   fig_all_title <- cowplot::plot_grid(title, fig_all_sub, ncol = 1, rel_heights = c(0.05, 1))
   # fig_all_title
   # ggsave(fig_all_title, filename = paste0("output/node_",node_number,"_panels.png"), height = 12, width = 16)
-  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.pdf"), height = 14, width = 21)
-  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.png"), height = 14, width = 21)
+  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.pdf"), height = 9, width = 13)
+  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.png"), height = 9, width = 13)
 }
 
 

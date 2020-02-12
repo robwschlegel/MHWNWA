@@ -28,47 +28,16 @@ After first going through this entire process with the NAPA model output it beca
 
 All of these products and variables have a shared daily resolution period from 1993 -- 2018. The spatial resolutions for NOAA and ERA 5 are 1/4 degrees and the GLORYS data are 1/12 degree. The coordinates are slightly off between OISST and ERA 5 & GLORYS, with the coordinate system for NOAA being centred per pixel while the other two products have their coordinate system based on the northwest corner. In order to compare the OISST dataset to the other 1/4 degree products the lat values for OISST will have 0.125 added to them, and the longitude values will have 0.125 subtracted from them. The ERA5 data are hourly, so will need to be binned into mean daily values. In order to trade between efficiency and accuracy we will be converting everything to the 1/4 degree grid of the GLORYS/ERA 5 data at a daily temporal resolution.
 
-```{r startup}
-# Packages used in this vignette
-library(jsonlite, lib.loc = "../R-packages/") # Necessary for some version mismatches...
-library(tidyverse) # Base suite of functions
-library(tidync, lib.loc = "../R-packages/")
-library(lubridate) # For convenient date manipulation
-
-# Set number of cores
-doMC::registerDoMC(cores = 50)
-
-# Disable scientific notation for numeric values
-  # I just find it annoying
-options(scipen = 999)
-
-# Corners of the study area
-NWA_corners <- readRDS("data/NWA_corners.Rda")
-
-# The region pixel lon/lat values
-NWA_info <- readRDS("data/NWA_info.Rda")
-
-# Load MHW results
-OISST_region_MHW <- readRDS("data/OISST_region_MHW.Rda")
-
-# MHW Events
-MHW_event <- OISST_region_MHW %>%
-  select(-cats) %>%
-  unnest(events) %>%
-  filter(row_number() %% 2 == 0) %>%
-  unnest(events)
-```
-
 ## Base datasets
 
 Rather than go about performing all of the calculations below on piecemeal bits of data, we will load each variable into memory at once. The following code chunk shows how we create functions that load each of the variables from the different data products. We will then create and save this complete dataset for ease of use later on.
 
 ```{r variable-datasets, eval=FALSE}
-# Load the functions used below
-  # I've chosen to house the functions  in the following script
-  # in order to keep this vignette tidier
-source("code/functions.R")
-# See the code/workflow.R script for the exact code used for this step
+# The code used for this step may be seen in the 'code/workflow.R':
+# https://github.com/robwschlegel/MHWNWA/blob/master/code/workflow.R
+
+# The sections of the script used are:
+# OISST processing, GLORYS processing, and ERA 5 processing
 ```
 
 ### Net heat flux
@@ -76,7 +45,8 @@ source("code/functions.R")
 This is the one variable I was not able to source. The OAFlux product does have a net heat flux layer, but it ends in 2009. This is not long enough so we are going to create our own net heat flux layer by adding together the latent & sensible heat flux layers with the shortwave & longwave radiation layers from the ERA 5 product. When doing so we must ensure that the directions of the terms are matched correctly (i.e. that they all represent positive downward flux). Reading through the available meta-data I was not able to verify this, but it appears as though these area all positive downward flux terms. 
 
 ```{r net-heat-flux, eval=FALSE}
-# The code used to perform these steps may be seen in code/workflow.R
+# The code used to perform these steps may be seen in 'code/workflow.R' sction:
+# ERA 5 processing
 ```
 
 ## Climatologies
@@ -84,7 +54,8 @@ This is the one variable I was not able to source. The OAFlux product does have 
 In the data packets we need to create for the [SOM](https://robwschlegel.github.io/MHWNWA/som.html) we will need to include anomaly values. In order to do this we need to first create daily climatologies for each variable for each pixel. To do so we will need to load all of the files and then pixel-wise go about getting the seasonal (mean daily) climatologies. This will be done with the same function (`ts2clm()`) that is used for the MHW climatologies. One-by-one we will load an entire dataset (created above) into memory so that we can perform the necessary calculations. Hold on to your hats, this is going to be RAM heavy...
 
 ```{r variable-climatologies, eval=FALSE}
-# The code used to create the climatologies may be found in code/workflow.R
+# The code used to perform these steps may be seen in 'code/workflow.R' sction:
+# OISST processing, GLORYS processing, and ERA 5 processing
 ```
 
 ## Anomalies
@@ -92,7 +63,8 @@ In the data packets we need to create for the [SOM](https://robwschlegel.github.
 The last step before we can begin creating our data packets is to subtract our climatology data from our base data for each of the variables used in this study. We then save these large anomaly cubes to allow for easier synoptic state creation later on.
 
 ```{r variable-anomalies, eval=FALSE}
-# The code used to create the rest of the anomalies may be found in code/workflow.R
+# The code used to perform these steps may be seen in 'code/workflow.R' sction:
+# OISST processing, GLORYS processing, and ERA 5 processing
 ```
 
 ## Synoptic states
@@ -102,7 +74,8 @@ The next step is to create mean synoptic states for each variable during each of
 <!-- One thing to note here is that during this process, before the slices are created, each pixel for the mixed layer depth anomaly is divided by the max value observed at that pixel, scaling these values to 1. This is done as the range of MLD can vary dramatically over the Labrador sea and we want to avoid this from influencing the results. -->
 
 ```{r data-packets, eval=FALSE}
-# This code may be found in code/workflow.R
+# The code used to perform these steps may be seen in 'code/workflow.R' sction:
+# OISST processing, GLORYS processing, and ERA 5 processing
 ```
 
 With all of our mean synoptic states created it is now time to feed them to the [Self-organising map (SOM)](https://robwschlegel.github.io/MHWNWA/som.html).
