@@ -120,8 +120,8 @@ options(knitr.table.format = "html")
 <!-- Rank the drivers by their predictive accuracy.   -->
 <!-- Create operational prediction data layer for public use/consumption.   -->
 
-```{r fig-1, out.width='70%', fig.align='center', fig.cap='The regions of the coast were divided up by their temperature and salinity regimes based on work by @Richaud2016. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf.'}
-knitr::include_graphics("~/MHWNWA/talk/graph/NWA_study_area.png")
+```{r fig-1, out.width='80%', fig.align='center', fig.cap='The regions of the study area and the marine heatwaves (MHWs) detected within them. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. A) The regions of the coast were divided up by their temperature and salinity regimes based on work by @Richaud2016. B) The SST pixels within each region were averaged into one representative time series and then MHWs were detected using the @Hobday2016 definition.'}
+knitr::include_graphics("MHW_region_lolli_pad.png")
 ```
 
 ```{r fig-2, out.width='100%', fig.align='center', fig.cap='An overview of the information contained in one MHW data packet. The region of the focus event is shown as purple polygon. A) The focual MHW shown in salmon; the start and end dates of the focal event are marked in light green while the peak date is marked in dark green. B) The SST and surface current anomalies during the MHW. C) The wind stress, mean sea level pressure, and air temperature anomalies. D) The net positive downward heat flux mixed layer depth anomalies.'}
@@ -129,7 +129,7 @@ knitr::include_graphics("~/MHWNWA/talk/graph/synoptic_gm_14.png")
 ```
 
 ```{r fig-3, out.width='100%', fig.align='center', fig.cap='Summary visuals for the results from node 9. The environmental states for all MHWs clustered into this node were meaned to create the images in panels B - F. A) Regions and seasons of occurrence for MHWs in node 9. B) Mean SST and surface current anomalies. Region polygons overlaid in black. C) Mean air temperature, MSLP, and surface wind anomalies. D) Mean mixed layer depth and net positive downware heat flux anomalies. E) Mean SST and surface currents. F) Mean Air temperature, MSLP, and surface winds. G) The cumulative intensity and season of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and the secular trend in their cumulative intensity. H) The max intensity and region of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and secular trend in max intensity. I) The duration and rate of onset for each MHW.'}
-knitr::include_graphics("~/MHWNWA/talk/graph/node_9_panels.png")
+knitr::include_graphics("~/MHWNWA/output/SOM/node_9_panels.png")
 ```
 
 # References
