@@ -31,8 +31,8 @@ author_textsize: "1.17em"
 authorextra_textsize: "30px"
 affiliation_textsize: "20px"
 affiliation_textcol: '#00000060'
-caption_fontsize: "16pt"
-reference_textsize: "12pt"
+caption_fontsize: "14pt"
+reference_textsize: "10pt"
 #Middle of the poster
 middle_fontfamily: "Special Elite"
 middle_textcol: "#FFFFFF90"
@@ -129,7 +129,7 @@ knitr::include_graphics("MHW_region_lolli_pad.png")
 knitr::include_graphics("~/MHWNWA/talk/graph/synoptic_gm_14.png")
 ```
 
-```{r fig-3, out.width='100%', fig.align='center', fig.cap='Summary visuals for the results from node 9. The environmental states for all MHWs clustered into this node were meaned to create the images in panels D - F. A) Regions and seasons of occurrence for MHWs in node 9. B) The cumulative intensity and season of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and the secular trend in their cumulative intensity. C) The max intensity and region of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and secular trend in max intensity. D) Mean SST and surface current anomalies. Region polygons overlaid in black. E) Mean air temperature, MSLP, and surface wind anomalies. F) Mean mixed layer depth and net positive downware heat flux anomalies.'}
+```{r fig-3, out.width='100%', fig.align='center', fig.cap='Summary visuals for the results from node 9. The environmental states for all MHWs clustered into this node were meaned to create the images in panels D - F. A) Regions and seasons of occurrence for MHWs in node 9. B) The cumulative intensity and season of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and the secular trend in their cumulative intensity. C) The max intensity and region of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and secular trend in max intensity. D) Mean SST and surface current anomalies. Region polygons overlaid in black and bathymetry down to 2000 m shown with black contours. E) Mean air temperature, MSLP, and surface wind anomalies. F) Mean mixed layer depth and net positive downware heat flux anomalies.'}
 knitr::include_graphics("~/MHWNWA/output/SOM/node_9_panels.png")
 ```
 
