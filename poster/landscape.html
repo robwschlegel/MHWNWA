@@ -116,7 +116,7 @@ font-style: italic;
 padding-top: 0;
 }
 .references {
-font-size: 20px;
+font-size: 12pt;
 line-height: 90%;
 }
 /* Create three unequal columns that floats next to each other */
@@ -308,72 +308,59 @@ span > #tab:mytable {
 </p>
 
 </div>
-<!-- TO DO 
-Add more citations
-Having a more thorough go at the text-->
-<!-- # What are known drivers of past MHWs? -->
-<!-- - Advection, heat flux, and intrinsic ocean modes are the primary drivers of sea surface temperature (SST) [@Deser2010].   -->
-<!-- - Different regions of the world show different primary drivers for anomalously warm SST.   -->
-<!-- - MHWs in the coastal oceans are primarily driven by abnormal movement of warm currents onto the coast [@Schlegel2017predominant; @Oliver2018tasmania].   -->
-<!-- - For large seas like the Mediterranean, heat flux is dominant [@Garrabou2009].   -->
-<!-- - Events in the open oceans tend to be driven by a combination of factors [@Bond2015a]. -->
-<!-- # Why use a new method to determine drivers? -->
-<!-- The current standard is to analyse the drivers of one large MHW at a time.   -->
-<!-- MHWs are occurring too rapidly to spend a year understanding the drivers of an individual event.   -->
-<!-- Smaller events that would normally escape our notice may also be important.   -->
-<!-- Machine learning may be a better choice moving forwards.   -->
-<div id="calculating-mhws-and-creating-synoptic-states" class="section level1">
-<h1>Calculating MHWs and creating synoptic states</h1>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
 <ul>
-<li>All of the SST pixels within each sub-region (Figure <a href="#fig:fig-1">1</a>) were averaged together into one time series.<br />
+<li>Marine heatwaves (MHWs) are 5+ day long events when temperature anomalies exceed the 90th percentile climatology <span class="citation">(Hobday et al., <a href="#ref-Hobday2016">2016</a>, <a href="#ref-Hobday2018">2018</a>)</span>.<br />
 </li>
-<li>MHWs were calculated from these averaged time series.<br />
+<li>There are many different drivers of MHWs known around the world <span class="citation">(e.g. Garrabou et al., <a href="#ref-Garrabou2009">2009</a>; Deser et al., <a href="#ref-Deser2010">2010</a>; Bond et al., <a href="#ref-Bond2015a">2015</a>; Schlegel et al., <a href="#ref-Schlegel2017predominant">2017</a>; Oliver et al., <a href="#ref-Oliver2018tasmania">2018</a>)</span>.<br />
 </li>
-<li>The start and end dates of each MHW were used to create a packet of synoptic information (Figure <a href="#fig:fig-2">2</a>).</li>
+<li>Are there common/recurrent drivers of MHWs in the NW Atlantic?<br />
+</li>
+<li>If so, can these be detected/clustered/quantified by a machine?</li>
 </ul>
 </div>
-<div id="self-organising-maps" class="section level1">
-<h1>Self-organising maps</h1>
+<div id="methods" class="section level1">
+<h1>Methods</h1>
 <ul>
-<li>Are there recurrent environmental patterns during MHWs?<br />
+<li>SST pixels within each region of the coast (Figure <a href="#fig:fig-1">1</a>A) were averaged together into one time series.<br />
 </li>
-<li>If so, can these be detected/quantified/clustered by a computer?<br />
+<li>MHWs were calculated from these 6 averaged time series (Figure <a href="#fig:fig-1">1</a>B).<br />
 </li>
-<li>Environmental data during MHWs are fed to the SOM to produce 12 most common states (nodes).</li>
+<li>The start and end dates of each MHW were used to create mean synoptic air/sea state anomalies (Figure <a href="#fig:fig-2">2</a>).<br />
+</li>
+<li>These mean anomalies were fed to a self-organising map (SOM) to produce the 12 most common air/sea states (nodes).</li>
+<li>Humans are then used to infer the drivers from the 12 nodes.</li>
 </ul>
 </div>
-<div id="what-do-the-results-look-like" class="section level1">
-<h1>What do the results look like?</h1>
+<div id="results" class="section level1">
+<h1>Results</h1>
+<!-- - Figure \@ref(fig:fig-3) shows the results from node 9 of the SOM.   -->
 <ul>
-<li>Figure <a href="#fig:fig-3">3</a> shows the results from node 9 of the SOM.<br />
+<li>To see all of the results please follow the QR code.<br />
 </li>
-<li>In this node we see a clear nor’ easter pattern.<br />
+<li>In node 9 we see a clear Nor’easter pattern (Figure <a href="#fig:fig-3">3</a>C).<br />
 </li>
-<li>The centre of the heat anomaly has a deeper mixed layer and negative downward heat flux.<br />
+<li>The centre of the high SST anomaly (Figure <a href="#fig:fig-3">3</a>B) has a deepening MLD and negative downward heat flux (Figure <a href="#fig:fig-3">3</a>D).<br />
 </li>
-<li>The MHWs occurred predominantly in the Mid-Atlantic Bight (mab) region.<br />
-</li>
-<li>No overall seasonality, but more recent events occurring in spring and increasing in intensity.</li>
+<li>Most MHWs occurred northwest of the centre of the SST anomaly (Figure <a href="#fig:fig-3">3</a>A) due to the downward heat flux and shoaling MLD (Figure <a href="#fig:fig-3">3</a>D).</li>
+<li>None of these events occurred in Summer (Figure <a href="#fig:fig-3">3</a>G), and most events occurred on the Newfoundland Shelf (Figure <a href="#fig:fig-3">3</a>H).</li>
 </ul>
 </div>
 <div id="conclusions" class="section level1">
 <h1>Conclusions</h1>
-<!-- - The SOM technique functions better in the Northwest Atlantic if the Labrador Sea is excluded from the study area -->
-<!--   - This is important to note as it supports the argument that this methodology is limited in scale -->
-<!--   - It is likely that this SOM technique will not work on scales larger than one meso-scale feature at a time -->
 <ul>
 <li>The nodes tell three main stories:
 <ul>
-<li>Warm GS + air pushing up from south along coast</li>
-<li>Warm air sitting over entire coast</li>
-<li>Warm air being pushed over the AO from the South/Southeast onto the coast</li>
+<li>Warm Gulf Stream + air pushing up from south along coast.</li>
+<li>Warm air sitting over entire coast.</li>
+<li>Warm air being pushed over the Atlantic from the South/Southeast onto the coast.</li>
 </ul></li>
-<li>Overall the most intense MHWs occur during Autumn/Winter when they match patterns that are normally seen in Summer</li>
-<li>To see all of the results please follow the QR code.</li>
+<li>Overall the most intense MHWs occur during Autumn/Winter when they match patterns that are normally seen in Summer.</li>
+<li>The SOM technique functions better in the Northwest Atlantic if the Labrador Sea is excluded from the study area.</li>
 </ul>
-<!-- - A few nodes tell smaller stories: -->
-<!--   - Short lived storms that barely manage to perturb T~mix~ for long enough to qualify as a MHW -->
-<!--   - Distinct from the patterns that cause intense MHWs -->
+<!--   - This is important to note as it supports the argument that this methodology is limited in scale.   -->
+<!--   - It is likely that this SOM technique will not work on scales larger than one meso-scale feature at a time.   -->
 <!-- # Future work -->
 <!-- Extend the methodology seen here into the third and fourth dimensions of the data.   -->
 <!-- Run this same analysis 1, 2, 3, etc. months prior to the MHWs to see how well it detects patterns.   -->
@@ -381,29 +368,50 @@ Having a more thorough go at the text-->
 <!-- Rank the drivers by their predictive accuracy.   -->
 <!-- Create operational prediction data layer for public use/consumption.   -->
 <div class="figure" style="text-align: center"><span id="fig:fig-1"></span>
-<img src="/home/rws/MHWNWA/talk/graph/NWA_study_area.png" alt="The regions of the coast were divided up by their temperature and salinity regimes based on work by @Richaud2016. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf." width="70%" />
+<img src="MHW_region_lolli_pad.png" alt="The regions of the study area and the marine heatwaves (MHWs) detected within them. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. A) The regions of the coast were divided up by their temperature and salinity regimes based on work by @Richaud2016. B) The SST pixels within each region were averaged into one representative time series and then MHWs were detected using the @Hobday2016 definition." width="80%" />
 <p class="caption">
-Figure 1: The regions of the coast were divided up by their temperature and salinity regimes based on work by <span class="citation">Richaud et al. (<a href="#ref-Richaud2016">2016</a>)</span>. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf.
+Figure 1: The regions of the study area and the marine heatwaves (MHWs) detected within them. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. A) The regions of the coast were divided up by their temperature and salinity regimes based on work by <span class="citation">Richaud et al. (<a href="#ref-Richaud2016">2016</a>)</span>. B) The SST pixels within each region were averaged into one representative time series and then MHWs were detected using the <span class="citation">Hobday et al. (<a href="#ref-Hobday2016">2016</a>)</span> definition.
 </p>
 </div>
 <div class="figure" style="text-align: center"><span id="fig:fig-2"></span>
-<img src="/home/rws/MHWNWA/talk/graph/synoptic_gm_14.png" alt="An overview of the information contained in one MHW data packet. The region of the focus event is shown as purple polygon. A) The focual MHW shown in salmon; the start and end dates of the focal event are marked in light green while the peak date is marked in dark green. B) The SST and surface current anomalies during the MHW. C) The wind stress, mean sea level pressure, and air temperature anomalies. D) The net positive downward heat flux mixed layer depth anomalies." width="90%" />
+<img src="/home/rws/MHWNWA/talk/graph/synoptic_gm_14.png" alt="An overview of the information contained in one MHW data packet. The region of the focus event is shown as purple polygon. A) The focual MHW shown in salmon; the start and end dates of the focal event are marked in light green while the peak date is marked in dark green. B) The SST and surface current anomalies during the MHW. C) The wind stress, mean sea level pressure, and air temperature anomalies. D) The net positive downward heat flux mixed layer depth anomalies." width="100%" />
 <p class="caption">
 Figure 2: An overview of the information contained in one MHW data packet. The region of the focus event is shown as purple polygon. A) The focual MHW shown in salmon; the start and end dates of the focal event are marked in light green while the peak date is marked in dark green. B) The SST and surface current anomalies during the MHW. C) The wind stress, mean sea level pressure, and air temperature anomalies. D) The net positive downward heat flux mixed layer depth anomalies.
 </p>
 </div>
 <div class="figure" style="text-align: center"><span id="fig:fig-3"></span>
-<img src="/home/rws/MHWNWA/talk/graph/node_9_panels.png" alt="Summary visuals for the results from node 9. The environmental states for all MHWs clustered into this node were meaned to create the images in panels B - F. A) Regions and seasons of occurrence for MHWs in node 9. B) Mean SST and surface current anomalies. Region polygons overlaid in black. C) Mean air temperature, MSLP, and surface wind anomalies. D) Mean mixed layer depth and net positive downware heat flux anomalies. E) Mean SST and surface currents. F) Mean Air temperature, MSLP, and surface winds. G) The cumulative intensity and season of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and the secular trend in their cumulative intensity. H) The max intensity and region of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and secular trend in max intensity. I) The duration and rate of onset for each MHW." width="90%" />
+<img src="/home/rws/MHWNWA/output/SOM/node_9_panels.png" alt="Summary visuals for the results from node 9. The environmental states for all MHWs clustered into this node were meaned to create the images in panels D - F. A) Regions and seasons of occurrence for MHWs in node 9. B) The cumulative intensity and season of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and the secular trend in their cumulative intensity. C) The max intensity and region of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and secular trend in max intensity. D) Mean SST and surface current anomalies. Region polygons overlaid in black. E) Mean air temperature, MSLP, and surface wind anomalies. F) Mean mixed layer depth and net positive downware heat flux anomalies." width="100%" />
 <p class="caption">
-Figure 3: Summary visuals for the results from node 9. The environmental states for all MHWs clustered into this node were meaned to create the images in panels B - F. A) Regions and seasons of occurrence for MHWs in node 9. B) Mean SST and surface current anomalies. Region polygons overlaid in black. C) Mean air temperature, MSLP, and surface wind anomalies. D) Mean mixed layer depth and net positive downware heat flux anomalies. E) Mean SST and surface currents. F) Mean Air temperature, MSLP, and surface winds. G) The cumulative intensity and season of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and the secular trend in their cumulative intensity. H) The max intensity and region of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and secular trend in max intensity. I) The duration and rate of onset for each MHW.
+Figure 3: Summary visuals for the results from node 9. The environmental states for all MHWs clustered into this node were meaned to create the images in panels D - F. A) Regions and seasons of occurrence for MHWs in node 9. B) The cumulative intensity and season of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and the secular trend in their cumulative intensity. C) The max intensity and region of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and secular trend in max intensity. D) Mean SST and surface current anomalies. Region polygons overlaid in black. E) Mean air temperature, MSLP, and surface wind anomalies. F) Mean mixed layer depth and net positive downware heat flux anomalies.
 </p>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1>References</h1>
 <div id="refs" class="references">
+<div id="ref-Bond2015a">
+<p>Bond, N. A., Cronin, M. F., Freeland, H., and Mantua, N. (2015). Causes and impacts of the 2014 warm anomaly in the NE Pacific. <em>Geophysical Research Letters</em> 42, 3414–3420. doi:<a href="https://doi.org/10.1002/2015GL063306">10.1002/2015GL063306</a>.</p>
+</div>
+<div id="ref-Deser2010">
+<p>Deser, C., Alexander, M. A., Xie, S. P., and Phillips, A. S. (2010). Sea surface temperature variability: patterns and mechanisms. <em>Annual Review of Marine Science</em> 2, 115–143. doi:<a href="https://doi.org/10.1146/annurev-marine-120408-151453">10.1146/annurev-marine-120408-151453</a>.</p>
+</div>
+<div id="ref-Garrabou2009">
+<p>Garrabou, J., Coma, R., Bensoussan, N., Bally, M., Chevaldonné, P., Cigliano, M., et al. (2009). Mass mortality in Northwestern Mediterranean rocky benthic communities: effects of the 2003 heat wave. <em>Global Change Biology</em> 15, 1090–1103. doi:<a href="https://doi.org/10.1111/j.1365-2486.2008.01823.x">10.1111/j.1365-2486.2008.01823.x</a>.</p>
+</div>
+<div id="ref-Hobday2016">
+<p>Hobday, A. J., Alexander, L. V., Perkins, S. E., Smale, D. A., Straub, S. C., Oliver, E. C., et al. (2016). A hierarchical approach to defining marine heatwaves. <em>Progress in Oceanography</em> 141, 227–238. doi:<a href="https://doi.org/10.1016/j.pocean.2015.12.014">10.1016/j.pocean.2015.12.014</a>.</p>
+</div>
+<div id="ref-Hobday2018">
+<p>Hobday, A. J., Oliver, E. C., Gupta, A. S., Benthuysen, J. A., Burrows, M. T., Donat, M. G., et al. (2018). Categorizing and naming marine heatwaves. <em>Oceanography</em> 31, 162–173. doi:<a href="https://doi.org/10.5670/oceanog.2018.205">10.5670/oceanog.2018.205</a>.</p>
+</div>
+<div id="ref-Oliver2018tasmania">
+<p>Oliver, E. C., Lago, V., Hobday, A. J., Holbrook, N. J., Ling, S. D., and Mundy, C. N. (2018). Marine heatwaves off eastern tasmania: Trends, interannual variability, and predictability. <em>Progress in oceanography</em> 161, 116–130. doi:<a href="https://doi.org/10.1016/j.pocean.2018.02.007">10.1016/j.pocean.2018.02.007</a>.</p>
+</div>
 <div id="ref-Richaud2016">
-<p>Richaud, Benjamin, Young-Oh Kwon, Terrence M Joyce, Paula S Fratantoni, and Steven J Lentz. 2016. “Surface and Bottom Temperature and Salinity Climatology Along the Continental Shelf Off the Canadian and Us East Coasts.” <em>Continental Shelf Research</em> 124. Elsevier: 165–81.</p>
+<p>Richaud, B., Kwon, Y.-O., Joyce, T. M., Fratantoni, P. S., and Lentz, S. J. (2016). Surface and bottom temperature and salinity climatology along the continental shelf off the canadian and us east coasts. <em>Continental Shelf Research</em> 124, 165–181. doi:<a href="https://doi.org/10.1016/j.csr.2016.06.005">10.1016/j.csr.2016.06.005</a>.</p>
+</div>
+<div id="ref-Schlegel2017predominant">
+<p>Schlegel, R. W., Oliver, E. C., Perkins-Kirkpatrick, S., Kruger, A., and Smit, A. J. (2017). Predominant atmospheric and oceanic patterns during coastal marine heatwaves. <em>Frontiers in Marine Science</em> 4, 323. doi:<a href="https://doi.org/10.3389/fmars.2017.00323">10.3389/fmars.2017.00323</a>.</p>
 </div>
 </div>
 </div>

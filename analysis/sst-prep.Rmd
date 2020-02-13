@@ -17,21 +17,27 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
 
 ## Introduction
 
-Building on the work performed in the [study area](https://robwschlegel.github.io/MHWNWA/polygon-prep.html) vignette, we will now create grouped SST time series for the six regions in our study area. We will do this by finding which NOAA OISST pixels fall within each of the region polygons. Also note that throughout this vignette (and this entire project) we will use the climatology period of 1993 -- 2018 as this is the shortest time limiting us by the data products used for the various [heat budget variables](https://robwschlegel.github.io/MHWNWA/var-prep.html) needed for the [SOM](https://robwschlegel.github.io/MHWNWA/som.html).
+Building on the work performed in the [study area](https://robwschlegel.github.io/MHWNWA/polygon-prep.html) vignette, we will now create grouped SST time series for the six regions in our study area. We do this by finding which NOAA OISST pixels fall within each of the region polygons. Also note that throughout this vignette (and this entire project) we will use the climatology period of 1993 -- 2018 due to limitations from the data products used for the various [heat budget variables](https://robwschlegel.github.io/MHWNWA/var-prep.html) needed for the [SOM](https://robwschlegel.github.io/MHWNWA/som.html).
 
 ```{r libraries}
+
+# Necessary when being run on a server without write privliges
+.libPaths(c("~/R-packages", .libPaths()))
+
 # Packages used in this vignette
-library(jsonlite, lib.loc = "../R-packages/")
+# library(jsonlite, lib.loc = "../R-packages/")
 library(tidyverse) # Base suite of functions
-library(heatwaveR, lib.loc = "../R-packages/") # For detecting MHWs
+library(heatwaveR) # For detecting MHWs
+# library(heatwaveR, lib.loc = "../R-packages/") # For detecting MHWs
 # cat(paste0("heatwaveR version = ", packageDescription("heatwaveR")$Version))
 library(FNN) # For fastest nearest neighbour searches
-library(tidync, lib.loc = "../R-packages/") # For a more tidy approach to managing NetCDF data
+# library(tidync, lib.loc = "../R-packages/") # For a more tidy approach to managing NetCDF data
+library(tidync) # For a more tidy approach to managing NetCDF data
 library(SDMTools) # For finding points within polygons
 library(lubridate) # For convenient date manipulation
 
 # Set number of cores
-doMC::registerDoMC(cores = 50)
+doParallel::registerDoParallel(cores = 50)
 
 # Disable scientific notation for numeric values
   # I just find it annoying
@@ -92,7 +98,7 @@ ggplot(NWA_coords, aes(x = lon, y = lat)) +
 
 ## SST prep
 
-With the OISST pixels successfully assigned to regions based on their thermal properties we now need to go about clumping these SST pixels into one mean time series per region.
+With the OISST pixels successfully assigned to regions based on their thermal properties we now average the SST data per pixel into one mean time series per region.
 
 ```{r sst-clump, eval=FALSE}
 # The OISST data location
@@ -172,18 +178,47 @@ OISST_MHW_event <- OISST_region_MHW %>%
 MHW_lolli_plot <- ggplot(data = OISST_MHW_event , aes(x = date_peak, y = intensity_cumulative)) + 
         geom_lolli(colour = "salmon", colour_n = "red", n = 3) + 
   labs(x = "Peak Date", y = "Cum. Intensity (°C x days)") +
-  # scale_y_continuous(expand = c(0, 0))+
-  facet_wrap(~region)
-# ggsave(plot = MHW_lolli_plot, filename = "output/MHW_lolli_plot.pdf", height = 7, width = 13)
-# ggsave(plot = MHW_lolli_plot, filename = "output/MHW_lolli_plot.png", height = 7, width = 13)
+  scale_y_continuous(limits = c(0, 250), expand = c(0,0)) +
+  facet_wrap(~region, ncol = 2)
+# ggsave(plot = MHW_lolli_plot, filename = "output/MHW_lolli_plot.pdf", height = 6, width = 5)
+# ggsave(plot = MHW_lolli_plot, filename = "output/MHW_lolli_plot.png", height = 6, width = 5)
 
 # Visualise
 MHW_lolli_plot
 ```
 
-The lolliplot above shows us that the occurrence of MHWs differs visually between the regions, which is good. A striking early result from this figure is that the distribution of MHWs in every region is wildly left skewed. This means that most of the MHWs are happening later on in the time series. In fact, there are _no_ MHWs detected in the first year of the time series (1993), and only two MHWs detected in the second year (1994). We don't start to see regular annual occurrence of MHWs until ~1999. This is a classic climate change signal. But it is important to note again that we are using a climatology period of 1993 -- 2018 due to other data limitations. This will have the effect of raising the mean climate signal up more than the established WMO period of 1981 -- 2010. The practical effect of this is that we will have an even more pronounced skewness of extreme events towards the end of the time series and the overall intensities of events will be slightly lower.
+The lolliplot above shows us that the occurrence of MHWs differs visually between the regions, which is good. A striking early result from this figure is that the distribution of the occurrence of MHWs is left skewed. This means that most of the MHWs are happening later on in the time series. In fact, there are _no_ MHWs detected in the first year of the time series (1993), and only four MHWs detected in the second year (1994) across all regions combined. We don't start to see regular annual occurrence of MHWs until ~1999. This is a classic climate change signal. But it is important to note again that we are using a climatology period of 1993 -- 2018 due to data limitations. This will have the effect of raising the mean climate signal up more than the established WMO period of 1981 -- 2010. The practical effect of this is that we will have an even more pronounced skewness of extreme events towards the end of the time series and the overall intensities of events will be slightly lower.
 
-Up next in the [heat budhet variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette we will go through the steps necessary to build the data that will be fed into our self-organising map (SOM) as seen in the [SOM analysis](https://robwschlegel.github.io/MHWNWA/som.html) vignette.
+Finally for this section we will visualise the regions from the previous vignette alongside the lolliplot created here.
+
+```{r MHW-regions-lolli}
+# Note that the package cowplot is used below but not loaded explicitly
+# This is because it changes the default plotting nature in ways I don't like
+
+# The study area map from the revious vignette
+load("output/NWA_study_area.Rdata")
+
+# Merge the panels together
+MHW_region_lolli <- cowplot::plot_grid(NWA_study_area, MHW_lolli_plot, labels = c('A)', 'B)'), label_size = 10,
+                                       align = 'hv', rel_widths = c(1.2, 1), nrow = 1, axis = "l")
+# ggsave(plot = MHW_region_lolli, filename = "output/MHW_region_lolli.pdf", height = 4, width = 10)
+# ggsave(plot = MHW_region_lolli, filename = "output/MHW_region_lolli.png", height = 4, width = 10)
+MHW_region_lolli
+```
+
+```{r MHW_region_lolli_poster, eval=FALSE, echo=FALSE}
+# This sneaky chunk is for creating the version used in the poster
+# Because of the way that posterdown works one needs to pad the top figure a bit so as not to sit right on the margin
+
+# Empty plot
+top_row <- ggplot() + theme_void()
+
+# Steek'em
+MHW_region_lolli_pad <- cowplot::plot_grid(top_row, MHW_region_lolli, ncol = 1, rel_heights = c(1, 10))
+ggsave(plot = MHW_region_lolli_pad, filename = "poster/MHW_region_lolli_pad.png", height = 4.1, width = 9)
+```
+
+Up next in the [heat budget variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette we will go through the steps necessary to build the data that will be fed into our self-organising map (SOM) as seen in the [SOM analysis](https://robwschlegel.github.io/MHWNWA/som.html) vignette.
 
 <!-- One last point however is that according to @Richaud2016 the different slopebreaks for the different regions occur at different depths, from 50 m to 400 m depending. They do however note that using a static definition of 200 m for the break does not produce significantly different results. Therefore, for the time being we will maintain the spatial breaks used above. -->
 

@@ -4,23 +4,27 @@
 
 # Required bits -----------------------------------------------------------
 
+# Insatll from GitHub
+# devtools::install_github("fabrice-rossi/yasomi")
+
+# Necessary when being run on a server without write privliges
 .libPaths(c("~/R-packages", .libPaths()))
 
 # Packages used in this script
 # library(rlang)
-library(jsonlite, lib.loc = "../R-packages/")
+# library(jsonlite, lib.loc = "../R-packages/")
 library(tidyverse) # Base suite of functions
 library(lubridate) # For convenient date manipulation
 library(data.table) # For faster mean values
-library(heatwaveR, lib.loc = "../R-packages/")
+library(heatwaveR)#, lib.loc = "../R-packages/")
 # cat(paste0("heatwaveR version = ", packageDescription("heatwaveR")$Version))
 library(ncdf4)
-library(tidync, lib.loc = "../R-packages/")
-library(yasomi, lib.loc = "../R-packages/")
-library(ggforce, lib.loc = "../R-packages/")
+library(tidync)#, lib.loc = "../R-packages/")
+library(yasomi)#, lib.loc = "../R-packages/")
+library(ggforce)#, lib.loc = "../R-packages/")
 
 # Set number of cores
-doMC::registerDoMC(cores = 50)
+doParallel::registerDoParallel(cores = 50)
 
 # Disable scientific notation for numeric values
 # I just find it annoying
@@ -525,7 +529,7 @@ fig_data_packet <- function(event_region, event_num){
                  aes(xend = lon + u_anom * current_uv_scalar,
                      yend = lat + v_anom * current_uv_scalar),
                  arrow = arrow(angle = 40, length = unit(0.1, "cm"), type = "open"),
-                 linejoin = "mitre", size = 0.4, alpha = 0.8) +
+                 linejoin = "mitre", size = 0.4, alpha = 0.4) +
     # The land mass
     geom_polygon(data = map_base, aes(group = group), alpha = 1,
                  fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
@@ -575,7 +579,7 @@ fig_data_packet <- function(event_region, event_num){
     geom_polygon(data = NWA_coords_sub, aes(group = region),
                  fill = NA, colour = "purple", size = 1.5, alpha = 1) +
     # Colour scale
-    scale_fill_gradient2("MLD anom. (m)",low = "blue", high = "red") +
+    scale_fill_gradient2("MLD\nanom. (m)",low = "blue", high = "red") +
     scale_colour_gradient2("Net downward\nheat flux\nanom. (W/m2)", guide = "legend",
                            low = "green", mid = "grey", high = "yellow")
   # qnet_mld_anom
@@ -586,8 +590,8 @@ fig_data_packet <- function(event_region, event_num){
   top_row <- cowplot::plot_grid(NULL, ts_panel, NULL, labels = c('', 'A)', ''), nrow = 1, rel_widths = c(1,2,1))
   fig_all <- cowplot::plot_grid(top_row, bottom_row, ncol = 1, rel_heights = c(1.3, 3))
   # fig_all
-  ggsave(fig_all, filename = paste0("talk/graph/synoptic_",event_region,"_",event_num,".png"), height = 6, width = 16)
-  # ggsave(fig_all, filename = paste0("talk/graph/synoptic_",event_region,"_",event_num,".pdf"), height = 6, width = 16)
+  ggsave(fig_all, filename = paste0("talk/graph/synoptic_",event_region,"_",event_num,".png"), height = 6, width = 15)
+  # ggsave(fig_all, filename = paste0("talk/graph/synoptic_",event_region,"_",event_num,".pdf"), height = 6, width = 15)
 }
 
 
@@ -892,7 +896,10 @@ fig_all_som <- function(som_packet,
 
 # testers...
 # fig_packet <- fig_data_prep(readRDS("data/SOM/som.Rda"))
-# node_number = 8
+# node_number = 9
+# col_num = 1
+# fig_height = 9
+# fig_width = 13
 fig_single_node <- function(node_number, fig_packet, fig_height, fig_width){
 
   # Filter out non-target nodes
@@ -919,10 +926,10 @@ fig_single_node <- function(node_number, fig_packet, fig_height, fig_width){
   qnet_mld_anom_sub <- fig_qnet_mld_anom(fig_packet, 1, fig_height, fig_width)
 
   # SST + U + V (real)
-  sst_u_v_real_sub <- fig_sst_u_v_real(fig_packet, 1, fig_height, fig_width)
+  # sst_u_v_real_sub <- fig_sst_u_v_real(fig_packet, 1, fig_height, fig_width)
 
   # Air Temp + U + V (real)
-  air_u_v_mslp_real_sub <- fig_air_u_v_mslp_real(fig_packet, 1, fig_height, fig_width)
+  # air_u_v_mslp_real_sub <- fig_air_u_v_mslp_real(fig_packet, 1, fig_height, fig_width)
 
   # Lollis showing cum.int. + season
   cum_int_season_sub <- fig_cum_int_season(fig_packet, 1, fig_height, fig_width)
@@ -937,17 +944,20 @@ fig_single_node <- function(node_number, fig_packet, fig_height, fig_width){
   title <- cowplot::ggdraw() + cowplot::draw_label(paste0("Node: ",node_number), fontface = 'bold')
 
   # Stick them together
-  fig_all_sub <- cowplot::plot_grid(region_season_sub, sst_u_v_anom_sub, air_u_v_mslp_anom_sub,
-                                    qnet_mld_anom_sub, sst_u_v_real_sub, air_u_v_mslp_real_sub,
-                                    cum_int_season_sub, max_int_region_sub, duration_rate_onset_sub,
+  fig_all_sub <- cowplot::plot_grid(region_season_sub,
+                                    cum_int_season_sub, max_int_region_sub,
+                                    sst_u_v_anom_sub, air_u_v_mslp_anom_sub,
+                                    qnet_mld_anom_sub,
+                                    # sst_u_v_real_sub, air_u_v_mslp_real_sub,
+                                    # duration_rate_onset_sub,
                                     labels = c('A)', 'B)', 'C)', 'D)', 'E)', 'F)', 'G)', 'H)', 'I)'),
-                                    nrow = 3, rel_heights = c(1, 1), axis = "lt", align = "hv")#+
+                                    nrow = 2, rel_heights = c(1, 1), axis = "lt", align = "h")#+
     # cowplot::draw_figure_label(label = paste0("Node: ",node_number), size = 20)
   fig_all_title <- cowplot::plot_grid(title, fig_all_sub, ncol = 1, rel_heights = c(0.05, 1))
   # fig_all_title
   # ggsave(fig_all_title, filename = paste0("output/node_",node_number,"_panels.png"), height = 12, width = 16)
-  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.pdf"), height = 14, width = 21)
-  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.png"), height = 14, width = 21)
+  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.pdf"), height = fig_height+1, width = fig_width+2)
+  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.png"), height = fig_height+1, width = fig_width+2)
 }
 
 
@@ -991,11 +1001,12 @@ fig_region_season <- function(fig_data, col_num, fig_height = fig_height, fig_wi
                aes(x = -48, y = 34, fill = node_season_prop,
                    label = paste0("Autumn\n n = ",node_season_count))) +
     # Colour scale
-    scale_fill_distiller("Proportion\nof events per\nregion/season",
+    scale_fill_distiller("Proportion\nof events",
                          palette = "BuPu", direction = 1) +
-    # The facets
-    facet_wrap(~node, ncol = col_num)
+    theme(legend.position = "bottom")
   if(col_num != 1){
+    region_season <- region_season +
+      facet_wrap(~node, ncol = col_num)
     ggsave("output/SOM/region_season.pdf", region_season, height = fig_height, width = fig_width)
     ggsave("output/SOM/region_season.png", region_season, height = fig_height, width = fig_width)
   }
@@ -1028,9 +1039,10 @@ fig_sst_u_v_anom <- function(fig_data, col_num, fig_height, fig_width){
                  fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
     # Diverging gradient
     scale_fill_gradient2(name = "SST\nanom. (°C)", low = "blue", high = "red") +
-    # The facets
-    facet_wrap(~node, ncol = col_num)
+    theme(legend.position = "bottom")
   if(col_num != 1){
+    sst_u_v_anom <- sst_u_v_anom +
+      facet_wrap(~node, ncol = col_num)
     ggsave("output/SOM/sst_u_v_anom.pdf", sst_u_v_anom, height = fig_height, width = fig_width)
     ggsave("output/SOM/sst_u_v_anom.png", sst_u_v_anom, height = fig_height, width = fig_width)
   }
@@ -1059,11 +1071,12 @@ fig_air_u_v_mslp_anom <- function(fig_data, col_num, fig_height, fig_width){
                  linejoin = "mitre", size = 0.4, alpha = 0.4) +
     # Colour scale
     scale_fill_gradient2(name = "Air temp.\nanom. (°C)", low = "blue", high = "red") +
-    scale_colour_gradient2("MSLP anom.\n(hPa)", guide = "legend",
+    scale_colour_gradient2("MSLP anom.\n(hPa)",# guide = "legend",
                            low = "green", mid = "grey", high = "yellow") +
-    # The facets
-    facet_wrap(~node, ncol = col_num)
+    theme(legend.position = "bottom")#, legend.box = "vertical")
   if(col_num != 1){
+    air_u_v_mslp_anom <- air_u_v_mslp_anom +
+      facet_wrap(~node, ncol = col_num)
     ggsave("output/SOM/air_u_v_mslp_anom.pdf", air_u_v_mslp_anom, height = fig_height, width = fig_width)
     ggsave("output/SOM/air_u_v_mslp_anom.png", air_u_v_mslp_anom, height = fig_height, width = fig_width)
   }
@@ -1085,13 +1098,16 @@ fig_qnet_mld_anom <- function(fig_data, col_num, fig_height, fig_width){
     geom_contour(data = fig_data$som_data_wide, binwidth = 50,
                  aes(z = qnet_anom, colour = stat(level)), size = 1) +
     # Colour scale
-    scale_fill_gradient2("MLD anom. (m)",low = "blue", high = "red") +
-    scale_colour_gradient2("Net downward\nheat flux\nanom. (W/m2)", guide = "legend",
+    scale_fill_gradient2("MLD\nanom. (m)",low = "blue", high = "red") +
+    scale_colour_gradient2("Qnet anom.\n(W/m2)", #guide = "legend",
                            low = "green", mid = "grey", high = "yellow") +
-    # The facets
-    facet_wrap(~node, ncol = col_num)
-  ggsave("output/SOM/qnet_mld_anom.pdf", qnet_mld_anom, height = fig_height, width = fig_width)
-  ggsave("output/SOM/qnet_mld_anom.png", qnet_mld_anom, height = fig_height, width = fig_width)
+    theme(legend.position = "bottom")
+  if(col_num != 1){
+    qnet_mld_anom <- qnet_mld_anom +
+      facet_wrap(~node, ncol = col_num)
+    ggsave("output/SOM/qnet_mld_anom.pdf", qnet_mld_anom, height = fig_height, width = fig_width)
+    ggsave("output/SOM/qnet_mld_anom.png", qnet_mld_anom, height = fig_height, width = fig_width)
+  }
   return(qnet_mld_anom)
 }
 
@@ -1118,9 +1134,10 @@ fig_sst_u_v_real <- function(fig_data, col_num, fig_height, fig_width){
                  fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
     # Diverging gradient
     scale_fill_viridis_c(name = "SST (°C)", option = "D") +
-    # The facets
-    facet_wrap(~node, ncol = col_num)
+    theme(legend.position = "bottom")
   if(col_num != 1){
+    sst_u_v_real <- sst_u_v_real +
+      facet_wrap(~node, ncol = col_num)
     ggsave("output/SOM/sst_u_v_real.pdf", sst_u_v_real, height = fig_height, width = fig_width)
     ggsave("output/SOM/sst_u_v_real.png", sst_u_v_real, height = fig_height, width = fig_width)
   }
@@ -1150,9 +1167,11 @@ fig_air_u_v_mslp_real <- function(fig_data, col_num, fig_height, fig_width){
     # Colour scale
     scale_fill_viridis_c(name = "Air temp. (°C)", option = "A") +
     scale_colour_gradient("MSLP (hPa)", guide = "legend", low = "white", high =  "black") +
-    # The facets
-    facet_wrap(~node, ncol = col_num)
+      colour_gradient("MSLP", guide = "legend", low = "white", high =  "black") +
+    theme(legend.position = "bottom")
   if(col_num != 1){
+    air_u_v_mslp_real <- air_u_v_mslp_real +
+      facet_wrap(~node, ncol = col_num)
     ggsave("output/SOM/air_u_v_mslp_real.pdf", air_u_v_mslp_real, height = fig_height, width = fig_width)
     ggsave("output/SOM/air_u_v_mslp_real.png", air_u_v_mslp_real, height = fig_height, width = fig_width)
   }
@@ -1201,30 +1220,32 @@ fig_cum_int_season <- function(fig_data, col_num, fig_height, fig_width){
                   aes(x = date_peak, y = intensity_cumulative)) +
     geom_smooth(method = "lm", se = F, aes(colour = season_peak)) +
     # Count label
-    geom_label(aes(x = mean(range(date_peak)),
-                   y = max(intensity_cumulative),
-                   label = paste0("n = ", count))) +
+    # geom_label(aes(x = mean(range(date_peak)),
+    #                y = max(intensity_cumulative),
+    #                label = paste0("n = ", count))) +
     # Mean stat label
-    geom_label(data = fig_data$node_h_lines,
-               aes(x = mean(range(fig_data$OISST_MHW_meta$date_peak)),
-                   y = max(fig_data$OISST_MHW_meta$intensity_cumulative)*0.9,
-                   label = paste0("mean = ", mean_int_cum))) +
+    # geom_label(data = fig_data$node_h_lines,
+    #            aes(x = mean(range(fig_data$OISST_MHW_meta$date_peak)),
+    #                y = max(fig_data$OISST_MHW_meta$intensity_cumulative)*0.9,
+    #                label = paste0("mean = ", mean_int_cum))) +
     # Median stat label
-    geom_label(data = fig_data$node_h_lines,
-               aes(x = mean(range(fig_data$OISST_MHW_meta$date_peak)),
-                   y = max(fig_data$OISST_MHW_meta$intensity_cumulative)*0.8,
-                   label = paste0("median = ", median_int_cum))) +
+    # geom_label(data = fig_data$node_h_lines,
+    #            aes(x = mean(range(fig_data$OISST_MHW_meta$date_peak)),
+    #                y = max(fig_data$OISST_MHW_meta$intensity_cumulative)*0.8,
+    #                label = paste0("median = ", median_int_cum))) +
     geom_lolli() +
     geom_point(aes(colour = season_peak)) +
     geom_hline(data = fig_data$node_h_lines, aes(yintercept = mean_int_cum), linetype = "dashed") +
     geom_hline(data = fig_data$node_h_lines, aes(yintercept = median_int_cum), linetype = "dotted") +
+    scale_colour_brewer(palette = "Set1") +
     scale_x_date(labels = scales::date_format("%Y"),
                  date_breaks = "2 years", date_minor_breaks = "1 year") +
-    labs(x = "", y = "Cumulative intensity (°C x days)", colour = "Season") +
+    labs(x = "", y = "Cum. intensity (°C x days)", colour = "Season") +
     theme(legend.position = "bottom",
-          axis.text.x = element_text(angle = 30)) +
-    facet_wrap(~node, ncol = col_num)
+          axis.text.x = element_text(angle = 30))
   if(col_num != 1){
+    cum_int_seas <- cum_int_seas +
+      facet_wrap(~node, ncol = col_num)
     ggsave("output/SOM/cum_int_season.pdf", cum_int_seas, height = fig_height, width = fig_width)
     ggsave("output/SOM/cum_int_season.png", cum_int_seas, height = fig_height, width = fig_width)
   }
@@ -1240,19 +1261,19 @@ fig_max_int_region <- function(fig_data, col_num, fig_height, fig_width){
                   aes(x = date_peak, y = intensity_max)) +
     geom_smooth(method = "lm", se = F, aes(colour = region)) +
     # Count label
-    geom_label(aes(x = mean(range(date_peak)),
-                   y = max(intensity_max),
-                   label = paste0("n = ", count))) +
+    # geom_label(aes(x = mean(range(date_peak)),
+    #                y = max(intensity_max),
+    #                label = paste0("n = ", count))) +
     # Mean stat label
-    geom_label(data = fig_data$node_h_lines,
-               aes(x = mean(range(fig_data$OISST_MHW_meta$date_peak)),
-                   y = max(fig_data$OISST_MHW_meta$intensity_max)*0.9,
-                   label = paste0("mean = ", mean_int_max))) +
+    # geom_label(data = fig_data$node_h_lines,
+    #            aes(x = mean(range(fig_data$OISST_MHW_meta$date_peak)),
+    #                y = max(fig_data$OISST_MHW_meta$intensity_max)*0.9,
+    #                label = paste0("mean = ", mean_int_max))) +
     # Median stat label
-    geom_label(data = fig_data$node_h_lines,
-               aes(x = mean(range(fig_data$OISST_MHW_meta$date_peak)),
-                   y = max(fig_data$OISST_MHW_meta$intensity_max)*0.8,
-                   label = paste0("median = ", median_int_max))) +
+    # geom_label(data = fig_data$node_h_lines,
+    #            aes(x = mean(range(fig_data$OISST_MHW_meta$date_peak)),
+    #                y = max(fig_data$OISST_MHW_meta$intensity_max)*0.8,
+    #                label = paste0("median = ", median_int_max))) +
     geom_lolli() +
     geom_point(aes(colour = region)) +
     geom_hline(data = fig_data$node_h_lines, aes(yintercept = mean_int_max), linetype = "dashed") +
@@ -1262,8 +1283,9 @@ fig_max_int_region <- function(fig_data, col_num, fig_height, fig_width){
     labs(x = "", y = "Max. intensity (°C)", colour = "Region") +
     theme(legend.position = "bottom",
           axis.text.x = element_text(angle = 30)) +
-    facet_wrap(~node, ncol = col_num)
   if(col_num != 1){
+    max_int_region <- max_int_region +
+      facet_wrap(~node, ncol = col_num)
     ggsave("output/SOM/max_int_region.pdf", max_int_region, height = fig_height, width = fig_width)
     ggsave("output/SOM/max_int_region.png", max_int_region, height = fig_height, width = fig_width)
   }
@@ -1279,19 +1301,19 @@ fig_duration_rate_onset <- function(fig_data, col_num, fig_height, fig_width){
                            aes(x = date_peak, y = duration)) +
     # geom_smooth(method = "lm", se = F, aes(colour = region)) +
     # Count label
-    geom_label(aes(x = mean(range(date_peak)),
-                   y = max(duration),
-                   label = paste0("n = ", count))) +
+    # geom_label(aes(x = mean(range(date_peak)),
+    #                y = max(duration),
+    #                label = paste0("n = ", count))) +
     # Mean stat label
-    geom_label(data = fig_data$node_h_lines,
-               aes(x = mean(range(fig_data$OISST_MHW_meta$date_peak)),
-                   y = max(fig_data$OISST_MHW_meta$duration)*0.9,
-                   label = paste0("mean = ", mean_dur))) +
+    # geom_label(data = fig_data$node_h_lines,
+    #            aes(x = mean(range(fig_data$OISST_MHW_meta$date_peak)),
+    #                y = max(fig_data$OISST_MHW_meta$duration)*0.9,
+    #                label = paste0("mean = ", mean_dur))) +
     # Median stat label
-    geom_label(data = fig_data$node_h_lines,
-               aes(x = mean(range(fig_data$OISST_MHW_meta$date_peak)),
-                   y = max(fig_data$OISST_MHW_meta$duration)*0.8,
-                   label = paste0("median = ", median_dur))) +
+    # geom_label(data = fig_data$node_h_lines,
+    #            aes(x = mean(range(fig_data$OISST_MHW_meta$date_peak)),
+    #                y = max(fig_data$OISST_MHW_meta$duration)*0.8,
+    #                label = paste0("median = ", median_dur))) +
     geom_lolli() +
     geom_point(aes(colour = rate_onset)) +
     geom_hline(data = fig_data$node_h_lines, aes(yintercept = mean_dur), linetype = "dashed") +
@@ -1301,9 +1323,10 @@ fig_duration_rate_onset <- function(fig_data, col_num, fig_height, fig_width){
     scale_colour_gradient(low = "white", high = "darkorange") +
     labs(x = "", y = "Duration (days)", colour = "Rate onset (°C x days)") +
     theme(legend.position = "bottom",
-          axis.text.x = element_text(angle = 30)) +
-    facet_wrap(~node, ncol = col_num)
+          axis.text.x = element_text(angle = 30))
   if(col_num != 1){
+    duration_rate_onset <- duration_rate_onset +
+      facet_wrap(~node, ncol = col_num)
     ggsave("output/SOM/duration_rate_onset.pdf", duration_rate_onset, height = fig_height, width = fig_width)
     ggsave("output/SOM/duration_rate_onset.png", duration_rate_onset, height = fig_height, width = fig_width)
   }

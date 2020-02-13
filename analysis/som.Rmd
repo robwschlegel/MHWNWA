@@ -17,81 +17,59 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center',
 
 ## Introduction
 
-This vignette contains the code used to perform the self-organising map (SOM) analysis on the mean synoptic states created in the [Variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette. We'll start by creating custom packets that meet certain experimental criteria before then feeding them into a SOM. We will finish up by creating some cursory visuals of the results. The full summary of the results may be seen in the [Node summary vignette](https://robwschlegel.github.io/MHWNWA/node-summary.html).
+This vignette contains the code used to perform the self-organising map (SOM) analysis on the mean synoptic states created in the [Variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette. We'll start by creating custom packets that meet certain experimental criteria before feeding them into a SOM. The full summary of the results may be seen in the [Node summary vignette](https://robwschlegel.github.io/MHWNWA/node-summary.html).
 
 ```{r libraries}
-# Insatll from GitHub
-# .libPaths(c("~/R-packages", .libPaths()))
-# devtools::install_github("fabrice-rossi/yasomi")
-
-# Packages used in this vignette
-library(jsonlite, lib.loc = "../R-packages/")
-library(tidyverse) # Base suite of functions
-library(lubridate) # For convenient date manipulation
-library(yasomi, lib.loc = "../R-packages/") # The SOM package of choice due to PCI compliance
-library(data.table) # For working with massive dataframes
-
 # Load functions and objects to be used below
 source("code/functions.R")
 ```
 
 ## Data packet
 
-In this last stage before running our SOM analysis we will create a data packet that can be fed directly into the SOM algorithm. This means that it must be converted into a super-wide matrix format. In the first run of this analysis on the NAPA model data it was found that the inclusion of the Labrador Sea complicated the results quite a bit. It was also unclear whether or not the Gulf of St Lawrence region should be included in the analysis. So in the second run of this analysis multiple different SOM variations were employed and it was decided that the gsl region should be included.
+In this last stage before running our SOM analysis we will create a data packet that can be fed directly into the SOM algorithm. This means that it must be converted into a super-wide matrix format. In the first run of this analysis on the NAPA model data it was found that the inclusion of the Labrador Sea complicated the results quite a bit. It was also unclear whether or not the Gulf of St Lawrence (gsl) region should be included in the analysis. So in the second run of this analysis multiple different SOM variations were employed and it was decided that the gsl region should be included.
 
-### Unnest synoptic state packets
+### Prep synoptic state packets
 
-Up first we must simply load and unnest the synoptic state packets made previously.
+Up first we must create the synoptic state packets from all of the variables we prepared in the previous vignette.
 
 ```{r unnest-packets, eval=FALSE}
-# Load the synoptic states data packet
-system.time(
-  synoptic_states <- readRDS("data/SOM/synoptic_states.Rda")
-) # 3 seconds
+## Create one big anomaly packet
+system.time(synoptic_states <- plyr::ddply(OISST_MHW_event, c("region", "event_no"),
+                                           data_packet_func, .parallel = T)) # 204 seconds
+# Save
+saveRDS(synoptic_states, "data/SOM/synoptic_states.Rda")
 
-# Unnest the synoptic data
-system.time(
-  synoptic_states_unnest <- synoptic_states %>% 
-    select(region, event_no, synoptic) %>% 
-    unnest()
-) # 4 seconds
+## Create other synoptic states per MHW per variable
+doMC::registerDoMC(cores = 10) # NB: Be careful here...
+system.time(synoptic_states_other <- plyr::ddply(OISST_MHW_event, c("region", "event_no"),
+                                                 data_packet_func, .parallel = T, df = ALL_other)) # 122 seconds
+# Save
+saveRDS(synoptic_states_other, "data/SOM/synoptic_states_other.Rda")
 ```
 
-### Create packet
+### Create SOM packet
 
 With all of our data ready we may now prepare and save them for the SOM.
 
 ```{r create-SOM-packet, eval=FALSE}
-# Packet for entire study region
-system.time(
-  packet <- wide_packet_func(synoptic_states_unnest)
-) # 179 seconds
+## Create wide data packet that is fed to SOM
+system.time(packet <- readRDS("data/SOM/synoptic_states.Rda") %>%
+              select(region, event_no, synoptic) %>%
+              unnest() %>%
+              wide_packet_func()) # 122 seconds
+# Save
 saveRDS(packet, "data/SOM/packet.Rda")
 ```
 
 ## Run SOM models
 
-Now that we have our data packet to feed the SOM with a function that ingests them and produces results for us. The function below has been greatly expanded on from the previous version of this project and now performs all of the SOM related work in one go. This allowed me to remove a couple hundreds lines of code and text from this vignette.
+Now we feed the SOM with a function that ingests the data packet and produces results for us. The function below has been greatly expanded on from the previous version of this project and now performs all of the SOM related work in one go. This allowed me to remove a couple hundreds lines of code and text from this vignette.
 
 ```{r som-run, eval=FALSE}
 # The SOM on the entire study area
 packet <- readRDS("data/SOM/packet.Rda")
-system.time(som <- som_model_PCI(packet)) # 69 seconds
-# som$ANOSIM # p = 0.001
+system.time(som <- som_model_PCI(packet)) # 83 seconds
 saveRDS(som, file = "data/SOM/som.Rda")
-```
-
-```{r som-nolab, eval=FALSE, echo=FALSE}
-NWA_coords_nolab <- NWA_coords %>% 
-  filter(region != "ls")
-
-system.time(
-  packet_nolab <- synoptic_states_unnest %>% 
-    filter(region != "ls",
-           lat <= round(max(NWA_coords_nolab$lat))+0.5) %>% 
-    wide_packet_func()
-) # 110 seconds
-system.time(som_nolab <- som_model_PCI(packet_nolab)) # 77 seconds
 ```
 
 And there we have our SOM results. Up next in the [Node summary vignette](https://robwschlegel.github.io/MHWNWA/node-summary.html) we will show the results with a range of visuals.
