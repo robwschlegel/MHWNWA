@@ -1169,8 +1169,8 @@ fig_air_u_v_mslp_real <- function(fig_data, col_num, fig_height, fig_width){
                  linejoin = "mitre", size = 0.4, alpha = 0.4) +
     # Colour scale
     scale_fill_viridis_c(name = "Air temp. (°C)", option = "A") +
-    scale_colour_gradient("MSLP (hPa)", guide = "legend", low = "white", high =  "black") +
-      colour_gradient("MSLP", guide = "legend", low = "white", high =  "black") +
+    scale_colour_gradient("MSLP (hPa)", #guide = "legend",
+                          low = "white", high =  "black") +
     theme(legend.position = "bottom")
   if(col_num != 1){
     air_u_v_mslp_real <- air_u_v_mslp_real +
