@@ -581,9 +581,9 @@ fig_data_packet <- function(event_region, event_num){
   # qnet_mld_anom
 
   # Merge the panels together
-  bottom_row <- cowplot::plot_grid(sst_u_v_anom, air_u_v_mslp_anom, qnet_mld_anom, labels = c('B', 'C', 'D'),
+  bottom_row <- cowplot::plot_grid(sst_u_v_anom, air_u_v_mslp_anom, qnet_mld_anom, labels = c('B)', 'C)', 'D)'),
                                    align = 'h', rel_widths = c(1, 1, 1), nrow = 1)
-  top_row <- cowplot::plot_grid(NULL, ts_panel, NULL, labels = c('', 'A', ''), nrow = 1, rel_widths = c(1,2,1))
+  top_row <- cowplot::plot_grid(NULL, ts_panel, NULL, labels = c('', 'A)', ''), nrow = 1, rel_widths = c(1,2,1))
   fig_all <- cowplot::plot_grid(top_row, bottom_row, ncol = 1, rel_heights = c(1.3, 3))
   # fig_all
   ggsave(fig_all, filename = paste0("talk/graph/synoptic_",event_region,"_",event_num,".png"), height = 6, width = 16)
@@ -991,7 +991,7 @@ fig_region_season <- function(fig_data, col_num, fig_height = fig_height, fig_wi
                aes(x = -48, y = 34, fill = node_season_prop,
                    label = paste0("Autumn\n n = ",node_season_count))) +
     # Colour scale
-    scale_fill_distiller("Proportion\nof events per\nregion/season\nper node",
+    scale_fill_distiller("Proportion\nof events per\nregion/season",
                          palette = "BuPu", direction = 1) +
     # The facets
     facet_wrap(~node, ncol = col_num)
@@ -1059,7 +1059,7 @@ fig_air_u_v_mslp_anom <- function(fig_data, col_num, fig_height, fig_width){
                  linejoin = "mitre", size = 0.4, alpha = 0.4) +
     # Colour scale
     scale_fill_gradient2(name = "Air temp.\nanom. (°C)", low = "blue", high = "red") +
-    scale_colour_gradient2("MSLP anom.", guide = "legend",
+    scale_colour_gradient2("MSLP anom.\n(hPa)", guide = "legend",
                            low = "green", mid = "grey", high = "yellow") +
     # The facets
     facet_wrap(~node, ncol = col_num)
@@ -1149,7 +1149,7 @@ fig_air_u_v_mslp_real <- function(fig_data, col_num, fig_height, fig_width){
                  linejoin = "mitre", size = 0.4, alpha = 0.4) +
     # Colour scale
     scale_fill_viridis_c(name = "Air temp. (°C)", option = "A") +
-    scale_colour_gradient("MSLP", guide = "legend", low = "white", high =  "black") +
+    scale_colour_gradient("MSLP (hPa)", guide = "legend", low = "white", high =  "black") +
     # The facets
     facet_wrap(~node, ncol = col_num)
   if(col_num != 1){
