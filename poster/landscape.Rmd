@@ -38,10 +38,11 @@ middle_fontfamily: "Special Elite"
 middle_textcol: "#FFFFFF90"
 middle_fontsize: "170px"
 main_findings:
-  - "The most intense MHWs occur during Autumn/Winter when air/sea patterns match those normally seen in Summer"
-  # - "- Warm GS + air pushing up from south along coast"
-  # - "- Warm air sitting over entire coast"
-  # - "- Warm air being pushed over the AO from the South/Southeast onto the coast"
+  # Improve this statement. Difficult to understand
+  # - "The most intense MHWs occur during Autumn/Winter when large scale atmospheric patterns look like Summer MHW conditions"
+  - "- Warm air sitting over entire coast"
+  - "- Warm Gulf Stream + air from south along coast"
+  - "- Warm air from Southeast onto the coast"
 # logoleft_name: '~/MHWNWA/poster/Figures/MHWNWA_QR.png{.main-img-left}'
 # logoright_name: 'Figures/OFI_DAL_WHOI_logo.png{.main-img-right}'
 # logoleft_name: '![](https://raw.githubusercontent.com/brentthorne/posterdown/master/images/qr-code-black.png){.main-img-left}'
@@ -80,7 +81,7 @@ options(knitr.table.format = "html")
 # Introduction
 
 - Marine heatwaves (MHWs) are 5+ day long events when temperature anomalies exceed the 90th percentile climatology [@Hobday2016; @Hobday2018].  
-- There are many different drivers of MHWs known around the world [e.g. @Garrabou2009; @Deser2010; @Bond2015a; @Schlegel2017predominant; @Oliver2018tasmania].  
+- There are many different drivers of MHWs known around the world [e.g. @Olita2007; @Deser2010; @Bond2015a; @Schlegel2017predominant; @Oliver2018tasmania].  
 - Are there common/recurrent drivers of MHWs in the NW Atlantic?  
 - If so, can these be detected/clustered/quantified by a machine?  
 
@@ -129,6 +130,9 @@ knitr::include_graphics("MHW_region_lolli_pad.png")
 knitr::include_graphics("~/MHWNWA/talk/graph/synoptic_gm_14.png")
 ```
 
+
+<!-- Simplify the text for the caption -->
+<!-- Split this figure into two -->
 ```{r fig-3, out.width='100%', fig.align='center', fig.cap='Summary visuals for the results from node 9. The environmental states for all MHWs clustered into this node were meaned to create the images in panels D - F. A) Regions and seasons of occurrence for MHWs in node 9. B) The cumulative intensity and season of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and the secular trend in their cumulative intensity. C) The max intensity and region of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and secular trend in max intensity. D) Mean SST and surface current anomalies. Region polygons overlaid in black and bathymetry down to 2000 m shown with black contours. E) Mean air temperature, MSLP, and surface wind anomalies. F) Mean mixed layer depth and net positive downware heat flux anomalies.'}
 knitr::include_graphics("~/MHWNWA/output/SOM/node_9_panels.png")
 ```

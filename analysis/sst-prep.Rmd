@@ -195,6 +195,8 @@ Finally for this section we will visualise the regions from the previous vignett
 # The study area map from the revious vignette
 load("output/NWA_study_area.Rdata")
 
+# Make the colours of the lollis the same colours as the regions in Figure 1A
+
 # Merge the panels together
 MHW_region_lolli <- cowplot::plot_grid(NWA_study_area, MHW_lolli_plot, labels = c('A)', 'B)'), label_size = 10,
                                        align = 'hv', rel_widths = c(1.2, 1), nrow = 1, axis = "l")
