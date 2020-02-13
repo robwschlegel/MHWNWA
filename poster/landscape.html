@@ -313,11 +313,11 @@ span > #tab:mytable {
 <ul>
 <li>Marine heatwaves (MHWs) are 5+ day long events when temperature anomalies exceed the 90th percentile climatology <span class="citation">(Hobday et al., <a href="#ref-Hobday2016">2016</a>, <a href="#ref-Hobday2018">2018</a>)</span>.<br />
 </li>
-<li>There are known drivers of MHWs around the world <span class="citation">(e.g. Garrabou et al., <a href="#ref-Garrabou2009">2009</a>; Deser et al., <a href="#ref-Deser2010">2010</a>; Bond et al., <a href="#ref-Bond2015a">2015</a>; Schlegel et al., <a href="#ref-Schlegel2017predominant">2017</a>; Oliver et al., <a href="#ref-Oliver2018tasmania">2018</a>)</span>.<br />
+<li>There are many different drivers of MHWs known around the world <span class="citation">(e.g. Garrabou et al., <a href="#ref-Garrabou2009">2009</a>; Deser et al., <a href="#ref-Deser2010">2010</a>; Bond et al., <a href="#ref-Bond2015a">2015</a>; Schlegel et al., <a href="#ref-Schlegel2017predominant">2017</a>; Oliver et al., <a href="#ref-Oliver2018tasmania">2018</a>)</span>.<br />
 </li>
 <li>Are there common/recurrent drivers of MHWs in the NW Atlantic?<br />
 </li>
-<li>If so, can these be detected/quantified/clustered by a machine?</li>
+<li>If so, can these be detected/clustered/quantified by a machine?</li>
 </ul>
 </div>
 <div id="methods" class="section level1">
@@ -327,10 +327,10 @@ span > #tab:mytable {
 </li>
 <li>MHWs were calculated from these 6 averaged time series (Figure <a href="#fig:fig-1">1</a>B).<br />
 </li>
-<li>The start and end dates of each MHW were used to create a packet of synoptic air/sea anomalies (Figure <a href="#fig:fig-2">2</a>).<br />
+<li>The start and end dates of each MHW were used to create mean synoptic air/sea state anomalies (Figure <a href="#fig:fig-2">2</a>).<br />
 </li>
-<li>These data packets were fed to a self-organising map (SOM) to produce the 12 most common air/sea states (nodes).</li>
-<li>From these 12 common states a human must then infer the drivers.</li>
+<li>These mean anomalies were fed to a self-organising map (SOM) to produce the 12 most common air/sea states (nodes).</li>
+<li>Humans are then used to infer the drivers from the 12 nodes.</li>
 </ul>
 </div>
 <div id="results" class="section level1">
@@ -344,14 +344,11 @@ span > #tab:mytable {
 <li>The centre of the high SST anomaly (Figure <a href="#fig:fig-3">3</a>B) has a deepening MLD and negative downward heat flux (Figure <a href="#fig:fig-3">3</a>D).<br />
 </li>
 <li>Most MHWs occurred northwest of the centre of the SST anomaly (Figure <a href="#fig:fig-3">3</a>A) due to the downward heat flux and shoaling MLD (Figure <a href="#fig:fig-3">3</a>D).</li>
-<li>No clear seasonality (Figure <a href="#fig:fig-3">3</a>G), but most events occurred on the Newfoundland Shelf (Figure <a href="#fig:fig-3">3</a>H).</li>
+<li>None of these events occurred in Summer (Figure <a href="#fig:fig-3">3</a>G), and most events occurred on the Newfoundland Shelf (Figure <a href="#fig:fig-3">3</a>H).</li>
 </ul>
 </div>
 <div id="conclusions" class="section level1">
 <h1>Conclusions</h1>
-<!-- - The SOM technique functions better in the Northwest Atlantic if the Labrador Sea is excluded from the study area.   -->
-<!--   - This is important to note as it supports the argument that this methodology is limited in scale.   -->
-<!--   - It is likely that this SOM technique will not work on scales larger than one meso-scale feature at a time.   -->
 <ul>
 <li>The nodes tell three main stories:
 <ul>
@@ -360,7 +357,10 @@ span > #tab:mytable {
 <li>Warm air being pushed over the Atlantic from the South/Southeast onto the coast.</li>
 </ul></li>
 <li>Overall the most intense MHWs occur during Autumn/Winter when they match patterns that are normally seen in Summer.</li>
+<li>The SOM technique functions better in the Northwest Atlantic if the Labrador Sea is excluded from the study area.</li>
 </ul>
+<!--   - This is important to note as it supports the argument that this methodology is limited in scale.   -->
+<!--   - It is likely that this SOM technique will not work on scales larger than one meso-scale feature at a time.   -->
 <!-- # Future work -->
 <!-- Extend the methodology seen here into the third and fourth dimensions of the data.   -->
 <!-- Run this same analysis 1, 2, 3, etc. months prior to the MHWs to see how well it detects patterns.   -->
@@ -380,9 +380,9 @@ Figure 2: An overview of the information contained in one MHW data packet. The r
 </p>
 </div>
 <div class="figure" style="text-align: center"><span id="fig:fig-3"></span>
-<img src="/home/rws/MHWNWA/output/SOM/node_9_panels.png" alt="Summary visuals for the results from node 9. The environmental states for all MHWs clustered into this node were meaned to create the images in panels B - F. A) Regions and seasons of occurrence for MHWs in node 9. B) Mean SST and surface current anomalies. Region polygons overlaid in black. C) Mean air temperature, MSLP, and surface wind anomalies. D) Mean mixed layer depth and net positive downware heat flux anomalies. E) Mean SST and surface currents. F) Mean Air temperature, MSLP, and surface winds. G) The cumulative intensity and season of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and the secular trend in their cumulative intensity. H) The max intensity and region of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and secular trend in max intensity. I) The duration and rate of onset for each MHW." width="100%" />
+<img src="/home/rws/MHWNWA/output/SOM/node_9_panels.png" alt="Summary visuals for the results from node 9. The environmental states for all MHWs clustered into this node were meaned to create the images in panels D - F. A) Regions and seasons of occurrence for MHWs in node 9. B) The cumulative intensity and season of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and the secular trend in their cumulative intensity. C) The max intensity and region of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and secular trend in max intensity. D) Mean SST and surface current anomalies. Region polygons overlaid in black. E) Mean air temperature, MSLP, and surface wind anomalies. F) Mean mixed layer depth and net positive downware heat flux anomalies." width="100%" />
 <p class="caption">
-Figure 3: Summary visuals for the results from node 9. The environmental states for all MHWs clustered into this node were meaned to create the images in panels B - F. A) Regions and seasons of occurrence for MHWs in node 9. B) Mean SST and surface current anomalies. Region polygons overlaid in black. C) Mean air temperature, MSLP, and surface wind anomalies. D) Mean mixed layer depth and net positive downware heat flux anomalies. E) Mean SST and surface currents. F) Mean Air temperature, MSLP, and surface winds. G) The cumulative intensity and season of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and the secular trend in their cumulative intensity. H) The max intensity and region of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and secular trend in max intensity. I) The duration and rate of onset for each MHW.
+Figure 3: Summary visuals for the results from node 9. The environmental states for all MHWs clustered into this node were meaned to create the images in panels D - F. A) Regions and seasons of occurrence for MHWs in node 9. B) The cumulative intensity and season of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and the secular trend in their cumulative intensity. C) The max intensity and region of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and secular trend in max intensity. D) Mean SST and surface current anomalies. Region polygons overlaid in black. E) Mean air temperature, MSLP, and surface wind anomalies. F) Mean mixed layer depth and net positive downware heat flux anomalies.
 </p>
 </div>
 </div>

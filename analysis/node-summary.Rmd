@@ -1,5 +1,5 @@
 ---
-title: "Node summary"
+title: "Node summaries"
 author: "Robert Schlegel"
 date: "2019-07-09"
 output: workflowr::wflow_html
