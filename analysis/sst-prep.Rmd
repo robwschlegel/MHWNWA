@@ -25,13 +25,10 @@ Building on the work performed in the [study area](https://robwschlegel.github.i
 .libPaths(c("~/R-packages", .libPaths()))
 
 # Packages used in this vignette
-# library(jsonlite, lib.loc = "../R-packages/")
 library(tidyverse) # Base suite of functions
 library(heatwaveR) # For detecting MHWs
-# library(heatwaveR, lib.loc = "../R-packages/") # For detecting MHWs
 # cat(paste0("heatwaveR version = ", packageDescription("heatwaveR")$Version))
 library(FNN) # For fastest nearest neighbour searches
-# library(tidync, lib.loc = "../R-packages/") # For a more tidy approach to managing NetCDF data
 library(tidync) # For a more tidy approach to managing NetCDF data
 library(SDMTools) # For finding points within polygons
 library(lubridate) # For convenient date manipulation
@@ -176,7 +173,7 @@ OISST_MHW_event <- OISST_region_MHW %>%
   unnest(events)
 
 MHW_lolli_plot <- ggplot(data = OISST_MHW_event , aes(x = date_peak, y = intensity_cumulative)) + 
-        geom_lolli(colour = "salmon", colour_n = "red", n = 3) + 
+        geom_lolli(colour = "salmon", colour_n = "red", n = 0) + 
   labs(x = "Peak Date", y = "Cum. Intensity (°C x days)") +
   scale_y_continuous(limits = c(0, 250), expand = c(0,0)) +
   facet_wrap(~region, ncol = 2)

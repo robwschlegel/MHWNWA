@@ -435,8 +435,8 @@ wide_packet_func <- function(df){
 # This function will create a summary figure for a single data packet
 # It is based on 'data/SOM/synoptic_states.Rda' and 'data/SOM/synoptic_states_other.Rda'
 #testers...
-# event_region <- "mab"
-# event_num <- 20
+# event_region <- "gm"
+# event_num <- 14
 fig_data_packet <- function(event_region, event_num){
 
   # Load and prep mean anom states
@@ -522,8 +522,8 @@ fig_data_packet <- function(event_region, event_num){
     geom_raster(data = single_packet_full, aes(fill = sst_anom)) +
     # The bathymetry
     stat_contour(data = bathy[bathy$depth > -2000,],
-    aes(x = lon, y = lat, z = depth), alpha = 0.5,
-    colour = "black", size = 0.5, binwidth = 200, na.rm = TRUE, show.legend = FALSE) +
+                 aes(x = lon, y = lat, z = depth), alpha = 0.5,
+                 colour = "black", size = 0.5, binwidth = 200, na.rm = TRUE, show.legend = FALSE) +
     # The current vectors
     geom_segment(data = vec_sub,
                  aes(xend = lon + u_anom * current_uv_scalar,
@@ -537,7 +537,8 @@ fig_data_packet <- function(event_region, event_num){
     geom_polygon(data = NWA_coords_sub, aes(group = region),
                  fill = NA, colour = "purple", size = 1.5, alpha = 1) +
     # Diverging gradient
-    scale_fill_gradient2(name = "SST\nanom. (°C)", low = "blue", high = "red")
+    scale_fill_gradient2(name = "SST\nanom. (°C)", low = "blue", high = "red") +
+    theme(legend.position = "bottom")
   # sst_u_v_anom
 
   # Air temp + U10 + V10 + MSLP
@@ -561,8 +562,9 @@ fig_data_packet <- function(event_region, event_num){
                  fill = NA, colour = "purple", size = 1.5, alpha = 1) +
     # Colour scale
     scale_fill_gradient2(name = "Air temp.\nanom. (°C)", low = "blue", high = "red") +
-    scale_colour_gradient2("MSLP anom.\n(hPa)", guide = "legend",
-                           low = "green", mid = "grey", high = "yellow")
+    scale_colour_gradient2("MSLP anom.\n(hPa)", #guide = "legend",
+                           low = "green", mid = "grey", high = "yellow") +
+    theme(legend.position = "bottom")
   # air_u_v_mslp_anom
 
   # Qnet + MLD
@@ -580,17 +582,18 @@ fig_data_packet <- function(event_region, event_num){
                  fill = NA, colour = "purple", size = 1.5, alpha = 1) +
     # Colour scale
     scale_fill_gradient2("MLD\nanom. (m)",low = "blue", high = "red") +
-    scale_colour_gradient2("Net downward\nheat flux\nanom. (W/m2)", guide = "legend",
-                           low = "green", mid = "grey", high = "yellow")
+    scale_colour_gradient2("Qnet anom.\n(W/m2)", #guide = "legend",
+                           low = "green", mid = "grey", high = "yellow") +
+    theme(legend.position = "bottom")
   # qnet_mld_anom
 
   # Merge the panels together
   bottom_row <- cowplot::plot_grid(sst_u_v_anom, air_u_v_mslp_anom, qnet_mld_anom, labels = c('B)', 'C)', 'D)'),
                                    align = 'h', rel_widths = c(1, 1, 1), nrow = 1)
   top_row <- cowplot::plot_grid(NULL, ts_panel, NULL, labels = c('', 'A)', ''), nrow = 1, rel_widths = c(1,2,1))
-  fig_all <- cowplot::plot_grid(top_row, bottom_row, ncol = 1, rel_heights = c(1.3, 3))
+  fig_all <- cowplot::plot_grid(top_row, bottom_row, ncol = 1, rel_heights = c(1.4, 3))
   # fig_all
-  ggsave(fig_all, filename = paste0("talk/graph/synoptic_",event_region,"_",event_num,".png"), height = 6, width = 15)
+  ggsave(fig_all, filename = paste0("talk/graph/synoptic_",event_region,"_",event_num,".png"), height = 7, width = 16)
   # ggsave(fig_all, filename = paste0("talk/graph/synoptic_",event_region,"_",event_num,".pdf"), height = 6, width = 15)
 }
 
@@ -938,7 +941,7 @@ fig_single_node <- function(node_number, fig_packet, fig_height, fig_width){
   max_int_region_sub <- fig_max_int_region(fig_packet, 1, fig_height, fig_width)
 
   # Lollis showing duration + rate onset
-  duration_rate_onset_sub <- fig_duration_rate_onset(fig_packet, 1, fig_height, fig_width)
+  # duration_rate_onset_sub <- fig_duration_rate_onset(fig_packet, 1, fig_height, fig_width)
 
   # Create title
   title <- cowplot::ggdraw() + cowplot::draw_label(paste0("Node: ",node_number), fontface = 'bold')
@@ -951,13 +954,13 @@ fig_single_node <- function(node_number, fig_packet, fig_height, fig_width){
                                     # sst_u_v_real_sub, air_u_v_mslp_real_sub,
                                     # duration_rate_onset_sub,
                                     labels = c('A)', 'B)', 'C)', 'D)', 'E)', 'F)', 'G)', 'H)', 'I)'),
-                                    nrow = 2, rel_heights = c(1, 1), axis = "lt", align = "h")#+
+                                    nrow = 2)#, rel_heights = c(1, 1), align = "hv")#+
     # cowplot::draw_figure_label(label = paste0("Node: ",node_number), size = 20)
   fig_all_title <- cowplot::plot_grid(title, fig_all_sub, ncol = 1, rel_heights = c(0.05, 1))
   # fig_all_title
   # ggsave(fig_all_title, filename = paste0("output/node_",node_number,"_panels.png"), height = 12, width = 16)
-  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.pdf"), height = fig_height+1, width = fig_width+2)
-  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.png"), height = fig_height+1, width = fig_width+2)
+  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.pdf"), height = fig_height+1, width = fig_width+3)
+  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.png"), height = fig_height+1, width = fig_width+3)
 }
 
 
@@ -1025,9 +1028,9 @@ fig_sst_u_v_anom <- function(fig_data, col_num, fig_height, fig_width){
     geom_polygon(data = NWA_coords, aes(group = region),
                  fill = NA, colour = "black", size = 1, alpha = 0.2) +
     # The bathymetry
-    # stat_contour(data = bathy[bathy$depth < -100 & bathy$depth > -300,],
-    # aes(x = lon, y = lat, z = depth), alpha = 0.5,
-    # colour = "ivory", size = 0.5, binwidth = 200, na.rm = TRUE, show.legend = FALSE) +
+    stat_contour(data = bathy[bathy$depth > -2000,],
+                 aes(x = lon, y = lat, z = depth), alpha = 0.5,
+                 colour = "black", size = 0.5, binwidth = 200, na.rm = TRUE, show.legend = FALSE) +
     # The current vectors
     geom_segment(data = fig_data$som_data_sub,
                  aes(xend = lon + u_anom * current_uv_scalar,
@@ -1179,7 +1182,6 @@ fig_air_u_v_mslp_real <- function(fig_data, col_num, fig_height, fig_width){
 }
 
 
-
 # SD figures --------------------------------------------------------------
 
 fig_sd <- function(col_name, fig_data, col_num, fig_height, fig_width){
@@ -1241,8 +1243,8 @@ fig_cum_int_season <- function(fig_data, col_num, fig_height, fig_width){
     scale_x_date(labels = scales::date_format("%Y"),
                  date_breaks = "2 years", date_minor_breaks = "1 year") +
     labs(x = "", y = "Cum. intensity (°C x days)", colour = "Season") +
-    theme(legend.position = "bottom",
-          axis.text.x = element_text(angle = 30))
+    theme(legend.position = "bottom")#,
+          # axis.text.x = element_text(angle = 30))
   if(col_num != 1){
     cum_int_seas <- cum_int_seas +
       facet_wrap(~node, ncol = col_num)
@@ -1281,8 +1283,8 @@ fig_max_int_region <- function(fig_data, col_num, fig_height, fig_width){
     scale_x_date(labels = scales::date_format("%Y"),
                  date_breaks = "2 years", date_minor_breaks = "1 year") +
     labs(x = "", y = "Max. intensity (°C)", colour = "Region") +
-    theme(legend.position = "bottom",
-          axis.text.x = element_text(angle = 30)) +
+    theme(legend.position = "bottom")#,
+          # axis.text.x = element_text(angle = 30)) +
   if(col_num != 1){
     max_int_region <- max_int_region +
       facet_wrap(~node, ncol = col_num)
@@ -1322,8 +1324,8 @@ fig_duration_rate_onset <- function(fig_data, col_num, fig_height, fig_width){
                  date_breaks = "2 years", date_minor_breaks = "1 year") +
     scale_colour_gradient(low = "white", high = "darkorange") +
     labs(x = "", y = "Duration (days)", colour = "Rate onset (°C x days)") +
-    theme(legend.position = "bottom",
-          axis.text.x = element_text(angle = 30))
+    theme(legend.position = "bottom")#,
+          # axis.text.x = element_text(angle = 30))
   if(col_num != 1){
     duration_rate_onset <- duration_rate_onset +
       facet_wrap(~node, ncol = col_num)
