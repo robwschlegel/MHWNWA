@@ -504,17 +504,22 @@ fig_data_packet <- function(event_region, event_num){
     geom_line() +
     geom_line(aes(y = seas), col = "skyblue") +
     geom_line(aes(y = thresh), col = "navy") +
-    geom_segment(data = OISST_segments, colour = "springgreen",
+    geom_segment(data = OISST_segments, colour = "limegreen",
+                 size = 2, lineend = "round",
                  aes(x = date_start-1, xend = date_start-1,
-                     y = temp_start-1, yend = temp_start+1)) +
-    geom_segment(data = OISST_segments, colour = "springgreen",
+                     y = temp_start-0.5, yend = temp_start+0.5)) +
+    geom_segment(data = OISST_segments, colour = "limegreen",
+                 size = 2, lineend = "round",
                  aes(x = date_end+1, xend = date_end+1,
-                     y = temp_end-1, yend = temp_end+1)) +
-    geom_segment(data = OISST_segments, colour = "forestgreen",
-                 aes(x = date_peak, xend = date_peak,
-                     y = temp_peak-1, yend = temp_peak+1)) +
+                     y = temp_end-0.5, yend = temp_end+0.5)) +
+    # geom_segment(data = OISST_segments, colour = "deeppink3",
+    #              size = 2, lineend = "round",
+    #              aes(x = date_peak, xend = date_peak,
+    #                  y = temp_peak-0.5, yend = temp_peak+0.5)) +
     scale_x_date(expand = c(0, 0), date_breaks = date_breaks_op, date_labels = date_labels_op, ) +
-    labs(x = "Date", y = "Temp. (°C)  ")
+    labs(x = NULL, y = "Temp. (°C)  ") +
+    theme(axis.text = element_text(size = 12),
+          axis.title = element_text(size = 14))
   # ts_panel
 
   # SST + U + V (anom)
@@ -535,7 +540,7 @@ fig_data_packet <- function(event_region, event_num){
                  fill = "grey70", colour = "black", size = 0.5, show.legend = FALSE) +
     # The region polygon
     geom_polygon(data = NWA_coords_sub, aes(group = region),
-                 fill = NA, colour = "purple", size = 1.5, alpha = 1) +
+                 fill = NA, colour = "darkmagenta", size = 1.5, alpha = 1) +
     # Diverging gradient
     scale_fill_gradient2(name = "SST\nanom. (°C)", low = "blue", high = "red") +
     theme(legend.position = "bottom")
@@ -550,7 +555,7 @@ fig_data_packet <- function(event_region, event_num){
                  fill = NA, colour = "black", size = 0.5, show.legend = FALSE) +
     # The mean sea level pressure contours
     geom_contour(data = single_packet_full,
-                 aes(z = msl_anom, colour = stat(level)), size = 1) +
+                 aes(z = msl_anom, colour = stat(level)), size = 1.5) +
     # The wind vectors
     geom_segment(data = vec_sub,
                  aes(xend = lon + u10_anom * wind_uv_scalar,
@@ -559,7 +564,7 @@ fig_data_packet <- function(event_region, event_num){
                  linejoin = "mitre", size = 0.4, alpha = 0.4) +
     # The region polygon
     geom_polygon(data = NWA_coords_sub, aes(group = region),
-                 fill = NA, colour = "purple", size = 1.5, alpha = 1) +
+                 fill = NA, colour = "darkmagenta", size = 1.5, alpha = 1) +
     # Colour scale
     scale_fill_gradient2(name = "Air temp.\nanom. (°C)", low = "blue", high = "red") +
     scale_colour_gradient2("MSLP anom.\n(hPa)", #guide = "legend",
@@ -576,10 +581,10 @@ fig_data_packet <- function(event_region, event_num){
                  fill = "grey80", colour = "black", size = 0.5, show.legend = FALSE) +
     # The net downward heat flux contours
     geom_contour(data = single_packet_full, binwidth = 50,
-                 aes(z = qnet_anom, colour = stat(level)), size = 1) +
+                 aes(z = qnet_anom, colour = stat(level)), size = 1.5) +
     # The region polygon
     geom_polygon(data = NWA_coords_sub, aes(group = region),
-                 fill = NA, colour = "purple", size = 1.5, alpha = 1) +
+                 fill = NA, colour = "darkmagenta", size = 1.5, alpha = 1) +
     # Colour scale
     scale_fill_gradient2("MLD\nanom. (m)",low = "blue", high = "red") +
     scale_colour_gradient2("Qnet anom.\n(W/m2)", #guide = "legend",
