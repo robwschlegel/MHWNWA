@@ -112,11 +112,11 @@ options(knitr.table.format = "html")
 <!--   - This is important to note as it supports the argument that this methodology is limited in scale.   -->
 <!--   - It is likely that this SOM technique will not work on scales larger than one meso-scale feature at a time.   -->
 
-```{r fig-1, out.width='80%', fig.align='center', fig.cap='The regions of the study area and the marine heatwaves (MHWs) detected within them. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. A) The regions of the coast were divided up by their temperature and salinity regimes based on work by @Richaud2016. B) The SST pixels within each region were averaged to one time series before detecting MHWs with the @Hobday2016 definition.'}
+```{r fig-1, out.width='80%', fig.align='center', fig.cap='The regions of the study area and the marine heatwaves (MHWs) detected within them. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. A) The regions of the coast were divided up by their temperature and salinity regimes based on work by @Richaud2016. B) The SST pixels within each region were meaned to one time series before detecting MHWs with the @Hobday2016 definition.'}
 knitr::include_graphics("MHW_region_lolli_pad.png")
 ```
 
-```{r fig-2, out.width='100%', fig.align='center', fig.cap='The information generated for a single MHW. The region of the focus event is shown as a purple polygon. A) Start and end dates of the focal MHW are marked in green. B) Mean SST and surface current anomalies during the MHW. C) Mean air temperature, MSLP, and wind anomalies. D) Mean MLD and Qnet anomalies.'}
+```{r fig-2, out.width='100%', fig.align='center', fig.cap='The information generated for a single MHW. The region of the focal event is shown as a purple polygon. A) Start and end dates of the focal MHW are marked in green. B) Mean SST and surface current anomalies during the MHW. C) Mean air temperature, MSLP, and wind anomalies. D) Mean MLD and Qnet anomalies.'}
 knitr::include_graphics("~/MHWNWA/talk/graph/synoptic_gm_14.png")
 ```
 
@@ -124,7 +124,7 @@ knitr::include_graphics("~/MHWNWA/talk/graph/synoptic_gm_14.png")
 knitr::include_graphics("node_9_anom.png")
 ```
 
-```{r fig-4, out.width='100%', fig.align='center', fig.cap='MHW information for node 9. A) Regions and seasons of occurrence. B) Cumulative intensity and season of occurrence for each MHW. Linear models show range of dates for MHWs and the secular trend in their cumulative intensity. C) Max intensity and region of occurrence for each MHW. Linear models show range of dates of occurrence for MHWs and secular trend in max intensity.'}
+```{r fig-4, out.width='100%', fig.align='center', fig.cap='MHW information for node 9. A) Regions and seasons of occurrence. B) Cumulative intensity and season of occurrence for each MHW. Linear models show range of dates for MHWs and the secular trends in cumulative intensity. C) Max intensity and region of occurrence for each MHW. Linear models show range of dates for MHWs and the secular trends in max intensity.'}
 knitr::include_graphics("node_9_event.png")
 ```
 
