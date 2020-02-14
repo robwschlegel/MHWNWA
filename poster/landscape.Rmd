@@ -38,11 +38,10 @@ middle_fontfamily: "Special Elite"
 middle_textcol: "#FFFFFF90"
 middle_fontsize: "170px"
 main_findings:
-  # Improve this statement. Difficult to understand
-  # - "The most intense MHWs occur during Autumn/Winter when large scale atmospheric patterns look like Summer MHW conditions"
-  - "- Warm air sitting over entire coast"
-  - "- Warm Gulf Stream + air from south along coast"
-  - "- Warm air from Southeast onto the coast"
+  - "The most intense marine heatwaves occur during autumn/winter when atmospheric patterns look like summer marine heatwave conditions"
+  # - "- Warm air sitting over entire coast"
+  # - "- Warm air from southeast onto the coast"
+  # - "- Warm Gulf Stream + air from south along coast"
 # logoleft_name: '~/MHWNWA/poster/Figures/MHWNWA_QR.png{.main-img-left}'
 # logoright_name: 'Figures/OFI_DAL_WHOI_logo.png{.main-img-right}'
 # logoleft_name: '![](https://raw.githubusercontent.com/brentthorne/posterdown/master/images/qr-code-black.png){.main-img-left}'
@@ -87,54 +86,46 @@ options(knitr.table.format = "html")
 
 # Methods
 
-- SST pixels within each region of the coast (Figure \@ref(fig:fig-1)A) were averaged together into one time series.  
-- MHWs were calculated from these 6 averaged time series (Figure \@ref(fig:fig-1)B).  
+- SST pixels within each region of the coast (Figure \@ref(fig:fig-1)A) were meaned together into one time series.  
+- MHWs were calculated from these 6 mean time series (Figure \@ref(fig:fig-1)B).  
 - The start and end dates of each MHW were used to create mean synoptic air/sea state anomalies (Figure \@ref(fig:fig-2)).  
 - These mean anomalies were fed to a self-organising map (SOM) to produce the 12 most common air/sea states (nodes). 
 - Humans are then used to infer the drivers from the 12 nodes.
 
 # Results
 
-<!-- - Figure \@ref(fig:fig-3) shows the results from node 9 of the SOM.   -->
 - To see all of the results please follow the QR code.  
-- In node 9 we see a clear Nor'easter pattern (Figure \@ref(fig:fig-3)C).  
-- The centre of the high SST anomaly (Figure \@ref(fig:fig-3)B) has a deepening MLD and negative downward heat flux (Figure \@ref(fig:fig-3)D).  
-- Most MHWs occurred northwest of the centre of the SST anomaly (Figure \@ref(fig:fig-3)A) due to the downward heat flux and shoaling MLD (Figure \@ref(fig:fig-3)D). 
-- None of these events occurred in Summer (Figure \@ref(fig:fig-3)G), and most events occurred on the Newfoundland Shelf (Figure \@ref(fig:fig-3)H).  
+- The node 9 results show a clear Nor'easter pattern (Figure \@ref(fig:fig-3)B).  
+- The centre of the high SST anomaly (Figure \@ref(fig:fig-3)A) has a deepening MLD and negative downward heat flux (Figure \@ref(fig:fig-3)C).  
+- Most MHWs occurred northwest of the centre of the SST anomaly (Figure \@ref(fig:fig-4)A) due to the downward heat flux and shoaling MLD (Figure \@ref(fig:fig-3)C). 
+- None of these events occurred in summer (Figure \@ref(fig:fig-4)B), and nearly half occurred on the Newfoundland Shelf (Figure \@ref(fig:fig-4)C).  
 
 # Conclusions
 
-- The nodes tell three main stories:
-  - Warm Gulf Stream + air pushing up from south along coast.
-  - Warm air sitting over entire coast.
-  - Warm air being pushed over the Atlantic from the South/Southeast onto the coast.
-- Overall the most intense MHWs occur during Autumn/Winter when they match patterns that are normally seen in Summer.
-- The SOM technique functions better in the Northwest Atlantic if the Labrador Sea is excluded from the study area.
+- The nodes show three predominant patterns:
+  - Warm Gulf Stream + air pushing up from south along the coast.
+  - Warm air sitting over the entire coast during summer.
+  - Warm air pushed over the Atlantic from the southeast onto the coast.
+- The most intense MHWs occur during Autumn/Winter when large scale atmospheric patterns look like Summer MHW conditions.
 
+<!-- - The SOM technique functions better in the Northwest Atlantic if the Labrador Sea is excluded from the study area. -->
 <!--   - This is important to note as it supports the argument that this methodology is limited in scale.   -->
 <!--   - It is likely that this SOM technique will not work on scales larger than one meso-scale feature at a time.   -->
 
-<!-- # Future work -->
-
-<!-- Extend the methodology seen here into the third and fourth dimensions of the data.   -->
-<!-- Run this same analysis 1, 2, 3, etc. months prior to the MHWs to see how well it detects patterns.   -->
-<!-- Test these drivers (node synoptic states) as predictors for events in different data products.   -->
-<!-- Rank the drivers by their predictive accuracy.   -->
-<!-- Create operational prediction data layer for public use/consumption.   -->
-
-```{r fig-1, out.width='80%', fig.align='center', fig.cap='The regions of the study area and the marine heatwaves (MHWs) detected within them. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. A) The regions of the coast were divided up by their temperature and salinity regimes based on work by @Richaud2016. B) The SST pixels within each region were averaged into one representative time series and then MHWs were detected using the @Hobday2016 definition.'}
+```{r fig-1, out.width='80%', fig.align='center', fig.cap='The regions of the study area and the marine heatwaves (MHWs) detected within them. The region abbreviations are: gm = Gulf of Maine, gls = Gulf of St. Lawrence, ls = Labrador Shelf, mab = Mid-Atlantic Bight, nfs = Newfoundland Shelf, ss = Scotian Shelf. A) The regions of the coast were divided up by their temperature and salinity regimes based on work by @Richaud2016. B) The SST pixels within each region were averaged to one time series before detecting MHWs with the @Hobday2016 definition.'}
 knitr::include_graphics("MHW_region_lolli_pad.png")
 ```
 
-```{r fig-2, out.width='100%', fig.align='center', fig.cap='An overview of the information contained in one MHW data packet. The region of the focus event is shown as purple polygon. A) The focual MHW shown in salmon; the start and end dates of the focal event are marked in light green while the peak date is marked in dark green. B) The SST and surface current anomalies during the MHW. C) The wind stress, mean sea level pressure, and air temperature anomalies. D) The net positive downward heat flux mixed layer depth anomalies.'}
+```{r fig-2, out.width='100%', fig.align='center', fig.cap='The information generated for a single MHW. The region of the focus event is shown as a purple polygon. A) Start and end dates of the focal MHW are marked in green. B) Mean SST and surface current anomalies during the MHW. C) Mean air temperature, MSLP, and wind anomalies. D) Mean MLD and Qnet anomalies.'}
 knitr::include_graphics("~/MHWNWA/talk/graph/synoptic_gm_14.png")
 ```
 
+```{r fig-3, out.width='100%', fig.align='center', fig.cap='The mean environmental states for all MHWs clustered into node 9. A) Mean SST and surface current anomalies. Regions overlaid with black polygons and bathymetry down to 2000 m shown with black contours. B) Mean air temperature, MSLP, and wind anomalies. F) Mean MLD and Qnet anomalies.'}
+knitr::include_graphics("node_9_anom.png")
+```
 
-<!-- Simplify the text for the caption -->
-<!-- Split this figure into two -->
-```{r fig-3, out.width='100%', fig.align='center', fig.cap='Summary visuals for the results from node 9. The environmental states for all MHWs clustered into this node were meaned to create the images in panels D - F. A) Regions and seasons of occurrence for MHWs in node 9. B) The cumulative intensity and season of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and the secular trend in their cumulative intensity. C) The max intensity and region of occurrence for each MHW. Linear model shows range of dates of occurrence for MHWs and secular trend in max intensity. D) Mean SST and surface current anomalies. Region polygons overlaid in black and bathymetry down to 2000 m shown with black contours. E) Mean air temperature, MSLP, and surface wind anomalies. F) Mean mixed layer depth and net positive downware heat flux anomalies.'}
-knitr::include_graphics("~/MHWNWA/output/SOM/node_9_panels.png")
+```{r fig-4, out.width='100%', fig.align='center', fig.cap='MHW information for node 9. A) Regions and seasons of occurrence. B) Cumulative intensity and season of occurrence for each MHW. Linear models show range of dates for MHWs and the secular trend in their cumulative intensity. C) Max intensity and region of occurrence for each MHW. Linear models show range of dates of occurrence for MHWs and secular trend in max intensity.'}
+knitr::include_graphics("node_9_event.png")
 ```
 
 # References

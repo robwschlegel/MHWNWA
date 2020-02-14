@@ -1225,7 +1225,6 @@ fig_cum_int_season <- function(fig_data, col_num, fig_height, fig_width){
   # The figure
   cum_int_seas <- ggplot(data = fig_data$OISST_MHW_meta,
                   aes(x = date_peak, y = intensity_cumulative)) +
-    geom_smooth(method = "lm", se = F, aes(colour = season_peak)) +
     # Count label
     # geom_label(aes(x = mean(range(date_peak)),
     #                y = max(intensity_cumulative),
@@ -1240,8 +1239,9 @@ fig_cum_int_season <- function(fig_data, col_num, fig_height, fig_width){
     #            aes(x = mean(range(fig_data$OISST_MHW_meta$date_peak)),
     #                y = max(fig_data$OISST_MHW_meta$intensity_cumulative)*0.8,
     #                label = paste0("median = ", median_int_cum))) +
-    geom_lolli() +
-    geom_point(aes(colour = season_peak)) +
+    geom_lolli(aes(colour = season_peak), size = 2) +
+    # geom_point(aes(colour = season_peak), size = 2) +
+    geom_smooth(method = "lm", se = F, aes(colour = season_peak), size = 2) +
     geom_hline(data = fig_data$node_h_lines, aes(yintercept = mean_int_cum), linetype = "dashed") +
     geom_hline(data = fig_data$node_h_lines, aes(yintercept = median_int_cum), linetype = "dotted") +
     scale_colour_brewer(palette = "Set1") +
@@ -1266,7 +1266,6 @@ fig_max_int_region <- function(fig_data, col_num, fig_height, fig_width){
   # The figure
   max_int_region <- ggplot(data = fig_data$OISST_MHW_meta,
                   aes(x = date_peak, y = intensity_max)) +
-    geom_smooth(method = "lm", se = F, aes(colour = region)) +
     # Count label
     # geom_label(aes(x = mean(range(date_peak)),
     #                y = max(intensity_max),
@@ -1281,10 +1280,12 @@ fig_max_int_region <- function(fig_data, col_num, fig_height, fig_width){
     #            aes(x = mean(range(fig_data$OISST_MHW_meta$date_peak)),
     #                y = max(fig_data$OISST_MHW_meta$intensity_max)*0.8,
     #                label = paste0("median = ", median_int_max))) +
-    geom_lolli() +
-    geom_point(aes(colour = region)) +
+    geom_lolli(aes(colour = region), size = 2) +
+    # geom_point(aes(colour = region), size = 2) +
+    geom_smooth(method = "lm", se = F, aes(colour = region), size = 2) +
     geom_hline(data = fig_data$node_h_lines, aes(yintercept = mean_int_max), linetype = "dashed") +
     geom_hline(data = fig_data$node_h_lines, aes(yintercept = median_int_max), linetype = "dotted") +
+    scale_colour_manual(values = RColorBrewer::brewer.pal(n = 6, name = 'Dark2')[c(1,2,4,5,3,6)]) +
     scale_x_date(labels = scales::date_format("%Y"),
                  date_breaks = "2 years", date_minor_breaks = "1 year") +
     labs(x = "", y = "Max. intensity (°C)", colour = "Region") +

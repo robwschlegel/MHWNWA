@@ -136,8 +136,6 @@ After running through a series of self-organising map (SOM) experiments in the p
 NWA_coords <- NWA_coords_cabot %>% 
   filter(region != "ls")
 
-# Make GSL a pink colour for clarity
-
 # Save these final study region coordinates
 # saveRDS(NWA_coords, "data/NWA_coords.Rda")
 

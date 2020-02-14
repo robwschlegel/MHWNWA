@@ -195,26 +195,12 @@ Finally for this section we will visualise the regions from the previous vignett
 # The study area map from the revious vignette
 load("output/NWA_study_area.Rdata")
 
-# Make the colours of the lollis the same colours as the regions in Figure 1A
-
 # Merge the panels together
 MHW_region_lolli <- cowplot::plot_grid(NWA_study_area, MHW_lolli_plot, labels = c('A)', 'B)'), label_size = 10,
                                        align = 'hv', rel_widths = c(1.2, 1), nrow = 1, axis = "l")
 # ggsave(plot = MHW_region_lolli, filename = "output/MHW_region_lolli.pdf", height = 4, width = 10)
 # ggsave(plot = MHW_region_lolli, filename = "output/MHW_region_lolli.png", height = 4, width = 10)
 MHW_region_lolli
-```
-
-```{r MHW_region_lolli_poster, eval=FALSE, echo=FALSE}
-# This sneaky chunk is for creating the version used in the poster
-# Because of the way that posterdown works one needs to pad the top figure a bit so as not to sit right on the margin
-
-# Empty plot
-top_row <- ggplot() + theme_void()
-
-# Steek'em
-MHW_region_lolli_pad <- cowplot::plot_grid(top_row, MHW_region_lolli, ncol = 1, rel_heights = c(1, 10))
-ggsave(plot = MHW_region_lolli_pad, filename = "poster/MHW_region_lolli_pad.png", height = 4.1, width = 9)
 ```
 
 Up next in the [heat budget variable preparation](https://robwschlegel.github.io/MHWNWA/var-prep.html) vignette we will go through the steps necessary to build the data that will be fed into our self-organising map (SOM) as seen in the [SOM analysis](https://robwschlegel.github.io/MHWNWA/som.html) vignette.
