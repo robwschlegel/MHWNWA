@@ -170,7 +170,6 @@ The following figure shows an overall visual summary of all of the variables for
 knitr::include_graphics("assets/node_schematic_summary.jpg")
 ```
 
-
 ### Region + season
 
 The nodes in the right-hand column have mostly events centred around the _mab_ and almost none in the _nfs_. The distribution becomes more even as we move to the centre with the left-hand nodes having mostly _nfs_ and _gsl_ events. There is no apparent pattern as one moves from the top to the bottom. Keep in mind that the region + season of occurrence are not fed to the SOM so any patterns that come out here are very important.
@@ -181,7 +180,7 @@ For patterns in seasons, we most quickly see that the MHWs occurring in the midd
 knitr::include_graphics("assets/SOM/region_season.png")
 ```
 
-### SST + U + V
+### SST + U + V (anom)
 
 For SST we see moving from right to left that the LS anomaly tends to go from cool to warm and the inverse is true of the GS anomaly in the bottom of the mab. As we move from the top down the AO tends to become warmer. The ss is warm in all of the nodes, and it is around this region that the heat focus of each node pivots.
 
@@ -199,7 +198,7 @@ One consistent pattern across all of the wind anomalies is that the top row node
 
 In the right-hand column of nodes we see generally high-pressure anticyclonic wind anomalies around a thermal dipole with the northward moving air being anomalously warm; the warmer (colder) the anomaly the faster north (south) the anomalous wind movement is. We tend to see the opposite in the left-hand column. In the second right-most column (nodes 3 + 7 + 11) we also see anticyclonic wind anomalies around thermal dipoles. The central position of the anticyclone is different in each node, and the thermal anomalies are less than the right-hand column. The left-hand two columns have cyclonic wind movement around thermal dipoles with the stronger patterns in the far left column. Node 10 is a bit different in that it appears to have anticyclonic wind movement, but a cold dipole that looks more like the cyclonic movement nodes. The center two nodes show almost no anomalous wind patterns or MSLP, with node 6 having a slight negative MSLP anomaly and node 7 being slightly positive. 
 
-Node 9 shows the Northeaster storm signature. The left-hand column is basically low pressure storms. The right-hand column is basically high pressure blocking. The middle middle nodes are "dog days" of summer. The top and bottom middle nodes are similar to outsides but show transitions between them. Whether it is a storm or not depends on the season of occurrence.
+Node 9 shows the Nor'easter storm signature. The left-hand column is basically low pressure storms. The right-hand column is basically high pressure blocking. The middle middle nodes are "dog days" of summer. The top and bottom middle nodes are similar to outsides but show transitions between them. Whether it is a storm or not depends on the season of occurrence.
 
 ```{r t2m-summary, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/SOM/air_u_v_mslp_anom.png")
@@ -214,6 +213,46 @@ The MLD in the AO in the top nodes is generally deeper, and shoals as we move to
 ```{r mld-summary, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/SOM/qnet_mld_anom.png")
 ```
+
+### SD of variables per pixel per node {.tabset}
+
+The following figures show the standard deviation (SD) per pixel per node based on the variance between all of the synoptic states that were clustered into each node. Higher SD values show a poorer match between synoptic states within each node. These areas of high SD highlight areas where the representative synoptic state in the results does not accurately portray what most synoptic states clustered into each node are showing. Lower areas of SD show where the node is better representing what most synoptic states are showing. The units in each colour scale are the same as the variable in the figure.
+
+#### SST anom
+
+![](../output/SOM/sst_anom_sd.png)
+
+#### U anom
+
+![](../output/SOM/u_anom_sd.png)
+
+#### V anom
+
+![](../output/SOM/v_anom_sd.png)
+
+#### Air temp anom
+
+![](../output/SOM/t2m_anom_sd.png)
+
+#### U10 anom
+
+![](../output/SOM/u10_anom_sd.png)
+
+#### V10 anom
+
+![](../output/SOM/v10_anom_sd.png)
+
+#### Qnet anom
+
+![](../output/SOM/qnet_anom_sd.png)
+
+#### MSLP anom
+
+![](../output/SOM/msl_anom_sd.png)
+
+#### MLD anom
+
+![](../output/SOM/mld_anom_sd.png)
 
 ### Heatmap of summary statistics
 
@@ -233,7 +272,7 @@ knitr::include_graphics("assets/SOM/cum_int_season.png")
 
 ### Max intensity
 
-The same pattern here holds roughly as to the cumulative intensity pattern. Node 11 however has the largest median intensity, and nearly the largest mean intensity as well.
+We see roughly the same pattern here as the cumulative intensity pattern. Node 11 however has the largest median intensity, and nearly the largest mean intensity as well.
 
 ```{r max-summary, out.width='100%', fig.align='center'}
 knitr::include_graphics("assets/SOM/max_int_region.png")
