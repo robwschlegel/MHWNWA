@@ -204,7 +204,7 @@ Node 9 shows the Nor'easter storm signature. The left-hand column is basically l
 knitr::include_graphics("assets/SOM/air_u_v_mslp_anom.png")
 ```
 
-### Net downward heatflux + MLD (anom)
+### Qnet + MLD (anom)
 
 The gradients of net downward heatflux (qnet) change nicely across the nodes and generally speaking we see more positive (negative) qnet areas with anomalously shallow (deep) water. There is little happening in the centre two nodes. There is high positive qnet over the LS + AO in the bottom left node (9) with negative heatflux over the GS. This positive qnet gradient slowly moves over the AO as we move from the left to the right along the bottom row of nodes. There is a negative qnet gradient over the GS in the top left node (1) that slowly moves up and over to the LS as we move across the top row of nodes. This negative qnet patch is replaced by a positive one.
 
@@ -214,45 +214,45 @@ The MLD in the AO in the top nodes is generally deeper, and shoals as we move to
 knitr::include_graphics("assets/SOM/qnet_mld_anom.png")
 ```
 
-### SD of variables per pixel per node {.tabset}
+### SD of variables {.tabset}
 
 The following figures show the standard deviation (SD) per pixel per node based on the variance between all of the synoptic states that were clustered into each node. Higher SD values show a poorer match between synoptic states within each node. These areas of high SD highlight areas where the representative synoptic state in the results does not accurately portray what most synoptic states clustered into each node are showing. Lower areas of SD show where the node is better representing what most synoptic states are showing. The units in each colour scale are the same as the variable in the figure.
 
 #### SST anom
 
-![](../output/SOM/sst_anom_sd.png)
+![](assets/SOM/sst_anom_sd.png)
 
 #### U anom
 
-![](../output/SOM/u_anom_sd.png)
+![](assets/SOM/u_anom_sd.png)
 
 #### V anom
 
-![](../output/SOM/v_anom_sd.png)
+![](assets/SOM/v_anom_sd.png)
 
 #### Air temp anom
 
-![](../output/SOM/t2m_anom_sd.png)
+![](assets/SOM/t2m_anom_sd.png)
 
 #### U10 anom
 
-![](../output/SOM/u10_anom_sd.png)
+![](assets/SOM/u10_anom_sd.png)
 
 #### V10 anom
 
-![](../output/SOM/v10_anom_sd.png)
+![](assets/SOM/v10_anom_sd.png)
 
 #### Qnet anom
 
-![](../output/SOM/qnet_anom_sd.png)
+![](assets/SOM/qnet_anom_sd.png)
 
 #### MSLP anom
 
-![](../output/SOM/msl_anom_sd.png)
+![](assets/SOM/msl_anom_sd.png)
 
 #### MLD anom
 
-![](../output/SOM/mld_anom_sd.png)
+![](assets/SOM/mld_anom_sd.png)
 
 ### Heatmap of summary statistics
 
