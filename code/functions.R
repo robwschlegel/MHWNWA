@@ -934,10 +934,10 @@ fig_single_node <- function(node_number, fig_packet, fig_height, fig_width){
   qnet_mld_anom_sub <- fig_qnet_mld_anom(fig_packet, 1, fig_height, fig_width)
 
   # SST + U + V (real)
-  # sst_u_v_real_sub <- fig_sst_u_v_real(fig_packet, 1, fig_height, fig_width)
+  sst_u_v_real_sub <- fig_sst_u_v_real(fig_packet, 1, fig_height, fig_width)
 
   # Air Temp + U + V (real)
-  # air_u_v_mslp_real_sub <- fig_air_u_v_mslp_real(fig_packet, 1, fig_height, fig_width)
+  air_u_v_mslp_real_sub <- fig_air_u_v_mslp_real(fig_packet, 1, fig_height, fig_width)
 
   # Lollis showing cum.int. + season
   cum_int_season_sub <- fig_cum_int_season(fig_packet, 1, fig_height, fig_width)
@@ -946,21 +946,21 @@ fig_single_node <- function(node_number, fig_packet, fig_height, fig_width){
   max_int_region_sub <- fig_max_int_region(fig_packet, 1, fig_height, fig_width)
 
   # Lollis showing duration + rate onset
-  # duration_rate_onset_sub <- fig_duration_rate_onset(fig_packet, 1, fig_height, fig_width)
+  duration_rate_onset_sub <- fig_duration_rate_onset(fig_packet, 1, fig_height, fig_width)
 
   # Create title
   title <- cowplot::ggdraw() + cowplot::draw_label(paste0("Node: ",node_number), fontface = 'bold')
 
   # Stick them together
   fig_all_sub <- cowplot::plot_grid(region_season_sub,
-                                    cum_int_season_sub, max_int_region_sub,
                                     sst_u_v_anom_sub, air_u_v_mslp_anom_sub,
                                     qnet_mld_anom_sub,
-                                    # sst_u_v_real_sub, air_u_v_mslp_real_sub,
-                                    # duration_rate_onset_sub,
+                                    sst_u_v_real_sub, air_u_v_mslp_real_sub,
+                                    cum_int_season_sub, max_int_region_sub,
+                                    duration_rate_onset_sub,
                                     labels = c('A)', 'B)', 'C)', 'D)', 'E)', 'F)', 'G)', 'H)', 'I)'),
-                                    nrow = 2)#, rel_heights = c(1, 1), align = "hv")#+
-    # cowplot::draw_figure_label(label = paste0("Node: ",node_number), size = 20)
+                                    nrow = 3, rel_heights = c(1, 1), align = "hv") +
+    cowplot::draw_figure_label(label = paste0("Node: ",node_number), size = 20)
   fig_all_title <- cowplot::plot_grid(title, fig_all_sub, ncol = 1, rel_heights = c(0.05, 1))
   # fig_all_title
   # ggsave(fig_all_title, filename = paste0("output/node_",node_number,"_panels.png"), height = 12, width = 16)
