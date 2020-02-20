@@ -10,8 +10,10 @@
 
 # Run this to re-compile the entire project
 system.time(
-workflowr::wflow_publish(files = c("analysis/index.Rmd", "analysis/polygon-prep.Rmd",
-                                   "analysis/sst-prep.Rmd", "analysis/var-prep.Rmd",
+workflowr::wflow_publish(files = c("analysis/index.Rmd",
+                                   "analysis/polygon-prep.Rmd",
+                                   "analysis/sst-prep.Rmd",
+                                   "analysis/var-prep.Rmd",
                                    "analysis/som.Rmd",
                                    # "analysis/figures.Rmd",
                                    "analysis/node-summary.Rmd"),

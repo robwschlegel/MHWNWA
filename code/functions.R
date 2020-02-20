@@ -959,13 +959,12 @@ fig_single_node <- function(node_number, fig_packet, fig_height, fig_width){
                                     cum_int_season_sub, max_int_region_sub,
                                     duration_rate_onset_sub,
                                     labels = c('A)', 'B)', 'C)', 'D)', 'E)', 'F)', 'G)', 'H)', 'I)'),
-                                    nrow = 3, rel_heights = c(1, 1), align = "hv") +
-    cowplot::draw_figure_label(label = paste0("Node: ",node_number), size = 20)
+                                    nrow = 3, rel_heights = c(1, 1, 0.8), align = "h")
   fig_all_title <- cowplot::plot_grid(title, fig_all_sub, ncol = 1, rel_heights = c(0.05, 1))
   # fig_all_title
   # ggsave(fig_all_title, filename = paste0("output/node_",node_number,"_panels.png"), height = 12, width = 16)
-  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.pdf"), height = fig_height+1, width = fig_width+3)
-  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.png"), height = fig_height+1, width = fig_width+3)
+  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.pdf"), height = fig_height+5, width = fig_width+3)
+  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.png"), height = fig_height+5, width = fig_width+3)
 }
 
 
