@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Robert Schlegel" />
@@ -27,9 +27,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
-<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
-<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -77,9 +76,7 @@ h6 {
 </style>
 
 
-</head>
 
-<body>
 
 <style type = "text/css">
 .main-container {
@@ -93,7 +90,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -103,6 +99,9 @@ img {
 }
 button.code-folding-btn:focus {
   outline: none;
+}
+summary {
+  display: list-item;
 }
 </style>
 
@@ -118,7 +117,6 @@ body {
   padding-top: 56px;
   margin-top: -56px;
 }
-
 .section h2 {
   padding-top: 56px;
   margin-top: -56px;
@@ -138,6 +136,43 @@ body {
 .section h6 {
   padding-top: 56px;
   margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -159,47 +194,66 @@ $(document).ready(function () {
 });
 </script>
 
-
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-</script>
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
 
 <!-- code folding -->
 
 
-
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -213,6 +267,12 @@ $(document).ready(function ()  {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -248,8 +308,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -258,6 +316,16 @@ div.tocify {
 
 
 </style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
@@ -339,43 +407,131 @@ div.section {
 
 
 <h1 class="title toc-ignore">Variable preparation</h1>
-<h4 class="author"><em>Robert Schlegel</em></h4>
-<h4 class="date"><em>2019-08-22</em></h4>
+<h4 class="author">Robert Schlegel</h4>
+<h4 class="date">2019-08-22</h4>
 
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-08-28</p>
-<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
-<ul>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
 <li>
-<details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2020-02-20
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>MHWNWA/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
-</details>
-</li>
-<li>
-<details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
-</details>
-</li>
-<li>
-<details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(20190513)</code> </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20190513code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20190513)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20190513code" class="panel-collapse collapse">
+<div class="panel-body">
 <p>The command <code>set.seed(20190513)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
-</details>
-</li>
-<li>
-<details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
-</details>
-</li>
-<li>
-<details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/454b53b90a81ee54136eed5ef66132af0787d3d3" target="_blank">454b53b</a> </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrobwschlegelMHWNWAtreed613bf92169d917a8f54b81c66770d74b7b27f6ftargetblankd613bf9a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/d613bf92169d917a8f54b81c66770d74b7b27f6f" target="_blank">d613bf9</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrobwschlegelMHWNWAtreed613bf92169d917a8f54b81c66770d74b7b27f6ftargetblankd613bf9a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
@@ -456,656 +612,771 @@ Ignored files:
     Ignored:    data/comparison/som_nolab_9.Rda
     Ignored:    data/comparison/som_nolabgsl.Rda
     Ignored:    data/comparison/som_nolabmod.Rda
+    Ignored:    data/eddy_trajectory_2.0exp_19930101_20180118.nc
+    Ignored:    talk/IMBeR_2019.html
+    Ignored:    talk/MHWNWA.html
 
 Unstaged changes:
     Modified:   code/functions.R
+    Modified:   output/SOM/air_u_v_mslp_anom.pdf
+    Modified:   output/SOM/air_u_v_mslp_real.pdf
+    Modified:   output/SOM/cum_int_season.pdf
+    Modified:   output/SOM/cum_int_season.png
+    Modified:   output/SOM/duration_rate_onset.pdf
+    Modified:   output/SOM/max_int_region.pdf
+    Modified:   output/SOM/max_int_region.png
+    Modified:   output/SOM/mld_anom_sd.pdf
+    Modified:   output/SOM/msl_anom_sd.pdf
+    Modified:   output/SOM/msl_sd.pdf
+    Modified:   output/SOM/node_10_panels.pdf
+    Modified:   output/SOM/node_10_panels.png
+    Modified:   output/SOM/node_11_panels.pdf
+    Modified:   output/SOM/node_11_panels.png
+    Modified:   output/SOM/node_12_panels.pdf
+    Modified:   output/SOM/node_12_panels.png
+    Modified:   output/SOM/node_1_panels.pdf
+    Modified:   output/SOM/node_1_panels.png
+    Modified:   output/SOM/node_2_panels.pdf
+    Modified:   output/SOM/node_2_panels.png
+    Modified:   output/SOM/node_3_panels.pdf
+    Modified:   output/SOM/node_3_panels.png
+    Modified:   output/SOM/node_4_panels.pdf
+    Modified:   output/SOM/node_4_panels.png
+    Modified:   output/SOM/node_5_panels.pdf
+    Modified:   output/SOM/node_5_panels.png
+    Modified:   output/SOM/node_6_panels.pdf
+    Modified:   output/SOM/node_6_panels.png
+    Modified:   output/SOM/node_7_panels.pdf
+    Modified:   output/SOM/node_7_panels.png
+    Modified:   output/SOM/node_8_panels.pdf
+    Modified:   output/SOM/node_8_panels.png
+    Modified:   output/SOM/node_9_panels.pdf
+    Modified:   output/SOM/node_9_panels.png
+    Modified:   output/SOM/qnet_anom_sd.pdf
+    Modified:   output/SOM/qnet_mld_anom.pdf
+    Modified:   output/SOM/region_season.pdf
+    Modified:   output/SOM/sst_anom_sd.pdf
+    Modified:   output/SOM/sst_sd.pdf
+    Modified:   output/SOM/sst_u_v_anom.pdf
+    Modified:   output/SOM/sst_u_v_real.pdf
+    Modified:   output/SOM/t2m_anom_sd.pdf
+    Modified:   output/SOM/t2m_sd.pdf
+    Modified:   output/SOM/u10_anom_sd.pdf
+    Modified:   output/SOM/u10_sd.pdf
+    Modified:   output/SOM/u_anom_sd.pdf
+    Modified:   output/SOM/u_sd.pdf
+    Modified:   output/SOM/v10_anom_sd.pdf
+    Modified:   output/SOM/v10_sd.pdf
+    Modified:   output/SOM/v_anom_sd.pdf
+    Modified:   output/SOM/v_sd.pdf
 
 </code></pre>
+<p>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
-</details>
-</li>
-</ul>
-<details>
-<summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
-<ul>
-<table style="border-collapse:separate; border-spacing:5px;">
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 File
 </th>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
-<th style="text-align:left;">
+<th>
 Message
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
-<a href="https://github.com/robwschlegel/MHWNWA/blob/59cf7715da1a80c56c212f001f0449dee6c1b875/analysis/var-prep.Rmd" target="_blank">59cf771</a>
+<td>
+<a href="https://github.com/robwschlegel/MHWNWA/blob/a3b88a8a2f53baf04681e260a7b764b87ef5edde/analysis/var-prep.Rmd" target="_blank">a3b88a8</a>
 </td>
-<td style="text-align:left;">
+<td>
+Robert William Schlegel
+</td>
+<td>
+2020-02-12
+</td>
+<td>
+Working through a full edit of the workflowr site. This will seque into a write up of the draft manuscript.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/a7fbd91e8228df0c11c4448f98d40bbc1091319a/docs/var-prep.html" target="_blank">a7fbd91</a>
+</td>
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
+2019-08-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/robwschlegel/MHWNWA/blob/59cf7715da1a80c56c212f001f0449dee6c1b875/analysis/var-prep.Rmd" target="_blank">59cf771</a>
+</td>
+<td>
+robwschlegel
+</td>
+<td>
 2019-08-22
 </td>
-<td style="text-align:left;">
+<td>
 Polished up the variable prep vignette
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/826c73d93c73c8f65cc42b69942163def63cd437/docs/var-prep.html" target="_blank">826c73d</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/826c73d93c73c8f65cc42b69942163def63cd437/docs/var-prep.html" target="_blank">826c73d</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-15
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/143b1a6ee65dc941612cb8dc5e5086b128175249/docs/var-prep.html" target="_blank">143b1a6</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/143b1a6ee65dc941612cb8dc5e5086b128175249/docs/var-prep.html" target="_blank">143b1a6</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-15
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/78f4977eea95f2a9c09b1bb141f85bcab509299d/analysis/var-prep.Rmd" target="_blank">78f4977</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-15
 </td>
-<td style="text-align:left;">
+<td>
 Re-publish entire site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/20ae166273d1a7141b8aeeafec8e540868400325/docs/var-prep.html" target="_blank">20ae166</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/20ae166273d1a7141b8aeeafec8e540868400325/docs/var-prep.html" target="_blank">20ae166</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-11
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/19bea2633b29e03ba644084891754418931348a4/docs/var-prep.html" target="_blank">19bea26</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/19bea2633b29e03ba644084891754418931348a4/docs/var-prep.html" target="_blank">19bea26</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-11
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/2652a3a9bb40f929c80e5f2bec3b53af62634b58/docs/var-prep.html" target="_blank">2652a3a</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/2652a3a9bb40f929c80e5f2bec3b53af62634b58/docs/var-prep.html" target="_blank">2652a3a</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-11
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/adc762ba64e5b8090e28d13e48b8505397178bd8/analysis/var-prep.Rmd" target="_blank">adc762b</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-08
 </td>
-<td style="text-align:left;">
+<td>
 Re-worked the GLORYS data and propogated update through to SOM analysis figures for all experiments
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/f0d2efbfe728e6bf57bd2d81f4653dbbe953b62c/docs/var-prep.html" target="_blank">f0d2efb</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/f0d2efbfe728e6bf57bd2d81f4653dbbe953b62c/docs/var-prep.html" target="_blank">f0d2efb</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-07
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/ed626bf509177dad3d8092e623f2c6bee5bf1f9e/analysis/var-prep.Rmd" target="_blank">ed626bf</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-07
 </td>
-<td style="text-align:left;">
+<td>
 Ran a bunch of figures and had a meeting with Eric. More changes coming to GLORYS data tomorrow before settling on one of the experimental SOMs
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/f27c2610130598dea59a88d60c781e091f887d3a/analysis/var-prep.Rmd" target="_blank">f27c261</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-06
 </td>
-<td style="text-align:left;">
+<td>
 Working towards pipeline optimised for testing different SOM inputs
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/9a9fa7dcbb3784879c40ef4f5592c0401e0aba05/analysis/var-prep.Rmd" target="_blank">9a9fa7d</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-01
 </td>
-<td style="text-align:left;">
+<td>
 A more in depth dive into the potential criteria to meet for the SOM model
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/aa82e6e565dc2e79a3152f77684953031971619b/docs/var-prep.html" target="_blank">aa82e6e</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/aa82e6e565dc2e79a3152f77684953031971619b/docs/var-prep.html" target="_blank">aa82e6e</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-07-31
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/498909bd3a0e434b3fd5f2cf99b0dfa6622a15f2/analysis/var-prep.Rmd" target="_blank">498909b</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-07-31
 </td>
-<td style="text-align:left;">
+<td>
 Re-publish entire site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/256a7f16f37825fff93f9e310da4ce0d4ea6dcb6/analysis/var-prep.Rmd" target="_blank">256a7f1</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-07-31
 </td>
-<td style="text-align:left;">
+<td>
 Completed re-run on ERA 5 data. Working on combining anomalies.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/3b805e4bbfb1c49b75ee81944780472fdb1e699c/analysis/var-prep.Rmd" target="_blank">3b805e4</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-07-30
 </td>
-<td style="text-align:left;">
+<td>
 Completed anomaly runs on GLORYS variables
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/bd987b40c5aeea61d05dc80253aa72aa03a31721/analysis/var-prep.Rmd" target="_blank">bd987b4</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-07-29
 </td>
-<td style="text-align:left;">
+<td>
 Completed run on anomalies with the exception of the three in the GLORYS product
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/51ed68129cb0c4bd1a7b96e371286abb5c5c5c9e/analysis/var-prep.Rmd" target="_blank">51ed681</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-07-25
 </td>
-<td style="text-align:left;">
+<td>
 Completed anoms for OISST
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/0b6f065fff7bcf1f69b59f83ad7f5383649a54b0/analysis/var-prep.Rmd" target="_blank">0b6f065</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-07-25
 </td>
-<td style="text-align:left;">
+<td>
 Push before beginning to write code for loading entire obs/reanalysis products into memory for clim calculations
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/04a6bf39772fd624ead1ae4b87c3c38b9b59ae8b/analysis/var-prep.Rmd" target="_blank">04a6bf3</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-07-24
 </td>
-<td style="text-align:left;">
+<td>
 Creating new download script for obs/reanalysis products
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/81e961d9f37b51867dca7c4692d68aae1349e83b/docs/var-prep.html" target="_blank">81e961d</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/81e961d9f37b51867dca7c4692d68aae1349e83b/docs/var-prep.html" target="_blank">81e961d</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-07-09
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/7ff9b8b7f78e47e9d651799280c229fe6c5eccde/analysis/var-prep.Rmd" target="_blank">7ff9b8b</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-06-17
 </td>
-<td style="text-align:left;">
+<td>
 More work on the talk
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/c23c50b1c93aba7ecdb843fad79a20ed847bfcf3/docs/var-prep.html" target="_blank">c23c50b</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/c23c50b1c93aba7ecdb843fad79a20ed847bfcf3/docs/var-prep.html" target="_blank">c23c50b</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-06-10
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/028d3cc02abc1761fd51e624f1bec0ef6ed68dac/docs/var-prep.html" target="_blank">028d3cc</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/028d3cc02abc1761fd51e624f1bec0ef6ed68dac/docs/var-prep.html" target="_blank">028d3cc</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-06-10
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/c61a15f695d6d807427b5642f6e657830a527970/docs/var-prep.html" target="_blank">c61a15f</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/c61a15f695d6d807427b5642f6e657830a527970/docs/var-prep.html" target="_blank">c61a15f</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-06-06
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/49c610573c920e241a16a0ce72d593e1408b1e90/analysis/var-prep.Rmd" target="_blank">49c6105</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-06-06
 </td>
-<td style="text-align:left;">
+<td>
 Finished vector data packet pipeline
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/44ac335c253cdc971d10cb55aa0d82ec27f52540/analysis/var-prep.Rmd" target="_blank">44ac335</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-06-06
 </td>
-<td style="text-align:left;">
+<td>
 Working on inclusion of vectors into SOM pipeline
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/6dd6da87ca5aa18617a30851b7f9cffe25ed7b10/docs/var-prep.html" target="_blank">6dd6da8</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/6dd6da87ca5aa18617a30851b7f9cffe25ed7b10/docs/var-prep.html" target="_blank">6dd6da8</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-06-06
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
-<a href="https://github.com/robwschlegel/MHWNWA/blob/990693ab94b031163055c994db1364d56ac45c8d/analysis/var-prep.Rmd" target="_blank">990693a</a>
+<td>
+<a href="https://github.com/robwschlegel/MHWNWA/blob/07137d9327fc8ba24bc6a5586b0cc5117bb31d0c/analysis/var-prep.Rmd" target="_blank">07137d9</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
+2019-06-06
+</td>
+<td>
+Site wide update, including newly functioning SOM pipeline.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/robwschlegel/MHWNWA/blob/990693ab94b031163055c994db1364d56ac45c8d/analysis/var-prep.Rmd" target="_blank">990693a</a>
+</td>
+<td>
+robwschlegel
+</td>
+<td>
 2019-06-05
 </td>
-<td style="text-align:left;">
+<td>
 First SOM result visuals
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/4838cc84c49dfd8bba7cc72cf5131cb56e9345b4/analysis/var-prep.Rmd" target="_blank">4838cc8</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-06-04
 </td>
-<td style="text-align:left;">
+<td>
 Working on SOM functions
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/94ce8f67d95d2a30c7b904784e619457ee4907a7/analysis/var-prep.Rmd" target="_blank">94ce8f6</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-06-04
 </td>
-<td style="text-align:left;">
+<td>
 Functions for creating data packets are up and running
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/65301edfa1c7e85df9bf0df7afc2bda432aef6b0/analysis/var-prep.Rmd" target="_blank">65301ed</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-05-30
 </td>
-<td style="text-align:left;">
+<td>
 Push before getting rid of some testing structure
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/0717c84f720c4b0a65959f2644d54102e7a9a320/analysis/var-prep.Rmd" target="_blank">0717c84</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-05-29
 </td>
-<td style="text-align:left;">
+<td>
 Working towards getting the variable climatologies in order
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/2c3f68c3bc971b684bc9f3dc03d707457de74f18/analysis/var-prep.Rmd" target="_blank">2c3f68c</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-05-28
 </td>
-<td style="text-align:left;">
+<td>
 Working on the variable prep vignette
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/c09b4f7548427da023cfaf19ba517cb49e9456df/docs/var-prep.html" target="_blank">c09b4f7</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/c09b4f7548427da023cfaf19ba517cb49e9456df/docs/var-prep.html" target="_blank">c09b4f7</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-05-24
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/5dc8bd9ce2b868ebaefcc3ff83f0289672d22430/analysis/var-prep.Rmd" target="_blank">5dc8bd9</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-05-24
 </td>
-<td style="text-align:left;">
+<td>
 Finished initial creation of SST prep vignette.
 </td>
 </tr>
 </tbody>
 </table>
-</ul>
-</details>
-<hr />
+</div>
+<hr>
+</div>
+</div>
+</div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>This vignette walks through the steps needed to create mean synoptic states during all of the <a href="https://robwschlegel.github.io/MHWNWA/sst-prep.html">MHWs detected</a> in the previous vignette. These synoptic states consist of the variables in the ocean heat budget equation.</p>
@@ -1119,73 +1390,53 @@ Finished initial creation of SST prep vignette.
 </ul></li>
 </ul>
 <p>All of these products and variables have a shared daily resolution period from 1993 – 2018. The spatial resolutions for NOAA and ERA 5 are 1/4 degrees and the GLORYS data are 1/12 degree. The coordinates are slightly off between OISST and ERA 5 &amp; GLORYS, with the coordinate system for NOAA being centred per pixel while the other two products have their coordinate system based on the northwest corner. In order to compare the OISST dataset to the other 1/4 degree products the lat values for OISST will have 0.125 added to them, and the longitude values will have 0.125 subtracted from them. The ERA5 data are hourly, so will need to be binned into mean daily values. In order to trade between efficiency and accuracy we will be converting everything to the 1/4 degree grid of the GLORYS/ERA 5 data at a daily temporal resolution.</p>
-<pre class="r"><code># Packages used in this vignette
-library(jsonlite, lib.loc = &quot;../R-packages/&quot;) # Necessary for some version mismatches...
-library(tidyverse) # Base suite of functions
-library(tidync, lib.loc = &quot;../R-packages/&quot;)
-library(lubridate) # For convenient date manipulation
-
-# Set number of cores
-doMC::registerDoMC(cores = 50)
-
-# Disable scientific notation for numeric values
-  # I just find it annoying
-options(scipen = 999)
-
-# Corners of the study area
-NWA_corners &lt;- readRDS(&quot;data/NWA_corners.Rda&quot;)
-
-# The region pixel lon/lat values
-NWA_info &lt;- readRDS(&quot;data/NWA_info.Rda&quot;)
-
-# Load MHW results
-OISST_region_MHW &lt;- readRDS(&quot;data/OISST_region_MHW.Rda&quot;)
-
-# MHW Events
-MHW_event &lt;- OISST_region_MHW %&gt;%
-  select(-cats) %&gt;%
-  unnest(events) %&gt;%
-  filter(row_number() %% 2 == 0) %&gt;%
-  unnest(events)</code></pre>
 </div>
 <div id="base-datasets" class="section level2">
 <h2>Base datasets</h2>
 <p>Rather than go about performing all of the calculations below on piecemeal bits of data, we will load each variable into memory at once. The following code chunk shows how we create functions that load each of the variables from the different data products. We will then create and save this complete dataset for ease of use later on.</p>
-<pre class="r"><code># Load the functions used below
-  # I&#39;ve chosen to house the functions  in the following script
-  # in order to keep this vignette tidier
-source(&quot;code/functions.R&quot;)
-# See the code/workflow.R script for the exact code used for this step</code></pre>
+<pre class="r"><code># The code used for this step may be seen in the &#39;code/workflow.R&#39;:
+# https://github.com/robwschlegel/MHWNWA/blob/master/code/workflow.R
+
+# The sections of the script used are:
+# OISST processing, GLORYS processing, and ERA 5 processing</code></pre>
 <div id="net-heat-flux" class="section level3">
 <h3>Net heat flux</h3>
 <p>This is the one variable I was not able to source. The OAFlux product does have a net heat flux layer, but it ends in 2009. This is not long enough so we are going to create our own net heat flux layer by adding together the latent &amp; sensible heat flux layers with the shortwave &amp; longwave radiation layers from the ERA 5 product. When doing so we must ensure that the directions of the terms are matched correctly (i.e. that they all represent positive downward flux). Reading through the available meta-data I was not able to verify this, but it appears as though these area all positive downward flux terms.</p>
-<pre class="r"><code># The code used to perform these steps may be seen in code/workflow.R</code></pre>
+<pre class="r"><code># The code used to perform these steps may be seen in &#39;code/workflow.R&#39; sction:
+# ERA 5 processing</code></pre>
 </div>
 </div>
 <div id="climatologies" class="section level2">
 <h2>Climatologies</h2>
 <p>In the data packets we need to create for the <a href="https://robwschlegel.github.io/MHWNWA/som.html">SOM</a> we will need to include anomaly values. In order to do this we need to first create daily climatologies for each variable for each pixel. To do so we will need to load all of the files and then pixel-wise go about getting the seasonal (mean daily) climatologies. This will be done with the same function (<code>ts2clm()</code>) that is used for the MHW climatologies. One-by-one we will load an entire dataset (created above) into memory so that we can perform the necessary calculations. Hold on to your hats, this is going to be RAM heavy…</p>
-<pre class="r"><code># The code used to create the climatologies may be found in code/workflow.R</code></pre>
+<pre class="r"><code># The code used to perform these steps may be seen in &#39;code/workflow.R&#39; sction:
+# OISST processing, GLORYS processing, and ERA 5 processing</code></pre>
 </div>
 <div id="anomalies" class="section level2">
 <h2>Anomalies</h2>
 <p>The last step before we can begin creating our data packets is to subtract our climatology data from our base data for each of the variables used in this study. We then save these large anomaly cubes to allow for easier synoptic state creation later on.</p>
-<pre class="r"><code># The code used to create the rest of the anomalies may be found in code/workflow.R</code></pre>
+<pre class="r"><code># The code used to perform these steps may be seen in &#39;code/workflow.R&#39; sction:
+# OISST processing, GLORYS processing, and ERA 5 processing</code></pre>
 </div>
 <div id="synoptic-states" class="section level2">
 <h2>Synoptic states</h2>
 <p>The next step is to create mean synoptic states for each variable during each of the MHWs detected in each region. To do this we simply load the combined anomaly dataset of all of our chosen variables and slice off only the bits we need during each of the observed MHWs. These slices are then meaned, pixel-wise, to create the synoptic states during each event.</p>
 <!-- One thing to note here is that during this process, before the slices are created, each pixel for the mixed layer depth anomaly is divided by the max value observed at that pixel, scaling these values to 1. This is done as the range of MLD can vary dramatically over the Labrador sea and we want to avoid this from influencing the results. -->
-<pre class="r"><code># This code may be found in code/workflow.R</code></pre>
+<pre class="r"><code># The code used to perform these steps may be seen in &#39;code/workflow.R&#39; sction:
+# OISST processing, GLORYS processing, and ERA 5 processing</code></pre>
 <p>With all of our mean synoptic states created it is now time to feed them to the <a href="https://robwschlegel.github.io/MHWNWA/som.html">Self-organising map (SOM)</a>.</p>
 <div id="refs">
 
 </div>
-</div>
-<div id="session-information" class="section level2">
-<h2>Session information</h2>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.6.1 (2019-07-05)
+<pre><code>R version 3.6.2 (2019-12-12)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 16.04.6 LTS
 
@@ -1204,33 +1455,17 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
-other attached packages:
- [1] bindrcpp_0.2.2  lubridate_1.7.4 tidync_0.2.1    forcats_0.3.0  
- [5] stringr_1.3.1   dplyr_0.7.6     purrr_0.2.5     readr_1.1.1    
- [9] tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
-[13] jsonlite_1.6   
-
 loaded via a namespace (and not attached):
- [1] tidyselect_0.2.4  haven_1.1.2       lattice_0.20-35  
- [4] colorspace_1.3-2  htmltools_0.3.6   yaml_2.2.0       
- [7] rlang_0.2.2       R.oo_1.22.0       pillar_1.3.0     
-[10] glue_1.3.0        withr_2.1.2       R.utils_2.7.0    
-[13] RNetCDF_1.9-1     doMC_1.3.5        modelr_0.1.2     
-[16] readxl_1.1.0      foreach_1.4.4     bindr_0.1.1      
-[19] plyr_1.8.4        munsell_0.5.0     gtable_0.2.0     
-[22] workflowr_1.1.1   cellranger_1.1.0  rvest_0.3.2      
-[25] R.methodsS3_1.7.1 codetools_0.2-15  evaluate_0.11    
-[28] knitr_1.20        parallel_3.6.1    broom_0.5.0      
-[31] Rcpp_0.12.18      backports_1.1.2   scales_1.0.0     
-[34] hms_0.4.2         digest_0.6.16     stringi_1.2.4    
-[37] ncdf4_1.16.1      grid_3.6.1        rprojroot_1.3-2  
-[40] cli_1.0.0         tools_3.6.1       magrittr_1.5     
-[43] lazyeval_0.2.1    crayon_1.3.4      whisker_0.3-2    
-[46] pkgconfig_2.0.2   xml2_1.2.0        iterators_1.0.10 
-[49] assertthat_0.2.0  rmarkdown_1.10    httr_1.3.1       
-[52] rstudioapi_0.7    R6_2.2.2          ncmeta_0.0.4     
-[55] nlme_3.1-137      git2r_0.23.0      compiler_3.6.1   </code></pre>
+ [1] workflowr_1.6.0 Rcpp_1.0.3      rprojroot_1.3-2 digest_0.6.23  
+ [5] later_1.0.0     R6_2.4.1        backports_1.1.5 git2r_0.26.1   
+ [9] magrittr_1.5    evaluate_0.14   stringi_1.4.5   rlang_0.4.4    
+[13] fs_1.3.1        promises_1.1.0  whisker_0.4     rmarkdown_2.0  
+[17] tools_3.6.2     stringr_1.4.0   glue_1.3.1      httpuv_1.5.2   
+[21] xfun_0.12       yaml_2.2.1      compiler_3.6.2  htmltools_0.4.0
+[25] knitr_1.27     </code></pre>
 </div>
+</div>
+
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
@@ -1243,14 +1478,6 @@ footer is added to webpages before the MathJax javascript. -->
     "HTML-CSS": { availableFonts: ["TeX"] }
   });
 </script>
-
-<hr>
-<p>
-  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
-  analysis was created with
-  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
-</p>
-<hr>
 
 
 </div>
@@ -1269,6 +1496,49 @@ $(document).ready(function () {
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

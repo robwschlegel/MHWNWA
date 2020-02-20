@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -14,7 +13,7 @@
 
 <meta name="date" content="2019-07-09" />
 
-<title>Node summary</title>
+<title>Node summaries</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -91,7 +90,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -240,6 +238,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -268,6 +267,12 @@ $(document).ready(function () {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -401,44 +406,132 @@ div.section {
 
 
 
-<h1 class="title toc-ignore">Node summary</h1>
+<h1 class="title toc-ignore">Node summaries</h1>
 <h4 class="author">Robert Schlegel</h4>
 <h4 class="date">2019-07-09</h4>
 
 </div>
 
 
-<p><strong>Last updated:</strong> 2019-08-28</p>
-<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
-<ul>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
 <li>
-<details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2020-02-20
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>MHWNWA/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
-</details>
-</li>
-<li>
-<details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
-</details>
-</li>
-<li>
-<details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(20190513)</code> </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20190513code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20190513)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20190513code" class="panel-collapse collapse">
+<div class="panel-body">
 <p>The command <code>set.seed(20190513)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
-</details>
-</li>
-<li>
-<details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
-</details>
-</li>
-<li>
-<details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/2a0ec98e013154660de90deadca97ef4e3db3351" target="_blank">2a0ec98</a> </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrobwschlegelMHWNWAtreed613bf92169d917a8f54b81c66770d74b7b27f6ftargetblankd613bf9a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/robwschlegel/MHWNWA/tree/d613bf92169d917a8f54b81c66770d74b7b27f6f" target="_blank">d613bf9</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrobwschlegelMHWNWAtreed613bf92169d917a8f54b81c66770d74b7b27f6ftargetblankd613bf9a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
@@ -519,566 +612,742 @@ Ignored files:
     Ignored:    data/comparison/som_nolab_9.Rda
     Ignored:    data/comparison/som_nolabgsl.Rda
     Ignored:    data/comparison/som_nolabmod.Rda
-
-Untracked files:
-    Untracked:  docs/assets/node_schematic_summary.jpg
-    Untracked:  output/SOM/heat_stat.pdf
-    Untracked:  talk/MHWNWA.Rmd
-    Untracked:  talk/graph/node_schematic_summary.jpg
+    Ignored:    data/eddy_trajectory_2.0exp_19930101_20180118.nc
+    Ignored:    talk/IMBeR_2019.html
+    Ignored:    talk/MHWNWA.html
 
 Unstaged changes:
-    Modified:   analysis/sst-prep.Rmd
     Modified:   code/functions.R
+    Modified:   output/SOM/air_u_v_mslp_anom.pdf
+    Modified:   output/SOM/air_u_v_mslp_real.pdf
+    Modified:   output/SOM/cum_int_season.pdf
+    Modified:   output/SOM/cum_int_season.png
+    Modified:   output/SOM/duration_rate_onset.pdf
+    Modified:   output/SOM/max_int_region.pdf
+    Modified:   output/SOM/max_int_region.png
+    Modified:   output/SOM/mld_anom_sd.pdf
+    Modified:   output/SOM/msl_anom_sd.pdf
+    Modified:   output/SOM/msl_sd.pdf
+    Modified:   output/SOM/node_10_panels.pdf
+    Modified:   output/SOM/node_10_panels.png
+    Modified:   output/SOM/node_11_panels.pdf
+    Modified:   output/SOM/node_11_panels.png
+    Modified:   output/SOM/node_12_panels.pdf
+    Modified:   output/SOM/node_12_panels.png
+    Modified:   output/SOM/node_1_panels.pdf
+    Modified:   output/SOM/node_1_panels.png
+    Modified:   output/SOM/node_2_panels.pdf
+    Modified:   output/SOM/node_2_panels.png
+    Modified:   output/SOM/node_3_panels.pdf
+    Modified:   output/SOM/node_3_panels.png
+    Modified:   output/SOM/node_4_panels.pdf
+    Modified:   output/SOM/node_4_panels.png
+    Modified:   output/SOM/node_5_panels.pdf
+    Modified:   output/SOM/node_5_panels.png
+    Modified:   output/SOM/node_6_panels.pdf
+    Modified:   output/SOM/node_6_panels.png
+    Modified:   output/SOM/node_7_panels.pdf
+    Modified:   output/SOM/node_7_panels.png
+    Modified:   output/SOM/node_8_panels.pdf
+    Modified:   output/SOM/node_8_panels.png
+    Modified:   output/SOM/node_9_panels.pdf
+    Modified:   output/SOM/node_9_panels.png
+    Modified:   output/SOM/qnet_anom_sd.pdf
+    Modified:   output/SOM/qnet_mld_anom.pdf
+    Modified:   output/SOM/region_season.pdf
+    Modified:   output/SOM/sst_anom_sd.pdf
+    Modified:   output/SOM/sst_sd.pdf
+    Modified:   output/SOM/sst_u_v_anom.pdf
+    Modified:   output/SOM/sst_u_v_real.pdf
+    Modified:   output/SOM/t2m_anom_sd.pdf
+    Modified:   output/SOM/t2m_sd.pdf
+    Modified:   output/SOM/u10_anom_sd.pdf
+    Modified:   output/SOM/u10_sd.pdf
+    Modified:   output/SOM/u_anom_sd.pdf
+    Modified:   output/SOM/u_sd.pdf
+    Modified:   output/SOM/v10_anom_sd.pdf
+    Modified:   output/SOM/v10_sd.pdf
+    Modified:   output/SOM/v_anom_sd.pdf
+    Modified:   output/SOM/v_sd.pdf
 
 </code></pre>
+<p>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
-</details>
-</li>
-</ul>
-<details>
-<summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
-<ul>
-<table style="border-collapse:separate; border-spacing:5px;">
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 File
 </th>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
-<th style="text-align:left;">
+<th>
 Message
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
-<a href="https://github.com/robwschlegel/MHWNWA/blob/2a0ec98e013154660de90deadca97ef4e3db3351/analysis/node-summary.Rmd" target="_blank">2a0ec98</a>
+<td>
+<a href="https://github.com/robwschlegel/MHWNWA/blob/d613bf92169d917a8f54b81c66770d74b7b27f6f/analysis/node-summary.Rmd" target="_blank">d613bf9</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
+2020-02-20
+</td>
+<td>
+Re-publish entire site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/robwschlegel/MHWNWA/blob/fdb5f2b99c882ede2caa2be6102e542a43e97569/analysis/node-summary.Rmd" target="_blank">fdb5f2b</a>
+</td>
+<td>
+robwschlegel
+</td>
+<td>
+2020-02-20
+</td>
+<td>
+Edits
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/robwschlegel/MHWNWA/blob/e9d1b438136bbd7f5a1746484179ab382f771be1/analysis/node-summary.Rmd" target="_blank">e9d1b43</a>
+</td>
+<td>
+Robert William Schlegel
+</td>
+<td>
+2020-02-13
+</td>
+<td>
+Received feedback on poster, transitioning figure creation to a dedicated script to accomodate the specific changes necessary.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/robwschlegel/MHWNWA/blob/f897fdecd3817a7171cfb4874365716d223fd6be/analysis/node-summary.Rmd" target="_blank">f897fde</a>
+</td>
+<td>
+Robert William Schlegel
+</td>
+<td>
+2020-02-13
+</td>
+<td>
+All figures rendered and spacing on poster set.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/robwschlegel/MHWNWA/blob/617a8cbd8296ebf201667a06e071edb52f6850ae/analysis/node-summary.Rmd" target="_blank">617a8cb</a>
+</td>
+<td>
+Robert William Schlegel
+</td>
+<td>
+2020-02-13
+</td>
+<td>
+Decent draft of poster. Still need to re-render figure 2 but need tikoraluk to do it.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/robwschlegel/MHWNWA/blob/26f73b4011eaba9bd17cdba54e3f96cfbf1773fe/analysis/node-summary.Rmd" target="_blank">26f73b4</a>
+</td>
+<td>
+robwschlegel
+</td>
+<td>
+2019-09-04
+</td>
+<td>
+Updates to summary talk
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/ae97ec9da4bbfcb8e85ac96cd3a1228698134a54/docs/node-summary.html" target="_blank">ae97ec9</a>
+</td>
+<td>
+robwschlegel
+</td>
+<td>
 2019-08-28
 </td>
-<td style="text-align:left;">
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/robwschlegel/MHWNWA/blob/2a0ec98e013154660de90deadca97ef4e3db3351/analysis/node-summary.Rmd" target="_blank">2a0ec98</a>
+</td>
+<td>
+robwschlegel
+</td>
+<td>
+2019-08-28
+</td>
+<td>
 Added more figures to node summary vignette.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/a7fbd91e8228df0c11c4448f98d40bbc1091319a/docs/node-summary.html" target="_blank">a7fbd91</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/a7fbd91e8228df0c11c4448f98d40bbc1091319a/docs/node-summary.html" target="_blank">a7fbd91</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-28
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/454b53b90a81ee54136eed5ef66132af0787d3d3/analysis/node-summary.Rmd" target="_blank">454b53b</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-28
 </td>
-<td style="text-align:left;">
+<td>
 Complete overhaul to piepline and full third round of results.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/analysis/node-summary.Rmd" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
-<td style="text-align:left;">
+<td>
 Re-edited SOM node summary text for the figures that show all of the nodes together
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/d980be6bf65f960a1d724eab9b72a9d087f89a43/analysis/node-summary.Rmd" target="_blank">d980be6</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-26
 </td>
-<td style="text-align:left;">
+<td>
 Working towards the node summary figure pipeline update
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/27b124ba6b6dd172d712e6f14a19b14e2ebf0d5a/analysis/node-summary.Rmd" target="_blank">27b124b</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-23
 </td>
-<td style="text-align:left;">
+<td>
 Working on code to smoothly introduce the other data needed for creating summary figures but that aren’t used in the SOM calculation
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/826c73d93c73c8f65cc42b69942163def63cd437/docs/node-summary.html" target="_blank">826c73d</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/826c73d93c73c8f65cc42b69942163def63cd437/docs/node-summary.html" target="_blank">826c73d</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-15
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/a226aa66a97f579750151882984241de8e0ed0fa/analysis/node-summary.Rmd" target="_blank">a226aa6</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-15
 </td>
-<td style="text-align:left;">
+<td>
 Re-publish entire site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/143b1a6ee65dc941612cb8dc5e5086b128175249/docs/node-summary.html" target="_blank">143b1a6</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/143b1a6ee65dc941612cb8dc5e5086b128175249/docs/node-summary.html" target="_blank">143b1a6</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-15
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/78f4977eea95f2a9c09b1bb141f85bcab509299d/analysis/node-summary.Rmd" target="_blank">78f4977</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-15
 </td>
-<td style="text-align:left;">
+<td>
 Re-publish entire site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/eac68d526e126ea5970aa087c9aad32b3eda1314/analysis/node-summary.Rmd" target="_blank">eac68d5</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-15
 </td>
-<td style="text-align:left;">
+<td>
 Finished the first pass over all of the node results.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/07fe2a24c742a8a2c754360fbaa5bc4ec86a0f3c/analysis/node-summary.Rmd" target="_blank">07fe2a2</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-14
 </td>
-<td style="text-align:left;">
+<td>
 Nearly through the node summaries for the three SOM experiments
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/a61b420a9332a469e1f9f3cf7a4c973a37b23066/analysis/node-summary.Rmd" target="_blank">a61b420</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-13
 </td>
-<td style="text-align:left;">
+<td>
 Working on SOM write-up
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/20ae166273d1a7141b8aeeafec8e540868400325/docs/node-summary.html" target="_blank">20ae166</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/20ae166273d1a7141b8aeeafec8e540868400325/docs/node-summary.html" target="_blank">20ae166</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-11
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/d46e344ecd8263f235c89e64012dc7c1998ba053/analysis/node-summary.Rmd" target="_blank">d46e344</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-11
 </td>
-<td style="text-align:left;">
+<td>
 Re-publish entire site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/19bea2633b29e03ba644084891754418931348a4/docs/node-summary.html" target="_blank">19bea26</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/19bea2633b29e03ba644084891754418931348a4/docs/node-summary.html" target="_blank">19bea26</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-11
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/b6e2cd94795a8ea3de17e2eaa79d30a081094f9f/analysis/node-summary.Rmd" target="_blank">b6e2cd9</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-11
 </td>
-<td style="text-align:left;">
+<td>
 Re-publish entire site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/2652a3a9bb40f929c80e5f2bec3b53af62634b58/docs/node-summary.html" target="_blank">2652a3a</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/2652a3a9bb40f929c80e5f2bec3b53af62634b58/docs/node-summary.html" target="_blank">2652a3a</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-11
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/75c138c3be5c272e77e1fb5f82a457a72411ba64/analysis/node-summary.Rmd" target="_blank">75c138c</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-11
 </td>
-<td style="text-align:left;">
+<td>
 Re-publish entire site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/adc762ba64e5b8090e28d13e48b8505397178bd8/analysis/node-summary.Rmd" target="_blank">adc762b</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-08
 </td>
-<td style="text-align:left;">
+<td>
 Re-worked the GLORYS data and propogated update through to SOM analysis figures for all experiments
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/f0d2efbfe728e6bf57bd2d81f4653dbbe953b62c/docs/node-summary.html" target="_blank">f0d2efb</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/f0d2efbfe728e6bf57bd2d81f4653dbbe953b62c/docs/node-summary.html" target="_blank">f0d2efb</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-07
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/9d817225c856d81f3581b7c8311c0e1fa2670e6b/analysis/node-summary.Rmd" target="_blank">9d81722</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-07
 </td>
-<td style="text-align:left;">
+<td>
 Re-publish entire site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/ed626bf509177dad3d8092e623f2c6bee5bf1f9e/analysis/node-summary.Rmd" target="_blank">ed626bf</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-07
 </td>
-<td style="text-align:left;">
+<td>
 Ran a bunch of figures and had a meeting with Eric. More changes coming to GLORYS data tomorrow before settling on one of the experimental SOMs
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/d4ba012cc68a78fa08e713dad09b06cc76ea65e6/docs/node-summary.html" target="_blank">d4ba012</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/d4ba012cc68a78fa08e713dad09b06cc76ea65e6/docs/node-summary.html" target="_blank">d4ba012</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-07-09
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/c8a5a1a49d1cd5469d7bbe9fd000078f0c3966b3/analysis/node-summary.Rmd" target="_blank">c8a5a1a</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-07-09
 </td>
-<td style="text-align:left;">
+<td>
 Fixing figure display in vignette.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/3a740c2ef6d0475de8ee80709efc1c40c7c6243e/analysis/node-summary.Rmd" target="_blank">3a740c2</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-07-09
 </td>
-<td style="text-align:left;">
+<td>
 Creating assets folder for displaying figures created in other vignettes in new vignettes etc.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/3a740c2ef6d0475de8ee80709efc1c40c7c6243e/docs/node-summary.html" target="_blank">3a740c2</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/3a740c2ef6d0475de8ee80709efc1c40c7c6243e/docs/node-summary.html" target="_blank">3a740c2</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-07-09
 </td>
-<td style="text-align:left;">
+<td>
 Creating assets folder for displaying figures created in other vignettes in new vignettes etc.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/robwschlegel/MHWNWA/81e961d9f37b51867dca7c4692d68aae1349e83b/docs/node-summary.html" target="_blank">81e961d</a>
+<td>
+<a href="https://rawcdn.githack.com/robwschlegel/MHWNWA/81e961d9f37b51867dca7c4692d68aae1349e83b/docs/node-summary.html" target="_blank">81e961d</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-07-09
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/497eeb224ff7db35f769040a93222fba478cbbab/analysis/node-summary.Rmd" target="_blank">497eeb2</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-07-09
 </td>
-<td style="text-align:left;">
+<td>
 Re-publish entire site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/95a168db5e0dd4ae0896313d0df16965d88818f8/analysis/node-summary.Rmd" target="_blank">95a168d</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-07-09
 </td>
-<td style="text-align:left;">
+<td>
 Frame of node summary vignette worked out
 </td>
 </tr>
 </tbody>
 </table>
-</ul>
-</details>
-<hr />
+</div>
+<hr>
+</div>
+</div>
+</div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>This vignette shows the summary figures for the SOM results. The code used to create these summary figures may be found in <code>code/functions.R</code> and a more detailed overview is given in the <code>code/functions.R</code>. Figures showing the synoptic states for pairs of variables for all of the nodes at once are shown first, followed by multi-panel summary plots for each individual node, which are listed below by their number. Use the table of contents on the left of the screen to move quickly between variables and specific nodes of interest as desired.</p>
+<p>This vignette shows the summary figures for the SOM results. The code used to create these summary figures may be found in <code>code/functions.R</code>. Figures showing the synoptic states of variables for all of the nodes at once are shown first, followed by multi-panel summary plots for each individual node, which are listed below by their number. Use the table of contents on the left of the screen to move quickly between variables and specific nodes of interest as desired.</p>
 <p>In an earlier version of this work the Labrador Shelf region was included in the list of study regions. This was omitted because the Labrador Sea processes seemed to compete with the Gulf Stream processes within the SOM calculation. With the Labrador Shelf region removed, and the northern extent of the study area reduced, the SOM was able to make much better sense of the data. We also considered removing the Gulf of ST. Lawrence region, but upon further analysis it was left in as it allows for more atmospheric processes to be considered by the SOM. We also experimented with different SOM node counts but settled on a 12 node (4x3 grid) as this produced important differences in the middle two columns that a 3x3 grid or smaller covered up. The last experimental step taken was the reduction of the MHW synoptic states being fed to the SOM. We filtered events by category in one experiment and duration in another. The duration filter (103 MHWs) produced results similar to the 3x3 grid, whereas the filtering by category (~36 MHWs) removed so may events that we needed to run the SOM on a 2x2 grid, which removed quite a bit of important information. All of these experiments still produced significantly different nodes (ANOSIM test), with the 2x2 grid having the largest <em>p-value</em> at <em>p</em>= 0.046. It was decided not to use a 4x4 grid as this did not produce useful additional details/patterns.</p>
-<p>Unresolved in this vignette is the criticism that the methodology used for the creation of the mean synoptic states fed to the SOM is weak to long events coming through as “grey”, meaning they average out to a rather unremarkable state, even though they are likely the most important of all. One proposed fix for this is to create synoptic states using only the peak date of the event, rather than a mean over the range of the event. This should be looked into… but will take another week at least. A last point here is that this methodology should also be useful for looking backwards and forwards through time to see what the synoptic states looked like leading up to and just after the event.</p>
+<p>Unresolved in this vignette is the criticism that the methodology used for the creation of the mean synoptic states fed to the SOM is weak to long events coming through as “grey”, meaning they average out to a rather unremarkable state, even though they are likely the most important of all. One proposed fix for this would be to create synoptic states using only the peak date of the event, rather than a mean over the range of the event. This has not been done as it would likely bias the results towards events with very dramatic peaks. A final point is that this methodology should also be useful for looking backwards and forwards through time to see what the synoptic states looked like leading up to and just after the event.</p>
 </div>
 <div id="visualise-som-results" class="section level2">
 <h2>Visualise SOM results</h2>
@@ -1088,42 +1357,11 @@ Frame of node summary vignette worked out
 <h2>Figure summary key</h2>
 <p>The summaries for the figures below have a lot of acronyms in them but they are consistently used and I will provide a list of what they are here. Whenever one sees an acronym in lower case letters it is referring to one of the regions of the study area as seen in the following figure.</p>
 <div class="figure" style="text-align: center">
-<img src="assets/NWA_study_area.png" alt="The regions of the coast were devided up by their temperature and salinity regimes based on work by @Richaud2016. The regions were furthered divided into sub-regions based on their depth." width="100%" />
+<img src="output/NWA_study_area.png" alt="The regions of the coast were devided up by their temperature and salinity regimes based on work by @Richaud2016." width="100%" />
 <p class="caption">
-The regions of the coast were devided up by their temperature and salinity regimes based on work by <span class="citation">Richaud et al. (2016)</span>. The regions were furthered divided into sub-regions based on their depth.
+The regions of the coast were devided up by their temperature and salinity regimes based on work by <span class="citation">Richaud et al. (2016)</span>.
 </p>
 </div>
-<details>
-<summary><em>Expand here to see past versions of NWA_study_area.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/NWA_study_area.png" target="_blank">600a1ae</a>
-</td>
-<td style="text-align:left;">
-robwschlegel
-</td>
-<td style="text-align:left;">
-2019-08-27
-</td>
-</tr>
-</tbody>
-</table>
-</details>
 <p>The region abbreviations will always be in <em>lower case</em> and are:</p>
 <ul>
 <li>cbs = Cabot Straight</li>
@@ -1165,96 +1403,96 @@ robwschlegel
 <table>
 <thead>
 <tr class="header">
-<th>Node C</th>
-<th>ount Y</th>
-<th>ears S</th>
-<th>eason R</th>
-<th align="left">egion</th>
+<th align="right">Node</th>
+<th align="left">Count</th>
+<th align="left">Years</th>
+<th align="left">Season</th>
+<th align="left">Region</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>1</td>
-<td>25</td>
-<td>1999, 2004 - 2018</td>
-<td>Summer focus; little Autumn</td>
+<td align="right">1</td>
+<td align="left">25</td>
+<td align="left">1999, 2004 - 2018</td>
+<td align="left">Summer focus; little Autumn</td>
 <td align="left">nfs focus; 2 ss; 1 gm + mab</td>
 </tr>
 <tr class="even">
-<td>2</td>
-<td>25</td>
-<td>2000 - 2016</td>
-<td>Summer + Spring; little Autumn + Winter</td>
+<td align="right">2</td>
+<td align="left">25</td>
+<td align="left">2000 - 2016</td>
+<td align="left">Summer + Spring; little Autumn + Winter</td>
 <td align="left">Even split; fewer gm + cbs</td>
 </tr>
 <tr class="odd">
-<td>3</td>
-<td>19</td>
-<td>2006 - 2017</td>
-<td>Summer focus + Winter</td>
+<td align="right">3</td>
+<td align="left">19</td>
+<td align="left">2006 - 2017</td>
+<td align="left">Summer focus + Winter</td>
 <td align="left">Even split; focus cbs; 2 gm; 1 nfs</td>
 </tr>
 <tr class="even">
-<td>4</td>
-<td>18</td>
-<td>1994, 2014 - 2018</td>
-<td>Spring focus; little else</td>
+<td align="right">4</td>
+<td align="left">18</td>
+<td align="left">1994, 2014 - 2018</td>
+<td align="left">Spring focus; little else</td>
 <td align="left">mab focus; 0 gsl + nfs</td>
 </tr>
 <tr class="odd">
-<td>5</td>
-<td>17</td>
-<td>1999, 2012 - 2018</td>
-<td>Autumn focus; little else; no Spring</td>
+<td align="right">5</td>
+<td align="left">17</td>
+<td align="left">1999, 2012 - 2018</td>
+<td align="left">Autumn focus; little else; no Spring</td>
 <td align="left">cbs + nfs focus; little else; 0 mab</td>
 </tr>
 <tr class="even">
-<td>6</td>
-<td>29</td>
-<td>1994, 2006 - 2018</td>
-<td>SUMMER; no Winter</td>
+<td align="right">6</td>
+<td align="left">29</td>
+<td align="left">1994, 2006 - 2018</td>
+<td align="left">SUMMER; no Winter</td>
 <td align="left">mab focus; 2 nfs</td>
 </tr>
 <tr class="odd">
-<td>7</td>
-<td>32</td>
-<td>2009 - 2018</td>
-<td>SUMMER; little else</td>
+<td align="right">7</td>
+<td align="left">32</td>
+<td align="left">2009 - 2018</td>
+<td align="left">SUMMER; little else</td>
 <td align="left">gm focus; 1 nfs</td>
 </tr>
 <tr class="even">
-<td>8</td>
-<td>15</td>
-<td>2002, 2015 - 2018</td>
-<td>Winter + Autumn; no Summer</td>
+<td align="right">8</td>
+<td align="left">15</td>
+<td align="left">2002, 2015 - 2018</td>
+<td align="left">Winter + Autumn; no Summer</td>
 <td align="left">mab focus; 1 cbs; 0 nfs</td>
 </tr>
 <tr class="odd">
-<td>9</td>
-<td>18</td>
-<td>2000, 2012 - 2017</td>
-<td>Autumn; some Winter + Spring; no Summer</td>
+<td align="right">9</td>
+<td align="left">18</td>
+<td align="left">2000, 2012 - 2017</td>
+<td align="left">Autumn; some Winter + Spring; no Summer</td>
 <td align="left">nfs focus; 1 cbs + gm; 0 mab</td>
 </tr>
 <tr class="even">
-<td>10</td>
-<td>35</td>
-<td>1999 - 2017</td>
-<td>Autumn focus, little Spring</td>
+<td align="right">10</td>
+<td align="left">35</td>
+<td align="left">1999 - 2017</td>
+<td align="left">Autumn focus, little Spring</td>
 <td align="left">nfs + cbs focus</td>
 </tr>
 <tr class="odd">
-<td>11</td>
-<td>25</td>
-<td>1994 - 2015</td>
-<td>Spring + Summer; no Autumn</td>
+<td align="right">11</td>
+<td align="left">25</td>
+<td align="left">1994 - 2015</td>
+<td align="left">Spring + Summer; no Autumn</td>
 <td align="left">gsl focus; little cbs</td>
 </tr>
 <tr class="even">
-<td>12</td>
-<td>31</td>
-<td>1999 - 2017</td>
-<td>Autumn + Winter; little else</td>
+<td align="right">12</td>
+<td align="left">31</td>
+<td align="left">1999 - 2017</td>
+<td align="left">Autumn + Winter; little else</td>
 <td align="left">mab focus; 1 nfs</td>
 </tr>
 </tbody>
@@ -1262,57 +1500,57 @@ robwschlegel
 <table>
 <thead>
 <tr class="header">
-<th>Node C</th>
-<th align="left">ause</th>
+<th align="right">Node</th>
+<th align="left">Cause</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>1</td>
+<td align="right">1</td>
 <td align="left">Summer focused, but an any time of year meridional cyclonic storm that is pulling air from the northeast over LS that is warm there, but cooler relative to the southern reaches of the study area.</td>
 </tr>
 <tr class="even">
-<td>2</td>
+<td align="right">2</td>
 <td align="left">Zonal cyclonic storm pulling warm air from land onto coastal waters in Spring/Summer</td>
 </tr>
 <tr class="odd">
-<td>3</td>
+<td align="right">3</td>
 <td align="left">Meridional pressure gradient allowing winds to pull warm land air out onto the coastal waters</td>
 </tr>
 <tr class="even">
-<td>4</td>
+<td align="right">4</td>
 <td align="left">Fast moving coastal-wards GS magnified by strong southerly Spring winds</td>
 </tr>
 <tr class="odd">
-<td>5</td>
+<td align="right">5</td>
 <td align="left">Warm air being pulled up over the ocean by a cyclone that first dumps the air onto nfs and less so from there.</td>
 </tr>
 <tr class="even">
-<td>6</td>
+<td align="right">6</td>
 <td align="left">‘Dog days of Summer’ pattern where a negative pressure anomaly sitting off the coast sustains northward movement of air along the entire coastline.</td>
 </tr>
 <tr class="odd">
-<td>7</td>
+<td align="right">7</td>
 <td align="left">A summer meridional anticyclonic storm pattern of warm air being pulled north along the coast and sent over the regions.</td>
 </tr>
 <tr class="even">
-<td>8</td>
+<td align="right">8</td>
 <td align="left">The GS is pumping hard up into the study area and bringing a lot of hot air with it that is forcing its way down into the waters of the GS and coastal regions south of the <em>cbs</em>.</td>
 </tr>
 <tr class="odd">
-<td>9</td>
+<td align="right">9</td>
 <td align="left">Zonal cyclonic system bringing warm air over the ocean up to the <em>nfs</em> and pulling cold air down over the <em>mab</em> and <em>gm</em>, mixing up the AO as it goes.</td>
 </tr>
 <tr class="even">
-<td>10</td>
+<td align="right">10</td>
 <td align="left">Autumn storm coming from the east to bring warm air to the <em>nfs</em> but usually turns away/stops before reaching the coast of the US.</td>
 </tr>
 <tr class="odd">
-<td>11</td>
+<td align="right">11</td>
 <td align="left">Spring/Summer storm that is pushing warm air onto the coast coming from the southeast.</td>
 </tr>
 <tr class="even">
-<td>12</td>
+<td align="right">12</td>
 <td align="left">Zonal anticyclone that is sitting over the AO in Autumn – Winter that is pushing a bunch of warm air over and into the coastal regions, excluding the nfs as the colder LS appears to may be blocking this.</td>
 </tr>
 </tbody>
@@ -1320,123 +1558,123 @@ robwschlegel
 <table>
 <thead>
 <tr class="header">
-<th align="left">node</th>
-<th align="left">mean_int_cum</th>
-<th align="left">median_int_cum</th>
-<th align="left">mean_int_max</th>
-<th align="left">median_int_max</th>
-<th align="left">mean_dur</th>
-<th align="left">median_dur</th>
+<th align="right">node</th>
+<th align="right">mean_int_cum</th>
+<th align="right">median_int_cum</th>
+<th align="right">mean_int_max</th>
+<th align="right">median_int_max</th>
+<th align="right">mean_dur</th>
+<th align="right">median_dur</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">1</td>
-<td align="left">33.28</td>
-<td align="left">18.42</td>
-<td align="left">2.34</td>
-<td align="left">2.25</td>
-<td align="left">18.88</td>
-<td align="left">11.0</td>
+<td align="right">1</td>
+<td align="right">33.28</td>
+<td align="right">18.42</td>
+<td align="right">2.34</td>
+<td align="right">2.25</td>
+<td align="right">18.88</td>
+<td align="right">11.0</td>
 </tr>
 <tr class="even">
-<td align="left">2</td>
-<td align="left">18.18</td>
-<td align="left">12.73</td>
-<td align="left">2.03</td>
-<td align="left">2.10</td>
-<td align="left">10.52</td>
-<td align="left">7.0</td>
+<td align="right">2</td>
+<td align="right">18.18</td>
+<td align="right">12.73</td>
+<td align="right">2.03</td>
+<td align="right">2.10</td>
+<td align="right">10.52</td>
+<td align="right">7.0</td>
 </tr>
 <tr class="odd">
-<td align="left">3</td>
-<td align="left">17.38</td>
-<td align="left">13.60</td>
-<td align="left">2.11</td>
-<td align="left">1.84</td>
-<td align="left">9.68</td>
-<td align="left">7.0</td>
+<td align="right">3</td>
+<td align="right">17.38</td>
+<td align="right">13.60</td>
+<td align="right">2.11</td>
+<td align="right">1.84</td>
+<td align="right">9.68</td>
+<td align="right">7.0</td>
 </tr>
 <tr class="even">
-<td align="left">4</td>
-<td align="left">24.30</td>
-<td align="left">17.06</td>
-<td align="left">2.04</td>
-<td align="left">2.04</td>
-<td align="left">14.06</td>
-<td align="left">11.0</td>
+<td align="right">4</td>
+<td align="right">24.30</td>
+<td align="right">17.06</td>
+<td align="right">2.04</td>
+<td align="right">2.04</td>
+<td align="right">14.06</td>
+<td align="right">11.0</td>
 </tr>
 <tr class="odd">
-<td align="left">5</td>
-<td align="left">32.74</td>
-<td align="left">31.18</td>
-<td align="left">2.19</td>
-<td align="left">2.22</td>
-<td align="left">18.18</td>
-<td align="left">19.0</td>
+<td align="right">5</td>
+<td align="right">32.74</td>
+<td align="right">31.18</td>
+<td align="right">2.19</td>
+<td align="right">2.22</td>
+<td align="right">18.18</td>
+<td align="right">19.0</td>
 </tr>
 <tr class="even">
-<td align="left">6</td>
-<td align="left">42.05</td>
-<td align="left">29.48</td>
-<td align="left">2.49</td>
-<td align="left">2.31</td>
-<td align="left">19.83</td>
-<td align="left">16.0</td>
+<td align="right">6</td>
+<td align="right">42.05</td>
+<td align="right">29.48</td>
+<td align="right">2.49</td>
+<td align="right">2.31</td>
+<td align="right">19.83</td>
+<td align="right">16.0</td>
 </tr>
 <tr class="odd">
-<td align="left">7</td>
-<td align="left">44.95</td>
-<td align="left">27.32</td>
-<td align="left">2.51</td>
-<td align="left">2.43</td>
-<td align="left">22.44</td>
-<td align="left">16.0</td>
+<td align="right">7</td>
+<td align="right">44.95</td>
+<td align="right">27.32</td>
+<td align="right">2.51</td>
+<td align="right">2.43</td>
+<td align="right">22.44</td>
+<td align="right">16.0</td>
 </tr>
 <tr class="even">
-<td align="left">8</td>
-<td align="left">32.90</td>
-<td align="left">17.52</td>
-<td align="left">2.01</td>
-<td align="left">1.74</td>
-<td align="left">18.40</td>
-<td align="left">14.0</td>
+<td align="right">8</td>
+<td align="right">32.90</td>
+<td align="right">17.52</td>
+<td align="right">2.01</td>
+<td align="right">1.74</td>
+<td align="right">18.40</td>
+<td align="right">14.0</td>
 </tr>
 <tr class="odd">
-<td align="left">9</td>
-<td align="left">10.57</td>
-<td align="left">8.94</td>
-<td align="left">1.75</td>
-<td align="left">1.76</td>
-<td align="left">6.67</td>
-<td align="left">5.5</td>
+<td align="right">9</td>
+<td align="right">10.57</td>
+<td align="right">8.94</td>
+<td align="right">1.75</td>
+<td align="right">1.76</td>
+<td align="right">6.67</td>
+<td align="right">5.5</td>
 </tr>
 <tr class="even">
-<td align="left">10</td>
-<td align="left">23.75</td>
-<td align="left">21.05</td>
-<td align="left">1.95</td>
-<td align="left">2.04</td>
-<td align="left">13.71</td>
-<td align="left">13.0</td>
+<td align="right">10</td>
+<td align="right">23.75</td>
+<td align="right">21.05</td>
+<td align="right">1.95</td>
+<td align="right">2.04</td>
+<td align="right">13.71</td>
+<td align="right">13.0</td>
 </tr>
 <tr class="odd">
-<td align="left">11</td>
-<td align="left">29.64</td>
-<td align="left">21.81</td>
-<td align="left">2.40</td>
-<td align="left">2.45</td>
-<td align="left">13.72</td>
-<td align="left">9.0</td>
+<td align="right">11</td>
+<td align="right">29.64</td>
+<td align="right">21.81</td>
+<td align="right">2.40</td>
+<td align="right">2.45</td>
+<td align="right">13.72</td>
+<td align="right">9.0</td>
 </tr>
 <tr class="even">
-<td align="left">12</td>
-<td align="left">13.17</td>
-<td align="left">12.38</td>
-<td align="left">1.80</td>
-<td align="left">1.78</td>
-<td align="left">8.39</td>
-<td align="left">7.0</td>
+<td align="right">12</td>
+<td align="right">13.17</td>
+<td align="right">12.38</td>
+<td align="right">1.80</td>
+<td align="right">1.78</td>
+<td align="right">8.39</td>
+<td align="right">7.0</td>
 </tr>
 </tbody>
 </table>
@@ -1445,269 +1683,436 @@ robwschlegel
 <h3>Schematic summary</h3>
 <p>The following figure shows an overall visual summary of all of the variables for all of the nodes at once. Along the edges are arrows indicating the overall trends in change of variables as one moves across the nodes.</p>
 <p><img src="assets/node_schematic_summary.jpg" width="100%" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-node_schematic_summary">
+Past versions of node_schematic_summary.jpg
+</button>
+</p>
+<div id="fig-node_schematic_summary" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/robwschlegel/MHWNWA/blob/823a5fd0e4c2ba8d96ffdf24a35aca9d67fb24f7/docs/assets/node_schematic_summary.jpg" target="_blank">823a5fd</a>
+</td>
+<td>
+robwschlegel
+</td>
+<td>
+2019-08-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="region-season" class="section level3">
 <h3>Region + season</h3>
 <p>The nodes in the right-hand column have mostly events centred around the <em>mab</em> and almost none in the <em>nfs</em>. The distribution becomes more even as we move to the centre with the left-hand nodes having mostly <em>nfs</em> and <em>gsl</em> events. There is no apparent pattern as one moves from the top to the bottom. Keep in mind that the region + season of occurrence are not fed to the SOM so any patterns that come out here are very important.</p>
 <p>For patterns in seasons, we most quickly see that the MHWs occurring in the middle two nodes are primarily summer events. The seasons are determined by the month during which the peak of the event occurred, with <code>Winter = JFM</code> etc. The top middle two nodes are most often Summer events, with node 2 showing many Spring events, and node 3 showing many Winter events. The bottom left node (10) has an even distribution centred around Autumn, and the bottom right node (11) is primarily Spring – Summer. The bottom right two nodes (8 + 12) are primarily Autumn – Winter events, with node 4 (top right) being centred around Spring. The bottom left two nodes (5 + 9) are mostly Autumn, with node 5 having no Spring events and node 9 having no Summer events. Node 1 (top left) is largely Summer events with many in Winter and Spring as well.</p>
 <p><img src="assets/SOM/region_season.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of region_season.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-region_season">
+Past versions of region_season.png
+</button>
+</p>
+<div id="fig-region_season" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/region_season.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
 </div>
-<div id="sst-u-v" class="section level3">
-<h3>SST + U + V</h3>
+</div>
+</div>
+<div id="sst-u-v-anom" class="section level3">
+<h3>SST + U + V (anom)</h3>
 <p>For SST we see moving from right to left that the LS anomaly tends to go from cool to warm and the inverse is true of the GS anomaly in the bottom of the mab. As we move from the top down the AO tends to become warmer. The ss is warm in all of the nodes, and it is around this region that the heat focus of each node pivots.</p>
 <p>The only anomalous current pattern I see is that nodes 1 + 10 + 11 + 12 show less strength/vorticity in the GS than the other nodes, but this isn’t very remarkable. The strength of the GS is apparent in node 8, slightly less so in node 4, and the vorticity in the eddy field is very apparent in node 5 + 9. All-in-all though I don’t think this variable says much.</p>
 <p><img src="assets/SOM/sst_u_v_anom.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of sst_u_v_anom.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sst_u_v_anom">
+Past versions of sst_u_v_anom.png
+</button>
+</p>
+<div id="fig-sst_u_v_anom" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/sst_u_v_anom.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
 </div>
 <div id="air-temp-u-v-mslp-anom" class="section level3">
 <h3>Air temp + U + V + MSLP (anom)</h3>
 <p>For air temperature anomalies we see that the air above the LS gets warmer as we move left and down. The air over the US becomes warmer as we move to the right. Most of the air in the middle bottom four nodes (6, 7, 10, 11) is warm. The air over the AO becomes warmer as we move down the nodes. The bottom row shows zonal temperature gradients (east – west) whereas the top row (and node 8) is meridional (north – south). The middle row is less clear.</p>
 <p>One consistent pattern across all of the wind anomalies is that the top row nodes show strong anomalous movement down from the northeast corner while the bottom right corner nodes have strong northward wind anomalies in their northeast corners. The top row is mostly air coming down from the North whereas the bottom row is mostly air coming up from the South.</p>
 <p>In the right-hand column of nodes we see generally high-pressure anticyclonic wind anomalies around a thermal dipole with the northward moving air being anomalously warm; the warmer (colder) the anomaly the faster north (south) the anomalous wind movement is. We tend to see the opposite in the left-hand column. In the second right-most column (nodes 3 + 7 + 11) we also see anticyclonic wind anomalies around thermal dipoles. The central position of the anticyclone is different in each node, and the thermal anomalies are less than the right-hand column. The left-hand two columns have cyclonic wind movement around thermal dipoles with the stronger patterns in the far left column. Node 10 is a bit different in that it appears to have anticyclonic wind movement, but a cold dipole that looks more like the cyclonic movement nodes. The center two nodes show almost no anomalous wind patterns or MSLP, with node 6 having a slight negative MSLP anomaly and node 7 being slightly positive.</p>
-<p>Node 9 shows the Northeaster storm signature. The left-hand column is basically low pressure storms. The right-hand column is basically high pressure blocking. The middle middle nodes are “dog days” of summer. The top and bottom middle nodes are similar to outsides but show transitions between them. Whether it is a storm or not depends on the season of occurrence.</p>
+<p>Node 9 shows the Nor’easter storm signature. The left-hand column is basically low pressure storms. The right-hand column is basically high pressure blocking. The middle middle nodes are “dog days” of summer. The top and bottom middle nodes are similar to outsides but show transitions between them. Whether it is a storm or not depends on the season of occurrence.</p>
 <p><img src="assets/SOM/air_u_v_mslp_anom.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of air_u_v_mslp_anom.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-air_u_v_mslp_anom">
+Past versions of air_u_v_mslp_anom.png
+</button>
+</p>
+<div id="fig-air_u_v_mslp_anom" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/air_u_v_mslp_anom.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
 </div>
 <div id="net-downward-heatflux-mld-anom" class="section level3">
 <h3>Net downward heatflux + MLD (anom)</h3>
 <p>The gradients of net downward heatflux (qnet) change nicely across the nodes and generally speaking we see more positive (negative) qnet areas with anomalously shallow (deep) water. There is little happening in the centre two nodes. There is high positive qnet over the LS + AO in the bottom left node (9) with negative heatflux over the GS. This positive qnet gradient slowly moves over the AO as we move from the left to the right along the bottom row of nodes. There is a negative qnet gradient over the GS in the top left node (1) that slowly moves up and over to the LS as we move across the top row of nodes. This negative qnet patch is replaced by a positive one.</p>
 <p>The MLD in the AO in the top nodes is generally deeper, and shoals as we move to the bottom row (with the exception of node 4). The MLD in the LS is deeper in the right-hand column and shoals as we move left. The MLD for the GS is deeper in the left-hand column and shoals as we move to the right.</p>
 <p><img src="assets/SOM/qnet_mld_anom.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of qnet_mld_anom.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-qnet_mld_anom">
+Past versions of qnet_mld_anom.png
+</button>
+</p>
+<div id="fig-qnet_mld_anom" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/qnet_mld_anom.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
+</div>
+<div id="sd-of-variables-per-pixel-per-node" class="section level3 tabset">
+<h3>SD of variables per pixel per node</h3>
+<p>The following figures show the standard deviation (SD) per pixel per node based on the variance between all of the synoptic states that were clustered into each node. Higher SD values show a poorer match between synoptic states within each node. These areas of high SD highlight areas where the representative synoptic state in the results does not accurately portray what most synoptic states clustered into each node are showing. Lower areas of SD show where the node is better representing what most synoptic states are showing. The units in each colour scale are the same as the variable in the figure.</p>
+<div id="sst-anom" class="section level4">
+<h4>SST anom</h4>
+<p><img src="../output/SOM/sst_anom_sd.png" /></p>
+</div>
+<div id="u-anom" class="section level4">
+<h4>U anom</h4>
+<p><img src="../output/SOM/u_anom_sd.png" /></p>
+</div>
+<div id="v-anom" class="section level4">
+<h4>V anom</h4>
+<p><img src="../output/SOM/v_anom_sd.png" /></p>
+</div>
+<div id="air-temp-anom" class="section level4">
+<h4>Air temp anom</h4>
+<p><img src="../output/SOM/t2m_anom_sd.png" /></p>
+</div>
+<div id="u10-anom" class="section level4">
+<h4>U10 anom</h4>
+<p><img src="../output/SOM/u10_anom_sd.png" /></p>
+</div>
+<div id="v10-anom" class="section level4">
+<h4>V10 anom</h4>
+<p><img src="../output/SOM/v10_anom_sd.png" /></p>
+</div>
+<div id="qnet-anom" class="section level4">
+<h4>Qnet anom</h4>
+<p><img src="../output/SOM/qnet_anom_sd.png" /></p>
+</div>
+<div id="mslp-anom" class="section level4">
+<h4>MSLP anom</h4>
+<p><img src="../output/SOM/msl_anom_sd.png" /></p>
+</div>
+<div id="mld-anom" class="section level4">
+<h4>MLD anom</h4>
+<p><img src="../output/SOM/mld_anom_sd.png" /></p>
+</div>
 </div>
 <div id="heatmap-of-summary-statistics" class="section level3">
 <h3>Heatmap of summary statistics</h3>
 <p>The figure below shows a heatmap of the median and mean of: max intensity, cumulative intensity, and duration of the MHWs clustered into each node. Note that the overall largest MHWs are found in the middle two nodes (6 + 7), but that the median duration/cumulative intensity of the MHWs in node 5 are the largest.</p>
 <p><img src="assets/SOM/heat_stat.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-heat_stat">
+Past versions of heat_stat.png
+</button>
+</p>
+<div id="fig-heat_stat" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/robwschlegel/MHWNWA/blob/26f73b4011eaba9bd17cdba54e3f96cfbf1773fe/docs/assets/SOM/heat_stat.png" target="_blank">26f73b4</a>
+</td>
+<td>
+robwschlegel
+</td>
+<td>
+2019-09-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/robwschlegel/MHWNWA/blob/823a5fd0e4c2ba8d96ffdf24a35aca9d67fb24f7/docs/assets/SOM/heat_stat.png" target="_blank">823a5fd</a>
+</td>
+<td>
+robwschlegel
+</td>
+<td>
+2019-08-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="cumulative-intensity" class="section level3">
 <h3>Cumulative intensity</h3>
 <p>The centre two nodes clearly have the largest individual MHWs w.r.t. cumulative intensity. They also have the largest mean intensity and almost the largest median intensities, but node 5 comes out just ahead because it has fewer small events. The top middle two nodes, and bottom outside two nodes have MHWs with much smaller cumulative intensities. The median (mean) intensities of the bottom middle two events are greater (less) than the top outside two nodes.</p>
 <p><img src="assets/SOM/cum_int_season.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of cum_int_season.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cum_int_season">
+Past versions of cum_int_season.png
+</button>
+</p>
+<div id="fig-cum_int_season" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/cum_int_season.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
 </div>
 <div id="max-intensity" class="section level3">
 <h3>Max intensity</h3>
-<p>The same pattern here holds roughly as to the cumulative intensity pattern. Node 11 however has the largest median intensity, and nearly the largest mean intensity as well.</p>
+<p>We see roughly the same pattern here as the cumulative intensity pattern. Node 11 however has the largest median intensity, and nearly the largest mean intensity as well.</p>
 <p><img src="assets/SOM/max_int_region.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of max_int_region.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-max_int_region">
+Past versions of max_int_region.png
+</button>
+</p>
+<div id="fig-max_int_region" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/max_int_region.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
 </div>
 <div id="duration" class="section level3">
 <h3>Duration</h3>
 <p>Again the same pattern. Except now node 11 has a low median duration and node 5 has the highest median duration. The MHWs in the middle row are by far the longest, with the median durations similar between the top and bottom rows, but with the mean durations longer in the top. There is no clear pattern moving from left to right. Rather it is more centred round the middle nodes and moves out from there.</p>
 <p><img src="assets/SOM/duration_rate_onset.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of duration_rate_onset.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-duration_rate_onset">
+Past versions of duration_rate_onset.png
+</button>
+</p>
+<div id="fig-duration_rate_onset" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/duration_rate_onset.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
 </div>
 <div id="node-1" class="section level3">
 <h3>Node 1</h3>
@@ -1715,37 +2120,43 @@ robwschlegel
 <p>The LS and northern coastal waters are warm while the AO and GS are cold. Looking closely one may see that the GS is slightly anomalously slow. The atmosphere is dominated by a cyclonic meridional dipole offshore of the mab/gm with the northern (southern) half being anomalously warm (cold). The AO is up to 20 metres deeper with a weak negative qnet over it and the GS. The LS is shallow with no anomalous qnet.</p>
 <p>The MHWs in this node were caused by an any time of year cyclonic storm that is pulling air from the northeast over LS that is warm there, but cooler relative to the southern reaches of the study area.</p>
 <p><img src="assets/SOM/node_1_panels.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of node_1_panels.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-node_1_panels">
+Past versions of node_1_panels.png
+</button>
+</p>
+<div id="fig-node_1_panels" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/node_1_panels.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
 </div>
 <div id="node-2" class="section level3">
 <h3>Node 2</h3>
@@ -1753,37 +2164,43 @@ robwschlegel
 <p>A cold AO with a warm yet very turbulent GS with many warm/cold core eddies. It is surprising how well the detail of the eddies comes through given that these are many different events over many years. The rest of the coastal waters and LS are all warm with relatively little movement. Air over AO is cold but warm everywhere else. Strong cyclonic meridional wind anomalies over the area south of where the AO and LS meet. No wind movement over land where the air anomaly is warmest. Slight positive qnet over LS, where MLD is slightly shallow. Negative qnet over deeper AO/GS where it is approaching the LS. The many eddies show up here in a more unusual MLD pattern.</p>
 <p>These events appear to be caused by a very large zonal cyclonic storm pulling warm air from land onto coastal waters in Spring/Summer. This anomalous wind movement is probably what is causing so many eddies.</p>
 <p><img src="assets/SOM/node_2_panels.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of node_2_panels.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-node_2_panels">
+Past versions of node_2_panels.png
+</button>
+</p>
+<div id="fig-node_2_panels" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/node_2_panels.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
 </div>
 <div id="node-3" class="section level3">
 <h3>Node 3</h3>
@@ -1791,37 +2208,43 @@ robwschlegel
 <p>Cold eastern AO with warm water everywhere else. There appears to be an anticyclonic cell pulling warm air up the coast and cold air over the AO. But there is also a cyclonic cell in the northeast corner that appears to be doing the same. There is little warm air movement inland. There is no positive qnet in this node, and weak negative qnet over some of the deeper MLD areas. Slightly shallower water in the coastal regions. Looking at the real values we see a bizarrely parallel (meridional) MSLP gradient and mostly westerly winds.</p>
 <p>These MHWs are caused by a meridional pressure gradient allowing winds to pull warm land air out onto the coastal waters.</p>
 <p><img src="assets/SOM/node_3_panels.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of node_3_panels.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-node_3_panels">
+Past versions of node_3_panels.png
+</button>
+</p>
+<div id="fig-node_3_panels" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/node_3_panels.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
 </div>
 <div id="node-4" class="section level3">
 <h3>Node 4</h3>
@@ -1829,37 +2252,43 @@ robwschlegel
 <p>Very clearly a strong + warm GS pushing up closer along the shelf during a cold LS. Warm air anomalies over US and GS with strong northward wind anomalies. Cold air over CN with southward air anomalies. These two air flows appear either unconnected or perhaps two separate cyclonic and anticyclonic cells. Positive heatflux into shallower GS with a strong negative flux into deeper point where the LS and GS meet.</p>
 <p>This is a good example of a strong GS causing MHWs in the southern regions of the study.</p>
 <p><img src="assets/SOM/node_4_panels.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of node_4_panels.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-node_4_panels">
+Past versions of node_4_panels.png
+</button>
+</p>
+<div id="fig-node_4_panels" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/node_4_panels.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
 </div>
 <div id="node-5" class="section level3">
 <h3>Node 5</h3>
@@ -1867,37 +2296,43 @@ robwschlegel
 <p>Cool coastal GS, warm SST anomaly everywhere else. Warm air anomaly over all of the study area except coastal GS, hottest over the grand banks. Zonal cyclonic cell sitting over area where GS pulls away from coast. Slightly deeper MLD of waters along coast, possibly due to GS. Some small negative qnet into mab/gm waters and some positive qnet over the GS as it travels out of the study area and LS.</p>
 <p>These northern focused MHWs are driven by warm air being pulled up over the ocean by a cyclone that first dumps the air onto nfs and less so from there.</p>
 <p><img src="assets/SOM/node_5_panels.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of node_5_panels.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-node_5_panels">
+Past versions of node_5_panels.png
+</button>
+</p>
+<div id="fig-node_5_panels" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/node_5_panels.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
 </div>
 <div id="node-6" class="section level3">
 <h3>Node 6</h3>
@@ -1905,37 +2340,43 @@ robwschlegel
 <p>Warm SST and air anomalies throughout entire study area. Note that the air temp anomalies are actually low, at less than 2.0, compared to most of the other nodes. Very little current anomaly and some faster northward air over US coast while some southward wind anomaly over AO. Wind in the north of the study area has slight northward anomaly. Almost nothing happening w.r.t. MLD and heatflux (see scale bar). It is worth noting that there is practically no qnet anomaly and almost no MLD anomaly.</p>
 <p>This appears to be a classic “dog days of Summer” pattern where a negative pressure anomaly sitting off the coast sustains northward movement of air along the entire coastline.</p>
 <p><img src="assets/SOM/node_6_panels.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of node_6_panels.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-node_6_panels">
+Past versions of node_6_panels.png
+</button>
+</p>
+<div id="fig-node_6_panels" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/node_6_panels.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
 </div>
 <div id="node-7" class="section level3">
 <h3>Node 7</h3>
@@ -1943,37 +2384,43 @@ robwschlegel
 <p>A warm AO with a stronger GS and warm coastal waters but cold LS. Warm air over US - CN border with large meridional anticyclone cell over eastern AO. Mostly shallow MLD over study area. Small positive qnet over GS, no negative qnet. The air and SST anomalies are higher than most nodes.</p>
 <p>A summer meridional anticyclonic storm pattern of warm air being pulled north along the coast and sent over the regions.</p>
 <p><img src="assets/SOM/node_7_panels.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of node_7_panels.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-node_7_panels">
+Past versions of node_7_panels.png
+</button>
+</p>
+<div id="fig-node_7_panels" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/node_7_panels.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
 </div>
 <div id="node-8" class="section level3">
 <h3>Node 8</h3>
@@ -1981,37 +2428,43 @@ robwschlegel
 <p>Obviously strong coast-ward GS with a strong eddy field. High SST anomaly with a super cold core anomaly to the east. Crazy high (~5C) air anomaly over US and GS with concurrent northward winds. Cold southward flowing air from over the cold LS waters. It doesn’t really look like this is one weather system, rather two. Crazy high positive heatflux (~200W/m2) over GS near the coast and very shallow AO, with equally massive negative heatflux over very deep LS. The heatflux anomalies in this node are roughly 4 times larger than most other nodes.</p>
 <p>The GS is pumping hard up into the study area and bringing a lot of hot air with it that is forcing its way down into the waters of the GS and coastal regions south of the <em>cbs</em>. I’m not sure what’s going on in the atmosphere but it doesn’t really look like an anticyclone.</p>
 <p><img src="assets/SOM/node_8_panels.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of node_8_panels.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-node_8_panels">
+Past versions of node_8_panels.png
+</button>
+</p>
+<div id="fig-node_8_panels" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/node_8_panels.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
 </div>
 <div id="node-9" class="section level3">
 <h3>Node 9</h3>
@@ -2019,37 +2472,43 @@ robwschlegel
 <p>Cold GS along coastline, with warm waters everywhere else. GS is moving a bit more quickly with some good eddy action. Cold southward air over CN, US, and GS. Very warm northward air over AO + LS. Negative qnet over deep GS with large positive qnet into very shallow AO + LS. Hectic zonal cyclone dipole pulling warm air north on the eastern side.</p>
 <p>This is very clearly a zonal cyclonic system bringing warm air over the ocean up to the <em>nfs</em> and pulling cold air down over the <em>mab</em> and <em>gm</em>, mixing up the AO as it goes. Even though the atmosphere looks dramatic, this isn’t creating large MHWs as this storm system must pass by rapidly.</p>
 <p><img src="assets/SOM/node_9_panels.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of node_9_panels.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-node_9_panels">
+Past versions of node_9_panels.png
+</button>
+</p>
+<div id="fig-node_9_panels" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/node_9_panels.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
 </div>
 <div id="node-10" class="section level3">
 <h3>Node 10</h3>
@@ -2057,37 +2516,43 @@ robwschlegel
 <p>We see a mostly warm SST anomaly everywhere but much higher to the south of the <em>nfs</em>. Very mild cold air over US + CN with very high warm anomaly over <em>nfs</em>. There appears to be a zonal anticyclone centred over the AO but affecting the LS, too. Very little positive MLD to be found, with a very negative MLD anomaly for the AO and LS, but normal over the <em>nfs</em>. Positive qnet into he GS + AO + LS.</p>
 <p>This looks like some sort of huge Autumn storm coming from the east to bring warm air to the <em>nfs</em> but usually turns away/stops before reaching the coast of the US.</p>
 <p><img src="assets/SOM/node_10_panels.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of node_10_panels.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-node_10_panels">
+Past versions of node_10_panels.png
+</button>
+</p>
+<div id="fig-node_10_panels" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/node_10_panels.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
 </div>
 <div id="node-11" class="section level3">
 <h3>Node 11</h3>
@@ -2095,37 +2560,43 @@ robwschlegel
 <p>Mix of slightly warm and cold eddies in GS. Warmer waters to the north of the GS but less so in the LS. A very large zonal anticyclone centred over the AO that is pulling warm air up onto the coast where it reaches nearly 4C over NS! Slightly deeper southern AO and GS eddies with most of the rest of the study area being slightly shallow. No negative qnet and positive qnet over AO.</p>
 <p>This is a Spring/Summer storm that is pushing warm air onto the coast coming from the southeast.</p>
 <p><img src="assets/SOM/node_11_panels.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of node_11_panels.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-node_11_panels">
+Past versions of node_11_panels.png
+</button>
+</p>
+<div id="fig-node_11_panels" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/node_11_panels.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
 </div>
 <div id="node-12" class="section level3">
 <h3>Node 12</h3>
@@ -2133,37 +2604,43 @@ robwschlegel
 <p>A warm gulf stream and coastal waters with spotty LS. Very warm air over US + CN with northward wind anomaly over the GS + AO. There appears to be an anticyclone happening over all water bodies, centred in the southeast corner. A generally shallower MLD for the GS and AO, with a deep tongue in the LS. No negative qnet with high positive qnet into GS + AO.</p>
 <p>This appears to be a zonal anticyclone that is sitting over the AO in Autumn – Winter that is pushing a bunch of warm air over and into the coastal regions, excluding the nfs as the colder LS appears to may be blocking this.</p>
 <p><img src="assets/SOM/node_12_panels.png" width="100%" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of node_12_panels.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-node_12_panels">
+Past versions of node_12_panels.png
+</button>
+</p>
+<div id="fig-node_12_panels" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/robwschlegel/MHWNWA/blob/600a1aea05740e04d9ead953d66b6fef1d946eed/docs/assets/SOM/node_12_panels.png" target="_blank">600a1ae</a>
 </td>
-<td style="text-align:left;">
+<td>
 robwschlegel
 </td>
-<td style="text-align:left;">
+<td>
 2019-08-27
 </td>
 </tr>
 </tbody>
 </table>
-</details>
+</div>
+</div>
 <!-- ## Comparison of SOM experiments -->
 <!-- I find it easiest to see the similarities/differences between the SOM experiments by looking at atmospheric panels. If one clicks back and forth between the 4x3 and 3x3 default SOM node figures it becomes apparent that the left and right-hand columns of nodes are effectively the same, and it is the middle columns that are combined when going down from a 4x3 to 3x3 grid. We can see this amalgamating of the central columns in all of the physical variable figures. Their is a however a difference in the patterns in the nodes between the regions and seasons of occurrence. I attribute this to the SOM not wanting to bunch up too many values in one node, so with the 3x3 grid it distributes the largely summer MHWs in the centre two nodes from the 4x3 grid out to other nodes where it sees fit.  -->
 <!-- The MHWs in the middle column(s) tend to be a bit larger, which may also be why they have "smoother" looking patterns that can be binned together more easily into other nodes in a 3x3 grid. So the question then becomes, what do we gain by allowing the center column to be split or not? I am actually going to argue that the 4x3 grid is preferable because we can see that the top two nodes in the middle left column show cyclonic wind anomalies while the other middle nodes show anticyclonic wind anomalies. This important detail is lost with a 3x3 grid. -->
@@ -2181,10 +2658,14 @@ robwschlegel
 <p>Richaud, B., Kwon, Y.-O., Joyce, T. M., Fratantoni, P. S., and Lentz, S. J. (2016). Surface and bottom temperature and salinity climatology along the continental shelf off the canadian and us east coasts. <em>Continental Shelf Research</em> 124, 165–181.</p>
 </div>
 </div>
-</div>
-<div id="session-information" class="section level2">
-<h2>Session information</h2>
-<pre><code>R version 3.6.1 (2019-07-05)
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre><code>R version 3.6.2 (2019-12-12)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 16.04.6 LTS
 
@@ -2205,38 +2686,35 @@ attached base packages:
 
 other attached packages:
  [1] ggforce_0.3.1.9000   yasomi_0.3           proxy_0.4-23        
- [4] e1071_1.7-1          tidync_0.2.1         heatwaveR_0.4.0     
- [7] data.table_1.12.2    lubridate_1.7.4      forcats_0.4.0       
-[10] stringr_1.4.0        dplyr_0.8.3          purrr_0.3.2         
-[13] readr_1.3.1          tidyr_0.8.3          tibble_2.1.3        
-[16] ggplot2_3.2.1        tidyverse_1.2.1.9000 jsonlite_1.6        
+ [4] e1071_1.7-3          tidync_0.2.3         ncdf4_1.17          
+ [7] heatwaveR_0.4.2.9001 data.table_1.12.8    lubridate_1.7.4     
+[10] forcats_0.4.0        stringr_1.4.0        dplyr_0.8.4         
+[13] purrr_0.3.3          readr_1.3.1          tidyr_1.0.2         
+[16] tibble_2.1.3         ggplot2_3.2.1        tidyverse_1.3.0     
 
 loaded via a namespace (and not attached):
- [1] httr_1.4.0        foreach_1.4.4     viridisLite_0.3.0
- [4] R.utils_2.7.0     modelr_0.1.4      assertthat_0.2.1 
- [7] highr_0.8         cellranger_1.1.0  yaml_2.2.0       
-[10] pillar_1.4.2      backports_1.1.4   lattice_0.20-35  
-[13] glue_1.3.1        digest_0.6.20     polyclip_1.10-0  
-[16] rvest_0.3.4       colorspace_1.3-2  htmltools_0.3.6  
-[19] R.oo_1.22.0       pkgconfig_2.0.2   broom_0.5.2      
-[22] haven_2.1.1       scales_1.0.0      tweenr_1.0.1     
-[25] whisker_0.3-2     git2r_0.23.0      farver_1.0       
-[28] generics_0.0.2    withr_2.1.2       lazyeval_0.2.2   
-[31] cli_1.1.0         magrittr_1.5      crayon_1.3.4     
-[34] readxl_1.3.1      evaluate_0.14     R.methodsS3_1.7.1
-[37] fs_1.3.1          ncdf4_1.16.1      nlme_3.1-137     
-[40] MASS_7.3-50       xml2_1.2.0        class_7.3-14     
-[43] tools_3.6.1       doMC_1.3.5        hms_0.5.0        
-[46] plotly_4.9.0      munsell_0.5.0     reprex_0.3.0     
-[49] compiler_3.6.1    RNetCDF_1.9-1     rlang_0.4.0      
-[52] grid_3.6.1        iterators_1.0.10  rstudioapi_0.10  
-[55] htmlwidgets_1.3   rmarkdown_1.14    codetools_0.2-15 
-[58] gtable_0.3.0      DBI_1.0.0         R6_2.4.0         
-[61] ncmeta_0.0.4      knitr_1.23        zeallot_0.1.0    
-[64] workflowr_1.1.1   rprojroot_1.3-2   stringi_1.4.3    
-[67] parallel_3.6.1    Rcpp_1.0.2        vctrs_0.2.0      
-[70] dbplyr_1.4.2      tidyselect_0.2.5  xfun_0.8         </code></pre>
+ [1] httr_1.4.1        foreach_1.4.4     jsonlite_1.6.1    viridisLite_0.3.0
+ [5] modelr_0.1.5      assertthat_0.2.1  highr_0.8         cellranger_1.1.0 
+ [9] yaml_2.2.1        pillar_1.4.3      backports_1.1.5   lattice_0.20-35  
+[13] glue_1.3.1        digest_0.6.23     promises_1.1.0    polyclip_1.10-0  
+[17] rvest_0.3.5       colorspace_1.4-1  htmltools_0.4.0   httpuv_1.5.2     
+[21] pkgconfig_2.0.3   broom_0.5.3       haven_2.2.0       scales_1.1.0     
+[25] tweenr_1.0.1      whisker_0.4       later_1.0.0       git2r_0.26.1     
+[29] farver_2.0.3      generics_0.0.2    ellipsis_0.3.0    withr_2.1.2      
+[33] lazyeval_0.2.2    cli_2.0.1         magrittr_1.5      crayon_1.3.4     
+[37] readxl_1.3.1      evaluate_0.14     fs_1.3.1          fansi_0.4.1      
+[41] doParallel_1.0.15 nlme_3.1-137      MASS_7.3-50       xml2_1.2.2       
+[45] class_7.3-14      tools_3.6.2       hms_0.5.3         lifecycle_0.1.0  
+[49] plotly_4.9.1      munsell_0.5.0     reprex_0.3.0      compiler_3.6.2   
+[53] RNetCDF_2.1-1     rlang_0.4.4       grid_3.6.2        iterators_1.0.10 
+[57] rstudioapi_0.10   htmlwidgets_1.5.1 rmarkdown_2.0     codetools_0.2-15 
+[61] gtable_0.3.0      DBI_1.0.0         R6_2.4.1          ncmeta_0.2.0     
+[65] knitr_1.27        workflowr_1.6.0   rprojroot_1.3-2   stringi_1.4.5    
+[69] parallel_3.6.2    Rcpp_1.0.3        vctrs_0.2.2       dbplyr_1.4.2     
+[73] tidyselect_1.0.0  xfun_0.12        </code></pre>
 </div>
+</div>
+
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
@@ -2249,14 +2727,6 @@ footer is added to webpages before the MathJax javascript. -->
     "HTML-CSS": { availableFonts: ["TeX"] }
   });
 </script>
-
-<hr>
-<p>
-  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
-  analysis was created with
-  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
-</p>
-<hr>
 
 
 </div>
