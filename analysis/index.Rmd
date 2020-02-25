@@ -14,16 +14,3 @@ Please use the tabs above to navigate the site. The "Analyses" tabs contain work
 
 To jump straight to the SOM analysis results please click on "Analyses" -> "Node summaries"
 
-
-<!-- # NWA 2012 -->
-
-<!-- From Chen et al. 2016 (JGR) -->
-<!-- Such anextreme event in the MAB was attributed to the anomalous atmospheric forcing, which was linked to the northward shift in the jet stream position [Chen et al., 2014a, 2015]. The anomalously warm atmospheric conditions in the winter of 2011–2012 increased the ocean heat content (increased the ocean heat content anomaly) and facilitated the extreme warm ocean temperature in spring 2012 [Chen et al., 2014a, 2015]. On the other hand, the ocean advection played a secondary role, which partially damped the heat content anomaly created by the air-sea heat flux [Chen et al., 2015]. -->
-<!-- In both cases, initial temperature and ocean advection are not sufficient to describe the seasonal mean temperature. Additional cooling (warming) in addition to ocean advection is needed to further describe the winter (spring) temperature. In comparison, using the sum of the initial temperature and air-sea flux yields a much better description ofseasonal mean temperatures (Figures 5c and 5f) -->
-<!-- While the overall role of ocean advection is smaller than that of air-sea flux in determining the winter and spring temperatures, the year-to-year changes in the relativeimportance is worth investigating. -->
-<!-- Normally, given anomalous initial temperature, air will act to damp the temperature anomaly, as in winter 2007 or 2011, or even 2005 to some extent. However, inwinter 2012, theTaircontinued to increase the temperature anomaly.  -->
-<!-- Out of the12 years 2003–2014, the air-sea flux normally dominated the temperature anomaly in the MAB during winter.In only 3 years was the wintertime temperature anomaly primarily controlled by ocean advection. -->
-<!-- For spring, ocean advection has more control on the temperatureanomalies than air-sea flux does, although the difference is smaller (Table 2). In both seasons, the relativeimportance of air-sea flux and ocean advection does not seem to be related to either the initial or seasonalmean thermal condition of the shelf water (fourth and fifth columns of Tables 1 and 2).  -->
-<!-- The correlation coefficients increase from 0.66in the first half of February to 0.91 in the sec-ond half of March. This suggests that estima-tion of spring temperature anomaly in theMAB  based  on  the  thermal  condition  2months before spring is statistically possible. -->
-<!-- This suggests that more northly jet stream positions result in larger heatflux from the atmosphere into the ocean in the MAB. This is likely due to warmer and more humid air over-lying the continental shelf, which reduces the heat loss from the ocean during the cooling seasons [Chenet al., 2014a] -->
-<!-- Inspring and summer, the air-sea flux may be less correlated with the air temperature due to the shallownessof the surface mixed layer, and thus may be disconnected from large-scale atmospheric circulation, i.e., jetstream variability. -->
