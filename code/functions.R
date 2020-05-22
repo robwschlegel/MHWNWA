@@ -605,7 +605,7 @@ fig_data_packet <- function(event_region, event_num){
 
 # Run SOM and create summary output ---------------------------------------
 
-som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
+som_model_PCI <- function(data_packet, other_states, xdim = 4, ydim = 3){
   # Create a scaled matrix for the SOM
   # Cancel out first column as this is the reference ID of the event per row
   data_packet_matrix <- as.matrix(scale(data_packet[,-1]))
@@ -645,9 +645,11 @@ som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
                    variable.name = "variable", value.name = "value")
 
   # Create the mean values that serve as the unscaled results from the SOM
-  node_data <- data_packet_long[, .(val = mean(value, na.rm = TRUE),
-                                    sd = sd(value, na.rm = TRUE)),
-                                by = .(node, variable)] %>%
+  node_data <- data_packet_long %>%
+    group_by(node, variable) %>%
+    summarise(val = mean(value, na.rm = T),
+              sd = sd(value, na.rm = T)) %>%
+    ungroup() %>%
     separate(variable, into = c("lon", "lat", "var"), sep = "BBB") %>%
     dplyr::arrange(node, var, lon, lat) %>%
     mutate(lon = as.numeric(lon),
@@ -656,13 +658,11 @@ som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
            sd = round(sd, 4))
 
   # Load the other synoptic state data as necessary
-  if(!exists("synoptic_states_other_unnest")){
-    # system.time(
-    synoptic_states_other_unnest <- readRDS("data/SOM/synoptic_states_other.Rda") %>%
+  # system.time(
+    synoptic_states_other_unnest <- other_states %>%
       select(region, event_no, synoptic) %>%
       unnest(cols = "synoptic")
     # ) # 5 seconds
-  }
 
   # Create mean node states for data not used in the calculation
   other_data <- data_packet_long %>%
@@ -672,20 +672,21 @@ som_model_PCI <- function(data_packet, xdim = 4, ydim = 3){
     left_join(synoptic_states_other_unnest, by = c("region", "event_no")) %>%
     select(-t, -region, -event_no) %>%
     gather(key = "var", value = "val", -c(node:lat)) %>%
-    as.data.table() %>%
-    .[, .(val = mean(val, na.rm = TRUE),
-          sd = sd(val, na.rm = TRUE)),
-      by = .(node, lon, lat, var)] %>%
+    group_by(node, var, lon, lat) %>%
+    summarise(val = mean(val, na.rm = T),
+              sd = sd(val, na.rm = T)) %>%
+    ungroup() %>%
+    # separate(var, into = c("lon", "lat", "var"), sep = "BBB") %>%
     dplyr::arrange(node, var, lon, lat) %>%
     mutate(val = round(val, 4),
            sd = round(sd, 4))
 
   # ANOSIM for goodness of fit for node count
-  node_data_wide <- node_data %>%
-    unite(coords, c(lon, lat, var), sep = "BBB") %>%
-    dplyr::select(-sd) %>%
-    data.table() %>%
-    dcast(node~coords, value.var = "val")
+  # node_data_wide <- node_data %>%
+  #   unite(coords, c(lon, lat, var), sep = "BBB") %>%
+  #   dplyr::select(-sd) %>%
+  #   data.table() %>%
+  #   dcast(node~coords, value.var = "val")
 
   # Calculate similarity
   # NB: As of Nov 2019 Vegan changed the anosim function
@@ -713,7 +714,14 @@ eddy_track_extract <- function(df){
 
 # Figure data processing --------------------------------------------------
 
-fig_data_prep <- function(data_packet){
+fig_data_prep <- function(data_packet, region_MHW){
+
+  # Prep MHW event data
+  region_MHW_event <- region_MHW %>%
+    select(-cats) %>%
+    unnest(events) %>%
+    filter(row_number() %% 2 == 0) %>%
+    unnest(events)
 
   ## Cast the data wide
   # Base data
@@ -741,17 +749,17 @@ fig_data_prep <- function(data_packet){
   # Creating dynamic arrow sizes does not work as ggplot cannot match up the vectors correctly
 
   # MHW season of (peak) occurrence and other meta-data
-  OISST_MHW_meta <- OISST_MHW_event %>%
+  region_MHW_meta <- region_MHW_event %>%
     left_join(data_packet$info, by = c("region", "event_no"))
 
   # Grid of complete node x season matrix
-  node_season_grid <- expand.grid(seq(1:max(OISST_MHW_meta$node, na.rm = T)),
+  node_season_grid <- expand.grid(seq(1:max(region_MHW_meta$node, na.rm = T)),
                                   c("Summer", "Autumn", "Winter", "Spring"),
                                   stringsAsFactors = F) %>%
     dplyr::rename(node = Var1, season_peak = Var2)
 
   # Proportion of MHWs in each season in each node
-  node_season_info <- OISST_MHW_meta %>%
+  node_season_info <- region_MHW_meta %>%
     dplyr::select(region:event_no, node:season_peak) %>%
     group_by(node, season_peak) %>%
     mutate(node_season_count = n(),
@@ -768,13 +776,13 @@ fig_data_prep <- function(data_packet){
     ungroup()
 
   # Grid of complete node x region matrix
-  node_region_grid <- expand.grid(seq(1:max(OISST_MHW_meta$node, na.rm = T)),
-                                  unique(OISST_MHW_meta$region),
+  node_region_grid <- expand.grid(seq(1:max(region_MHW_meta$node, na.rm = T)),
+                                  unique(region_MHW_meta$region),
                                   stringsAsFactors = F) %>%
     dplyr::rename(node = Var1, region = Var2)
 
   # Proportion of MHWs in each region in each node
-  node_region_info <- OISST_MHW_meta %>%
+  node_region_info <- region_MHW_meta %>%
     dplyr::select(region:event_no, node:count) %>%
     group_by(node, region) %>%
     mutate(node_region_count = n(),
@@ -798,7 +806,7 @@ fig_data_prep <- function(data_packet){
     na.omit()
 
   # Calculate mean and median intensities/durations per node for plotting
-  node_h_lines <- OISST_MHW_meta %>%
+  node_h_lines <- region_MHW_meta %>%
     group_by(node) %>%
     summarise(mean_int_cum = mean(intensity_cumulative, na.rm = T),
               median_int_cum = median(intensity_cumulative, na.rm = T),
@@ -808,17 +816,9 @@ fig_data_prep <- function(data_packet){
               median_dur = median(duration, na.rm = T)) %>%
     mutate_all(round, digits = 2)
 
-  # Load MHW data
-  OISST_region_MHW <- readRDS("data/OISST_region_MHW.Rda")
-  OISST_MHW_event <- OISST_region_MHW %>%
-    select(-cats) %>%
-    unnest(events) %>%
-    filter(row_number() %% 2 == 0) %>%
-    unnest(events)
-
   # Find the eddy tracks present during each MHW
   eddy_data <- data_packet$info %>%
-    left_join(OISST_MHW_event, by = c("region", "event_no")) %>%
+    left_join(region_MHW_event, by = c("region", "event_no")) %>%
     group_by(node, region, event_no) %>%
     nest() %>%
     mutate(res = map(data, eddy_track_extract)) %>%
@@ -832,7 +832,7 @@ fig_data_prep <- function(data_packet){
               other_data_wide = other_data_wide,
               som_sd_wide = som_sd_wide,
               other_sd_wide = other_sd_wide,
-              OISST_MHW_meta = OISST_MHW_meta,
+              region_MHW_meta = region_MHW_meta,
               node_season_info = node_season_info,
               node_region_info = node_region_info,
               region_prop_label = region_prop_label,
@@ -850,52 +850,54 @@ fig_data_prep <- function(data_packet){
 # fig_height = 9
 # fig_width = 13
 fig_all_som <- function(som_packet,
+                        region_MHW,
+                        product = "OISST",
                         col_num = 4,
                         fig_height = 9,
                         fig_width = 13){
 
   # Base data for all figures
-  base_data <- fig_data_prep(data_packet = som_packet)
+  base_data <- fig_data_prep(data_packet = som_packet, region_MHW = region_MHW)
 
   # Events per nregion and season per node
-  region_season <- fig_region_season(base_data, col_num, fig_height, fig_width)
+  region_season <- fig_region_season(base_data, col_num, fig_height, fig_width, product)
 
   # SST + U + V (anom)
-  sst_u_v_anom <- fig_sst_u_v_anom(base_data, col_num, fig_height, fig_width)
+  sst_u_v_anom <- fig_sst_u_v_anom(base_data, col_num, fig_height, fig_width, product)
 
   # Air Temp + U + V (anom)
-  air_u_v_mslp_anom <- fig_air_u_v_mslp_anom(base_data, col_num, fig_height, fig_width)
+  air_u_v_mslp_anom <- fig_air_u_v_mslp_anom(base_data, col_num, fig_height, fig_width, product)
 
   # Net downward heat flux and MLD (anom)
-  qnet_mld_anom <- fig_qnet_mld_anom(base_data, col_num, fig_height, fig_width)
+  qnet_mld_anom <- fig_qnet_mld_anom(base_data, col_num, fig_height, fig_width, product)
 
   # Lollis showing cum. int. + season
-  cum_int_season <- fig_cum_int_season(base_data, col_num, fig_height, fig_width)
+  cum_int_season <- fig_cum_int_season(base_data, col_num, fig_height, fig_width, product)
 
   # Lollis showing max. int. + region
-  max_int_region <- fig_max_int_region(base_data, col_num, fig_height, fig_width)
+  max_int_region <- fig_max_int_region(base_data, col_num, fig_height, fig_width, product)
 
   # SST + U + V (real)
-  sst_u_v_real <- fig_sst_u_v_real(base_data, col_num, fig_height, fig_width)
+  sst_u_v_real <- fig_sst_u_v_real(base_data, col_num, fig_height, fig_width, product)
 
   # Air Temp + U + V (real)
-  air_u_v_mslp_real <- fig_air_u_v_mslp_real(base_data, col_num, fig_height, fig_width)
+  air_u_v_mslp_real <- fig_air_u_v_mslp_real(base_data, col_num, fig_height, fig_width, product)
 
   # Lollis showing duration + rate onset
-  duration_rate_onset <- fig_duration_rate_onset(base_data, col_num, fig_height, fig_width)
+  duration_rate_onset <- fig_duration_rate_onset(base_data, col_num, fig_height, fig_width, product)
 
   # Create SD per pixel plots for env. variables
   sd_col_names <- c(colnames(base_data$som_data_wide),
                     colnames(base_data$other_data_wide))
   sd_col_names <- sd_col_names[-which(sd_col_names %in% c("node", "lon", "lat"))]
   plyr::l_ply(sd_col_names, .fun = fig_sd, .parallel = T,
-              fig_data = base_data, col_num = col_num, fig_height, fig_width)
+              fig_data = base_data, col_num = col_num, fig_height = fig_height, fig_width = fig_width, product = product)
 
   # Create individual node summaries
   # doMC::registerDoMC(cores = 4)
-  plyr::l_ply(1:max(base_data$OISST_MHW_meta$node, na.rm = T), .fun = fig_single_node,
+  plyr::l_ply(1:max(base_data$region_MHW_meta$node, na.rm = T), .fun = fig_single_node,
               .progress = "text", .parallel = T,
-              fig_packet = base_data, fig_height = fig_height, fig_width = fig_width)
+              fig_packet = base_data, fig_height = fig_height, fig_width = fig_width, product = product)
 }
 
 
@@ -908,13 +910,13 @@ fig_all_som <- function(som_packet,
 # col_num = 1
 # fig_height = 9
 # fig_width = 13
-fig_single_node <- function(node_number, fig_packet, fig_height, fig_width){
+fig_single_node <- function(node_number, fig_packet, fig_height, fig_width, product){
 
   # Filter out non-target nodes
   fig_packet$som_data_wide <- filter(fig_packet$som_data_wide, node == node_number)
   fig_packet$som_data_sub <- filter(fig_packet$som_data_sub, node == node_number)
   fig_packet$other_data_wide <- filter(fig_packet$other_data_wide, node == node_number)
-  fig_packet$OISST_MHW_meta <- filter(fig_packet$OISST_MHW_meta, node == node_number)
+  fig_packet$OISST_MHW_meta <- filter(fig_packet$region_MHW_meta, node == node_number)
   fig_packet$node_season_info <- filter(fig_packet$node_season_info, node == node_number)
   fig_packet$node_region_info <- filter(fig_packet$node_region_info, node == node_number)
   fig_packet$region_prop_label <- filter(fig_packet$region_prop_label, node == node_number)
@@ -922,31 +924,31 @@ fig_single_node <- function(node_number, fig_packet, fig_height, fig_width){
   fig_packet$eddy_data <- filter(fig_packet$eddy_data, node == node_number)
 
   # Events per region and season per node
-  region_season_sub <- fig_region_season(fig_packet, 1, fig_height, fig_width)
+  region_season_sub <- fig_region_season(fig_packet, 1, fig_height, fig_width, product)
 
   # SST + U + V (anom)
-  sst_u_v_anom_sub <- fig_sst_u_v_anom(fig_packet, 1, fig_height, fig_width)
+  sst_u_v_anom_sub <- fig_sst_u_v_anom(fig_packet, 1, fig_height, fig_width, product)
 
   # Air Temp + U + V (anom)
-  air_u_v_mslp_anom_sub <- fig_air_u_v_mslp_anom(fig_packet, 1, fig_height, fig_width)
+  air_u_v_mslp_anom_sub <- fig_air_u_v_mslp_anom(fig_packet, 1, fig_height, fig_width, product)
 
   # Net downward heat flux and MLD (anom)
-  qnet_mld_anom_sub <- fig_qnet_mld_anom(fig_packet, 1, fig_height, fig_width)
+  qnet_mld_anom_sub <- fig_qnet_mld_anom(fig_packet, 1, fig_height, fig_width, product)
 
   # SST + U + V (real)
-  sst_u_v_real_sub <- fig_sst_u_v_real(fig_packet, 1, fig_height, fig_width)
+  sst_u_v_real_sub <- fig_sst_u_v_real(fig_packet, 1, fig_height, fig_width, product)
 
   # Air Temp + U + V (real)
-  air_u_v_mslp_real_sub <- fig_air_u_v_mslp_real(fig_packet, 1, fig_height, fig_width)
+  air_u_v_mslp_real_sub <- fig_air_u_v_mslp_real(fig_packet, 1, fig_height, fig_width, product)
 
   # Lollis showing cum.int. + season
-  cum_int_season_sub <- fig_cum_int_season(fig_packet, 1, fig_height, fig_width)
+  cum_int_season_sub <- fig_cum_int_season(fig_packet, 1, fig_height, fig_width, product)
 
   # Lollis showing max.int + region
-  max_int_region_sub <- fig_max_int_region(fig_packet, 1, fig_height, fig_width)
+  max_int_region_sub <- fig_max_int_region(fig_packet, 1, fig_height, fig_width, product)
 
   # Lollis showing duration + rate onset
-  duration_rate_onset_sub <- fig_duration_rate_onset(fig_packet, 1, fig_height, fig_width)
+  duration_rate_onset_sub <- fig_duration_rate_onset(fig_packet, 1, fig_height, fig_width, product)
 
   # Create title
   title <- cowplot::ggdraw() + cowplot::draw_label(paste0("Node: ",node_number), fontface = 'bold')
@@ -963,8 +965,10 @@ fig_single_node <- function(node_number, fig_packet, fig_height, fig_width){
   fig_all_title <- cowplot::plot_grid(title, fig_all_sub, ncol = 1, rel_heights = c(0.05, 1))
   # fig_all_title
   # ggsave(fig_all_title, filename = paste0("output/node_",node_number,"_panels.png"), height = 12, width = 16)
-  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.pdf"), height = fig_height+5, width = fig_width+3)
-  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels.png"), height = fig_height+5, width = fig_width+3)
+  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels_",product,".pdf"),
+         height = fig_height+5, width = fig_width+3)
+  ggsave(fig_all_title, filename = paste0("output/SOM/node_",node_number,"_panels_",product,".png"),
+         height = fig_height+5, width = fig_width+3)
 }
 
 
@@ -973,7 +977,7 @@ fig_single_node <- function(node_number, fig_packet, fig_height, fig_width){
 # testers...
 # fig_data <- fig_data_prep(readRDS("data/SOM/som.Rda"))
 # col_num = 4
-fig_region_season <- function(fig_data, col_num, fig_height = fig_height, fig_width = fig_width){
+fig_region_season <- function(fig_data, col_num, fig_height, fig_width, product){
   # The figure
   region_season <- frame_base +
     # The regions
@@ -1014,8 +1018,8 @@ fig_region_season <- function(fig_data, col_num, fig_height = fig_height, fig_wi
   if(col_num != 1){
     region_season <- region_season +
       facet_wrap(~node, ncol = col_num)
-    ggsave("output/SOM/region_season.pdf", region_season, height = fig_height, width = fig_width)
-    ggsave("output/SOM/region_season.png", region_season, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/region_season_",product,".pdf"), region_season, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/region_season_",product,".png"), region_season, height = fig_height, width = fig_width)
   }
   return(region_season)
 }
@@ -1023,7 +1027,7 @@ fig_region_season <- function(fig_data, col_num, fig_height = fig_height, fig_wi
 
 # SST + U + V (anom) figure -----------------------------------------------
 
-fig_sst_u_v_anom <- function(fig_data, col_num, fig_height, fig_width){
+fig_sst_u_v_anom <- function(fig_data, col_num, fig_height, fig_width, product){
   # The figure
   sst_u_v_anom <- frame_base +
     # The ocean temperature
@@ -1050,8 +1054,8 @@ fig_sst_u_v_anom <- function(fig_data, col_num, fig_height, fig_width){
   if(col_num != 1){
     sst_u_v_anom <- sst_u_v_anom +
       facet_wrap(~node, ncol = col_num)
-    ggsave("output/SOM/sst_u_v_anom.pdf", sst_u_v_anom, height = fig_height, width = fig_width)
-    ggsave("output/SOM/sst_u_v_anom.png", sst_u_v_anom, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/sst_u_v_anom_",product,".pdf"), sst_u_v_anom, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/sst_u_v_anom_",product,".png"), sst_u_v_anom, height = fig_height, width = fig_width)
   }
   return(sst_u_v_anom)
 }
@@ -1059,7 +1063,7 @@ fig_sst_u_v_anom <- function(fig_data, col_num, fig_height, fig_width){
 
 # Air temp + U + V + MSLP (anom) figure -----------------------------------
 
-fig_air_u_v_mslp_anom <- function(fig_data, col_num, fig_height, fig_width){
+fig_air_u_v_mslp_anom <- function(fig_data, col_num, fig_height, fig_width, product){
   # The figure
   air_u_v_mslp_anom <- frame_base +
     # The air temperature
@@ -1084,8 +1088,8 @@ fig_air_u_v_mslp_anom <- function(fig_data, col_num, fig_height, fig_width){
   if(col_num != 1){
     air_u_v_mslp_anom <- air_u_v_mslp_anom +
       facet_wrap(~node, ncol = col_num)
-    ggsave("output/SOM/air_u_v_mslp_anom.pdf", air_u_v_mslp_anom, height = fig_height, width = fig_width)
-    ggsave("output/SOM/air_u_v_mslp_anom.png", air_u_v_mslp_anom, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/air_u_v_mslp_anom_",product,".pdf"), air_u_v_mslp_anom, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/air_u_v_mslp_anom_",product,".png"), air_u_v_mslp_anom, height = fig_height, width = fig_width)
   }
   return(air_u_v_mslp_anom)
 }
@@ -1093,7 +1097,7 @@ fig_air_u_v_mslp_anom <- function(fig_data, col_num, fig_height, fig_width){
 
 # QNET + MLD (anom) figure ------------------------------------------------
 
-fig_qnet_mld_anom <- function(fig_data, col_num, fig_height, fig_width){
+fig_qnet_mld_anom <- function(fig_data, col_num, fig_height, fig_width, product){
   # The figure
   qnet_mld_anom <- frame_base +
     # The MLD
@@ -1112,8 +1116,8 @@ fig_qnet_mld_anom <- function(fig_data, col_num, fig_height, fig_width){
   if(col_num != 1){
     qnet_mld_anom <- qnet_mld_anom +
       facet_wrap(~node, ncol = col_num)
-    ggsave("output/SOM/qnet_mld_anom.pdf", qnet_mld_anom, height = fig_height, width = fig_width)
-    ggsave("output/SOM/qnet_mld_anom.png", qnet_mld_anom, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/qnet_mld_anom_",product,".pdf"), qnet_mld_anom, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/qnet_mld_anom_",product,".png"), qnet_mld_anom, height = fig_height, width = fig_width)
   }
   return(qnet_mld_anom)
 }
@@ -1121,7 +1125,7 @@ fig_qnet_mld_anom <- function(fig_data, col_num, fig_height, fig_width){
 
 # SST + U + V (real) figure -----------------------------------------------
 
-fig_sst_u_v_real <- function(fig_data, col_num, fig_height, fig_width){
+fig_sst_u_v_real <- function(fig_data, col_num, fig_height, fig_width, product){
   # The figure
   sst_u_v_real <- frame_base +
     # The ocean temperature
@@ -1145,8 +1149,8 @@ fig_sst_u_v_real <- function(fig_data, col_num, fig_height, fig_width){
   if(col_num != 1){
     sst_u_v_real <- sst_u_v_real +
       facet_wrap(~node, ncol = col_num)
-    ggsave("output/SOM/sst_u_v_real.pdf", sst_u_v_real, height = fig_height, width = fig_width)
-    ggsave("output/SOM/sst_u_v_real.png", sst_u_v_real, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/sst_u_v_real_",product,".pdf"), sst_u_v_real, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/sst_u_v_real_",product,".png"), sst_u_v_real, height = fig_height, width = fig_width)
   }
   return(sst_u_v_real)
 }
@@ -1154,7 +1158,7 @@ fig_sst_u_v_real <- function(fig_data, col_num, fig_height, fig_width){
 
 # Air temp + U + V + MSLP (real) figure -----------------------------------
 
-fig_air_u_v_mslp_real <- function(fig_data, col_num, fig_height, fig_width){
+fig_air_u_v_mslp_real <- function(fig_data, col_num, fig_height, fig_width, product){
   # The figure
   air_u_v_mslp_real <- frame_base +
     # The air temperature
@@ -1179,8 +1183,8 @@ fig_air_u_v_mslp_real <- function(fig_data, col_num, fig_height, fig_width){
   if(col_num != 1){
     air_u_v_mslp_real <- air_u_v_mslp_real +
       facet_wrap(~node, ncol = col_num)
-    ggsave("output/SOM/air_u_v_mslp_real.pdf", air_u_v_mslp_real, height = fig_height, width = fig_width)
-    ggsave("output/SOM/air_u_v_mslp_real.png", air_u_v_mslp_real, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/air_u_v_mslp_real_",product,".pdf"), air_u_v_mslp_real, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/air_u_v_mslp_real_",product,".png"), air_u_v_mslp_real, height = fig_height, width = fig_width)
   }
   return(air_u_v_mslp_real)
 }
@@ -1188,7 +1192,7 @@ fig_air_u_v_mslp_real <- function(fig_data, col_num, fig_height, fig_width){
 
 # SD figures --------------------------------------------------------------
 
-fig_sd <- function(col_name, fig_data, col_num, fig_height, fig_width){
+fig_sd <- function(col_name, fig_data, col_num, fig_height, fig_width, product){
 
   # Pick correct data.frame from list
   if({{col_name}} %in% colnames(fig_data$som_sd_wide)){
@@ -1211,8 +1215,8 @@ fig_sd <- function(col_name, fig_data, col_num, fig_height, fig_width){
     # Etc.
     theme(legend.position = "bottom")
   if(col_num != 1){
-    ggsave(paste0("output/SOM/",col_name,"_sd.pdf"), sd_heat_map, height = fig_height, width = fig_width)
-    ggsave(paste0("output/SOM/",col_name,"_sd.png"), sd_heat_map, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/",col_name,"_sd_",product,".pdf"), sd_heat_map, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/",col_name,"_sd_",product,".png"), sd_heat_map, height = fig_height, width = fig_width)
   }
   # return(sd_heat_map)
 }
@@ -1220,9 +1224,9 @@ fig_sd <- function(col_name, fig_data, col_num, fig_height, fig_width){
 
 # Cum. int. + season lolli ------------------------------------------------
 
-fig_cum_int_season <- function(fig_data, col_num, fig_height, fig_width){
+fig_cum_int_season <- function(fig_data, col_num, fig_height, fig_width, product){
   # The figure
-  cum_int_seas <- ggplot(data = fig_data$OISST_MHW_meta,
+  cum_int_seas <- ggplot(data = fig_data$region_MHW_meta,
                   aes(x = date_peak, y = intensity_cumulative)) +
     # Count label
     # geom_label(aes(x = mean(range(date_peak)),
@@ -1252,8 +1256,8 @@ fig_cum_int_season <- function(fig_data, col_num, fig_height, fig_width){
   if(col_num != 1){
     cum_int_seas <- cum_int_seas +
       facet_wrap(~node, ncol = col_num)
-    ggsave("output/SOM/cum_int_season.pdf", cum_int_seas, height = fig_height, width = fig_width)
-    ggsave("output/SOM/cum_int_season.png", cum_int_seas, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/cum_int_season_",product,".pdf"), cum_int_seas, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/cum_int_season_",product,".png"), cum_int_seas, height = fig_height, width = fig_width)
   }
   return(cum_int_seas)
 }
@@ -1261,9 +1265,9 @@ fig_cum_int_season <- function(fig_data, col_num, fig_height, fig_width){
 
 # Max. int. + region lolli ------------------------------------------------
 
-fig_max_int_region <- function(fig_data, col_num, fig_height, fig_width){
+fig_max_int_region <- function(fig_data, col_num, fig_height, fig_width, product){
   # The figure
-  max_int_region <- ggplot(data = fig_data$OISST_MHW_meta,
+  max_int_region <- ggplot(data = fig_data$region_MHW_meta,
                   aes(x = date_peak, y = intensity_max)) +
     # Count label
     # geom_label(aes(x = mean(range(date_peak)),
@@ -1293,8 +1297,8 @@ fig_max_int_region <- function(fig_data, col_num, fig_height, fig_width){
   if(col_num != 1){
     max_int_region <- max_int_region +
       facet_wrap(~node, ncol = col_num)
-    ggsave("output/SOM/max_int_region.pdf", max_int_region, height = fig_height, width = fig_width)
-    ggsave("output/SOM/max_int_region.png", max_int_region, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/max_int_region_",product,".pdf"), max_int_region, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/max_int_region_",product,".pdf"), max_int_region, height = fig_height, width = fig_width)
   }
   return(max_int_region)
 }
@@ -1302,9 +1306,9 @@ fig_max_int_region <- function(fig_data, col_num, fig_height, fig_width){
 
 # Rate onset + duration lolli ---------------------------------------------
 
-fig_duration_rate_onset <- function(fig_data, col_num, fig_height, fig_width){
+fig_duration_rate_onset <- function(fig_data, col_num, fig_height, fig_width, product){
   # The figure
-  duration_rate_onset <- ggplot(data = fig_data$OISST_MHW_meta,
+  duration_rate_onset <- ggplot(data = fig_data$region_MHW_meta,
                            aes(x = date_peak, y = duration)) +
     # geom_smooth(method = "lm", se = F, aes(colour = region)) +
     # Count label
@@ -1334,8 +1338,8 @@ fig_duration_rate_onset <- function(fig_data, col_num, fig_height, fig_width){
   if(col_num != 1){
     duration_rate_onset <- duration_rate_onset +
       facet_wrap(~node, ncol = col_num)
-    ggsave("output/SOM/duration_rate_onset.pdf", duration_rate_onset, height = fig_height, width = fig_width)
-    ggsave("output/SOM/duration_rate_onset.png", duration_rate_onset, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/duration_rate_onset_",product,".pdf"), duration_rate_onset, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/duration_rate_onset_",product,".png"), duration_rate_onset, height = fig_height, width = fig_width)
   }
   return(duration_rate_onset)
 }
