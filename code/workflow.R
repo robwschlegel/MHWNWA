@@ -392,7 +392,7 @@ ALL_other %>%
   # NB: 50 cores requires too much RAM
 doParallel::registerDoParallel(cores = 25)
 
-## Create one big anomaly packet
+## Create one big anomaly packet from OISST data
 # print(paste0("Began creating data packets at ", Sys.time()))
 system.time(synoptic_states <- plyr::ddply(OISST_MHW_event, c("region", "event_no"),
                                            data_packet_func, .parallel = T)) # 204 seconds
@@ -400,7 +400,7 @@ system.time(synoptic_states <- plyr::ddply(OISST_MHW_event, c("region", "event_n
 saveRDS(synoptic_states, "data/SOM/synoptic_states.Rda")
 
 ## Create other synoptic states per MHW per variable
-doMC::registerDoMC(cores = 10) # NB: Be careful here...
+doParallel::registerDoParallel(cores = 10) # NB: Be careful here...
 system.time(synoptic_states_other <- plyr::ddply(OISST_MHW_event, c("region", "event_no"),
                                                  data_packet_func, .parallel = T, df = ALL_other)) # 122 seconds
 # Save
@@ -413,6 +413,37 @@ system.time(packet <- readRDS("data/SOM/synoptic_states.Rda") %>%
               wide_packet_func()) # 122 seconds
 # Save
 saveRDS(packet, "data/SOM/packet.Rda")
+
+## Create one big anomaly packet from GLORYS data
+# Load the GLORYS MHW data
+GLORYS_region_MHW <- readRDS("../MHWflux/data/GLORYS_region_MHW.Rda")
+GLORYS_MHW_event <- GLORYS_region_MHW %>%
+  select(-cats) %>%
+  unnest(events) %>%
+  filter(row_number() %% 2 == 0) %>%
+  unnest(events)
+
+# print(paste0("Began creating data packets at ", Sys.time()))
+doParallel::registerDoParallel(cores = 10)
+system.time(synoptic_states_GLORYS <- plyr::ddply(GLORYS_MHW_event, c("region", "event_no"),
+                                                  data_packet_func, .parallel = T)) # 204 seconds
+# Save
+saveRDS(synoptic_states_GLORYS, "data/SOM/synoptic_states_GLORYS.Rda")
+
+## Create other synoptic states per MHW per variable
+doParallel::registerDoParallel(cores = 10) # NB: Be careful here...
+system.time(synoptic_states_other_GLORYS <- plyr::ddply(GLORYS_MHW_event, c("region", "event_no"),
+                                                        data_packet_func, .parallel = T, df = ALL_other)) # 122 seconds
+# Save
+saveRDS(synoptic_states_other_GLORYS, "data/SOM/synoptic_states_other_GLORYS.Rda")
+
+## Create wide data packet that is fed to SOM
+system.time(packet_GLORYS <- readRDS("data/SOM/synoptic_states_GLORYS.Rda") %>%
+              select(region, event_no, synoptic) %>%
+              unnest() %>%
+              wide_packet_func()) # 122 seconds
+# Save
+saveRDS(packet_GLORYS, "data/SOM/packet_GLORYS.Rda")
 
 
 # Visualise data packets --------------------------------------------------
@@ -436,13 +467,27 @@ fig_data_packet("mab",	23)
 
 # SOM analysis ------------------------------------------------------------
 
+# OISST SOM analysis
 packet <- readRDS("data/SOM/packet.Rda")
-system.time(som <- som_model_PCI(packet)) # 83 seconds
+synoptic_states_other <- readRDS("data/SOM/synoptic_states_other.Rda")
+system.time(som <- som_model_PCI(packet, synoptic_states_other)) # 83 seconds
 saveRDS(som, file = "data/SOM/som.Rda")
+
+# GLORYS SOM analysis
+packet_GLORYS <- readRDS("data/SOM/packet_GLORYS.Rda")
+synoptic_states_other_GLORYS <- readRDS("data/SOM/synoptic_states_other_GLORYS.Rda")
+system.time(som_GLORYS <- som_model_PCI(packet_GLORYS, synoptic_states_other_GLORYS)) # 158 seconds
+saveRDS(som_GLORYS, file = "data/SOM/som_GLORYS.Rda")
 
 
 # Visuals -----------------------------------------------------------------
 
+# OISST visuals
 som <- readRDS("data/SOM/som.Rda")
 fig_all_som(som)
+
+# GLORYS visuals
+som_GLORYS <- readRDS("data/SOM/som_GLORYS.Rda")
+GLORYS_region_MHW <- readRDS("../MHWflux/data/GLORYS_region_MHW.Rda")
+fig_all_som(som_GLORYS, GLORYS_region_MHW, "GLORYS")
 
