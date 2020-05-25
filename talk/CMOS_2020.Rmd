@@ -1,0 +1,152 @@
+---
+title: '**Primary drivers of marine heatwaves in the Northwest Atlantic**'
+subtitle: '**Primary drivers**'
+author: "Robert W. Schlegel, Ke Chen, and Eric C. J. Oliver"
+date: "May 28th, 2020"
+output: 
+  beamer_presentation:
+    # citation_package: biblatex
+    latex_engine: xelatex
+    theme: "Berlin"
+    colortheme: "beaver"
+    fonttheme: "structurebold"
+    slide_level: 2
+    # css: acid.css
+language: Australian
+bibliography: MHWNWA.bib
+csl: frontiers.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Marine heatwaves (MHWs)
+
+## Definition
+
+<br>
+
+<font size="5">"A prolonged discrete anomalously warm water event that can be described by its duration, intensity, rate of evolution, and spatial extent." </font>  
+  
+[@Hobday2016]
+
+<br>
+  
+* The temperature at a location exceeds the 90% percentile of that calendar day    
+* This occurs at least 5 days in a row with no more than a 2 day gap thereafter  
+
+## Schematic
+
+<center>
+![Eric Oliver, www.marineheatwaves.org](graph/mhw-definition_1_orig.png){ width=90% }  
+(_Eric Oliver, www.marineheatwaves.org_)
+</center>
+
+# How does heat enter/exit the ocean?
+
+## Surface heat flux (W/m^2^):
+
+* Q~s~: The short wave energy radiated from the sun (shortwave radiation)  
+* Q~l~: The net long-wave energy radiated back from the ocean (longwave radiation)  
+* Q~e~: The heat loss by evaporation (latent heat flux)  
+* Q~h~: The sensible heat loss by conduction (sensible heat flux)
+* Q~net~ = Q~s~ + Q~l~ + Q~e~ + Q~h~ (net positive downward heat flux)
+
+## Surface movement
+
+* **u~mix~** = (u~mix~, v~mix~): Horizontal velocity averaged within the mixed layer
+* ∇~h~ = (∂/∂x, ∂/∂y): Horizontal gradient operator
+* **u~mix~**$\cdot$$\triangledown$~h~T~mix~ = Temperature change due to horizontal advection
+
+## Mixed layer depth
+
+* H: MLD (mixed-layer depth)
+* T~mix~: MLD temperature
+* $\rho$~0~: Density of sea water
+* c~p~: Specific heat of sea water
+
+## Surface temperature
+
+$\delta$T~mix~ /  $\delta$t = ( (Q~net~ - (Q~s~(-H))) / $\rho$~0~c~p~H ) - **u~mix~**$\cdot$$\nabla$~h~T~mix~ + (*res*)
+
+[@Benthuysen2014; @Chen2015a; @Oliver2017]
+
+## Known drivers of past MHWs
+
+* Advection and heat flux are the primary drivers of SST
+* For much of the coastal oceans the primary driver is abnormal movement (advection) of warm currents into the nearshore
+* For large seas (i.e. the Mediterranean) warm air (heat flux) plays a more important role
+* The primary drivers of MHWs are generally determined by analysing the contribution of heat budget terms to the occurrence of one large event at a time
+
+# Methods
+
+## What is problematic with the current methodology?
+
+* Large MHWs are happening too rapidly to spend a year working on them one at a time
+* Smaller events may also be important
+* The use of self-organising maps (SOM) to identify MHW drivers has already been tested
+* This technique allows a machine to clarify for us which drivers are most prominent during hundreds of MHWs simultaneously
+* We are effectively asking these two questions:
+  1. Are there recurrent environmental patterns during marine heatwaves?
+  2. If so, can these be detected/quantified by the computer?
+
+## Study area
+
+* The coastline of the Northwest Atlantic, divided into six regions based on their SST and SSS climatologies [@Richaud2016]
+
+![](graph/NWA_study_area.png){ width=80% }  
+
+
+## MHW detection
+
+* All of the SST pixels within each region were averaged together into one time series
+* MHWs were calculated from these six averaged time series
+* A total of 289 MHWs were detected
+
+![](graph/MHW_lolli_plot.png)
+
+## Data packets
+
+* One data packet was created for each detected MHW
+* These packets consisted of the mean anomalous air/sea state during that MHW
+* The physical variables in these packets were: SST, U, V, t2m, U10, V10, MLD, Q~net~
+* All 289 data packets were then fed to the SOM to produce the 12 most common synoptic air/sea patterns
+
+# Results
+
+![](graph/node_9_panels.png)
+
+# Conclusions
+
+* The nodes tell three main stories:
+  * Warm GS + air pushing up from south along coast
+  * Warm air sitting over entire coast
+  * Warm air being pushed over the AO from the South/Southeast onto the coast
+* A few nodes tell smaller stories:
+  * Short lived storms that barely manage to perturb T~mix~ for long enough to qualify as a MHW
+  * These are distinctly different from the patterns associated with intense MHWs
+* Overall the most intense MHWs occur during Autumn/Winter when they match patterns that are normally seen in Summer
+* It is likely that this SOM technique will not work on scales larger than one meso-scale feature at a time
+
+# Acknowledgements
+
+\begin{columns}
+\begin{column}{0.33\textwidth}
+    \begin{center}
+     \includegraphics[width=0.9\textwidth]{graph/ofi_logo.jpg}
+     \end{center}
+\end{column}
+\begin{column}{0.33\textwidth}
+    \begin{center}
+     \includegraphics[width=0.9\textwidth]{graph/dal_science.png}
+     \end{center}
+\end{column}
+\begin{column}{0.33\textwidth}
+    \begin{center}
+     \includegraphics[width=0.9\textwidth]{graph/WHOI_logo.png}
+     \end{center}
+\end{column}
+\end{columns}
+
+# References {.allowframebreaks} 
