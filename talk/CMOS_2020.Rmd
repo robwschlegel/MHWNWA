@@ -1,6 +1,6 @@
 ---
 title: '**Primary drivers of marine heatwaves in the Northwest Atlantic**'
-subtitle: '**Primary drivers**'
+# subtitle: '**Primary drivers**'
 author: "Robert W. Schlegel, Ke Chen, and Eric C. J. Oliver"
 date: "May 28th, 2020"
 output: 
@@ -21,9 +21,11 @@ csl: frontiers.csl
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-# Marine heatwaves (MHWs)
+# Introduction
 
-## Definition
+## Marine heatwaves (MHWs): definition
+
+<!-- ### Definition -->
 
 <br>
 
@@ -36,86 +38,94 @@ knitr::opts_chunk$set(echo = FALSE)
 * The temperature at a location exceeds the 90% percentile of that calendar day    
 * This occurs at least 5 days in a row with no more than a 2 day gap thereafter  
 
-## Schematic
+## Marine heatwaves (MHWs): schematic
+<!-- ### Schematic -->
 
 <center>
 ![Eric Oliver, www.marineheatwaves.org](graph/mhw-definition_1_orig.png){ width=90% }  
 (_Eric Oliver, www.marineheatwaves.org_)
 </center>
 
-# How does heat enter/exit the ocean?
+## Known drivers and effects of past MHWs
 
-## Surface heat flux (W/m^2^):
+* Mediterranean 2003
+  * Driver - Atmospheric forcing  
+  * Effect - Gorgonian mortality up to 80% [@Garrabou2009]
 
-* Q~s~: The short wave energy radiated from the sun (shortwave radiation)  
-* Q~l~: The net long-wave energy radiated back from the ocean (longwave radiation)  
-* Q~e~: The heat loss by evaporation (latent heat flux)  
-* Q~h~: The sensible heat loss by conduction (sensible heat flux)
-* Q~net~ = Q~s~ + Q~l~ + Q~e~ + Q~h~ (net positive downward heat flux)
+* Western Australia 2011
+  * Driver - La Nina + Abnormal Leeuwin Current movement onto coast  [@Feng2013; @Benthuysen2014]
+  * Effect - Permanent loss of 100+ km of kelp forest [@Wernberg2016]  
 
-## Surface movement
+* Northwest Atlantic 2012
+  * Driver - Atmos. forcing due to anomalous jet stream [@Chen2015a]
+  * Driver - Labrador Current vs. Gulf Stream [@Brickman2018]
+  * Effect - Range shifts, early lobsters, CAN vs. USA [@Mills2013]
 
-* **u~mix~** = (u~mix~, v~mix~): Horizontal velocity averaged within the mixed layer
-* ∇~h~ = (∂/∂x, ∂/∂y): Horizontal gradient operator
-* **u~mix~**$\cdot$$\triangledown$~h~T~mix~ = Temperature change due to horizontal advection
-
-## Mixed layer depth
-
-* H: MLD (mixed-layer depth)
-* T~mix~: MLD temperature
-* $\rho$~0~: Density of sea water
-* c~p~: Specific heat of sea water
-
-## Surface temperature
-
-$\delta$T~mix~ /  $\delta$t = ( (Q~net~ - (Q~s~(-H))) / $\rho$~0~c~p~H ) - **u~mix~**$\cdot$$\nabla$~h~T~mix~ + (*res*)
-
-[@Benthuysen2014; @Chen2015a; @Oliver2017]
-
-## Known drivers of past MHWs
-
-* Advection and heat flux are the primary drivers of SST
-* For much of the coastal oceans the primary driver is abnormal movement (advection) of warm currents into the nearshore
-* For large seas (i.e. the Mediterranean) warm air (heat flux) plays a more important role
-* The primary drivers of MHWs are generally determined by analysing the contribution of heat budget terms to the occurrence of one large event at a time
+<!-- * "The Blob" California Current 2014-16 -->
+<!--   * Driver - Warm winter, poor mixing, high SLP, air-sea flux, then an El Nino [@Bond2015a] -->
+<!--   * Effect - Practically every trophic level negatively impacted to some degree -->
 
 # Methods
 
-## What is problematic with the current methodology?
+## Departure from established methodology
 
-* Large MHWs are happening too rapidly to spend a year working on them one at a time
+* Primary drivers are generally determined by analysing the physical state during a single MHW
+* Large MHWs are happening too rapidly to spend a year+ working on them one at a time
 * Smaller events may also be important
 * The use of self-organising maps (SOM) to identify MHW drivers has already been tested
-* This technique allows a machine to clarify for us which drivers are most prominent during hundreds of MHWs simultaneously
-* We are effectively asking these two questions:
-  1. Are there recurrent environmental patterns during marine heatwaves?
+* This technique allows a machine to show us which drivers are most prominent during hundreds of MHWs
+* We are asking two questions:
+  1. Are there recurrent environmental patterns during MHWs?
   2. If so, can these be detected/quantified by the computer?
+
+## Data
+
+- NOAA OISST
+  - Sea surface temperature (SST; °C)
+- GLORYS
+  - Mixed layer depth (MLD; m)
+  - Surface ocean currents (U and V; m/s)
+  - Mean sea level pressure (MSLP; hPa) **- NOT USED IN SOM**
+- ERA 5
+  - Surface air temperature (t2m; °C)
+  - Net positive downward heat flux (Q~net~; W/m2)
+    - Latent + sensible heat flux + short + long-wave radiation (Q~e~ + Q~h~ + Q~s~ + Q~l~)
+  - Surface wind currents (U and V; m/s)
 
 ## Study area
 
-* The coastline of the Northwest Atlantic, divided into six regions based on their SST and SSS climatologies [@Richaud2016]
-
-![](graph/NWA_study_area.png){ width=80% }  
-
+![](graph/NWA_study_area.png){ width=70% }  
+[@Richaud2016]
 
 ## MHW detection
 
-* All of the SST pixels within each region were averaged together into one time series
-* MHWs were calculated from these six averaged time series
-* A total of 289 MHWs were detected
+* Total of 298 MHWs calculated from the time series averaged over the pixels in the six regions
 
-![](graph/MHW_lolli_plot.png)
+<center>
+![](graph/MHW_lolli_plot.png){ width=80% }  
+</center>
 
 ## Data packets
 
-* One data packet was created for each detected MHW
-* These packets consisted of the mean anomalous air/sea state during that MHW
-* The physical variables in these packets were: SST, U, V, t2m, U10, V10, MLD, Q~net~
-* All 289 data packets were then fed to the SOM to produce the 12 most common synoptic air/sea patterns
+* Data packet of mean anomalous air/sea state created for each MHW
+* 289 data packets fed to SOM to produce 12 most common synoptic air/sea patterns
+
+<!-- * These packets consisted of the mean anomalous air/sea state during that MHW -->
+<!-- * The physical variables in these packets were: SST, U, V, t2m, U10, V10, MLD, Q~net~ -->
+
+<center>
+![](graph/synoptic_gm_14.png){ width=90% }  
+</center>
 
 # Results
 
-![](graph/node_9_panels.png)
+## All nodes
+
+![](graph/region_season.png){ width=90% }  
+
+## Node 9
+
+![](graph/node_9_panels.png){ width=90% }  
 
 # Conclusions
 
@@ -129,7 +139,7 @@ $\delta$T~mix~ /  $\delta$t = ( (Q~net~ - (Q~s~(-H))) / $\rho$~0~c~p~H ) - **u~m
 * Overall the most intense MHWs occur during Autumn/Winter when they match patterns that are normally seen in Summer
 * It is likely that this SOM technique will not work on scales larger than one meso-scale feature at a time
 
-# Acknowledgements
+## Acknowledgements
 
 \begin{columns}
 \begin{column}{0.33\textwidth}
@@ -149,4 +159,4 @@ $\delta$T~mix~ /  $\delta$t = ( (Q~net~ - (Q~s~(-H))) / $\rho$~0~c~p~H ) - **u~m
 \end{column}
 \end{columns}
 
-# References {.allowframebreaks} 
+## References {.allowframebreaks} 
