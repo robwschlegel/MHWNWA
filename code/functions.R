@@ -671,12 +671,11 @@ som_model_PCI <- function(data_packet, other_states, xdim = 4, ydim = 3){
     mutate(event_no = as.numeric(event_no)) %>%
     left_join(synoptic_states_other_unnest, by = c("region", "event_no")) %>%
     select(-t, -region, -event_no) %>%
-    gather(key = "var", value = "val", -c(node:lat)) %>%
+    gather(key = "var", value = "value", -c(node:lat)) %>%
     group_by(node, var, lon, lat) %>%
-    summarise(val = mean(val, na.rm = T),
-              sd = sd(val, na.rm = T)) %>%
+    summarise(val = mean(value, na.rm = T),
+              sd = sd(value, na.rm = T)) %>%
     ungroup() %>%
-    # separate(var, into = c("lon", "lat", "var"), sep = "BBB") %>%
     dplyr::arrange(node, var, lon, lat) %>%
     mutate(val = round(val, 4),
            sd = round(sd, 4))
@@ -846,6 +845,8 @@ fig_data_prep <- function(data_packet, region_MHW){
 
 # testers...
 # som_packet <- readRDS("data/SOM/som.Rda")
+# som_packet <- readRDS("data/SOM/som_GLORYS.Rda")
+# region_MHW <- readRDS("../MHWflux/data/GLORYS_region_MHW.Rda")
 # col_num = 4
 # fig_height = 9
 # fig_width = 13
@@ -871,17 +872,17 @@ fig_all_som <- function(som_packet,
   # Net downward heat flux and MLD (anom)
   qnet_mld_anom <- fig_qnet_mld_anom(base_data, col_num, fig_height, fig_width, product)
 
-  # Lollis showing cum. int. + season
-  cum_int_season <- fig_cum_int_season(base_data, col_num, fig_height, fig_width, product)
-
-  # Lollis showing max. int. + region
-  max_int_region <- fig_max_int_region(base_data, col_num, fig_height, fig_width, product)
-
   # SST + U + V (real)
   sst_u_v_real <- fig_sst_u_v_real(base_data, col_num, fig_height, fig_width, product)
 
   # Air Temp + U + V (real)
   air_u_v_mslp_real <- fig_air_u_v_mslp_real(base_data, col_num, fig_height, fig_width, product)
+
+  # Lollis showing cum. int. + season
+  cum_int_season <- fig_cum_int_season(base_data, col_num, fig_height, fig_width, product)
+
+  # Lollis showing max. int. + region
+  max_int_region <- fig_max_int_region(base_data, col_num, fig_height, fig_width, product)
 
   # Lollis showing duration + rate onset
   duration_rate_onset <- fig_duration_rate_onset(base_data, col_num, fig_height, fig_width, product)
@@ -895,8 +896,7 @@ fig_all_som <- function(som_packet,
 
   # Create individual node summaries
   # doMC::registerDoMC(cores = 4)
-  plyr::l_ply(1:max(base_data$region_MHW_meta$node, na.rm = T), .fun = fig_single_node,
-              .progress = "text", .parallel = T,
+  plyr::l_ply(1:max(base_data$region_MHW_meta$node, na.rm = T), .fun = fig_single_node, .parallel = T,
               fig_packet = base_data, fig_height = fig_height, fig_width = fig_width, product = product)
 }
 
@@ -906,8 +906,8 @@ fig_all_som <- function(som_packet,
 
 # testers...
 # fig_packet <- fig_data_prep(readRDS("data/SOM/som.Rda"))
-# node_number = 9
-# col_num = 1
+# fig_packet <- base_data
+# node_number = 8
 # fig_height = 9
 # fig_width = 13
 fig_single_node <- function(node_number, fig_packet, fig_height, fig_width, product){
@@ -916,7 +916,7 @@ fig_single_node <- function(node_number, fig_packet, fig_height, fig_width, prod
   fig_packet$som_data_wide <- filter(fig_packet$som_data_wide, node == node_number)
   fig_packet$som_data_sub <- filter(fig_packet$som_data_sub, node == node_number)
   fig_packet$other_data_wide <- filter(fig_packet$other_data_wide, node == node_number)
-  fig_packet$OISST_MHW_meta <- filter(fig_packet$region_MHW_meta, node == node_number)
+  fig_packet$region_MHW_meta <- filter(fig_packet$region_MHW_meta, node == node_number)
   fig_packet$node_season_info <- filter(fig_packet$node_season_info, node == node_number)
   fig_packet$node_region_info <- filter(fig_packet$node_region_info, node == node_number)
   fig_packet$region_prop_label <- filter(fig_packet$region_prop_label, node == node_number)
@@ -1251,8 +1251,8 @@ fig_cum_int_season <- function(fig_data, col_num, fig_height, fig_width, product
     scale_x_date(labels = scales::date_format("%Y"),
                  date_breaks = "2 years", date_minor_breaks = "1 year") +
     labs(x = "", y = "Cum. intensity (°C x days)", colour = "Season") +
-    theme(legend.position = "bottom")#,
-          # axis.text.x = element_text(angle = 30))
+    theme(legend.position = "bottom",
+          axis.text.x = element_text(angle = 30))
   if(col_num != 1){
     cum_int_seas <- cum_int_seas +
       facet_wrap(~node, ncol = col_num)
@@ -1292,13 +1292,13 @@ fig_max_int_region <- function(fig_data, col_num, fig_height, fig_width, product
     scale_x_date(labels = scales::date_format("%Y"),
                  date_breaks = "2 years", date_minor_breaks = "1 year") +
     labs(x = "", y = "Max. intensity (°C)", colour = "Region") +
-    theme(legend.position = "bottom")#,
-          # axis.text.x = element_text(angle = 30)) +
+    theme(legend.position = "bottom",
+          axis.text.x = element_text(angle = 30))
   if(col_num != 1){
     max_int_region <- max_int_region +
       facet_wrap(~node, ncol = col_num)
     ggsave(paste0("output/SOM/max_int_region_",product,".pdf"), max_int_region, height = fig_height, width = fig_width)
-    ggsave(paste0("output/SOM/max_int_region_",product,".pdf"), max_int_region, height = fig_height, width = fig_width)
+    ggsave(paste0("output/SOM/max_int_region_",product,".png"), max_int_region, height = fig_height, width = fig_width)
   }
   return(max_int_region)
 }
@@ -1333,8 +1333,8 @@ fig_duration_rate_onset <- function(fig_data, col_num, fig_height, fig_width, pr
                  date_breaks = "2 years", date_minor_breaks = "1 year") +
     scale_colour_gradient(low = "white", high = "darkorange") +
     labs(x = "", y = "Duration (days)", colour = "Rate onset (°C x days)") +
-    theme(legend.position = "bottom")#,
-          # axis.text.x = element_text(angle = 30))
+    theme(legend.position = "bottom",
+          axis.text.x = element_text(angle = 30))
   if(col_num != 1){
     duration_rate_onset <- duration_rate_onset +
       facet_wrap(~node, ncol = col_num)
